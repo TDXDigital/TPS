@@ -1,0 +1,50 @@
+body
+{
+background-color:grey;
+}
+
+h1
+{
+color:black;
+text-align:center;
+font-size:50px;
+{
+
+p
+{
+font-family:"Verdana";
+font-size:20px;
+text-align:center;
+}
+
+.topbar
+{
+    background-color:#CF0;
+    position:absolute;
+    right:-3px;
+    top:0px;
+    color:#333;
+    height:20px;
+    width:100%;
+    vertical-align:top;
+    padding-left:5px;
+    border:1px solid #333;
+    text-shadow: #6374AB 2px -0px 3px;
+    z-index:1;
+}
+.right{
+  float: right;
+}
+/*
+#notice
+{
+font-family:"Verdana";
+font-size:25px;
+color:red;
+}
+
+#param1
+{
+text-aligh:center;
+}
+*/

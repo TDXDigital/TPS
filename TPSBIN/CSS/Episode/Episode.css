@@ -1,0 +1,38 @@
+html{
+    height: 100%;
+}
+body {
+    
+background-attachment: fixed;
+
+/* IE10 Consumer Preview */ 
+background-image: -ms-linear-gradient(top, #FFFFFF 0%, #D9D4D4 60%, #A6A2A2 90%, #FFFFFF 100%);
+
+/* Mozilla Firefox */ 
+background-image: -moz-linear-gradient(top, #FFFFFF 0%, #D9D4D4 60%, #A6A2A2 90%, #FFFFFF 100%);
+
+/* Opera */ 
+background-image: -o-linear-gradient(top, #FFFFFF 0%, #D9D4D4 60%, #A6A2A2 90%, #FFFFFF 100%);
+
+/* Webkit (Safari/Chrome 10) */ 
+background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(0.6, #D9D4D4), color-stop(0.9, #A6A2A2), color-stop(1, #FFFFFF));
+
+/* Webkit (Chrome 11+) */ 
+background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #D9D4D4 60%, #A6A2A2 90%, #FFFFFF 100%);
+
+/* W3C Markup, IE10 Release Preview */ 
+background-image: linear-gradient(to bottom, #FFFFFF 0%, #D9D4D4 60%, #A6A2A2 90%, #FFFFFF 100%);
+
+}
+
+.HiddenDialog{
+    display: none;
+}
+
+.listrow{
+    background-color: #DAFFFF;
+}
+
+.listrowalt{
+    background-color: white;
+}

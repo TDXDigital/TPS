@@ -1,0 +1,16 @@
+body {
+}
+div.inline { float:left; }
+div.inlinebuffer { 
+    float:left;
+    width: fill-available;
+}
+div.infobar {
+    width: auto;
+    text-align: center;
+}
+div.settings {
+    width: auto;
+    text-align: center;
+}
+.clearBoth { clear:both; }

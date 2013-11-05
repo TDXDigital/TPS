@@ -1,0 +1,469 @@
+html{
+	margin:0;
+	padding:0;
+	text-align:center;
+    height: 100%;
+}
+body {
+    
+background-attachment: fixed;
+
+/* IE10 Consumer Preview */ 
+background-image: -ms-linear-gradient(top, #FFFFFF 0%, #D9D4D4 60%, #A6A2A2 90%, #FFFFFF 100%);
+
+/* Mozilla Firefox */ 
+background-image: -moz-linear-gradient(top, #FFFFFF 0%, #D9D4D4 60%, #A6A2A2 90%, #FFFFFF 100%);
+
+/* Opera */ 
+background-image: -o-linear-gradient(top, #FFFFFF 0%, #D9D4D4 60%, #A6A2A2 90%, #FFFFFF 100%);
+
+/* Webkit (Safari/Chrome 10) */ 
+background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(0.6, #D9D4D4), color-stop(0.9, #A6A2A2), color-stop(1, #FFFFFF));
+
+/* Webkit (Chrome 11+) */ 
+background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #D9D4D4 60%, #A6A2A2 90%, #FFFFFF 100%);
+
+/* W3C Markup, IE10 Release Preview */ 
+background-image: linear-gradient(to bottom, #FFFFFF 0%, #D9D4D4 60%, #A6A2A2 90%, #FFFFFF 100%);
+	margin:0;
+	padding:0;
+	text-align: center;
+    
+	
+}
+
+.a{
+	text-decoration: none;
+}
+
+.a:hover{
+	text-decoration: underline;
+}
+
+#header{
+	display:block;
+	margin:0;
+	padding:0;
+	margin-left:auto;
+	margin-right:auto;
+	width:1000px;
+	text-align: left;
+	font:Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size:13px;
+	
+}
+
+#top{
+	display:block;
+	margin:0;
+	padding:0;
+	margin-left:auto;
+	margin-right:auto;
+	width:1000px;
+	background-color: #FFFFFF;
+	text-align: left;
+	vertical-align: top;
+	font:Verdana, Geneva, Arial, Helvetica, sans-serif;
+	color: #884433;
+	border-bottom: 2px solid #a1a1a1;
+}
+
+.statictop{
+    position: fixed;
+    top: 0px;
+    height: 30px;
+    width: 100%;
+    background-color: #000;
+    font-family: "Century Gothic", Verdana, Arial, Sans-Serif;
+    color: #fff;
+    opacity: 0.70;
+    border-bottom: 1px solid #f22;
+}
+
+.statictop div{
+    margin: 1px 3px 1px 3px;
+}
+
+.statictop a:link{
+    color: #ffd800;
+    text-decoration: none;
+}
+.statictop a:visited{
+    color: #ffd200;
+    text-decoration: none;
+}
+
+.hasstatictop{
+    margin-top: 32px;
+}
+
+.statictop-leftbar{
+  float:left;
+  border-left: thin solid silver;
+  padding-left: 15px;
+}
+
+.statictop-leftbar-nofloat{
+	border-left: thin solid silver;
+	padding-left: 15px;
+}
+
+/* Navigation */
+/*#navigation { -- http://aext.net/2009/09/elegant-drop-menu-with-css-only/*/
+#statictop-menu{
+	list-style: none;
+	font-family: "Century Gothic", Verdana, Arial, Sans-Serif;
+	margin: 0;
+	padding: 0;
+	font-size: 1.2em;
+	float: left;
+	width:100px;
+	text-align: left;
+	text-indent: 25px;
+}
+
+/* CSS for each Parent Item */
+#statictop-menu li
+{
+	clear: both;
+	height: 25px;
+	padding: 0px 0px;
+}
+
+#statictop-menu li a
+{
+	float: left;
+	display: block;
+	padding: 0;
+	text-decoration: none;
+	color: #666;
+	/*text-transform: uppercase;*/
+	margin-bottom: 5px;
+	/*margin-right: 10px;*/
+}
+
+/* Change background color and font color of parent items when mouse hover */
+#statictop-menu li:hover a,
+#statictop-menu li a:hover
+{
+	background: #000;
+	color: #fff;
+	padding: 0;
+	margin: 0;
+	width:200px;
+}
+
+/* Applie to group of Child Items Each Child Item will be invisible by default */
+#statictop-menu ul {display: none;}
+
+/* Each Child Item will be visible if mouse hover */
+#statictop-menu li:hover ul {
+	display: block;
+	padding: 0;
+	}
+
+#statictop-menu ul
+{
+	list-style: none;
+	float: left;
+	margin: 0;
+	/*padding: 4px 8px;*/
+	padding: 0;
+}
+
+#statictop-menu ul li
+{
+	float: left;
+	clear: none;
+	margin: 0;
+	padding: 0;
+	width: 200px;;
+	height: auto;
+	color: #999;
+}
+
+/* Sub-Sub Menu*/
+/* Change background color and font color of parent items when mouse hover */
+#statictop-menu ul li ul li:hover a,
+#statictop-menu ul li ul a:hover
+{
+	background: #000;
+	color: #fff;
+	padding: 0;
+	margin: 0;
+	width:200px;
+}
+
+/* Applie to group of Child Items Each Child Item will be invisible by default */
+#statictop-menu ul li ul {display: none;}
+
+/* Each Child Item will be visible if mouse hover */
+#statictop-menu ul li:hover ul {
+	display: block;
+	padding: 0;
+	}
+
+#statictop-menu ul li ul
+{
+	list-style: none;
+	float: left;
+	margin: 0;
+	/*padding: 4px 8px;*/
+	padding: 0;
+}
+
+#statictop-menu ul li ul li
+{
+	float: left;
+	clear: none;
+	margin: 0;
+	padding: 0;
+	width: auto;
+	height: auto;
+	color: #999;
+}
+
+
+/* TOPNAV Menu*/ 
+
+ul.topnav {
+	list-style: none;
+	padding: 0 20px;	
+	margin: 0;
+	float: left;
+	width: 100px;
+	background: #222;
+	font-size: 1.2em;
+	background: url(topnav_bg.gif) repeat-x;
+}
+ul.topnav li {
+	float: left;
+	margin: 0;	
+	padding: 0 0px 0 0;
+	position: relative; /*--Declare X and Y axis base for sub navigation--*/
+}
+ul.topnav li a{
+	padding: 0px 0px;
+	color: #fff;
+	display: block;
+	text-decoration: none;
+	float: left;
+}
+ul.topnav li a:hover{
+	background: url(topnav_hover.gif) no-repeat center top;
+}
+ul.topnav li span { /*--Drop down trigger styles--*/
+	width: 17px;
+	height: 35px;
+	float: left;
+	background: url(subnav_btn.gif) no-repeat center top;
+}
+ul.topnav li span.subhover {background-position: center bottom; cursor: pointer;} /*--Hover effect for trigger--*/
+ul.topnav li ul.subnav {
+	list-style: none;
+	position: absolute; /*--Important - Keeps subnav from affecting main navigation flow--*/
+	left: 0; top: 35px;
+	background: #333;
+	margin: 0; padding: 0;
+	display: none;
+	float: left;
+	width: 170px;
+	border: 1px solid #111;
+}
+ul.topnav li ul.subnav li{
+	margin: 0; padding: 0;
+	border-top: 1px solid #252525; /*--Create bevel effect--*/
+	border-bottom: 1px solid #444; /*--Create bevel effect--*/
+	clear: both;
+	width: 170px;
+}
+html ul.topnav li ul.subnav li a {
+	float: left;
+	width: 145px;
+	background: #333 url(dropdown_linkbg.gif) no-repeat 10px center;
+	padding-left: 20px;
+}
+html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
+	background: #222 url(dropdown_linkbg.gif) no-repeat 10px center; 
+}
+
+/* CSS MENU -- http://cssmenumaker.com/builder/827821*/
+#cssmenu ul {
+  margin: 0;
+  padding: 0;
+}
+#cssmenu li {
+  margin: 0;
+  padding: 0;
+}
+#cssmenu a {
+  margin: 0;
+  padding: 0;
+}
+#cssmenu ul {
+  list-style: none;
+}
+#cssmenu a {
+  text-decoration: none;
+}
+#cssmenu {
+  height: 70px;
+  background-color: #232323;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.4);
+  width: auto;
+}
+#cssmenu > ul > li {
+  float: left;
+  margin-left: 15px;
+  position: relative;
+}
+#cssmenu > ul > li > a {
+  color: #a0a0a0;
+  font-family: Verdana, 'Lucida Grande';
+  font-size: 15px;
+  line-height: 70px;
+  padding: 15px 20px;
+  -webkit-transition: color .15s;
+  -moz-transition: color .15s;
+  -o-transition: color .15s;
+  transition: color .15s;
+}
+#cssmenu > ul > li > a:hover {
+  color: #ffffff;
+}
+#cssmenu > ul > li > ul {
+  opacity: 0;
+  visibility: hidden;
+  padding: 16px 0 20px 0;
+  background-color: #fafafa;
+  text-align: left;
+  position: absolute;
+  top: 55px;
+  left: 50%;
+  margin-left: -90px;
+  width: 180px;
+  -webkit-transition: all .3s .1s;
+  -moz-transition: all .3s .1s;
+  -o-transition: all .3s .1s;
+  transition: all .3s .1s;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
+}
+#cssmenu > ul > li:hover > ul {
+  opacity: 1;
+  top: 65px;
+  visibility: visible;
+}
+#cssmenu > ul > li > ul:before {
+  content: '';
+  display: block;
+  border-color: transparent transparent #fafafa transparent;
+  border-style: solid;
+  border-width: 10px;
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  margin-left: -10px;
+}
+#cssmenu > ul ul > li {
+  position: relative;
+}
+#cssmenu ul ul a {
+  color: #323232;
+  font-family: Verdana, 'Lucida Grande';
+  font-size: 13px;
+  background-color: #fafafa;
+  padding: 5px 8px 7px 16px;
+  display: block;
+  -webkit-transition: background-color 0.1s;
+  -moz-transition: background-color 0.1s;
+  -o-transition: background-color 0.1s;
+  transition: background-color 0.1s;
+}
+#cssmenu ul ul a:hover {
+  background-color: #f0f0f0;
+}
+#cssmenu ul ul ul {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: -16px;
+  left: 206px;
+  padding: 16px 0 20px 0;
+  background-color: #fafafa;
+  text-align: left;
+  width: 180px;
+  -webkit-transition: all .3s;
+  -moz-transition: all .3s;
+  -o-transition: all .3s;
+  transition: all .3s;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
+}
+#cssmenu ul ul > li:hover > ul {
+  opacity: 1;
+  left: 190px;
+  visibility: visible;
+}
+#cssmenu ul ul a:hover {
+  background-color: #cc2c24;
+  color: #f0f0f0;
+}
+
+
+.tablecss{
+	border:0;
+	background-color: inherit;
+	text-align:left;
+}
+
+#content{
+	display:block;
+	margin:0;
+	padding:0;
+	margin-left:auto;
+	margin-right:auto;
+	width:1000px;
+	background-color: #FFFFFF;
+	text-align: left;
+	vertical-align: top;
+	font:Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+#foot{
+	display:block;
+	margin:0;
+	padding:0;
+	padding-top: 5px;
+	margin-left:auto;
+	margin-right:auto;
+	width:1000px;
+	background-color: #FFFFFF;
+	text-align: left;
+	vertical-align: top;
+	font:Verdana, Geneva, Arial, Helvetica, sans-serif;
+	border-top: 2px solid #a1a1a1;
+}
+
+
+.left{
+	text-align: left;
+	float:left;
+}
+.topbar{
+	margin:0;
+	padding:0;
+	font:Verdana;
+	font-size:13px;
+	float: left;
+}
+
+

@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../phpstyle.css" />
+<title>DPL Administration</title>
+<link href="../js/jquery/css/ui-lightness/jquery-ui-1.10.0.custom.min.css" type="text/css" rel="stylesheet"/>
+    <script src="../TPSBIN/JS/GLOBAL/Utilities.js"></script>
+    <style>
+        .Fill{
+         width: 100%;   
+         text-align: center;
+         margin: 4px 0px 4px 0px;
+        }
+        .hidden-div{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+	<div style="text-align: center; width: 500px; margin: auto;" id="content">
+		<div><img src="../DEV/DevImg.png" alt="Dev Login"/></div>
+		<div style="margin: auto;"><form name="login" method="post" action="Login.php">
+            <div id="Error" class="ui-state-error ui-corner-all hidden-div"></div>
+            <fieldset>
+		        <input name="name" placeholder="Username" required title="Username" type="text" class="Fill ui-corner-all"/><br/>
+		        <input name="pass" placeholder="Password" required title="Password" class="Fill ui-corner-all" type="password"/>
+                <label for="srvr">Select Server: </label>
+                <select name="SRVID" id="srvr">
+                    <option value="CKXU001">PICARD</option>
+                    <option value="CKXU002" selected>RIKER</option>
+                </select>
+		        <input type="submit" value="Login" class="Fill ui-corner-all"/>
+            </fieldset>
+		  <br/><br/><br /> 
+		</form></div>
+	</div>
+</body>
+</html>

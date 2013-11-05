@@ -1,0 +1,224 @@
+/* A Free Design by Bryant Smith (bryantsmith.com) */
+
+html, body {
+text-align: center;
+height: 100%;
+}
+p {
+        text-align: left;
+        margin-left: 10px;
+
+}
+
+a:link
+{
+  color: navy;
+}
+
+a:visited
+{
+  color: navy;
+}
+
+a:hover
+{
+  color: red;
+}
+
+body {
+    
+background-attachment: fixed;
+
+/* IE10 Consumer Preview */ 
+background-image: -ms-linear-gradient(top, #FFFFFF 0%, #D9D4D4 60%, #A6A2A2 90%, #FFFFFF 100%);
+
+/* Mozilla Firefox */ 
+background-image: -moz-linear-gradient(top, #FFFFFF 0%, #D9D4D4 60%, #A6A2A2 90%, #FFFFFF 100%);
+
+/* Opera */ 
+background-image: -o-linear-gradient(top, #FFFFFF 0%, #D9D4D4 60%, #A6A2A2 90%, #FFFFFF 100%);
+
+/* Webkit (Safari/Chrome 10) */ 
+background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(0.6, #D9D4D4), color-stop(0.9, #A6A2A2), color-stop(1, #FFFFFF));
+
+/* Webkit (Chrome 11+) */ 
+background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #D9D4D4 60%, #A6A2A2 90%, #FFFFFF 100%);
+
+/* W3C Markup, IE10 Release Preview */ 
+background-image: linear-gradient(to bottom, #FFFFFF 0%, #D9D4D4 60%, #A6A2A2 90%, #FFFFFF 100%);
+
+	margin: 0;
+	padding: 0;
+	/*background-color: #000000;
+	background-image:url(background.png)*/
+	text-align: left;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	color: black;
+	margin-left: 5px;
+}
+*
+{
+  margin: 0 auto 0 auto;
+ text-align:left;}
+
+
+html, body {
+text-align: center;
+}
+p {text-align: left;}
+
+
+
+
+#header h1
+{
+display:block;
+float:left;
+line-height:70px;
+margin-left:17px;
+width:230px;
+color:#FFFFFF;
+text-align:left;
+font-size:23px;
+font-weight:bold;
+font-family:Arial, Helvetica, sans-serif;
+float:left;
+
+}
+
+
+#header ul {
+	padding: 0px;
+	list-style-type: none;
+	height:21px;
+	text-align:center;
+	height:85px;
+	overflow:hidden;
+}
+#header ul li , #header ul li a, #header ul li a:visited{
+	display:block;
+	float:left;
+	margin: 0px;
+	text-align:center;
+	line-height:72px;
+	width:133px;
+	color:#FFFFFF;
+
+	font-size:16px;
+	font-weight:bold;
+	text-decoration:none;
+}
+
+#header ul li a:hover{
+color:#CCCCCC;
+}
+
+
+
+#main 
+{
+margin-top:10px;
+margin-bottom:10px;
+}
+
+
+#main .main_top
+{
+height:85px;
+width:921px;
+background-image:url(main_top.png);
+background-repeat:no-repeat;
+}
+
+#main .main_body
+{
+
+padding-left:0px;
+height:auto;
+width:921px;
+background-image:url(main_body.png);
+background-repeat:repeat-y;
+color:#FFFFFF;
+padding-bottom:20px;
+
+
+}
+
+
+#main .main_top h1
+{
+font-size:24px;
+line-height:85px;
+color:#FFFFFF;
+padding-left:25px;
+background-image:url(header_h1_bg.png);
+background-position:right;
+background-repeat:no-repeat;
+margin-right:25px;
+}
+
+#main .main_body p
+{
+line-height:19px;
+letter-spacing:1px;
+padding-bottom:15px;
+padding-left:20px;
+padding-right:20px;
+}
+
+
+#main .main_bottom
+{
+height:8px;
+width:921px;
+background-image:url(main_bottom.png);
+background-repeat:no-repeat;
+}
+
+
+#page
+{
+  margin: 0 auto 0 auto; 
+  margin-top:25px;
+  display: block; 
+  height:auto;
+  position: relative; 
+  overflow: hidden; 
+  width: 921px;
+}
+
+#header
+{
+background-image:url(header.png);
+background-repeat:no-repeat;
+width:921px;
+height:72px;
+}
+
+
+
+#footer {
+display:block;
+width: 921px;
+height:74px;
+background: url(footer.png) no-repeat;
+text-align:right;
+font-size:9px;
+line-height:75px;
+}
+
+#footer p{
+padding-right:20px;
+text-align:right;
+}
+
+#footer, #footer a, #footer a:visited{
+color:#FFFFFF;
+}
+
+#footer a:hover{
+text-decoration:none;
+color:#CCCCCC;
+}
+

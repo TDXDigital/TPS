@@ -1,0 +1,25 @@
+Digital Logs Version 0.3
+
+<-- START LOG -->
+0.3.47 - March 24 2013
+Fixes:
+1) Changed functionality of the autocomplete to change responses to lowercase for ease of readability
+2) 
+
+#END CHANGES
+
+0.3.46 - March 24 2013
+Fixes:
+1) corrected SQL for Artist and Album Autocomplete
+
+#END CHANGES#
+
+0.3.45 - March 24 2013
+Improvements:
+1) Introduced  Autocomplete for title, Album, Artist
+	// TODO: Have field be dependant on other field values (artist will restrict album results)
+2) Moved to mysqli from mysql due to deprecation of mysql in PHP 5.5
+
+#END CHANGES#
+
+<-- END LOG -->

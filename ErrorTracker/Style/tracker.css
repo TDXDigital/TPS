@@ -1,0 +1,153 @@
+html{
+	margin:0;
+	padding:0;
+	text-align:center;
+}
+body {
+	margin:0;
+	padding:0;
+	background-color:#DEDEDE;
+	text-align: center;
+	
+}
+
+.a{
+	text-decoration: none;
+}
+
+.a:hover{
+	text-decoration: underline;
+}
+
+#header{
+	display:block;
+	margin:0;
+	padding:0;
+	margin-left:auto;
+	margin-right:auto;
+	width:75%;
+	background-color: #FFFFFF;
+	text-align: left;
+	font:Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size:13px;
+	
+}
+
+#top{
+	display:block;
+	margin:0;
+	padding:0;
+	margin-left:auto;
+	margin-right:auto;
+	width:75%;
+	background-color: #FFFFFF;
+	text-align: left;
+	vertical-align: top;
+	font:Verdana, Geneva, Arial, Helvetica, sans-serif;
+	color: #884433;
+	border-bottom: 2px solid #a1a1a1;
+}
+.tablecss{
+	border:0;
+	background-color: inherit;
+	text-align:left;
+}
+
+#content{
+	display:block;
+	margin:0;
+	padding:0;
+	margin-left:auto;
+	margin-right:auto;
+	width:75%;
+	background-color: #FFFFFF;
+	text-align: left;
+	vertical-align: top;
+	font:Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+#nav{
+	display:block;
+	height: 30px;
+	margin:0;
+	padding:0;
+	margin-left:auto;
+	margin-right:auto;
+	width:75%;
+	background-color: #000000;
+	background-image:url('/ErrorTracker/IMG/BKG.png');
+	text-align: left;
+	vertical-align: top;
+	font:Verdana, Geneva, Arial, Helvetica, sans-serif;
+	
+}
+
+#navbar li {
+	list-style: none;
+	float: left;
+	background-image:url('/ErrorTracker/IMG/Title.png');
+	width: 200px;
+	text-align: center;
+}
+	
+#navbar li a {
+	display: block;
+	padding: 5px 8px;
+	/*background-color: #FFFFFF;*/
+	color: #000000;
+	text-decoration: none;
+}
+
+#navbar li ul {
+	display: none; 
+	width: 10em; /* Width to help Opera out */
+	background-color: #69f;
+}
+	
+#navbar li:hover ul {
+	display: block;
+	position: absolute;
+	margin: 0;
+	padding: 0;	
+}
+	
+#navbar li:hover li {
+	float: none;
+}
+
+#navbar li:hover li a {
+	background-color: #C4FFFF;
+	border-bottom: 1px solid #fff;
+	color: #000000;
+}
+#navbar li li a:hover {
+	background-color: #e3FFFF;
+}
+
+#foot{
+	display:block;
+	margin:0;
+	padding:0;
+	padding-top: 5px;
+	margin-left:auto;
+	margin-right:auto;
+	width:75%;
+	background-color: #FFFFFF;
+	text-align: left;
+	vertical-align: top;
+	font:Verdana, Geneva, Arial, Helvetica, sans-serif;
+	border-top: 2px solid #a1a1a1;
+}
+
+
+.left{
+	text-align: left;
+	float:left;
+}
+.topbar{
+	margin:0;
+	padding:0;
+	font:Verdana;
+	font-size:13px;
+	float: left;
+}
