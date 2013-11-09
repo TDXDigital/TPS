@@ -1,6 +1,6 @@
 <?php
     session_start();
-	$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
+	$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 	$friends = array();
 	if (!$con){
 		die("<h2>Error " . mysql_errno() . "</h2><p>Could not establish connection to database. Authentication failed</p>");

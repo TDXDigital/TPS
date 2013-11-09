@@ -19,6 +19,7 @@
             <div>
                 <p>Please confirm settings for deletion of old logs</p>
                 <form method="post" action="confirmexpire.php">
+                    <!-- Do this through AJAX???-->
                     <fieldset>
                         <label for="timestamp_verify">Verify Timestamp</label>
                         <input name="timestamp_verify" id="timestamp_verify" type="checkbox"/>

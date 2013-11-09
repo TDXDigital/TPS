@@ -1,7 +1,7 @@
 <?php
     session_start();
 
-$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
+$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
@@ -13,7 +13,7 @@ else if($con){
 
 <!DOCTYPE HTML>
 <head>
-<link rel="stylesheet" type="text/css" href="/altstyle.css" />
+<link rel="stylesheet" type="text/css" href="../altstyle.css" />
 <title>Missing Log Report</title>
 </head>
 <html>
@@ -22,7 +22,7 @@ else if($con){
            Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
 	<div id="header">
-		<a href="/masterpage.php"><img src="/images/Ckxu_logo_PNG.png" alt="CKXU" /></a>
+		<a href="../masterpage.php"><img src="../"<?php echo $_SESSION['logo'];?> alt="Logo" /></a>
 	</div>
 	<div id="top">
 		<h2>Missing Logs ['Alpha']</h2>
@@ -34,7 +34,7 @@ else if($con){
 				<th>Date To</th>
 				<!--<th>Report Limit</th>-->
 			</tr>
-			<form action="/Reports/MissingLogRep2.php" method="POST">
+			<form action="MissingLogRep2.php" method="POST">
 			<tr>
 				<td>
 					<input type="date" name="from" value="<?php echo date('Y-m-d', strtotime("yesterday - 6 days") ) ?>" />
@@ -57,7 +57,7 @@ else if($con){
 				<input type="button" value="Reset" onClick="window.location.reload()"></td><td>
 				<form method="POST" action="/masterpage.php"><input type="submit" value="Menu"/></form>
 				</td>
-				<td width="100%" align="right"><img src="/images/mysqls.png" alt="MySQL Powered"/></td>
+				<td width="100%" align="right"><img src="../images/mysqls.png" alt="MySQL Powered"/></td>
 			</tr>
 		</table>
 	</div>

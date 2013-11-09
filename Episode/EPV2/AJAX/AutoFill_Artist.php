@@ -1,7 +1,7 @@
 <?php
     session_start();
 	
-	$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
+	$con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 	
 	if (!$con){
 	echo 'Uh oh!';

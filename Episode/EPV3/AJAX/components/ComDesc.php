@@ -2,7 +2,7 @@
     session_start();
 	
 	
-$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
+$con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
@@ -10,11 +10,11 @@ if (!$con){
 	username=' . $_SESSION["username"]);
 }
 else if($con){
-	if(!mysql_select_db("CKXU")){/*header('Location: /login.php');*/}	
+	//if(!mysqli_select_db()){/*header('Location: /login.php');*/}	
 	
 	$args = addslashes($_GET['desc']);
 	
-	mysql_close($con);
-	//$con.close();
+	//mysqli_close($con);
+	$con.close();
 }
 ?>

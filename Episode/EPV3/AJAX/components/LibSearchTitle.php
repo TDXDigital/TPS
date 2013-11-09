@@ -7,7 +7,7 @@
 if($ENABLE!=TRUE){
 	return 0;
 }
-$con = mysqli_connect('localhost',$_SESSION['usr'],$_SESSION['rpw'],"CKXU");
+$con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 /* check connection */
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());

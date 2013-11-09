@@ -1,13 +1,13 @@
 <?php
       session_start();
 
-$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
+$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
 	}
 else if($con){
-	if(!mysql_select_db("CKXU")){header('Location: /login.php');} // or die("<h1>Error ".mysql_errno() ."</h1><br />check access (privileges) to the SQL server db CKXU for this user <br /><br /><hr />Error details:<br />" .mysql_error() . "<br /><br /><a href=login.php>Return</a>");
+	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../login.php');} // or die("<h1>Error ".mysql_errno() ."</h1><br />check access (privileges) to the SQL server db CKXU for this user <br /><br /><hr />Error details:<br />" .mysql_error() . "<br /><br /><a href=login.php>Return</a>");
         $sql="SELECT callsign, stationname from STATION order by callsign";
         $result=mysql_query($sql);
 
@@ -26,7 +26,7 @@ else{
 <!DOCTYPE HTML>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="/phpstyle.css" />
+<link rel="stylesheet" type="text/css" href="../phpstyle.css" />
 <title>Station Insertion</title>
 </head>
 <body>
@@ -35,7 +35,7 @@ else{
            </div>
            <table width="1000">
            <tr><td colspan="3">
-           <img src="/images/Ckxu_logo_PNG.png" alt="ckxu login"/>
+           <img src="../<?php echo $_SESSION['logo'];?>" alt="logo"/>
            </td></tr></table><table width="1000" style="background-color:white;">
 	<tr><td colspan="100%"><h2>View Station</h2></td></tr>
 
@@ -43,7 +43,7 @@ else{
         Direct Selection
         </th></tr>
         <tr><td colspan="2">
-        <form action="/station/p2viewstation.php" name="callsign" method="POST">
+        <form action="p2viewstation.php" name="callsign" method="POST">
         <select name="callsign">
         <?php echo $options;?>
         </select>
@@ -56,18 +56,18 @@ else{
         </td></tr>
         <tr>
         <td>
-        <form name="logout" action="/logout.php" method="POST">
+        <form name="logout" action="../logout.php" method="POST">
               <input type="submit" value="Logout">
         </form>
         </td>
         <td>
-        <form name="return" action="/masterpage.php" method="POST">
+        <form name="return" action="../masterpage.php" method="POST">
               <input type="submit" value="Return">
         </form>
         </td>
         <td></td>
         <td style="text-align:right;" width="100%">
-        <img src="/images/mysqls.png" alt="MySQL Powered" />
+        <img src="../images/mysqls.png" alt="MySQL Powered" />
         </td>
         </tr>
         </table>
