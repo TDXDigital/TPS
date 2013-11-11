@@ -32,4 +32,20 @@
         <LDP_BASE_DN>CN=Users,DC=ckxu,DC=net</LDP_BASE_DN>
         <LDP_DOMAIN>CKXU</LDP_DOMAIN>
     </SERVER>
+<SERVER>
+        <ID>CKXU003</ID>
+        <NAME>CKXU_DEVELOPMENT</NAME>
+        <ACTIVE>1</ACTIVE>
+        <RESOLVE>IPV4</RESOLVE>
+        <URL>riker.local.ckxu.com</URL>
+        <IPV4>172.22.10.12</IPV4>
+        <PORT>3306</PORT>
+        <DBTYPE>MySQL</DBTYPE>
+        <DATABASE>CKXU</DATABASE>
+        <AUTH>LDAP</AUTH>
+        <LDP_PORT>636</LDP_PORT>
+        <LDP_SERVER>ldap://picard.local.ckxu.com</LDP_SERVER>
+        <LDP_BASE_DN>CN=Users,DC=local,DC=ckxu,DC=com</LDP_BASE_DN>
+        <LDP_DOMAIN>CKXU-FM</LDP_DOMAIN>
+    </SERVER>
 </SERVERS>
