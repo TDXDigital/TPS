@@ -207,6 +207,11 @@ if($_SESSION['access']=='1')
                     <!--
                     <td width="200"><a href="/station/p1remove.php">Remove Station</a></td>-->
              </tr>
+        <tr>
+            <td><button onclick="window.location.href='station/genres/Genre.php'" type="button">Genres</button></td>
+            <td>Library</td>
+
+        </tr>
         <tr><td colspan="4">
         <hr />  <h2>Reports</h2>
         </td></tr>
