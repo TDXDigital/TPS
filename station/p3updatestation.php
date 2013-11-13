@@ -2,9 +2,9 @@
 
 session_start();
 
-$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
+$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 
-mysql_select_db("CKXU") or die(mysql_error());
+mysql_select_db($_SESSION['DBNAME']) or die(mysql_error());
 echo "database selected";
 if($_POST[callsign]!="" && $_POST[name]!=""){
   //$sql = "update STATION set stationname='$_POST[name]' , designation='$_POST[designation]' , frequency='$_POST[frequency]' , website='$_POST[website]' , address='$_POST[address]' , boothphone='$_POST[boothphone]' , directorphone='$_POST[directorphone]' WHERE callsign='$_POST[callsign]' ";
@@ -36,7 +36,7 @@ else
 }
 
 
-echo "<a href=\"masterpage.php\">Return</a> to admin home";
+echo "<a href=\"../masterpage.php\">Return</a> to admin home";
 
 ?>
 

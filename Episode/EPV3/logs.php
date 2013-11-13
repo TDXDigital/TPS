@@ -109,7 +109,7 @@
 		}
 	}
 	else{
-		if(!mysql_select_db("CKXU")){
+		if(!mysql_select_db($_SESSION['DBNAME'])){
 			echo"
 			$('#content').hide();
 			$.blockUI({
@@ -172,7 +172,7 @@
 <script type="text/javascript" src="../../TPSBIN/JS/Episode/Interaction.js"></script>
 <?php
 	if($NODATA == FALSE && $login = TRUE){
-		$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
+		$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 		if (!$con){
 			echo '<link rel="stylesheet" type="text/css" href="../../js/jquery/css/blitzer/jquery-ui-1.9.2.custom.css"/>';
 			echo '<!--Error DBcon-->';

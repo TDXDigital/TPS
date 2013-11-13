@@ -10,13 +10,13 @@
 		return DATE("H:i", STRTOTIME($hour2));
 	}
 $from = $_SERVER['HTTP_REFERER'];
-$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
+$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
 if (!$con){
 	session_destroy();
 	header('Location: ../logs.php?msg=Authentication Error - Database Access Denied');
 }
 else if($con){
-	if(!mysql_select_db("CKXU")){
+	if(!mysql_select_db($_SESSION['DBNAME'])){
 		session_destroy();
 		header("Location: $from?msg=Authentication Error - Database denied access to selected station\'s records ");
 	}
