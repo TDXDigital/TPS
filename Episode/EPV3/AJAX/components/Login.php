@@ -1,4 +1,6 @@
 <?php
+    include("../../security/login.php");
+    /*
 function authenticate($user, $password) {
     // Active Directory server
     $ldap_host = "localhost";
@@ -100,6 +102,6 @@ else{
 	header("Location: $ORIGIN?auth=Access Denied - Invalid Credentials");
 	//echo "Login Failed";
 }
-
+*/
 ?>
 

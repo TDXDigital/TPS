@@ -17,16 +17,16 @@ function to24hour($hour2){
 		$callsign = addslashes($_GET['callsign']);
 	}
 	else{
-		$callsign = "CKXU";
+		$callsign = "CKXU"; //SHOULD BE CHANGED TO PULL FROM DB!
 	}
 	
-	$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
+	$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 	$friends = array();
 	if (!$con){
 		die("<h2>Error " . mysql_errno() . "</h2><p>Could not establish connection to database. Authentication failed</p>");
 	}
 	else{
-		if(!mysql_select_db("CKXU")){
+		if(!mysql_select_db($_SESSION['DBNAME'])){
 			die("<h2>Error " . mysql_errno() . "</h2><p>User Access Error. Database refused connection</p>");
 		}
 		else{

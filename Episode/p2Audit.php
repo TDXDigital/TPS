@@ -1,13 +1,13 @@
 <?php session_start(); ?>
 <head>
-<link rel="stylesheet" type="text/css" href="/phpstyle.css" />
+<link rel="stylesheet" type="text/css" href="../phpstyle.css" />
 <title>DPL Administration</title>
 </head>
 <html>
 <body style="background-color:white;">
 <?php
 
-$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
+$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
@@ -15,8 +15,8 @@ if (!$con){
 else{
   $BUFFSQL = "SELECT * FROM Episode where";
      $AND = "0";
-        if(!mysql_select_db("CKXU")){
-          header('Location: /login.php');
+        if(!mysql_select_db($_SESSION['DBNAME'])){
+          header('Location: ../login.php');
         }
         /*if($_POST['from']!=""){
           $BUFFSQL .= "date >='" . $_POST['from'] . "' ";
@@ -70,7 +70,7 @@ else{
              echo "<table width=\"100%\" border=\"0\" >"; //style=\"background-color:black; color:white;\" >";
                   // Row 1
              echo "<tr><td rowspan=\"3\" width=\"10%\">";
-             echo "<img src=\"/images/Ckxu_logo_PNG.png\" width=\"150px\">";//"CKXU PROGRAM LOG"; //image Here
+             echo "<img src=\"../".$_SESSION['logo']."\" width=\"150px\">";//"CKXU PROGRAM LOG"; //image Here
              echo "</td><td width=\"17%\" >";
              echo $SROW['frequency'] . " " . $SROW['website'];
              echo "</td><td  colspan=\"2\" width=\"37%\" >";

@@ -1,7 +1,7 @@
 <?php session_start(); ?>
 <!DOCTYPE HTML>
 <head>
-<link rel="stylesheet" type="text/css" href="/phpstyle.css" />
+<link rel="stylesheet" type="text/css" href="../phpstyle.css" />
 <title>DPL Administration</title>
 </head>
 <html>
@@ -12,7 +12,7 @@
 
       <table border="0" align="center" width="1000">
       <tr>
-           <td align="center" colspan="2"><img src="/images/Ckxu_logo_PNG.png" alt="ckxu"/></td>
+           <td align="center" colspan="2"><img src="../<?php $_SESSION['logo'];?>" alt="logo"/></td>
       </tr>
       <tr style="background-color:white;">
       <td colspan="2">
@@ -20,7 +20,7 @@
 if($_SESSION['usr']=="User"){
 	die('ERROR: Unauthorised Access');
 }
-$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
+$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
@@ -44,7 +44,7 @@ else if($con){
         </th>
         </tr>
         <?php
-             if(!mysql_select_db("CKXU")){header('Location: /login.php');}
+             if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /login.php');}
              $act = '0';
              if(isset($_POST['active'])){ $act='1';}
              //echo $act . $_POST['active'];
@@ -60,7 +60,7 @@ else if($con){
 
                while($row=mysql_fetch_array($result)) {
                //begin form
-               echo '<form name="newdj" action="/dj/p3remove.php" method="post">';
+               echo '<form name="newdj" action="p3remove.php" method="post">';
 
                //begin row
                echo '<tr height="40"><td>';
@@ -111,19 +111,19 @@ else{
         <?php
           if($_SESSION['usr']=='user')
           {
-            echo "<form name=\"exit\" action=\"/VERLogout.php\" method=\"POST\">";
+            echo "<form name=\"exit\" action=\"../VERLogout.php\" method=\"POST\">";
             echo "<input type=\"submit\" value=\"Exit\">";
             echo "</form>";
             echo "</td><td colspan=\"5\">";
   }
           else
           {
-            echo "<form name=\"logout\" action=\"/logout.php\" method=\"POST\">";
+            echo "<form name=\"logout\" action=\"../logout.php\" method=\"POST\">";
 			echo "<input type=\"submit\" value=\"Logout\"></form></td>";
-            echo "<td><form name=\"main\" action=\"/masterpage.php\" method=\"POST\">";
+            echo "<td><form name=\"main\" action=\"../masterpage.php\" method=\"POST\">";
             echo "<input type=\"submit\" value=\"Return\">";
             echo "</form></td>";
-			echo "<img src=\"/images/mysqls.png\" alt=\"MySQL\" align=\"right\"></tr>";
+			echo "<img src=\"../images/mysqls.png\" alt=\"MySQL\" align=\"right\"></tr>";
           }
         ?>
 		

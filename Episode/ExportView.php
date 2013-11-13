@@ -1,13 +1,13 @@
 <?php
       session_start();
 
-$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
+$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
 	}
 else if($con){
-	if(!mysql_select_db("CKXU")){header('Location: /logout.php');}
+	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../logout.php');}
 }
 else{
 	echo 'ERROR! cannot obtain access... this terminal may not be authorised for access';
@@ -16,7 +16,7 @@ else{
 
 <!DOCTYPE HTML>
 <head>
-	<link rel="stylesheet" type="text/css" href="/altstyle.css" />
+	<link rel="stylesheet" type="text/css" href="../altstyle.css" />
 	<title>Quickview</title>
 </head>
 <html>

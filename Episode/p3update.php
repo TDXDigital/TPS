@@ -1,13 +1,13 @@
 <?php
       session_start();
 
-$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
+$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
 	}
 else if($con){
-	if(!mysql_select_db("CKXU")){header('Location: /login.php');}
+	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /login.php');}
 }
 else{
 	echo 'ERROR! cannot obtain access... this terminal may not be authorised for access';
@@ -172,7 +172,7 @@ else{
 ?>
 <!DOCTYPE HTML>
 <head>
-<link rel="stylesheet" type="text/css" href="/phpstyle.css" />
+<link rel="stylesheet" type="text/css" href="../phpstyle.css" />
 <title>DPL Editor</title>
 </head>
 <html>
@@ -183,6 +183,7 @@ else{
         <table border="0" align="center" width="1354">
         <tr><td width="1350" colspan="4">
            <img src="/images/Ckxu_logo_PNG.png" alt="ckxu login"/>
+            <h1>SLATED FOR REMOVAL. IF IN USE PLEASE EMAIL CKXU.SUPPORT@ULETH.CA WITH THIS PAGE NAME!</h1>
         </td></tr>
         <tr><td width="1350" colspan="2" style="background-color:white;">
 	<h2>Update Program Log</h2>
@@ -254,7 +255,7 @@ else{
 
         </th>
         </tr>
-        <tr><form name="episode" action="/Episode/p3update.php" method="POST">
+        <tr><form name="episode" action="p3update.php" method="POST">
         	<td valign="top">
 	    <?php 
 	    	//Air Date
@@ -664,12 +665,12 @@ else{
               <input type=\"submit\" value=\"Logout\">
               </form>
               </td><td>*/
-              "<form name=\"exit\" action=\"/masterpage.php\" method=\"POST\">
+              "<form name=\"exit\" action=\"../masterpage.php\" method=\"POST\">
               <input type=\"submit\" value=\"Menu\">
               </form>";
              }
              else{
-               echo "<form name=\"exit\" action=\"/djhome.php\" method=\"POST\">
+               echo "<form name=\"exit\" action=\"../djhome.php\" method=\"POST\">
               <input type=\"submit\" value=\"Logout\">
               </form>";
              }
@@ -678,14 +679,14 @@ else{
         <td>
         <?php 
              if($_SESSION['usr']!="user"){
-               echo "<form name=\"Edit\" action=\"/Episode/p1update.php\" method=\"POST\">
+               echo "<form name=\"Edit\" action=\"p1update.php\" method=\"POST\">
                     <input type=\"submit\" value=\"Search\">
                 </form>";
              }
         ?>
         </td>
         <td>
-        <form name="refresh" action="/episode/p3update.php" method="POST">
+        <form name="refresh" action="p3update.php" method="POST">
         <input type="text" hidden="true" name="callsign" value=<?php echo "\"" . $PROGRAMARRAY['callsign'] . "\"" ?> />
             <input type="text" hidden="true" name="program" value=<?php echo "\"" . $PROGRAMARRAY['programname'] . "\"" ?> />
             <input type="text" hidden="true" name="user_date" value=<?php echo "\"" . $PROGRAMARRAY['date'] . "\"" ?> />
@@ -694,7 +695,7 @@ else{
         </form>
         </td>
         <td>
-        <form name="append" action="/episode/p2insertEP.php" method="POST">
+        <form name="append" action="p2insertEP.php" method="POST">
         <input type="text" hidden="true" name="callsign" value=<?php echo "\"" . $PROGRAMARRAY['callsign'] . "\"" ?> />
             <input type="text" hidden="true" name="program" value=<?php echo "\"" . $PROGRAMARRAY['programname'] . "\"" ?> />
             <input type="text" hidden="true" name="user_date" value=<?php echo "\"" . $PROGRAMARRAY['date'] . "\"" ?> />
@@ -718,7 +719,7 @@ else{
         <tr><td colspan="12">
 
         </td><td>
-        <img src="/images/mysqls.png" alt="MySQL Powered" />
+        <img src="../images/mysqls.png" alt="MySQL Powered" />
         </td></tr>
 
         </table>

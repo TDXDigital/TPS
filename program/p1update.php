@@ -11,7 +11,7 @@
 
  ?>
 <head>
-<link rel="stylesheet" type="text/css" href="/phpstyle.css" />
+<link rel="stylesheet" type="text/css" href="../phpstyle.css" />
 <title>DPL Administration</title>
 </head>
 <html>
@@ -22,13 +22,13 @@
 
       <table border="0" align="center" width="1000">
       <tr>
-           <td align="center"><img src="/images/Ckxu_logo_PNG.png" alt="ckxu"/></td>
+           <td align="center"><img src="../<?php echo $_SESSION['logo'];?>" alt="logo"/></td>
       </tr>
       <tr style="background-color:white;">
       <td>
 <?php
 
-$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
+$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
@@ -36,7 +36,7 @@ if (!$con){
 username=' . $_SESSION["username"]);
 	}
 else if($con){
-        if(!mysql_select_db("CKXU")){header('Location: /login.php');} // or die("<h1>Error ".mysql_errno() ."</h1><br />check access (privileges) to the SQL server db CKXU for this user <br/><br /><hr />Error details:<br />" .mysql_error() . "<br /><br /><a href=login.php>Return</a>");
+        if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../login.php');} // or die("<h1>Error ".mysql_errno() ."</h1><br />check access (privileges) to the SQL server db CKXU for this user <br/><br /><hr />Error details:<br />" .mysql_error() . "<br /><br /><a href=login.php>Return</a>");
         $callsql="SELECT callsign, stationname from STATION order by callsign";
         $callresult=mysql_query($callsql,$con);
 
@@ -115,24 +115,24 @@ echo '<tr height="20"><td colspan="7"><hr/></td></tr>';
 ?>
         <tr>
         <td>
-        <form name="logout" action="/logout.php" method="POST">
+        <form name="logout" action="../logout.php" method="POST">
               <input type="submit" value="Logout">
         </form>
         </td>
         <td>
-        <form name="return" action="/masterpage.php" method="POST">
+        <form name="return" action="../masterpage.php" method="POST">
               <input type="submit" value="Return">
         </form>
         </td>
        <td>
-       <form name="advanced" action="/program/p1advupdate.php" method="get">
-       	<input type="text" name="source" value="/program/p1update.php" hidden />
+       <form name="advanced" action="p1advupdate.php" method="get">
+       	<input type="text" name="source" value="p1update.php" hidden />
        	<input type="submit" value="Advanced Search">
        </form>
        </td>
         <td colspan="3"></td>
         <td style="text-align:right;">
-        <img src="/images/mysqls.png" alt="MySQL Powered" />
+        <img src="../images/mysqls.png" alt="MySQL Powered" />
         </td>
         </tr>
         
