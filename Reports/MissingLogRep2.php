@@ -1,7 +1,7 @@
 <?php
     session_start();
 
-$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
+$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
@@ -9,7 +9,7 @@ if (!$con){
 	username=' . $_SESSION["username"]);
 }
 else if($con){
-	if(!mysql_select_db("CKXU")){header('Location: /login.php');} 
+	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /login.php');} 
     //$prosql="SELECT Program.* FROM Program LEFT JOIN Episode ON Program.programname = Episode.programname WHERE Episode.programname IS NULL and Episode.date between '".$_POST['from']."' and '".$_POST['to']."' and program.active='1' ";
     $prosql="SELECT Program.* From Program where active='1' and not exists (select Episode.programname from Episode where date between '".addslashes($_POST['from'])."' and '".addslashes($_POST['to'])."' and Episode.programname=Program.programname) order by Program.programname";
     if(!$proresult=mysql_query($prosql,$con)){
@@ -35,7 +35,7 @@ else if($con){
 
 <!DOCTYPE HTML>
 <head>
-<link rel="stylesheet" type="text/css" href="/altstyle.css" />
+<link rel="stylesheet" type="text/css" href="../altstyle.css" />
 <title>Missing Log Report</title>
 </head>
 <html>
@@ -61,7 +61,7 @@ else if($con){
            Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
 	<div id="header">
-		<a href="/masterpage.php"><img src="/images/Ckxu_logo_PNG.png" alt="CKXU" /></a>
+		<img src="../<?php echo $_SESSION['logo'];?>" alt="CKXU" />
 	</div>
 	<div id="top">
 		<h2>Missing Logs ['Alpha']</h2>
@@ -98,9 +98,9 @@ else if($con){
 					<input type="text" hidden="true" name="limit" value="<?php echo $_POST['limit'] ?>" />
 				<!--<input type="submit" value="Search"/></form></td><td>-->
 				<input type="button" value="Reset" onClick="window.location.reload()"></td><td>
-				<form method="POST" action="/masterpage.php"><input type="submit" value="Menu"/></form>
+				<form method="POST" action="../masterpage.php"><input type="submit" value="Menu"/></form>
 				</td>
-				<td width="100%" align="right"><img src="/images/mysqls.png" alt="MySQL Powered"/></td>
+				<td width="100%" align="right"><img src="../images/mysqls.png" alt="MySQL Powered"/></td>
 			</tr>
 		</table>
 	</div>

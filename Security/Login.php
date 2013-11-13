@@ -14,6 +14,9 @@ function LDAP_AUTH($user, $password, $xml_server) {
     // Active Directory DN
     $ldap_dn = (string)$xml_server->LDP_BASE_DN;//"CN=Users,DC=local,DC=ckxu,DC=com";
 
+    // LOGO
+    $logo = (string)$xml_server->LOGO_PATH;// images/Ckxu_logo_PNG.png
+
     // Active Directory user group
     $ldap_user_group = "WebUsers";
 
@@ -102,6 +105,7 @@ function LDAP_AUTH($user, $password, $xml_server) {
                 }
                 //$_SESSION['DBHOST'] = "172.22.100.25";
                 $_SESSION['SRVPOST'] = (string)$xml_server->ID;//addslashes($_POST['SID']);
+                $_SESSION['logo']=$logo;
 			    $_SESSION['account'] = $user;
 			    $_SESSION['AutoComLimit'] = 8;
 			    $_SESSION['AutoComEnable'] = TRUE;

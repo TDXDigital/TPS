@@ -22,7 +22,7 @@ else if($con){
            Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
 	<div id="header">
-		<a href="../masterpage.php"><img src="../"<?php echo $_SESSION['logo'];?> alt="Logo" /></a>
+		<img src="../<?php echo $_SESSION['logo'];?>" alt="Logo" />
 	</div>
 	<div id="top">
 		<h2>Missing Logs ['Alpha']</h2>
@@ -55,7 +55,7 @@ else if($con){
 				<td>
 				<input type="submit" value="Search"/></form></td><td>
 				<input type="button" value="Reset" onClick="window.location.reload()"></td><td>
-				<form method="POST" action="/masterpage.php"><input type="submit" value="Menu"/></form>
+				<form method="POST" action="../masterpage.php"><input type="submit" value="Menu"/></form>
 				</td>
 				<td width="100%" align="right"><img src="../images/mysqls.png" alt="MySQL Powered"/></td>
 			</tr>

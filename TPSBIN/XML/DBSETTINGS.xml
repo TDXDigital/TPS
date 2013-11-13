@@ -3,6 +3,7 @@
     <SERVER>
         <ID>CKXU001</ID>
         <NAME>CKXU_PICARD</NAME>
+        <LOGO_PATH>images/Ckxu_logo_PNG.png</LOGO_PATH>
         <ACTIVE>1</ACTIVE>
         <RESOLVE>URL</RESOLVE>
         <URL>localhost</URL>
@@ -19,6 +20,7 @@
     <SERVER>
         <ID>CKXU002</ID>
         <NAME>CKXU_RIKER</NAME>
+        <LOGO_PATH></LOGO_PATH>
         <ACTIVE>0</ACTIVE>
         <RESOLVE>IPV4</RESOLVE>
         <URL>riker.local.ckxu.com</URL>
@@ -35,6 +37,7 @@
 <SERVER>
         <ID>CKXU003</ID>
         <NAME>CKXU_DEVELOPMENT</NAME>
+        <LOGO_PATH>images/Ckxu_logo_PNG.png</LOGO_PATH>
         <ACTIVE>1</ACTIVE>
         <RESOLVE>IPV4</RESOLVE>
         <URL>riker.local.ckxu.com</URL>

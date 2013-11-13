@@ -1,7 +1,7 @@
 <?php
     session_start();
 
-$con = mysql_connect($_SESSION['BHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
+$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
@@ -22,7 +22,8 @@ else if($con){
 	           <OPTION VALUE=\"51\" selected=\"true\">51, Commercial</OPTION>
 	           <option value=\"45\">45, Show Promo</option>
 	           <option value=\"44\">44, Programmer/Show ID</option>
-	           <option value=\"43\">43, Station ID</option>";
+	           <option value=\"43\">43, Station ID</option>
+               <option value=\"12\">12P, PSA</option>";
 			   
 	$POSTED = FALSE;
 	if($_POST){
@@ -295,7 +296,8 @@ else if($con){
 	</div>
 	
 <?php
-
+    //$con.close();
+    mysqli_
 }
 else{
 	echo 'ERROR!';
