@@ -6,7 +6,20 @@
         array_push($ERR,"<tr><td>E1</td><td>ERROR</td><td>DB NOT AVAILABLE</td><td>".$_SESSION['DBHOST']."</td><td>Check Login</td><td>Check server status</td><td>FATAL</td><td>ERROR</td><td>0001</td></tr>");
     }
     if(isset($_GET['genre'])){
-        
+        $UID_GET = addslashes($_GET['genre']);
+        $SQL_FETCH = "SELECT * FROM genre WHERE UID='$UID_GET'";
+        if($dat = mysqli_query($con,$SQL_FETCH)){
+            while($row = $dat->fetch_object()){
+                $UID = $row->UID;
+                $NAME = htmlspecialchars($row->genreid);
+                $CCNUM = $row->cancon;
+                $CCPERC = floatval($row->canconperc)*100;
+                $PLNUM = $row->playlist;
+                $PLPERC = floatval($row->playlistperc)*100;
+                $CCTYPE = $row->CCType;
+                $PLTYPE = $row->PlType;
+            }
+        }
     }
 ?>
 
