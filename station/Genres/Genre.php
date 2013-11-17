@@ -1,4 +1,4 @@
-<?php<?php
+<?php
     session_start();
     $con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
     $ERR[] = NULL;
@@ -29,39 +29,7 @@
         <meta charset="utf-8" />
         <title>Genres</title>
         <link href="../../altstyle.css" rel="stylesheet"/>
-        <style>
-            div.content{
-                margin: auto;
-                border: 1px,line, #000;
-                display: inline-grid;
-                max-width: 1200px;
-                min-width: 300px;
-                background-color: #fff;
-            }  
-            th{
-                width: inherit;
-            }         
-            tr:nth-child(even) {
-                background-color: #befdf9;
-            }
-            table{
-                border-collapse:collapse;
-                width: 100%;
-            }
-            tbody, thead, tr, td{
-                border:1px solid blue;
-                border-collapse:collapse;
-                width: auto;
-                text-align: center;
-            }
-            thead{
-                background-color: #2266AA;
-                color:white;
-            }
-            h1, h2, h3{
-                text-align: left;
-            }
-        </style>
+        <link href="Genre.css" rel="stylesheet"/>
     </head>
     <body>
         <div class="topcontent">
@@ -153,7 +121,7 @@
                                    if($res = mysqli_query($con,$QUERY)){
                                        while($obj = $res->fetch_object()){
                                            echo "<tr><td><input type='radio' name='genre' value='".$obj->UID."'/></td>";
-                                           echo "<td>".$obj->genreid."</td>";
+                                           echo "<td><input type='text' placeholder='Unique Name' title='Origional:".$obj->genreid."' value='".$obj->genreid."'/></td>";
                                            echo "<td>".$obj->cancon."</td>";
                                            echo "<td>".$obj->playlist."</td>";
                                            echo "<td>";
