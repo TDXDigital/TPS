@@ -30,6 +30,7 @@
         <title>Genres</title>
         <link href="../../altstyle.css" rel="stylesheet"/>
         <link href="Genres.css" rel="stylesheet"/>
+        <link href="../../js/jquery/css/ui-darkness/jquery-ui-1.10.0.custom.min.css" rel="stylesheet"/>
         <script src="../../js/jquery/js/jquery-2.0.3.min.js"></script>
         <script src="../../js/jquery/js/jquery-ui-1.10.0.custom.min.js"></script>
         <script src="Genre.js"></script>
@@ -89,7 +90,7 @@
                         </div>
                     </fieldset>
                 <div>
-                    <input type="submit" value="Save"/>
+                    <input type="submit" value="Create"/>
                     <input type="reset"/>
                     <input type="button" onclick="window.location.href='../../masterpage.php'" value="Cancel"/>
                 </div>
@@ -97,11 +98,11 @@
                 </form>
                 <div id="Edit">
                 <h3>Existing</h3>
-                <form id="form2" method="get">
+                <form id="form2" method="post" action="genreupdate.php">
                     <table>
                         <thead>
                             <tr>
-                                <th>&nbsp;</th>
+                                <th><span class="ui-icon ui-icon-trash"></span></th>
                                 <th>Name</th>
                                 <th>CanCon</th>
                                 <th>Playlist</th>
@@ -109,6 +110,7 @@
                                 <th>Pl Percentage</th>
                                 <th>CC Type</th>
                                 <th>PL Type</th>
+                                <th>Programs</th>
                                 <th>Station</th>
                             </tr>
                         </thead>
@@ -120,11 +122,11 @@
                                 }
                                 else{
                                    
-                                   $QUERY = "SELECT genre.* FROM genre";
+                                   $QUERY = "SELECT genre.*, (SELECT count(programname) FROM program WHERE program.genre=genre.genreid AND program.active='1') AS PGM_Count, (SELECT count(*) FROM program where program.active='1' group by callsign) AS Total, (SELECT PGM_Count / Total) AS Percent FROM genre";
                                    //echo $QUERY;
                                    if($res = mysqli_query($con,$QUERY)){
                                        while($obj = $res->fetch_object()){
-                                           echo "<tr><td><input type='checkbox' onchange='EditOnly()' name='genre[]' value='".$obj->UID."'/>";
+                                           echo "<tr><td><input type='checkbox' onchange='EditOnly()' name='delete[]' value='".$obj->UID."'/>";
                                            echo "<input type='hidden' name='UID[]' value='".$obj->UID."'/></td>";
                                            echo "<td><input onchange='EditOnly()' type='text' min='0' max='900' name='C_Name[]' placeholder='Unique Name' title='Origional:".$obj->genreid."' value='".$obj->genreid."'/></td>";
                                            echo "<td><input onchange='EditOnly()' type='number' min='0' max='999' name='C_Cancon[]' placeholder='CC/Hr' value='".$obj->cancon."'/></td>";
@@ -157,7 +159,9 @@
                                                echo "<option value='1'>Numeric</option><option value='0'>Percentage</option><option selected style='color: red;' value='1'>Error / Reset to Percent</option>";
                                            }
                                            echo "</select></td>";
+                                           echo "<td>".$obj->PGM_Count." (".($obj->Percent*100)."%)</td>";
                                            echo "<td>".$obj->Station."</td>";
+                                           
                                        }
                                    }
                                    else{
@@ -178,7 +182,7 @@
                     <div class="left;">
                         <input type="submit" value="Save Changes" />
                         <input type="reset"/>
-                        <input type="submit" value="Remove" disabled/>
+                        <input type="button" value="Cancel" onclick="window.location.href='../../masterpage.php'"/>
                     </div>
                     </form>
                  </div>
