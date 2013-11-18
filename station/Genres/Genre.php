@@ -29,7 +29,7 @@
         <meta charset="utf-8" />
         <title>Genres</title>
         <link href="../../altstyle.css" rel="stylesheet"/>
-        <link href="Genre.css" rel="stylesheet"/>
+        <link href="Genres.css" rel="stylesheet"/>
     </head>
     <body>
         <div class="topcontent">
@@ -121,37 +121,37 @@
                                    if($res = mysqli_query($con,$QUERY)){
                                        while($obj = $res->fetch_object()){
                                            echo "<tr><td><input type='radio' name='genre[]' value='".$obj->UID."'/></td>";
-                                           echo "<td><input type='text' name='C_Name[]' placeholder='Unique Name' title='Origional:".$obj->genreid."' value='".$obj->genreid."'/></td>";
-                                           echo "<td><input type='number' name='C_Cancon[]' placeholder='CC/Hr' value='".$obj->cancon."'/></td>";
-                                           echo "<td><input type='number' name='C_Playlist[]' placeholder='PL/Hr' value='".$obj->playlist."'/></td>";
-                                           echo "<td><input type='number' name='C_PlPerc[]' placeholder='PL %' value='";
+                                           echo "<td><input type='text' min='0' max='900' name='C_Name[]' placeholder='Unique Name' title='Origional:".$obj->genreid."' value='".$obj->genreid."'/></td>";
+                                           echo "<td><input type='number' min='0' max='999' name='C_Cancon[]' placeholder='CC/Hr' value='".$obj->cancon."'/></td>";
+                                           echo "<td><input type='number' min='0' max='200' name='C_Playlist[]' placeholder='PL/Hr' value='".$obj->playlist."'/></td>";
+                                           echo "<td><input type='number' min='0' max='100' name='C_CCPerc[]' placeholder='CC %' value='";
                                            echo floatval($obj->canconperc)*100;
                                            echo "'/>%</td>";
-                                           echo "<td>";
+                                           echo "<td><input type='number' min='0' max='100' name='C_PlPerc[]' placeholder='PL %' value='";
                                            echo floatval($obj->playlistperc)*100;
-                                           echo "%</td>";
-                                           echo "<td>";
+                                           echo "'/>%</td>";
+                                           echo "<td><select name='CC_Type[]'>";
                                            if($obj->CCType == 1){
-                                               echo"Numeric";
+                                               echo"<option value='1' selected>Numeric</option><option value='0'>Percentage</option>";
                                            }
                                            else if($obj->CCType == 0){
-                                               echo"Percentage";
+                                               echo"<option value='1'>Numeric</option><option selected value='0'>Percentage</option>";
                                            }
                                            else{
-                                               echo "Undefined";
+                                               echo "<option value='1'>Numeric</option><option value='0'>Percentage</option><option selected style='color: red;' value='1'>Error / Reset to Percent</option>";
                                            }
-                                           echo "</td>";
-                                           echo "<td>";
+                                           echo "</select></td>";
+                                           echo "<td><select name='PL_Type'>";
                                            if($obj->PlType == 1){
-                                               echo"Numeric";
+                                               echo"<option value='1' selected>Numeric</option><option value='0'>Percentage</option>";
                                            }
                                            else if($obj->PlType == 0){
-                                               echo"Percentage";
+                                               echo"<option value='1'>Numeric</option><option selected value='0'>Percentage</option>";
                                            }
                                            else{
-                                               echo "Undefined";
+                                               echo "<option value='1'>Numeric</option><option value='0'>Percentage</option><option selected style='color: red;' value='1'>Error / Reset to Percent</option>";
                                            }
-                                           echo "</td>";
+                                           echo "</select></td>";
                                            echo "<td>".$obj->Station."</td>";
                                        }
                                    }
