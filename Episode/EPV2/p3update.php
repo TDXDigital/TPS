@@ -389,7 +389,7 @@ else{
                     else{
                         echo ">";
                     }
-                    echo "Canadian Content Required: ";
+                    echo "Canadian Content Required </span><br/></span>";
 				    echo $CC_VARS['EnteredCC']."/".$CCR;
 				}
 					?></span>
@@ -413,10 +413,10 @@ else{
                         else{
                             echo ">";
                         }
-                        echo "Playlist Required</span><br/><span>";
+                        echo "Playlist Required </span><br/><span>";
 				        echo $PER_PL['Percent']."%/".(floatval($req['playlistperc'])*100)."%";
                         if($DEBUG){
-                            echo "[".$PER_PL['CC_Num']."/".$PER_PL['Total']."]";
+                            echo "[".$PER_PL['Count']."/".$PER_PL['Total']."]";
                         }
                     }
                 }
@@ -439,7 +439,7 @@ else{
                     else{
                         echo ">";
                     }
-                    echo "Playlist Required: ";
+                    echo "Playlist Required</span><br/><span>";
 				    echo $PL_VARS['EnteredPL']."/".$PLR;
                 }
                 
