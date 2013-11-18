@@ -1,6 +1,6 @@
 <?php
     session_start();
-	
+	$DEBUG = FALSE;
 	
 $con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
@@ -280,6 +280,9 @@ else{
 <!DOCTYPE HTML>
 <head>
 <link rel="stylesheet" type="text/css" href="../../altstyle.css" />
+    <link rel="stylesheet" type="text/css" href="../../js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css" />
+    <script src="../../js/jquery/js/jquery-2.0.3.min.js"></script>
+    <script src="../../js/jquery/js/jquery-ui-1.10.0.custom.min.js"></script>
 <title>Log Editor</title>
 </head>
 <html>
@@ -339,27 +342,85 @@ else{
 				<span> Show Classification: <?php
 					echo $vars['genre'];
 				?></span>
-			</td><td width="225px">
-				<span>Canadian Content Required: <?php
+			</td><td style=" min-width='225px'">
+				<?php
 				$getgen = "select * from genre where genreid='" . $vars['genre'] . "' ";
 				$reqar = mysql_query($getgen);
 				$req = mysql_fetch_array($reqar);
-						if($vars['CCX']=='-1'){
-							$CCR = ceil($req['cancon'] * $vars['length'] / 60);
-						}
-						else{
-							$CCR = ceil($vars['CCX'] * $vars['length'] / 60);
-						}
-				
-				$SQLCOUNTCC = "Select songid from SONG where callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and cancon='1' ";
-				$resultCC = mysql_query($SQLCOUNTCC);
-				$CC = mysql_num_rows($resultCC);	
-				
-				echo $CC."/".$CCR;
-				
+				if($req['CCType']=='0'){
+                    $SQL_CC_COUNT = "SELECT 
+                    (SELECT count(*) FROM song WHERE callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "') AS Total,
+                    (SELECT count(*) FROM song WHERE callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and cancon='1') AS CC_Num,
+                    (SELECT round(((CC_Num / Total)*100),2)) AS Percent";
+                    if(!$CC_PER_RES = mysql_query($SQL_CC_COUNT)){
+                        echo "<span class='ui-state-highlight ui-corner-all'>".mysql_error()."</span>";
+                        //break;
+                    }
+                    else{
+                        $PER_CC = mysql_fetch_array($CC_PER_RES);
+                        echo "<span ";
+                        if(floatval($PER_CC['Percent']) < floatval($req['canconperc'])*100){
+                            echo "class=\"ui-state-error ui-corner-all\" >";
+                        }
+                        else{
+                            echo ">";
+                        }
+                        echo "Canadian Content Required</span><br/><span>";
+				        echo $PER_CC['Percent']."%/".(floatval($req['canconperc'])*100)."%";
+                        if($DEBUG){
+                            echo "[".$PER_CC['CC_Num']."/".$PER_CC['Total']."]";
+                        }
+                    }
+                }
+                else if($req['CCType']=='1'){
+                    if($vars['CCX']=='-1'){
+						$CCR = ceil($req['cancon'] * $vars['length'] / 60);
+					}
+					else{
+						$CCR = ceil($vars['CCX'] * $vars['length'] / 60);
+					}
+                    $SQLCOUNTCC = "Select count(songid) AS EnteredCC from SONG where callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and cancon='1' ";
+				    $resultCC = mysql_query($SQLCOUNTCC);
+                    $CC_VARS = mysql_fetch_array($resultCC);
+                    echo "<span ";
+                    if(floatval($CC_VARS['EnteredCC']) < floatval($CCR)){
+                        echo "class=\"ui-state-error ui-corner-all\" >";
+                    }
+                    else{
+                        echo ">";
+                    }
+                    echo "Canadian Content Required: ";
+				    echo $CC_VARS['EnteredCC']."/".$CCR;
+				}
 					?></span>
 			</td><td width="225px">
-				<span>Playlist Required: <?php
+				<?php
+                if($req['PlType']=='0'){
+                    $SQL_PL_COUNT = "SELECT 
+                    (SELECT count(*) FROM song WHERE callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "') AS Total,
+                    (SELECT count(*) FROM song WHERE callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and Playlistnumber IS NOT NULL) AS Count,
+                    (SELECT round(((Count / Total)*100),2)) AS Percent";
+                    if(!$PL_PER_RES = mysql_query($SQL_PL_COUNT)){
+                        echo "<span class='ui-state-highlight ui-corner-all'>".mysql_error()."</span>";
+                        //break;
+                    }
+                    else{
+                        $PER_PL = mysql_fetch_array($PL_PER_RES);
+                        echo "<span ";
+                        if(floatval($PER_PL['Percent']) < floatval($req['playlistperc'])*100){
+                            echo "class=\"ui-state-error ui-corner-all\" >";
+                        }
+                        else{
+                            echo ">";
+                        }
+                        echo "Playlist Required</span><br/><span>";
+				        echo $PER_PL['Percent']."%/".(floatval($req['playlistperc'])*100)."%";
+                        if($DEBUG){
+                            echo "[".$PER_PL['CC_Num']."/".$PER_PL['Total']."]";
+                        }
+                    }
+                }
+                else if($req['PlType']=='1'){
 						if($vars['PLX']=='-1'){
 							$PLR = ceil($req['playlist'] * $vars['length'] / 60);
 						}
@@ -367,11 +428,21 @@ else{
 							$PLR = ceil($vars['PLX'] * $vars['length'] / 60);
 						}
 				
-				$SQLCOUNTPL = "Select songid from SONG where callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and playlistnumber is not null ";
-				$resultPL = mysql_query($SQLCOUNTPL);
-				$PL = mysql_num_rows($resultPL);	
-				
-				echo $PL."/".$PLR;
+				    $SQLCOUNTPL = "Select count(songid) AS EnteredPL from SONG where callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and playlistnumber is not null ";
+				    $resultPL = mysql_query($SQLCOUNTPL);
+                    $PL_VARS = mysql_fetch_array($resultPL);
+				    //$PL = mysql_num_rows($resultPL);	
+				    echo "<span ";
+                    if(floatval($PL_VARS['EnteredPL']) < floatval($PLR)){
+                        echo "class=\"ui-state-error ui-corner-all\" >";
+                    }
+                    else{
+                        echo ">";
+                    }
+                    echo "Playlist Required: ";
+				    echo $PL_VARS['EnteredPL']."/".$PLR;
+                }
+                
 				
 					?></span>
 			</td></tr></table>
@@ -382,7 +453,7 @@ else{
 				<th>Start Time</th>
 				<th>Air Date</th>
 				<th>Prerecord<input type="button" value="clear" onclick="document.forms['general'].shprec.value=''; return false;"/></th>
-				<th>Show Description</th>
+				<!--<th>Show Description</th>-->
 				<th>Spoken Time</th>
 				<th>Finalized</th>
 			</tr>
@@ -407,10 +478,13 @@ else{
 				<td><input type="time" required title="Start Time" name="shstart" onmousewheel="javascript: return false" value="<?php echo $START; ?>"/></td>
 				<td><input type="date" required title="Show Performance (Air Date) Date" name="shdate" value="<?php echo $DATE; ?>"/></td>
 				<td><input type="date" title="Date Show Prerecorded On" name="shprec" value="<?php echo $PREC; ?>"/></td>
-				<td><input type="text" title="Show Description" name="shdesc" size="75" value="<?php echo $DESC; ?>"/></td>
-				<td><input type="number" title="Total Calcualted Time Spoken" name="shspkn" value="00" readonly="true"/></td>
+				
+				<td><input type="text" title="Total Calcualted Time Spoken" name="shspkn" value="Auto Calculate" disabled readonly="readonly"/></td>
 				<td><input type="text" title="Specifies if program is finalized" value="<?php echo $FINAL; ?>" readonly="true"/></td>
 			</tr>
+            <tr>
+                <td colspan="7"><input type="text" title="Show Description" style="width: 1340px;" placeholder="Program Description (Recommended)" name="shdesc" value="<?php echo $DESC; ?>"/></td>
+            </tr>
 		</table>
 	</div>
 	<div id="content" style="width: <?php echo $SETW ?>">
@@ -419,7 +493,7 @@ else{
 			<!--<tr><td colspan="100%"><h2>*** Work in Progress ***</h2></td></tr>-->
 			
 				<th width="50px">
-					Edited
+					<span title="Changed Value" class="ui-icon ui-icon-transferthick-e-w"></span>
 				</th>
 				<th width="200px">
 					Type
@@ -449,8 +523,8 @@ else{
 				<th width="25px">Hit</th>
 				<th width="25px">Ins</th>
 				<th width="75px">Language</th>
-				<th wifth="50px">Note</th>
-				<th width="75px">Del</th>
+				<th><span title="Note" class="ui-icon ui-icon-tag"></span></th>
+				<th><span title="Delete Record" class="ui-icon ui-icon-trash"></span></th>
 			</tr>
             </tbody>
 			
@@ -674,8 +748,8 @@ else{
 	                                echo $OPT . "</td>";
 	                  }
 			
-			echo "<td><input onchange=\"SetEdit('EDI".$CONT."')\" onmousewheel=\"javascript: return false\" onclick=\"SetEdit('EDI".$CONT."')\" type=\"number\" min=\"1\" size=\"6\" name=\"Playlist[]\" value=\"" . $SONGS['playlistnumber'] . "\" /></td>";
-			echo "<td><input onchange=\"SetEdit('EDI".$CONT."')\" onmousewheel=\"javascript: return false\" onclick=\"SetEdit('EDI".$CONT."')\" type=\"number\" min=\"0\" size=\"6\" name=\"Spoken[]\" step=\"0.25\" value=\"" . $SONGS['Spoken'] . "\" /></td>";
+			echo "<td><input onchange=\"SetEdit('EDI".$CONT."')\" onmousewheel=\"javascript: return false\" onclick=\"SetEdit('EDI".$CONT."')\" type=\"number\" min=\"1\" size=\"6\" style=\"width:65px;\" name=\"Playlist[]\" value=\"" . $SONGS['playlistnumber'] . "\" /></td>";
+			echo "<td><input onchange=\"SetEdit('EDI".$CONT."')\" onmousewheel=\"javascript: return false\" onclick=\"SetEdit('EDI".$CONT."')\" type=\"number\" min=\"0\" size=\"6\" style=\"width:65px;\" name=\"Spoken[]\" step=\"0.25\" value=\"" . $SONGS['Spoken'] . "\" /></td>";
 			echo "<td><input onchange=\"SetEdit('EDI".$CONT."')\" onmousewheel=\"javascript: return false\" onclick=\"SetEdit('EDI".$CONT."')\" type=\"time\" name=\"times[]\" value=\"" . $SONGS['time']."\" /> </td>";
 			echo "<td><input ";
 			if($SONGS['category']=="51"){ //|| $SONGS['category']=="52" || $SONGS['category']=="53"))

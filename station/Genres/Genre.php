@@ -30,6 +30,9 @@
         <title>Genres</title>
         <link href="../../altstyle.css" rel="stylesheet"/>
         <link href="Genres.css" rel="stylesheet"/>
+        <script src="../../js/jquery/js/jquery-2.0.3.min.js"></script>
+        <script src="../../js/jquery/js/jquery-ui-1.10.0.custom.min.js"></script>
+        <script src="Genre.js"></script>
     </head>
     <body>
         <div class="topcontent">
@@ -39,15 +42,15 @@
         </div>
         <div class="content">
             <div>
-                <p></p>
-                <form method="post" method="post" action="CommitGenre.php">
+                <form id="form1" method="post" method="post" action="CommitGenre.php">
                     <!-- Do this through AJAX???-->
+                    <div id="Create">
                 <h2>Genre Settings</h2>
                 <h3>Edit / Create</h3>
                     <fieldset>
                         <div class="left">
                             <label for="name">Name</label>
-                            <br/><input type="text" required placeholder="Unique Name" id="name" name="name" value="<?php echo $NAME;?>"/>
+                            <br/><input type="text" required placeholder="Unique Name" id="name" name="name"  value="<?php echo $NAME;?>"/>
                             <input type="hidden" value="<?php echo $UID?>" name="UID"/>
                         </div>
                         <div class="left">
@@ -90,10 +93,11 @@
                     <input type="reset"/>
                     <input type="button" onclick="window.location.href='../../masterpage.php'" value="Cancel"/>
                 </div>
+                </div>
                 </form>
-                
+                <div id="Edit">
                 <h3>Existing</h3>
-                <form method="get">
+                <form id="form2" method="get">
                     <table>
                         <thead>
                             <tr>
@@ -120,17 +124,18 @@
                                    //echo $QUERY;
                                    if($res = mysqli_query($con,$QUERY)){
                                        while($obj = $res->fetch_object()){
-                                           echo "<tr><td><input type='radio' name='genre[]' value='".$obj->UID."'/></td>";
-                                           echo "<td><input type='text' min='0' max='900' name='C_Name[]' placeholder='Unique Name' title='Origional:".$obj->genreid."' value='".$obj->genreid."'/></td>";
-                                           echo "<td><input type='number' min='0' max='999' name='C_Cancon[]' placeholder='CC/Hr' value='".$obj->cancon."'/></td>";
-                                           echo "<td><input type='number' min='0' max='200' name='C_Playlist[]' placeholder='PL/Hr' value='".$obj->playlist."'/></td>";
-                                           echo "<td><input type='number' min='0' max='100' name='C_CCPerc[]' placeholder='CC %' value='";
+                                           echo "<tr><td><input type='checkbox' onchange='EditOnly()' name='genre[]' value='".$obj->UID."'/>";
+                                           echo "<input type='hidden' name='UID[]' value='".$obj->UID."'/></td>";
+                                           echo "<td><input onchange='EditOnly()' type='text' min='0' max='900' name='C_Name[]' placeholder='Unique Name' title='Origional:".$obj->genreid."' value='".$obj->genreid."'/></td>";
+                                           echo "<td><input onchange='EditOnly()' type='number' min='0' max='999' name='C_Cancon[]' placeholder='CC/Hr' value='".$obj->cancon."'/></td>";
+                                           echo "<td><input onchange='EditOnly()' type='number' min='0' max='200' name='C_Playlist[]' placeholder='PL/Hr' value='".$obj->playlist."'/></td>";
+                                           echo "<td><input onchange='EditOnly()' type='number' min='0' max='100' name='C_CCPerc[]' placeholder='CC %' value='";
                                            echo floatval($obj->canconperc)*100;
                                            echo "'/>%</td>";
-                                           echo "<td><input type='number' min='0' max='100' name='C_PlPerc[]' placeholder='PL %' value='";
+                                           echo "<td><input onchange='EditOnly()' type='number' min='0' max='100' name='C_PlPerc[]' placeholder='PL %' value='";
                                            echo floatval($obj->playlistperc)*100;
                                            echo "'/>%</td>";
-                                           echo "<td><select name='CC_Type[]'>";
+                                           echo "<td><select onchange='EditOnly()' name='CC_Type[]'>";
                                            if($obj->CCType == 1){
                                                echo"<option value='1' selected>Numeric</option><option value='0'>Percentage</option>";
                                            }
@@ -141,7 +146,7 @@
                                                echo "<option value='1'>Numeric</option><option value='0'>Percentage</option><option selected style='color: red;' value='1'>Error / Reset to Percent</option>";
                                            }
                                            echo "</select></td>";
-                                           echo "<td><select name='PL_Type'>";
+                                           echo "<td><select onchange='EditOnly()' name='PL_Type'>";
                                            if($obj->PlType == 1){
                                                echo"<option value='1' selected>Numeric</option><option value='0'>Percentage</option>";
                                            }
@@ -171,10 +176,12 @@
                         </tbody>
                     </table>
                     <div class="left;">
-                        <input type="submit" value="edit" />
+                        <input type="submit" value="Save Changes" />
+                        <input type="reset"/>
                         <input type="submit" value="Remove" disabled/>
                     </div>
                     </form>
+                 </div>
             </div>
         </div>
     </body>

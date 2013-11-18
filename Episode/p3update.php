@@ -579,7 +579,7 @@ else{
 								}
 								else{
 								}
-                                echo " name=\"minutes\" size=\"5\" value=\"" . $list['Spoken'] . "\">";
+                                echo " name=\"minutes\" style='width: 20px;' max=\"999\" min=\"0\" value=\"" . $list['Spoken'] . "\">";
                            echo "</td><td>";
                                 //echo $list['time'];
                                 echo "<input type=\"time\" name=\"time\" size=\"8\" value=\"" . $list['time'] . "\">";
