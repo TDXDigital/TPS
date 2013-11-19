@@ -239,6 +239,14 @@ else{
             }
         }
 
+        /*////////////////////////////////////////////
+        //              GENRE SELECTION             //
+        //                                          //
+        ////////////////////////////////////////////*/
+        
+        // This information is needed by either method 
+        // Using updated code
+        
 		$SQLProg = "SELECT Genre.*, Program.length from Genre, Program where Program.programname=\"" . addslashes($_POST['program']) . "\" and program.callsign=\"" . addslashes($CALLSHOW) . "\" and Program.genre=Genre.genreid";
 		if(!($result = mysql_query($SQLProg))){
 			echo "Program Error 001 " . mysql_error();
@@ -407,22 +415,99 @@ if(false){
 	echo "</td><td width=\"500px\""; 
 	
 	// ################ REQ CC PL ##################
-	if($RECCC>=$CC){
-	 	echo "style=\"background-color:".$SETTINGS['ST_ColorPass'].";\">";
-	}
-	else{
-		echo "style=\"background-color:".$SETTINGS['ST_ColorFail'].";\">";
-	}
-		echo "Canadian Content Required:  <strong>" . $RECCC . "/" . $CC . "</strong>";
-	echo "</td><td width=\"300px\"";
+    if($Requirements['CCType']=='0'){
+        $SQL_CC_COUNT = "SELECT 
+        (SELECT count(*) FROM song WHERE callsign='" . addslashes($EPINFO['callsign']) . "' and programname='" . addslashes($EPINFO['programname']) . "' and date='" . addslashes($EPINFO['date']) . "' and starttime='" . addslashes($EPINFO['starttime']). "' and category not like '1%' and category not like '4%' and category not like '5%') AS Total,
+        (SELECT count(*) FROM song WHERE callsign='" . addslashes($EPINFO['callsign']) . "' and programname='" . addslashes($EPINFO['programname']) . "' and date='" . addslashes($EPINFO['date']) . "' and starttime='" . addslashes($EPINFO['starttime']). "' and category not like '1%' and category not like '4%' and category not like '5%' and cancon='1') AS CC_Num,
+        (SELECT round(((CC_Num / Total)*100),2)) AS Percent";
+        if(!$CC_PER_RES = mysql_query($SQL_CC_COUNT)){
+            echo "<span class='ui-state-highlight ui-corner-all'>".mysql_error()."</span>";
+            //break;
+        }
+        else{
+            $PER_CC = mysql_fetch_array($CC_PER_RES);
+            echo "<span ";
+            if(floatval($PER_CC['Percent']) < floatval($Requirements['canconperc'])*100){
+                echo "style=\"background-color:".$SETTINGS['ST_ColorFail'].";text-align:center;\" >";
+            }
+            else{
+                echo "style=\"background-color:".$SETTINGS['ST_ColorPass'].";text-align:center;\" >";
+            }
+            echo "Canadian Content Required</span><br/><span>";
+			echo $PER_CC['Percent']." /".(floatval($Requirements['canconperc'])*100)."%";
+            if($DEBUG){
+                echo "[".$PER_CC['CC_Num']."/".$PER_CC['Total']."]";
+            }
+        }
+    }
+    else{
+        if($RECCC>=$CC){
+	 	    echo "style=\"background-color:".$SETTINGS['ST_ColorPass'].";\">";
+	    }
+	    else{
+		    echo "style=\"background-color:".$SETTINGS['ST_ColorFail'].";\">";
+	    }
+		    echo "Canadian Content Required:  <strong>" . $RECCC . "/" . $CC . "</strong>";
+    }
+    echo "</td><td width=\"300px\"";
+    //---------------------------------//
+    //---------< UPDATED CODE >--------//
+    //-----------< PLAYLIST >----------//
+    //---------------------------------//
+	if($Requirements['PlType']=='0'){
+        // WORKING WITH PERCENTAGE
+        // GET PERCENTAGE FROM DB
+        
+        $SQL_PL_COUNT = "SELECT 
+        (SELECT count(*) FROM song WHERE callsign='" . addslashes($EPINFO['callsign']) . "' and programname='" . addslashes($EPINFO['programname']) . "' and date='" . addslashes($EPINFO['date']) . "' and starttime='" . addslashes($EPINFO['starttime']). "' and category not like '1%' and category not like '4%' and category not like '5%') AS Total,
+        (SELECT count(*) FROM song WHERE callsign='" . addslashes($EPINFO['callsign']) . "' and programname='" . addslashes($EPINFO['programname']) . "' and date='" . addslashes($EPINFO['date']) . "' and starttime='" . addslashes($EPINFO['starttime']). "' and category not like '1%' and category not like '4%' and category not like '5%' and Playlistnumber IS NOT NULL) AS Count,
+        (SELECT round(((Count / Total)*100),2)) AS Percent";
+        if(!$PL_PER_RES = mysql_query($SQL_PL_COUNT)){
+            echo "style=\"background-color:".$SETTINGS['ST_ColorFail'].";\" >";
+            //echo "<span class='ui-state-highlight ui-corner-all'>".mysql_error()."</span>";
+            //break;
+        }
+        else{
+            $PER_PL = mysql_fetch_array($PL_PER_RES);
+            echo "<span ";
+            if(floatval($PER_PL['Percent']) < floatval($Requirements['playlistperc'])*100){
+                echo "style=\"background-color:".$SETTINGS['ST_ColorFail']."; text-align:center;\" >";
+            }
+            else{
+                echo "style=\"background-color:".$SETTINGS['ST_ColorPass']."; text-align:center;\" >";
+            }
+            echo "Playlist Required </span><br/><span>";
+			echo $PER_PL['Percent']." /".(floatval($Requirements['playlistperc'])*100)."%";
+            if($DEBUG){
+                echo "[".$PER_PL['Count']."/".$PER_PL['Total']."]";
+            }
+        }/*
+	    if($RECCC>=$CC){
+	 	    echo "style=\"background-color:".$SETTINGS['ST_ColorPass'].";\">";
+	    }
+	    else{
+		    echo "style=\"background-color:".$SETTINGS['ST_ColorFail'].";\">";
+	    }
+		    echo "Canadian Content Required:  <strong>" . $RECCC . "/" . $CC . "</strong>";
+	    echo "</td><td width=\"300px\"";
 	 
-	if($RECPL>=$PL){
-	 	echo "style=\"background-color:".$SETTINGS['ST_ColorPass'].";\">";
+	    if($RECPL>=$PL){
+	 	    echo "style=\"background-color:".$SETTINGS['ST_ColorPass'].";\">";
+	    }
+	    else{
+		    echo "style=\"background-color:".$SETTINGS['ST_ColorFail'].";\">";
+	    }*/
 	}
-	else{
-		echo "style=\"background-color:".$SETTINGS['ST_ColorFail'].";\">";
-	}
+    else{
+	    // NUMERICAL REPRESENTATION
+	    if($RECPL>=$PL){
+	 	    echo "style=\"background-color:".$SETTINGS['ST_ColorPass'].";\">";
+	    }
+	    else{
+		    echo "style=\"background-color:".$SETTINGS['ST_ColorFail'].";\">";
+	    }
 		echo "Playlist Required:  <strong>" . $RECPL. "/" . $PL . "</strong>";
+    }
 	echo "</td></tr>";
              $br = strtolower($_SERVER['HTTP_USER_AGENT']); // what browser they use.
 

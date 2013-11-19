@@ -349,8 +349,8 @@ else{
 				$req = mysql_fetch_array($reqar);
 				if($req['CCType']=='0'){
                     $SQL_CC_COUNT = "SELECT 
-                    (SELECT count(*) FROM song WHERE callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "') AS Total,
-                    (SELECT count(*) FROM song WHERE callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and cancon='1') AS CC_Num,
+                    (SELECT count(*) FROM song WHERE callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and category not like '1%' and category not like '4%' and category not like '5%') AS Total,
+                    (SELECT count(*) FROM song WHERE callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and category not like '1%' and category not like '4%' and category not like '5%' and cancon='1') AS CC_Num,
                     (SELECT round(((CC_Num / Total)*100),2)) AS Percent";
                     if(!$CC_PER_RES = mysql_query($SQL_CC_COUNT)){
                         echo "<span class='ui-state-highlight ui-corner-all'>".mysql_error()."</span>";
@@ -365,8 +365,8 @@ else{
                         else{
                             echo ">";
                         }
-                        echo "Canadian Content Required</span><br/><span>";
-				        echo $PER_CC['Percent']."%/".(floatval($req['canconperc'])*100)."%";
+                        echo "Canadian Content Required</span><br/><span><strong>";
+				        echo $PER_CC['Percent']." / ".(floatval($req['canconperc'])*100)."%</strong>";
                         if($DEBUG){
                             echo "[".$PER_CC['CC_Num']."/".$PER_CC['Total']."]";
                         }
@@ -397,8 +397,8 @@ else{
 				<?php
                 if($req['PlType']=='0'){
                     $SQL_PL_COUNT = "SELECT 
-                    (SELECT count(*) FROM song WHERE callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "') AS Total,
-                    (SELECT count(*) FROM song WHERE callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and Playlistnumber IS NOT NULL) AS Count,
+                    (SELECT count(*) FROM song WHERE callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and category not like '1%' and category not like '4%' and category not like '5%') AS Total,
+                    (SELECT count(*) FROM song WHERE callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and category not like '1%' and category not like '4%' and category not like '5%' and Playlistnumber IS NOT NULL) AS Count,
                     (SELECT round(((Count / Total)*100),2)) AS Percent";
                     if(!$PL_PER_RES = mysql_query($SQL_PL_COUNT)){
                         echo "<span class='ui-state-highlight ui-corner-all'>".mysql_error()."</span>";
@@ -414,7 +414,7 @@ else{
                             echo ">";
                         }
                         echo "Playlist Required </span><br/><span>";
-				        echo $PER_PL['Percent']."%/".(floatval($req['playlistperc'])*100)."%";
+				        echo "<strong>".$PER_PL['Percent']." / ".(floatval($req['playlistperc'])*100)."%</strong>";
                         if($DEBUG){
                             echo "[".$PER_PL['Count']."/".$PER_PL['Total']."]";
                         }
