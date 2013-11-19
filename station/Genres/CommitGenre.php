@@ -32,7 +32,7 @@ $PLT = addslashes($_POST['pltype']);
 $STN = addslashes($_POST['station']);
 
 // GET NAME
-$NAME = addslashes($_POST['name']);
+$NAME = addslashes(htmlspecialchars($_POST['name']));
 $UID = addslashes($_POST['UID']);
 
 $SQL_INSERT = "INSERT INTO genre (genreid,cancon,playlist,canconperc,playlistperc,CCType,PlType,Station) VALUES ('$NAME','$CCN','$PLN','$CCP','$PLP','$CCT','$PLT','$STN')";
@@ -46,17 +46,17 @@ else{
     if($vars = mysqli_query($link,$SQL_QUERY_NAME)){
         if($vars->fetch_object()->UID_NUM==0){
             if(mysqli_query($link,$SQL_INSERT)){
-                header('location: '.$_SERVER["HTTP_REFERER"].'?Genre='.mysqli_insert_id.'&m=Successfully%20Added');
+                header('location: genre.php?r=Successfully%20Added');
             }
             else{
-                //header('location: '.$_SERVER['HTTP_REFERER'].'?e='.mysqli_error($con));
-                echo $SQL_INSERT;
-                echo "</br>".mysqli_error($link);
+                header('location: '.$_SERVER['HTTP_REFERER'].'?e=Invalid%20Parameters');
+                //echo $SQL_INSERT;
+                //echo "</br>".mysqli_error($link);
             }
         }
         else{
-            //header('location: '.$_SERVER['HTTP_REFERER'].'?e='.mysqli_error($con));
-                echo $vars->fetch_object()->UID_NUM." entries already exist";
+            header('location:genre.php?e=Already%20Exists');
+            //echo $vars->fetch_object()->UID_NUM." entries already exist";
         }
     }
     else{
