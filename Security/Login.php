@@ -1,5 +1,6 @@
 <?php
 include("LDAP_Auth.php");
+include("DB_Auth.php");
 // Establish Session
 session_start();
 
@@ -45,7 +46,20 @@ if((string)$convars->ID==$db_ID){
 	        //echo "Login Failed";
             echo "<hr/><br/><h2>Login Failed</h2><br/>Click <a href='$ORIGIN'>HERE</a> to return to login and try again";
         }
-	}		
+    }
+    else if((string)$convard->AUTH == strtoupper("MYSQL_DB")){
+    	if(DB_AUTH($postuser, $postpass, $convars)){
+    		if($des==0){
+    			header("Location: $dest");
+    		}
+    		else{
+    			header("Location: $ORIGIN");
+    		}
+    	}
+    	else{
+    		echo "<hr/><br/><h2>Login Failed</h2><br/>Click <a href='$ORIGIN'>HERE</a> to return to login and try again";
+    	}
+    }
 	//$_SESSION['SRVPOST']=$db_ID;
 }
 else{
