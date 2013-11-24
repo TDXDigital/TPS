@@ -17,7 +17,7 @@ else if($con){
         $GENid=$genrerow["genreid"];
         $genop.="<OPTION VALUE=\"" . $GENid . "\">". $GENid ."</option>";
     }
-	$djsql="SELECT * from DJ order by djname";
+	$djsql="SELECT * from DJ where active='1' order by djname";
     $djresult=mysql_query($djsql,$con);
 
     $djoptions="<option value=0>Any</option>";//<OPTION VALUE=0>Choose</option>";
@@ -86,12 +86,12 @@ else if($con){
 					<input name="syndicate" type="text" maxlength="25" size="25" />
 				</td>
 				<td>
-					<select name="dj1" disabled="true">
+					<select name="dj1">
 						<?php echo $djoptions;?>
 					</select>
 				</td>
 				<td>
-					<select name="dj2" disabled="true">
+					<select name="dj2" disabled>
 						<?php echo $djoptions;?>
 					</select>
 				</td>
