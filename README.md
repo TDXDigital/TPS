@@ -30,11 +30,3 @@ Purpose
 ===
 
 This software is designed to suit the needs of campus and community based radio in Canada. Through logging and analysis of content played on air, reporting compliance will become simpler and streamlined
-
-Liability
-===
-James Oliver (TDX Digital) is not liable for any misuse or error that occurs in result of the possession or operation of this software.
-
-Copyright
-===
-This software is under development and is provided free for use during its testing phase. At any time the availability and licence of this software may be revoked without notice. Complete ownership and legal rights remain that of James Oliver regardless of user contribution. Any contributions are seen as voluntary and at the discretion of the contributions.
