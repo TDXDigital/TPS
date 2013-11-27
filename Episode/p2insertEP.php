@@ -32,7 +32,7 @@ else{
         array_push($warning,"<strong><br/>Notice: Booth 2 is on air<br/><br/></strong>");
     }
     elseif($booth1 == "0"){
-        array_push($warning,"<strong><br/>Warning: No valid audio source is to air. pleae check switch or warning settings<br/><br/></strong>");
+        array_push($warning,"<strong><br/>Notice: No valid audio source is to air. pleae check switch or warning settings<br/><br/></strong>");
     }
 	// END Switch Check
 	
