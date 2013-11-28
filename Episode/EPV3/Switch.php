@@ -37,16 +37,16 @@
 		}
 		
 	}
-	$Silence = $srr['SS'];
-	$SS1 = substr($silence,-3,1);
+	$silence = $srr['SS'];
+	$SS1 = substr($silence,-1);
 	if($SS1 == "0"){
-		echo "<td><img src=\"Images/LIGHTS/RedOff.png\" alt=\"0\"/></td>";
+		echo "<td><img src=\"Images/LIGHTS/AmberOff.png\" alt=\"0\"/></td>";
 	}
 	else if($SS1 == "1"){
-		echo "<td><img src=\"Images/LIGHTS/RedOn.png\" alt=\"1\"/></td>";
+		echo "<td><img src=\"Images/LIGHTS/AmberOn.png\" alt=\"1\"/></td>";
 	}
 	else{
-		echo "<td><img src=\"Images/LIGHTS/RedOff.png\" alt=\"2\"/></td>";
+		echo "<td><img src=\"Images/LIGHTS/AmberOff.png\" alt=\"2\"/></td>";
 	}
 	echo "</tr><tr>";
 	for($i = 16; $i > 0; $i=$i-2){
@@ -63,15 +63,15 @@
 		
 	}
 	
-	$SS2 = substr($silence,-1,1);
+	$SS2 = substr($silence,-2,-1);
 	if($SS2 == "0"){
-		echo "<td><img src=\"Images/LIGHTS/RedOff.png\" alt=\"0\"/></td>";
+		echo "<td><img src=\"Images/LIGHTS/AmberOff.png\" alt=\"0\"/></td>";
 	}
 	else if($SS2 == "1"){
-		echo "<td><img src=\"Images/LIGHTS/RedOn.png\" alt=\"1\"/></td>";
+		echo "<td><img src=\"Images/LIGHTS/AmberOn.png\" alt=\"1\"/></td>";
 	}
 	else{
-		echo "<td><img src=\"Images/LIGHTS/RedOff.png\" alt=\"" . $SS2 . "\"/></td>";
+		echo "<td><img src=\"Images/LIGHTS/AmberOff.png\" title=\"" . $SS2 . "\"/></td>";
 	}
 	echo "</tr>";
 	echo "</table>";

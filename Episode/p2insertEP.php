@@ -548,7 +548,8 @@ if(false){
 				}
 			}
 			if(sizeof($warning) > 0){
-				echo "<tr style=\"background-color:Black; color:yellow;\"><th colspan=\"100%\">Warnings &amp; Information</th></tr><tr>";
+                // style=\"background-color:Black; color:yellow;\"
+				echo "<tr class='ui-state-error ui-corner-all'><th colspan=\"100%\">Warnings &amp; Information</th></tr><tr>";
 				while($VAL = array_pop($warning)){
 					echo "<tr style=\"background-color:#FFFF99; color:black;\"><td colspan=\"100%\">".$VAL."</td></tr>";
 				}
