@@ -313,19 +313,33 @@ else{
 <!DOCTYPE HTML>
 <html>
 <head>
-	<script src="../js/jquery/js/jquery-1.9.1.min.js"></script>
-	<script src="../js/jquery/js/jquery-ui-1.10.0.custom.min.js"></script>
+	<!--<script src="../js/jquery/js/jquery-1.9.1.min.js"></script>-->
+    <script type="text/javascript" src="../TPSBIN/JS/Episode/V2CoreJS.js"></script>
+    <script type="text/javascript" src="../js/jquery/js/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="../js/jquery/js/jquery-ui-1.10.0.custom.min.js"></script>
+    <link rel="stylesheet" href="../js/jquery/css/ui-lightness/jquery-ui-1.10.0.custom.min.css"/>
+    <style>
+        .ui-autocomplete-loading {
+            background: white url('../images/GIF/ajax-loader3.gif') right center no-repeat;
+          }
+    </style>
+	<!--<script src="../js/jquery/js/jquery-ui-1.10.0.custom.min.js"></script>-->
 	<script src="../js/jquery-blockui.js"></script>
 	<script type="text/javascript"> 
  
     // unblock when ajax activity stops 
     //$(document).ajaxStop($.unblockUI); 
- 
+    
+    
     function test() { 
         $.ajax({ url: 'wait.php', cache: false }); 
     } 
  
     $(document).ready(function() { 
+        $('#artin').autocomplete({
+            source: "../MusicLib/DB_Search_Artist.php",
+            minLength: 2
+        });
         /*$('input[name=sub]').click(function() { 
             $.blockUI({ message: '<h1><img src="/images/GIF/ajax-loader1.gif" />Processing...</h1>' }); 
             //test(); 
@@ -359,8 +373,8 @@ if(false){
 }
 ?>
 >
-	 <script type="text/javascript" src="../TPSBIN/JS/Episode/V2CoreJS.js"></script>
-      <div class="topbar">
+	 
+    <div class="topbar">
            User: <?php echo(strtoupper($_SESSION['usr'])); ?>
            </div>
 
@@ -784,7 +798,7 @@ if(false){
         <div id="Alert"></div>
          <div id="processing" style="width: 1350px; background-color: white; text-align: center; float: left; display: none">
         			<!--<img src="/images/GIF/spinner.gif" height="50px" alt="Processing"/>-->
-        			<img src="/images/GIF/ajax-loader2.gif" alt="..."/><span>Processing...</span>
+        			<img src="../images/GIF/ajax-loader2.gif" alt="..."/><span>Processing...</span>
         </div>
         
         <!--/////////////////////////// Input Form (Advertisements) //////////////////////////-->

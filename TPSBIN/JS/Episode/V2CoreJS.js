@@ -1,7 +1,6 @@
 function load(){
 	 	//$.blockUI(null); 
 	 	document.getElementById("DDLNormal").value = 21;// Allow for deafult option
-	 	
 	 }
 	 
 	//http://www.coryarthus.com/ (CODE SOURCE)

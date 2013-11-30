@@ -1,10 +1,10 @@
 <?php
 session_start();
 $json_arr=array();
-$artist = addslashes($_GET['A']);
-$title = $_GET['T'];
+$artist = addslashes($_GET['term']);
+//$title = $_GET['T'];
 $link = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']) or die("Connection Error");
-$query_artist = "SELECT artist, album FROM song where Artist REGEXP '$artist' group by soundex(artist)";
+$query_artist = "SELECT artist, album FROM song where Artist REGEXP '$artist' group by soundex(artist) LIMIT 10";
 $result=mysqli_query($link,$query_artist);
 if(mysqli_error($link)){
     echo mysqli_error($link);
