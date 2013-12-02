@@ -1,35 +1,38 @@
 <?php
     session_start();
 
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
+$con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'], $_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
+	die('Error connecting to SQL Server, could not connect due to: ' . mysqli_error() . ';  
 
 	username=' . $_SESSION["username"]);
 }
-else if($con){
+/*else if($con){
 	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../login.php');}
 	
     }
 else{
 	echo 'ERROR!';
 }
-
+*/
 ?>
 
 <!DOCTYPE HTML>
+<html>
 <head>
 <link rel="stylesheet" type="text/css" href="../altstyle.css" />
+    <link rel="stylesheet" type="text/css" href="../js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.js"/>
+    <script src="../js/jquery/js/jquery-2.0.3.min.js" type="text/javascript"></script>
+    <script src="../js/jquery/js/jquery-ui-1.10.0.custom.js" type="text/javascript"></script>
 <title>Socan Audits</title>
 </head>
-<html>
 <body>
 	<div class="topbar">
            User: <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
 	<div id="header">
-		<a href="#"><img src="../images/Ckxu_logo_PNG.png" alt="CKXU" /></a>
+		<a href="#"><img src="../<?php echo $_SESSION['logo']?>" alt="logo" /></a>
 	</div>
 	<div id="top">
 		<h2>Socan / Resound Audits</h2>
@@ -166,9 +169,10 @@ else{
 				<input type="button" value="Reset" onClick="window.location.reload()"></td><td>
 				<input type="button" value="Menu" onclick="window.location.href='../masterpage.php'" />
 				</td>
-				<td width="100%" align="right"><img src="../images/mysqls.png" alt="MySQL Powered"/></td>
+				<td style="width: 100%; text-align:right;"><img src="../images/mysqls.png" alt="MySQL Powered"/></td>
 			</tr>
 		</table>
 	</div>
+    </form>
 </body>
 </html>
