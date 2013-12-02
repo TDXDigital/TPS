@@ -64,7 +64,7 @@ else if($con){
 				";
 				
 		//##################### - Song Count - ##########################
-				$SQLSONG="select count(songid) from SONG where programname='".addslashes($subrow['programname'])."' and date='".$subrow['date']."' and starttime='".$subrow['starttime']."'";
+				$SQLSONG="select count(songid) from SONG where category NOT LIKE '1%' and category NOT LIKE '4%' and category NOT LIKE '5%' and programname='".addslashes($subrow['programname'])."' and date='".$subrow['date']."' and starttime='".$subrow['starttime']."'";
 				if($subsong = mysql_fetch_array(mysql_query($SQLSONG)))
 				{
 					$prooptions .= $subsong["count(songid)"];
@@ -91,7 +91,11 @@ else if($con){
 				$prooptions .= "</td><td>
 				";
 		//##################### - finalized - ##########################
-				$prooptions .= $subrow['endtime'];
+				if($subrow['endtime']==''){
+				    $prooptions .= "Not Finalized";
+				}else{
+				    $prooptions .= $subrow['endtime'];   
+				}
 				$prooptions .= "</td><td>
 				";	
 		//##################### - View - ##########################
@@ -115,21 +119,30 @@ else if($con){
 ?>
 
 <!DOCTYPE HTML>
+<html>
 <head>
-<link rel="stylesheet" type="text/css" href="../altstyle.css" />
+    <link rel="stylesheet" type="text/css" href="../altstyle.css" />
+    <link rel="stylesheet" type="text/css" href="../js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>
+    <script src="../js/jquery/js/jquery-2.0.3.min.js" type="text/javascript"></script>
+    <script src="../js/jquery/js/jquery-ui-1.10.0.custom.min.js" type="text/javascript"></script>
 <title>DPL Administration</title>
 </head>
-<html>
 <body>
 	<script>
 	function showsub(element) {
-		document.getElementById(element).disabled=true;
+		document.getElementById(element).display="none";
 		var xyz = document.getElementsByClassName(element);
 		for(var i = 0; i <xyz.length;i++){
 			xyz[i].style.display="table-row";
 		}
 	} 
-	
+	function hidesub(element) {
+		document.getElementById(element).disabled=true;
+		var xyz = document.getElementsByClassName(element);
+		for(var i = 0; i <xyz.length;i++){
+			xyz[i].style.display="none";
+		}
+	} 
 	function quickview(url){
 		//use @ to differentiate
 		newwindow=window.open(url,'name','height=800,width=800');
@@ -137,7 +150,7 @@ else if($con){
 		return false;		
 	}
 	</script>
-	
+	<link rel="stylesheet" href="../station/Genres/Genres.css" />
 	<div class="topbar">
            Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
@@ -150,12 +163,12 @@ else if($con){
 	<div id="content">
 		<table>
 			<tr>
-				<th colspan="2" width="30%">Program Name</th>
-				<th width="10%">Exclude</th>
-				<th width="10%">Date</th>
-				<th width="30%">Time</th>
-				<th width="30%">Logs</th>
-				<th width="20%">Details</th>
+				<th colspan="2" style="width:30%">Program Name</th>
+				<th style="width:10%">Exclude</th>
+				<th style="width:10%">Date</th>
+				<th style="width:30%">Time</th>
+				<th style="width:30%">Logs</th>
+				<th style="width:20%">Details</th>
 			</tr>
 			<?php echo $prooptions; ?>
 		</table>
@@ -164,14 +177,14 @@ else if($con){
 		<table>
 			<tr>
 				<td>
-					<input type="text" hidden="true" name="from" value="<?php echo $_POST['from'] ?>" />
-					<input type="text" hidden="true" name="to" value="<?php echo $_POST['to'] ?>" />
-					<input type="text" hidden="true" name="limit" value="<?php echo $_POST['limit'] ?>" />
+					<input type="text" hidden name="from" value="<?php echo $_POST['from'] ?>" />
+					<input type="text" hidden name="to" value="<?php echo $_POST['to'] ?>" />
+					<input type="text" hidden name="limit" value="<?php echo $_POST['limit'] ?>" />
 				<input type="submit" value="Submit"/></form></td><td>
 				<input type="button" value="Reset" onClick="window.location.reload()"></td><td>
 				<form method="POST" action="../masterpage.php"><input type="submit" value="Menu"/></form>
 				</td>
-				<td width="100%" align="right"><img src="../images/mysqls.png" alt="MySQL Powered"/></td>
+				<td style="width:100%; text-align:right"><img src="../images/mysqls.png" alt="MySQL Powered"/></td>
 			</tr>
 		</table>
 	</div>
