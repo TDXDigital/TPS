@@ -34,7 +34,7 @@ else if($con){
 				<th><label for="from">Date From</label></th>
 				<th><label for="to">Date To</label></th>
 				<th><label for="limits">Report limit</label></th>
-                <th><label for="Confience">Confidence Check</label></th>
+                <th><label for="Confience">Verification</label></th>
 			</tr>
 			<tr>
 				<td>
@@ -49,8 +49,9 @@ else if($con){
 				</td>
                 <td>
                     <!--<input type="checkbox" checked id="Confidence" name="Confidence" />-->
-                    <select id="Confidence">
-                        <option value="soundex">Use Soundex Verification</option>
+                    <select id="Confidence" name="verification">
+                        <option value="soundex">Use Soundex Verification (Adaptive)</option>
+                        <option value="simple" disabled>Use Simple Comparison (Strict)</option>
                         <option value="None" selected>Use No Verification</option>
                     </select>
                 </td>
