@@ -12,11 +12,11 @@ else if($con){
 ?>
 
 <!DOCTYPE HTML>
+<html>
 <head>
 <link rel="stylesheet" type="text/css" href="../altstyle.css" />
 <title>DPL Administration</title>
 </head>
-<html>
 <body>
 	<div class="topbar">
            Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
@@ -28,24 +28,28 @@ else if($con){
 		<h2>Playlist Report</h2>
 	</div>
 	<div id="content">
+        <form action="PlaylistRep2.php" method="POST">
 		<table>
 			<tr>
-				<th>Date From</th>
-				<th>Date To</th>
-				<th>Report Limit</th>
+				<th><label for="from">Date From</label></th>
+				<th><label for="to">Date To</label></th>
+				<th><label for="limits">Report limit</label></th>
+                <th><label for="Confience">Confidence Check</label></th>
 			</tr>
-			<form action="PlaylistRep2.php" method="POST">
 			<tr>
 				<td>
-					<input type="date" name="from" value="<?php echo date('Y-m-d', strtotime("today - 1 week") ) ?>" />
+					<input type="date" name="from" value="<?php echo date('Y-m-d', strtotime("yesterday - 1 week") ) ?>" />
 				</td>
 				<td>
-					<input type="date" name="to" value="<?php echo date('Y-m-d') ?>" />
+					<input type="date" name="to" value="<?php echo date('Y-m-d', strtotime("yesterday")) ?>" />
 				</td>
 				<td>
 					<!--<label for="limits">Limit Results</label>-->
 					<input type="number" name="limit" value="100" id="limits" />
 				</td>
+                <td>
+                    <input type="checkbox" checked id="Confidence" name="Confidence" />
+                </td>
 			</tr>
 		</table>
 		</div>
@@ -57,11 +61,11 @@ else if($con){
 				<input type="button" value="Reset" onClick="window.location.reload()"></td><td>
 				<form method="POST" action="../masterpage.php"><input type="submit" value="Menu"/></form>
 				</td>
-				<td width="100%" align="right"><img src="../images/mysqls.png" alt="MySQL Powered"/></td>
+				<td style="width:100%; text-align:right;"><img src="../images/mysqls.png" alt="MySQL Powered"/></td>
 			</tr>
 		</table>
 	</div>
-	
+	</form>
 <?php
 
 }

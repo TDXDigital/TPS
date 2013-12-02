@@ -46,13 +46,13 @@
                 <form id="form1" method="post" method="post" action="CommitGenre.php">
                     <!-- Do this through AJAX???-->
                     <div id="Create">
-                <h2>Genre Settings</h2>
+                <h2>Audits and Traffic Enforcement</h2>
                 <h3>Edit / Create</h3>
                     <fieldset>
                         <div class="left">
-                            <label for="name">Name</label>
-                            <br/><input type="text" required placeholder="Unique Name" id="name" name="name"  value="<?php echo $NAME;?>"/>
-                            <input type="hidden" value="<?php echo $UID?>" name="UID"/>
+                            <label for="name">Description</label>
+                            <br/><input type="text" placeholder="Description (Optional)" id="name" name="description"  value="<?php echo $NAME;?>"/>
+                            <input type="hidden" value="<?php echo $UID?>" name="AuditID"/>
                         </div>
                         <div class="left">
                             <label for="station">Station</label>
