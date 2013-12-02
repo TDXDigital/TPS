@@ -103,8 +103,8 @@ else{
 					//CHECK FOR XREF 
 					
 					//END CHECK
-					if($COMS = mysql_query($COMSQ)){
-						while($COM = mysql_fetch_array($COMS)){
+					if($COMS = mysqli_query($COMSQ)){
+						while($COM = mysqli_fetch_array($COMS)){
 							echo "<tr><td>";
 							echo $COM['AuditId'];
 							echo "<input type=\"radio\" name=\"edit\" value=\"".$COM['AuditId']."\"/></td><td>";
@@ -170,6 +170,9 @@ else{
 				<input type="button" value="Menu" onclick="window.location.href='../masterpage.php'" />
 				</td>
 				<td style="width: 100%; text-align:right;"><img src="../images/mysqls.png" alt="MySQL Powered"/></td>
+                <?php
+                    $COM->close();
+                ?>
 			</tr>
 		</table>
 	</div>
