@@ -2,9 +2,12 @@
 session_start();
 $json_arr=array();
 $artist = addslashes($_GET['term']);
+$type = addslashes($_GET['type']);
 //$title = $_GET['T'];
 $link = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']) or die("Connection Error");
-$query_artist = "SELECT artist, album FROM song where Category not like '5%' and Category NOT LIKE '4%' and Category NOT LIKE '1%' and Artist REGEXP '$artist' group by soundex(artist) LIMIT 10";
+//if($type=="A"){
+    $query_artist = "SELECT artist, album FROM song where Category not like '5%' and Category NOT LIKE '4%' and Category NOT LIKE '1%' and Artist REGEXP '$artist' group by soundex(artist) LIMIT 10";
+//}
 $result=mysqli_query($link,$query_artist);
 if(mysqli_error($link)){
     echo mysqli_error($link);
