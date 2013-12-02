@@ -27,7 +27,11 @@ else{
     <script src="../js/jquery/js/jquery-ui-1.10.0.custom.js" type="text/javascript"></script>
 <title>Socan Audits</title>
 </head>
-<body>
+    <body>
+
+    </body>
+</html>
+    <!--
 	<div class="topbar">
            User: <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
@@ -97,7 +101,6 @@ else{
 						<span title="In the event of a audit including after hours broadcasting (00:00 - 06:00) enabled these restrictions for these programmers">After Hours</span>
 					</th>
 				</tr>
-				<!-- list Ads already in system-->
 				<?php
 					$COMSQ = "select * from socan";
 					//CHECK FOR XREF 
@@ -178,4 +181,4 @@ else{
 	</div>
     </form>
 </body>
-</html>
+</html>-->
