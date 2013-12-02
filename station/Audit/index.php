@@ -130,12 +130,12 @@
                                 }
                                 else{
                                    
-                                   $QUERY = "SELECT genre.*, (SELECT count(programname) FROM program WHERE program.genre=genre.genreid AND program.active='1') AS PGM_Count, (SELECT count(*) FROM program where program.active='1' group by callsign) AS Total, (SELECT PGM_Count / Total) AS Percent FROM genre";
+                                   $QUERY = "SELECT * FROM socan order by Enabled DESC, StationID DESC, end DESC, start DESC";
                                    //echo $QUERY;
                                    if($res = mysqli_query($con,$QUERY)){
                                        while($obj = $res->fetch_object()){
-                                           echo "<tr><td><input type='checkbox' onchange='EditOnly()' name='delete[]' value='".$obj->UID."'/>";
-                                           echo "<input type='hidden' name='UID[]' value='".$obj->UID."'/></td>";
+                                           echo "<tr><td><input type='checkbox' onchange='EditOnly()' name='delete[]' value='".$obj->AuditID."'/>";
+                                           echo "<input type='hidden' name='UID[]' value='".$obj->AuditID."'/></td>";
                                            echo "<td><input onchange='EditOnly()' type='text' min='0' max='900' name='C_Name[]' placeholder='Unique Name' title='Origional:".addslashes($obj->genreid)."' value='".addslashes($obj->genreid)."'/></td>";
                                            echo "<input type='hidden' name='C_OLD_NAME[]' value='".addslashes($obj->genreid)."' />";
                                            echo "<td><input onchange='EditOnly()' type='number' min='0' max='999' name='C_Cancon[]' placeholder='CC/Hr' value='".$obj->cancon."'/></td>";
