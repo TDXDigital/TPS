@@ -38,17 +38,21 @@ else if($con){
 			</tr>
 			<tr>
 				<td>
-					<input type="date" name="from" value="<?php echo date('Y-m-d', strtotime("yesterday - 1 week") ) ?>" />
+					<input type="date" id="from" name="from" value="<?php echo date('Y-m-d', strtotime("yesterday - 1 week") ) ?>" />
 				</td>
 				<td>
-					<input type="date" name="to" value="<?php echo date('Y-m-d', strtotime("yesterday")) ?>" />
+					<input type="date" id="to" name="to" value="<?php echo date('Y-m-d', strtotime("yesterday")) ?>" />
 				</td>
 				<td>
 					<!--<label for="limits">Limit Results</label>-->
 					<input type="number" name="limit" value="100" id="limits" />
 				</td>
                 <td>
-                    <input type="checkbox" checked id="Confidence" name="Confidence" />
+                    <!--<input type="checkbox" checked id="Confidence" name="Confidence" />-->
+                    <select id="Confidence">
+                        <option value="soundex">Use Soundex Verification</option>
+                        <option value="None" selected>Use No Verification</option>
+                    </select>
                 </td>
 			</tr>
 		</table>
