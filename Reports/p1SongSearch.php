@@ -31,10 +31,29 @@ else if($con){
 	</div>
 	<div id="content">
 		<form name="General" id="form1" action="p2SongSearch.php" method="POST">
+            <div>
+                <label>Report Type</label>
+                <input type="radio" id="standard" name="option" value="Standard" checked="checked"/>
+                <label for="standard">Standard</label>
+                <input type="radio" id="single" name="option" value="Playlist"/>
+                <label for="single">Playlist Only</label>
+				<input type="radio" id="Multi" name="option" value="Exclusive"/>
+                <label for="Multi">No Playlist</label>
+            </div>
 		<table>
-			<tr><label>Report Type</label><input type="radio" id="single" name="option" value="Single" checked="checked"><label for="single">Single Playlist</label>
-				<input type="radio" id="Multi" name="option" value="Single" disabled="disabled"><label for="Multi">Multi Playlist</label></tr>
-			<tr><th>Playlist</th><th>Selection Type</th><th>Date From</th><th>Date To</th><th>Program</th><th>CC</th><th>Hit</th><th>Ins</th></tr>
+            <thead>
+			    <tr>
+                    <th>Playlist</th>
+                    <th>Selection Type</th>
+                    <th>Date From</th>
+                    <th>Date To</th>
+                    <th>Program</th>
+                    <th>CC</th>
+                    <th>Hit</th>
+                    <th>Ins</th>
+                </tr>
+            </thead>
+            <tbody>
 			<tr><td><!--<input type="number" min="0" name="Playlist" size="5" title="Playlist Number, may contain Wildcard"/>-->
 				<input list="playlist" name="Playlist" size="6"/>
 				<datalist id="playlist">
@@ -111,7 +130,7 @@ else if($con){
 					<input type="text" name="Category" />
 				</td>
 			</tr>
-			
+			</tbody>
 		</table>
 		</div>
 	<div id="foot">

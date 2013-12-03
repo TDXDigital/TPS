@@ -89,8 +89,38 @@ else if($con){
 			}
 			$SQLBUFF.=" title like '%".addslashes($_POST['Title'])."%' ";
 		}
-		
-		if($_POST['PLOpt']=="P")
+
+        // HANDLE DATE RESTRICTIONS
+		if($_POST['from']!="" && $_POST['to']!="")
+		{
+			if($CONT == true){
+				$SQLBUFF .= " and ";
+			}
+			else{
+				$CONT = true;
+			}
+			$SQLBUFF.=" date between '".$_POST['from']."' and '".$_POST['to']. "' ";
+		}
+        elseif($_POST['from']!="" && $_POST['to']==""){
+            if($CONT == true){
+				$SQLBUFF .= " and ";
+			}
+			else{
+				$CONT = true;
+			}
+			$SQLBUFF.=" date >= '".$_POST['from']."'  ";
+        }
+        elseif($_POST['to']!=""){
+            if($CONT == true){
+				$SQLBUFF .= " and ";
+			}
+			else{
+				$CONT = true;
+			}
+			$SQLBUFF.=" date <= '".$_POST['to']. "' ";
+        }
+
+		if($_POST['option']=="Playlist")
 		{
 			if($CONT == true){
 				$SQLBUFF .= " and ";
@@ -100,7 +130,7 @@ else if($con){
 			}
 			$SQLBUFF.=" playlistnumber is not NULL ";
 		}
-		else if ($_POST['PLOpt']=="N"){
+		else if ($_POST['option']=="Exclusive"){
 			if($CONT == true){
 				$SQLBUFF .= " and ";
 			}
@@ -109,7 +139,7 @@ else if($con){
 			}
 			$SQLBUFF.=" playlistnumber is NULL ";
 		}
-		
+		// Does not need else, if standard, then return both
 		if($CONT == true){
 			$SQL .= " where " . $SQLBUFF ;
 			$SQLC .= " where " . $SQLBUFF;
@@ -208,8 +238,8 @@ if(($pagenum + 2) < $last){
                     if(isset($_POST['program'])){
                         echo "<input type='hidden' value='".$_POST['program']."' name='program'/>";
                     }
-                    if(isset($_POST['PLOpt'])){
-                        echo "<input type='hidden' value='".$_POST['PLOpt']."' name='PLOpt'/>";
+                    if(isset($_POST['option'])){
+                        echo "<input type='hidden' value='".$_POST['option']."' name='option'/>";
                     }
                     if(isset($_POST['CC'])){
                         echo "<input type='hidden' value='".$_POST['CC']."' name='CC'/>";
@@ -219,6 +249,12 @@ if(($pagenum + 2) < $last){
                     }
                     if(isset($_POST['Ins'])){
                         echo "<input type='hidden' value='".$_POST['Ins']."' name='Ins'/>";
+                    }
+                    if(isset($_POST['from'])){
+                        echo "<input type='hidden' value='".$_POST['from']."' name='from'/>";
+                    }
+                    if(isset($_POST['to'])){
+                        echo "<input type='hidden' value='".$_POST['to']."' name='to'/>";
                     }
                 ?>
                 <input type="submit" value="GO!" />
@@ -237,6 +273,7 @@ if(($pagenum + 2) < $last){
         echo "<div style='width:100%;'>Error ".mysql_errno()." ".mysql_error()."</div>";
         echo "<div style='width:100%;'>Query: ".$SQL."</div>";
     }
+    //echo "<div style='width:100%;'>Query: ".$SQL."</div>";
 		echo "<table><tr><th>Playlist</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th><th>CC</th><th>Hit</th><th>Ins</th><th>Log</th></tr>";
 		$ROW = 0;
 		while($row = mysql_fetch_array($data)){
@@ -269,7 +306,7 @@ if(($pagenum + 2) < $last){
 				<input type="button" value="Reset" onClick="document.forms['General'].reset()"></td><td>
 				<form method="POST" action="../masterpage.php"><input type="submit" value="Menu"/></form>
 				</td>
-				<td width="100%" align="right"><img src="../images/mysqls.png" alt="MySQL Powered"/></td>
+				<td style="width:100%; text-align:right;"><img src="../images/mysqls.png" alt="MySQL Powered"/></td>
 			</tr>
 		</table>
 	</div>

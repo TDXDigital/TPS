@@ -42,20 +42,47 @@ else if($con){
 			else{
 				$Resu .= "<tr>";
 			}*/
-			$Resu .= "<tr><td align=center>" . $chnum . "</td><td align=center>". $row['playlistnumber'] . "</td><td align=center>" . $row['count(playlistnumber)'] . "</td>
-			<td align=center >" . $row['artist'] . "</td><td align=center>" . $row['album'] . "</td></tr>";
+			/*$Resu .= "<tr><td align=center>" . $chnum . "</td><td align=center>". $row['playlistnumber'] . "</td><td align=center>" . $row['count(playlistnumber)'] . "</td>
+			<td align=center >" . $row['artist'] . "</td><td align=center>" . $row['album'] . "</td></tr>";*/
+            $TableVals .= ",
+            [$chnum,".$row['playlistnumber'].",".$row['count(playlistnumber)'].",'".addslashes($row['artist'])."','".addslashes($row['album'])."','','']";
 			++$chnum;
 		}
 	}
 ?>
 
 <!DOCTYPE HTML>
+<html>
 <head>
 <link rel="stylesheet" type="text/css" href="../altstyle.css" />
     <link rel="stylesheet" type="text/css" href="../station/genres/genres.css"/>
-<title>DPL Administration</title>
+<title>Charts</title>
+    
+    <!-- GOOGLE API TABLE-->
+    <script type="text/javascript" src="//www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load('visualization', '1', {packages: ['table']});
+    </script>
+    <script type="text/javascript">
+    function drawVisualization() {
+      // Create and populate the data table.
+      var data = google.visualization.arrayToDataTable([
+        ['Chart Number', 'Playlist Number', 'Occurances', 'Artist', 'Album', 'V-A Score', 'Records']
+        <?php
+            echo $TableVals;
+        ?>
+      ]);
+    
+      // Create and draw the visualization.
+      visualization = new google.visualization.Table(document.getElementById('table'));
+      visualization.draw(data, {showRowNumber: false, allowHtml:true, alternatingRowStyle:true});
+        //visualization.alternatingRowStyle(true);
+    }
+    
+
+    google.setOnLoadCallback(drawVisualization);
+    </script>
 </head>
-<html>
 <body>
 	<div class="topbar">
            Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
@@ -67,7 +94,8 @@ else if($con){
 		<h2>Playlist Report</h2>
 	</div>
 	<div id="content">
-		<table>
+        <div id="table"></div>
+		<!--<table>
             <thead>
 			    <tr>
 				    <th style="width:5%">Chart Number</th>
@@ -80,14 +108,14 @@ else if($con){
             <tbody>
 			    <?php echo $Resu; ?>
             </tbody>
-		</table>
+		</table>-->
 		</div>
 	<div id="foot">
 		<table>
             <tfoot>
 			    <tr>
 				    <td style="width:100%; text-align:left">
-				    <input type="button" value="Search" onclick="window.location.href='/Reports/PlaylistRep.php'">
+				    <input type="button" value="Search" onclick="window.location.href='PlaylistRep.php'">
 				    <input type="button" value="Refresh" onClick="window.location.reload()">
 				    <input type="button" onclick="window.location.href='../masterpage.php'" value="Menu"/>
 				    <img style="float:right" src="../images/mysqls.png" alt="MySQL Powered"/></td>
