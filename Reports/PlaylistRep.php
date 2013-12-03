@@ -50,9 +50,9 @@ else if($con){
                 <td>
                     <!--<input type="checkbox" checked id="Confidence" name="Confidence" />-->
                     <select id="Confidence" name="verification">
-                        <option value="soundex">Soundex Verification (Adaptive)</option>
+                        <option value="soundex" selected>Soundex Verification (Adaptive)</option>
                         <option value="simple" disabled>Simple Comparison (Strict)</option>
-                        <option value="None" selected>No Verification</option>
+                        <option value="None">No Verification</option>
                     </select>
                 </td>
 			</tr>

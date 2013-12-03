@@ -10,14 +10,26 @@ if (!$con){
 }
 else if($con){
 	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /user/login');}
-	$SQL0 = "select count(playlistnumber), cancon, playlistnumber, artist, album ";
-    if($_POST['verification']=="soundex"){
-        $SQL_Ver="(SELECT count(songid) from song where ) AS Artist_Score";
+	if($_POST['verification']=="soundex"){
+        $SQL0 = "select count(playlistnumber), cancon, playlistnumber as playlist, (SELECT artist from song where playlistnumber=playlist and date between '" . addslashes($_POST['from']) . "' and '" . addslashes($_POST['to']) . "' group by soundex(album) order by count(soundex(album)) desc limit 1) as artist,(SELECT album from song where playlistnumber=playlist and date between '" . addslashes($_POST['from']) . "' and '" . addslashes($_POST['to']) . "'  group by soundex(album) order by count(soundex(album)) desc limit 1) as album ";
     }
     else{
-        $SQL_Ver="";
+        $SQL0 = "select count(playlistnumber), cancon, playlistnumber as playlist, artist, album ";
     }
-    $SQL1 = " from song where date between '" . addslashes($_POST['from']) . "' and '" . $_POST['to'] . "' ";
+    /*if($_POST['verification']=="soundex"){
+        $SQL_Ver=", ((SELECT playlistnumber, count(*) as count, (SELECT count(*) from song where ";
+        if($_POST['FROM']!='' && $_POST['to']!=''){
+            $SQL_Ver .= "song.date between '".addslashes($_POST['from'])."' and '".addslashes($_POST['to'])."' and playlistnumber=playlist) as total, soundex(artist) as sndx FROM song WHERE playlistnumber=playlist and song.date between '".addslashes($_POST['from'])."' and '".addslashes($_POST['to'])."' group by soundex(album) order by count desc limit 1)";
+        }
+        else{
+            $SQL_Ver .= "playlistnumber=playlist) as total, soundex(artist) as sndx FROM song WHERE playlistnumber=playlist group by soundex(album) order by count desc limit 1))";
+        }
+        
+    }
+    else{*/
+        $SQL_Ver=", soundex(album) ";
+    //}
+    $SQL1 = " from song where date between '" . addslashes($_POST['from']) . "' and '" . addslashes($_POST['to']) . "' ";
 	$SQL2 = "";
 	if(isset($_POST['exempt'])){
 		$EXEM = $_POST['exempt'];
@@ -27,9 +39,10 @@ else if($con){
 	}
 	
 	//INSERT EXCLUDE HERE
-	$SQL3 = "group by playlistnumber order by count(playlistnumber) desc, playlistnumber asc";
+	//$SQL3 = "group by playlistnumber order by count(playlistnumber) desc, playlistnumber asc";
+    $SQL3 = "group by playlistnumber order by count(playlistnumber) desc, playlistnumber asc";
 	$SQLM = $SQL0 . $SQL_Ver . $SQL1 . $SQL2 . $SQL3; 
-	
+    //echo $SQLM;
 	$arr = mysql_query($SQLM) or die(mysql_error());
 	$Resu = "";
 	$chnum = 1;
@@ -44,8 +57,26 @@ else if($con){
 			}*/
 			/*$Resu .= "<tr><td align=center>" . $chnum . "</td><td align=center>". $row['playlistnumber'] . "</td><td align=center>" . $row['count(playlistnumber)'] . "</td>
 			<td align=center >" . $row['artist'] . "</td><td align=center>" . $row['album'] . "</td></tr>";*/
+            /*
+            SELECT playlistnumber, count(*) as count, (SELECT count(*) from song where song.date between '2013-11-01' and '2013-12-01' and playlistnumber='333') as total, soundex(artist) as sndx 
+            FROM song WHERE playlistnumber='333' and song.date between '2013-11-01' and '2013-12-01' group by soundex(album) order by count desc limit 1;
+            */
+            if($_POST['verification']=="soundex"){
+                if($_POST['from']!='' && $_POST['to']!=''){
+                    $SNDX_SQL = "SELECT playlistnumber, count(*) as count, (SELECT count(*) from song where playlistnumber='".$row['playlist']."' and date between '".addslashes($_POST['from'])."' and '".addslashes($_POST['to'])."') as total, soundex(artist) as sndx FROM song WHERE playlistnumber='".addslashes($row['playlist'])."' and date between '".addslashes($_POST['from'])."' and '".addslashes($_POST['to'])."' group by soundex(album) order by count desc limit 1 ";
+                }
+                else{
+                    $SNDX_SQL = "SELECT playlistnumber, count(*) as count, (SELECT count(*) from song where playlistnumber='".$row['playlist']."') as total, soundex(artist) as sndx FROM song WHERE playlistnumber='".addslashes($row['playlist'])."' group by soundex(album) order by count desc limit 1 ";
+                }
+                $soundex = mysql_query($SNDX_SQL) or die(mysql_error());
+                $sound = mysql_fetch_array($soundex);
+                $VERR = round(((floatval($sound['count'])/floatval($sound['total']))*100),2);
+            }
+            else{
+                $VERR=NULL;
+            }
             $TableVals .= ",
-            [$chnum,".$row['playlistnumber'].",".$row['count(playlistnumber)'].",'".addslashes($row['artist'])."','".addslashes($row['album'])."','','']";
+            [$chnum,".$row['playlist'].",".$row['count(playlistnumber)'].",'".addslashes($row['artist'])."','".addslashes($row['album'])."',$VERR,'<a href=\'../Reports/p2SongSearch.php?playlist=".$row['playlist']."&from=".$_POST['from']."&to=".$_POST['to']."\' target=\'_blank\'><span class=\"ui-icon ui-icon-circle-plus\">View</span></a>']";
 			++$chnum;
 		}
 	}
@@ -56,6 +87,12 @@ else if($con){
 <head>
 <link rel="stylesheet" type="text/css" href="../altstyle.css" />
     <link rel="stylesheet" type="text/css" href="../station/genres/genres.css"/>
+    <!--<link rel="stylesheet" type="text/css" href="../js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>-->
+    <!--<style>
+        .google-visualization-table-table {
+            padding: 0 0 0 0;
+        }
+    </style>-->
 <title>Charts</title>
     
     <!-- GOOGLE API TABLE-->
@@ -67,7 +104,7 @@ else if($con){
     function drawVisualization() {
       // Create and populate the data table.
       var data = google.visualization.arrayToDataTable([
-        ['Chart Number', 'Playlist Number', 'Occurances', 'Artist', 'Album', 'V-A Score', 'Records']
+        ['Chart', 'Playlist', 'Occurances', 'Artist', 'Album', 'Album\n Score', 'Records']
         <?php
             echo $TableVals;
         ?>
@@ -75,7 +112,7 @@ else if($con){
     
       // Create and draw the visualization.
       visualization = new google.visualization.Table(document.getElementById('table'));
-      visualization.draw(data, {showRowNumber: false, allowHtml:true, alternatingRowStyle:true});
+      visualization.draw(data, {showRowNumber: false, allowHtml:true, alternatingRowStyle:true, padding:0});
         //visualization.alternatingRowStyle(true);
     }
     

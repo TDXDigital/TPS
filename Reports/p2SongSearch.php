@@ -31,6 +31,34 @@ else if($con){
 		else{
 			$pagenum = addslashes($_POST['page']);
 		}
+        // Get POST or GET Values, have POST take priority
+        if($_POST['Playlist']!=''){
+            $playlist = addslashes($_POST['Playlist']);
+        }
+        elseif(isset($_GET['playlist'])){
+            $playlist = addslashes($_GET['playlist']);
+        }
+        else{
+            $playlist="";
+        }
+        if($_POST['from']!=''){
+            $from = addslashes($_POST['from']);
+        }
+        elseif(isset($_GET['from'])){
+            $from = addslashes($_GET['from']);
+        }
+        else{
+            $from="";
+        }
+        if($_POST['to']!=''){
+            $to = addslashes($_POST['to']);
+        }
+        elseif(isset($_GET['to'])){
+            $to = addslashes($_GET['to']);
+        }
+        else{
+            $to="";
+        }
 		//echo $pagenum;
         //echo $PAGIN;
 		$SQL = "SELECT * from song";
@@ -40,10 +68,10 @@ else if($con){
 		$CONT = false;
 		
 		
-		if($_POST['Playlist']!="")
+		if($playlist!="")
 		{
 			$CONT = true;
-			$SQLBUFF.=" playlistnumber LIKE '".addslashes($_POST['Playlist'])."' ";
+			$SQLBUFF.=" playlistnumber LIKE '$playlist' ";
 		}
 		
 		if($_POST['Artist']!="")
@@ -91,7 +119,7 @@ else if($con){
 		}
 
         // HANDLE DATE RESTRICTIONS
-		if($_POST['from']!="" && $_POST['to']!="")
+		if($from!="" && $to!="")
 		{
 			if($CONT == true){
 				$SQLBUFF .= " and ";
@@ -99,25 +127,25 @@ else if($con){
 			else{
 				$CONT = true;
 			}
-			$SQLBUFF.=" date between '".$_POST['from']."' and '".$_POST['to']. "' ";
+			$SQLBUFF.=" date between '$from' and '$to' ";
 		}
-        elseif($_POST['from']!="" && $_POST['to']==""){
+        elseif($from!="" && $to==""){
             if($CONT == true){
 				$SQLBUFF .= " and ";
 			}
 			else{
 				$CONT = true;
 			}
-			$SQLBUFF.=" date >= '".$_POST['from']."'  ";
+			$SQLBUFF.=" date >= '$from'  ";
         }
-        elseif($_POST['to']!=""){
+        elseif($to!=""){
             if($CONT == true){
 				$SQLBUFF .= " and ";
 			}
 			else{
 				$CONT = true;
 			}
-			$SQLBUFF.=" date <= '".$_POST['to']. "' ";
+			$SQLBUFF.=" date <= '$to' ";
         }
 
 		if($_POST['option']=="Playlist")
