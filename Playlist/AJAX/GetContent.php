@@ -6,7 +6,7 @@ session_start();
 //{
   //header('location: login.php');
 //}
-$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
+$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
@@ -17,7 +17,7 @@ else if($con){
 else{
 	echo 'ERROR!';
 }
-	$query = "Select * from playlist";
+	$query = "Select * from playlist where ";
 	if($from = $_GET['f']){
 		if($limit = $_GET['l']){
 			$query .= " limit " . $from . "," . $limit;
@@ -50,17 +50,17 @@ else{
 				if($row['cancon']=="CC"){
 					echo " selected ";
 				}
-				echo " value=\"CC\" >Canadian</option>
+				echo " value=\"Country\" >Canadian</option>
 				<option";
 				if($row['cancon']=="AC"){
 					echo " selected ";
 				}
-				echo " value=\"AC\" >Alberta</option>
+				echo " value=\"Province\" >Alberta</option>
 				<option";
 				if($row['cancon']=="LC"){
 					echo " selected ";
 				}
-				echo " value=\"LC\" >Local</option>
+				echo " value=\"Local\" >Local</option>
 				</select></td>";
 		echo "<td><select name=\"label[]\" style=\"width:99%;\">
 				<option";
@@ -99,10 +99,10 @@ else{
 				<td>
 				<input type=\"submit\" value=\"Submit\"/></form></td><td>
 				<input type=\"button\" value=\"Refresh\" onClick=\"loadinit()\"></td><td>
-				<form method=\"POST\" action=\"/masterpage.php\"><input type=\"submit\" value=\"Menu\"/></form>
+				<form method=\"POST\" action=\"../masterpage.php\"><input type=\"submit\" value=\"Menu\"/></form>
 				</td>
-				<td width=\"100%\" align=\"right\"><img src=\"/images/ajax.png\" height=\"30px\" alt=\"AJAX Utilization\"/>
-				<img src=\"/images/mysqls.png\" alt=\"MySQL Powered\"/></td>
+				<td width=\"100%\" align=\"right\"><img src=\"../images/ajax.png\" height=\"30px\" alt=\"AJAX Utilization\"/>
+				<img src=\"../images/mysqls.png\" alt=\"MySQL Powered\"/></td>
 			</tr>
 		</table>
 	</div>";

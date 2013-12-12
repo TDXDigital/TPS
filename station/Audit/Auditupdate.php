@@ -7,13 +7,13 @@ if(!$link){
 else{
 
     // FETCH DATA
-    $UID   = $_POST['UID'];
+    $UID   = $_POST['AuditID'];
     $DEL   = $_POST['delete'];
-    $NAME  = $_POST['C_Name'];
-    $OLDNAME = $_POST['C_OLD_NAME'];
-    $CAN_N = $_POST['C_Cancon'];
-    $CAN_P = $_POST['C_CCPerc'];
-    $CAN_T = $_POST['C_CCType'];
+    $Description  = $_POST['Description'];
+    //$OLDNAME = $_POST['C_OLD_NAME'];
+    $RQArtist = $_POST['RQArtist'];
+    $RQAlbum = $_POST['RQAlbum'];
+    $RQComposer = $_POST['RQComposer'];//ENDED CODING HERE
     $PLA_N = $_POST['C_Playlist'];
     $PLA_P = $_POST['C_PlPerc'];
     $PLA_T = $_POST['C_PlType'];

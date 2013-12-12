@@ -18,42 +18,81 @@ ADD UNIQUE INDEX `UID_UNIQUE` (`UID` ASC);
 
 session_start();
 
-//  GET CanCon VALUES
-$CCN = addslashes($_POST['cangen']);
-$CCP = addslashes(floatval($_POST['canper'])/100);
-$CCT = addslashes($_POST['cctype']);
+//  GET VALUES
+//$ENAB = addslashes($_POST['Enabled']);
+if(isset($_POST['enabled'])){
+    $ENAB = '1';
+}
+else{
+    $ENAB = '0';
+}
+//$RQAR = addslashes($_POST['RQArtist']);
+if(isset($_POST['Artist'])){
+    $RQAR = '1';
+}
+else{
+    $RQAR = '0';
+}
+//$RQAL = addslashes($_POST['RQAlbum']);
+if(isset($_POST['Album'])){
+    $RQAL = '1';
+}
+else{
+    $RQAL = '0';
+}
+//$RQHR = addslashes($_POST['RQAfterHr']);
+if(isset($_POST['RQAfterHr'])){
+    $RQHR = '1';
+}
+else{
+    $RQHR = '0';
+}
+//$RQCO = addslashes($_POST['RQComposer']);
+if(isset($_POST['Composer'])){
+    $RQCO = '1';
+}
+else{
+    $RQCO = '0';
+}
+//$SHPR = addslashes($_POST['ShowPrompt']);
+if(isset($_POST['prompt'])){
+    $SHPR = '1';
+}
+else{
+    $SHPR = '0';
+}
 
-// GET PLAYLIST VALUES
-$PLN = addslashes($_POST['plgen']);
-$PLP = addslashes(floatval($_POST['plperc'])/100);
-$PLT = addslashes($_POST['pltype']);
+// GET DATES
+$STAR = addslashes($_POST['start']);
+$ENDD = addslashes($_POST['end']);
 
 // GET STATION
-$STN = addslashes($_POST['station']);
+$STNI = addslashes($_POST['station']);
 
-// GET NAME
-$NAME = addslashes(htmlspecialchars($_POST['name']));
-$UID = addslashes($_POST['UID']);
+// GET DESCRIPTION
+$DESC = addslashes(htmlspecialchars($_POST['description']));
 
-$SQL_INSERT = "INSERT INTO genre (genreid,cancon,playlist,canconperc,playlistperc,CCType,PlType,Station) VALUES ('$NAME','$CCN','$PLN','$CCP','$PLP','$CCT','$PLT','$STN')";
-$SQL_QUERY_NAME = "SELECT UID, count(uid) AS UID_NUM FROM genre WHERE `genreid`='$NAME'";
+
+$SQL_INSERT = "INSERT INTO socan (Enabled,RQArtist,RQAlbum,RQComposer,start,end,RQAfterHr,ShowPrompt,StationID,Description)
+ VALUES ('$ENAB','$RQAR','$RQAL','$RQCO','$STAR','$ENDD','$RQHR','$SHPR','$STNI','$DESC')";
+//$SQL_QUERY_NAME = "SELECT UID, count(uid) AS UID_NUM FROM genre WHERE `genreid`='$NAME'";
 
 $link = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if(!$link){
     header('location: '.$_SERVER["HTTP_REFERER"].'?e=Database%20connection%20error');
 }
 else{
-    if($vars = mysqli_query($link,$SQL_QUERY_NAME)){
-        if($vars->fetch_object()->UID_NUM==0){
+    //if($vars = mysqli_query($link,$SQL_QUERY_NAME)){
+        //if($vars->fetch_object()->UID_NUM==0){
             if(mysqli_query($link,$SQL_INSERT)){
-                header('location: genre.php?r=Successfully%20Added');
+                header('location: ./?r=Successfully%20Added');
             }
             else{
-                header('location: '.$_SERVER['HTTP_REFERER'].'?e=Invalid%20Parameters');
-                //echo $SQL_INSERT;
-                //echo "</br>".mysqli_error($link);
+                //header('location: ./?e=Invalid%20Parameters');
+                echo $SQL_INSERT;
+                echo "</br>".mysqli_error($link);
             }
-        }
+        /*}
         else{
             header('location:genre.php?e=Already%20Exists');
             //echo $vars->fetch_object()->UID_NUM." entries already exist";
@@ -63,7 +102,7 @@ else{
         //header('location: '.$_SERVER['HTTP_REFERER'].'?e='.mysqli_error($con));
         echo $SQL_QUERY_NAME;
         echo "</br>".mysqli_error($link);
-    }
+    }*/
     
     
 }

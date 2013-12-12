@@ -10,13 +10,13 @@
 
 <!DOCTYPE HTML>
 <head>
-<link rel="stylesheet" type="text/css" href="/altstyle.css" />
+<link rel="stylesheet" type="text/css" href="../altstyle.css" />
 <title>Digital File Submission</title>
 </head>
 <html>
 	<body>
 	<div id="header" >
-		<a href="/masterpage.php"><img src="/images/Ckxu_logo_PNG.png" alt="CKXU" /></a>
+		<a href="/masterpage.php"><img src="../<?php echo $_SESSION['logo']?>" alt="CKXU" /></a>
 	</div>
 	<div id="top">
 		<h2>Digital Music Submission</h2>
