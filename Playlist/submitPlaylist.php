@@ -41,7 +41,13 @@ if (mysqli_connect_errno($con))
     $PL_ZoneNum = $_POST['ZoneNumber'];
     $PL_SmallCode = $_POST['num'];
     $PL_Activate = $_POST['activate'];
-    $PL_Expire = $_POST['expire'];
+    if(isset($_POST['expire']) && $_POST['expire']!=""){
+        $PL_Expire = "'".addslashes($_POST['expire'])."'";
+    }
+    else{
+        $PL_Expire = NULL;
+    }
+    //$PL_Expire = $_POST['expire'];
 
 	//$limit = sizeof($num);
 	
@@ -67,7 +73,7 @@ if (mysqli_connect_errno($con))
             // Insert Values
             if($PL_SmallCode != "" || $PL_ZoneNum != "")
             {
-                $INSPL = "INSERT INTO playlist (ZoneCode,ZoneNumber,SmallCode,Activate,Expire) VALUES ('$PL_ZoneCode','$PL_ZoneNum','$PL_SmallCode','$PL_Activate','$PL_Expire')";
+                $INSPL = "INSERT INTO playlist (ZoneCode,ZoneNumber,SmallCode,Activate,Expire) VALUES ('$PL_ZoneCode','$PL_ZoneNum','$PL_SmallCode','$PL_Activate',$PL_Expire)";
                 IF(!mysqli_query($con,$INSPL)){
                     $rollback = TRUE;
                     $error.="Rollback Occured, Transaction Failed on Playlist";

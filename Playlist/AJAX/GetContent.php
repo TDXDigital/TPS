@@ -17,7 +17,8 @@ else if($con){
 else{
 	echo 'ERROR!';
 }
-	$query = "Select * from playlist where ";
+	//$query = "Select * from playlist where ";
+    $query = "SELECT * FROM library LEFT JOIN playlist ON library.playlistid=playlist.PlaylistId LEFT JOIN recordlabel ON library.labelid=recordlabel.LabelNumber;";
 	if($from = $_GET['f']){
 		if($limit = $_GET['l']){
 			$query .= " limit " . $from . "," . $limit;
@@ -39,25 +40,25 @@ else{
 		}
 		*/
 		
-		echo "<td><input type=\"text\" style=\"width:99%;\" name=\"num[]\" value=\"" . $row['number'] . "\" /></td>";
-		echo "<input type=\"hidden\" name=\"source[]\" value=\"" . $row['number'] . "\" />
+		echo "<td><input type=\"text\" style=\"width:99%;\" name=\"num[]\" value=\"" . $row['SmallCode'] . "\" /></td>";
+		echo "<input type=\"hidden\" name=\"source[]\" value=\"" . $row['SmallCode'] . "\" />
 			 <input type=\"hidden\" name=\"change[]\" value=\"false\">";
-		echo "<td><input type=\"text\" style=\"width:99%;\" name=\"artist[]\" value=\"" . $row['Artist'] . "\" /></td>";
-		echo "<td><input type=\"text\" style=\"width:99%;\" name=\"album[]\" value=\"" . $row['Album'] . "\" /></td>";
-		echo "<td><select name=\"cancon[]\" style=\"width:99%;\">
-				<option value=\"NC\" ></option>
+		echo "<td><input type=\"text\" style=\"width:99%;\" name=\"artist[]\" value=\"" . $row['artist'] . "\" /></td>";
+		echo "<td><input type=\"text\" style=\"width:99%;\" name=\"album[]\" value=\"" . $row['album'] . "\" /></td>";
+		echo "<td><select name=\"locale[]\" style=\"width:99%;\">
+				<option value=\"International\" >International</option>
 				<option";
-				if($row['cancon']=="CC"){
+				if($row['cancon']=="Country"){
 					echo " selected ";
 				}
 				echo " value=\"Country\" >Canadian</option>
 				<option";
-				if($row['cancon']=="AC"){
+				if($row['cancon']=="Province"){
 					echo " selected ";
 				}
 				echo " value=\"Province\" >Alberta</option>
 				<option";
-				if($row['cancon']=="LC"){
+				if($row['cancon']=="Local"){
 					echo " selected ";
 				}
 				echo " value=\"Local\" >Local</option>
