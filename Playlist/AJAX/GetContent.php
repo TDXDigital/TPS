@@ -6,7 +6,7 @@ session_start();
 //{
   //header('location: login.php');
 //}
-$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
+$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
@@ -17,7 +17,8 @@ else if($con){
 else{
 	echo 'ERROR!';
 }
-	$query = "Select * from playlist";
+	//$query = "Select * from playlist where ";
+    $query = "SELECT * FROM library LEFT JOIN playlist ON library.playlistid=playlist.PlaylistId LEFT JOIN recordlabel ON library.labelid=recordlabel.LabelNumber;";
 	if($from = $_GET['f']){
 		if($limit = $_GET['l']){
 			$query .= " limit " . $from . "," . $limit;
@@ -39,28 +40,28 @@ else{
 		}
 		*/
 		
-		echo "<td><input type=\"text\" style=\"width:99%;\" name=\"num[]\" value=\"" . $row['number'] . "\" /></td>";
-		echo "<input type=\"hidden\" name=\"source[]\" value=\"" . $row['number'] . "\" />
+		echo "<td><input type=\"text\" style=\"width:99%;\" name=\"num[]\" value=\"" . $row['SmallCode'] . "\" /></td>";
+		echo "<input type=\"hidden\" name=\"source[]\" value=\"" . $row['SmallCode'] . "\" />
 			 <input type=\"hidden\" name=\"change[]\" value=\"false\">";
-		echo "<td><input type=\"text\" style=\"width:99%;\" name=\"artist[]\" value=\"" . $row['Artist'] . "\" /></td>";
-		echo "<td><input type=\"text\" style=\"width:99%;\" name=\"album[]\" value=\"" . $row['Album'] . "\" /></td>";
-		echo "<td><select name=\"cancon[]\" style=\"width:99%;\">
-				<option value=\"NC\" ></option>
+		echo "<td><input type=\"text\" style=\"width:99%;\" name=\"artist[]\" value=\"" . $row['artist'] . "\" /></td>";
+		echo "<td><input type=\"text\" style=\"width:99%;\" name=\"album[]\" value=\"" . $row['album'] . "\" /></td>";
+		echo "<td><select name=\"locale[]\" style=\"width:99%;\">
+				<option value=\"International\" >International</option>
 				<option";
-				if($row['cancon']=="CC"){
+				if($row['cancon']=="Country"){
 					echo " selected ";
 				}
-				echo " value=\"CC\" >Canadian</option>
+				echo " value=\"Country\" >Canadian</option>
 				<option";
-				if($row['cancon']=="AC"){
+				if($row['cancon']=="Province"){
 					echo " selected ";
 				}
-				echo " value=\"AC\" >Alberta</option>
+				echo " value=\"Province\" >Alberta</option>
 				<option";
-				if($row['cancon']=="LC"){
+				if($row['cancon']=="Local"){
 					echo " selected ";
 				}
-				echo " value=\"LC\" >Local</option>
+				echo " value=\"Local\" >Local</option>
 				</select></td>";
 		echo "<td><select name=\"label[]\" style=\"width:99%;\">
 				<option";
@@ -99,10 +100,10 @@ else{
 				<td>
 				<input type=\"submit\" value=\"Submit\"/></form></td><td>
 				<input type=\"button\" value=\"Refresh\" onClick=\"loadinit()\"></td><td>
-				<form method=\"POST\" action=\"/masterpage.php\"><input type=\"submit\" value=\"Menu\"/></form>
+				<form method=\"POST\" action=\"../masterpage.php\"><input type=\"submit\" value=\"Menu\"/></form>
 				</td>
-				<td width=\"100%\" align=\"right\"><img src=\"/images/ajax.png\" height=\"30px\" alt=\"AJAX Utilization\"/>
-				<img src=\"/images/mysqls.png\" alt=\"MySQL Powered\"/></td>
+				<td width=\"100%\" align=\"right\"><img src=\"../images/ajax.png\" height=\"30px\" alt=\"AJAX Utilization\"/>
+				<img src=\"../images/mysqls.png\" alt=\"MySQL Powered\"/></td>
 			</tr>
 		</table>
 	</div>";

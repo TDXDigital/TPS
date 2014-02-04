@@ -43,7 +43,7 @@
         </div>
         <div class="content">
             <div>
-                <form id="form1" method="post" method="post" action="CommitGenre.php">
+                <form id="form1" method="post" method="post" action="CommitAudit.php">
                     <!-- Do this through AJAX???-->
                     <div id="Create">
                 <h2>Audits and Traffic Enforcement</h2>
@@ -51,8 +51,20 @@
                     <fieldset>
                         <div class="left">
                             <label for="name">Description</label>
-                            <br/><input type="text" placeholder="Description (Optional)" id="name" name="description"  value="<?php echo $NAME;?>"/>
+                            <br/><input type="text" placeholder="Description (Optional)" id="name" name="description" />
                             <input type="hidden" value="<?php echo $UID?>" name="AuditID"/>
+                        </div>
+                        <div class="left">
+                            <label for="prompt">Notify</label>
+                            <br/><input type="checkbox" id="prompt" name="prompt" checked/>
+                        </div>
+                        <div class="left">
+                            <label for="prompt">Enabled</label>
+                            <br/><input type="checkbox" id="enabled" name="enabled" checked/>
+                        </div>
+                        <div class="left">
+                            <label for="prompt">Lead Time</label>
+                            <br/><input type="checkbox" disabled id="prompt" name="prompt" checked/>
                         </div>
                         <div class="left">
                             <label for="station">Station</label>
@@ -77,16 +89,19 @@
                             </select>
                         </div>
                         <div class="left">
-                            <label for="cangen">CanCon</label>
-                            <br/><input type="number" id="cangen" min="0" name="cangen" placeholder="Defined Number" required value="<?php echo $CCNUM;?>"/>
-                            <br/><input type="number" step="1" min="0" max="100" id="ccperc" name="canper" placeholder="Percent" required value="<?php echo $CCPERC;?>"/><label for="ccperc">%</label>
-                            <br/><select name="cctype"><option value="1">Number</option><option value="0" selected>Percentage</option></select>
+                            <fieldset>
+                            <label for="cangen">Require</label>
+                                <br/><input type="checkbox" id="Artist" min="0" name="Artist" /><label for="Artist">Artist</label>
+                                <br/><input type="checkbox" id="Album" min="0" name="Album" /><label for="Album">Album</label>
+                                <br/><input type="checkbox" id="Composer" min="0" name="Composer" /><label for="Composer">Composer</label>
+                            </fieldset>
                         </div>
                         <div class="left">
-                            <label for="Plgen">Playlist</label>
-                            <br/><input type="number" id="Plgen" min="0" name="plgen" placeholder="Defined Number" required value="<?php echo $PLNUM?>"/>
-                            <br/><input type="number" step="1" min="0" max="100" id="plperc" name="plperc" placeholder="Percent" required value="<?php echo $PLPERC;?>"/><label for="plperc">%</label>
-                            <br/><select name="pltype"><option value="1">Number</option><option value="0" selected>Percentage</option></select>
+                            <fieldset>
+                                <label for="Plgen">Dates</label>
+                                <br/><label for="start">Start</label><input type="date" id="start" name="start" required/>
+                                <br/><label for="end">End&nbsp;</label><input type="date" id="end" name="end" required/>
+                            </fieldset>
                         </div>
                     </fieldset>
                 <div>
@@ -106,19 +121,19 @@
 ?>
                 <div id="Edit">
                 <h3>Existing</h3>
-                <form id="form2" method="POST" action="genreupdate.php">
+                <form id="form2" method="POST" action="Auditupdate.php">
                     <table>
                         <thead>
                             <tr>
                                 <th><span class="ui-icon ui-icon-trash"></span></th>
-                                <th>Name</th>
-                                <th>CanCon</th>
-                                <th>Playlist</th>
-                                <th>CC Percentage</th>
-                                <th>Pl Percentage</th>
-                                <th>CC Type</th>
-                                <th>PL Type</th>
-                                <th>Programs</th>
+                                <th>Description</th>
+                                <th>Enabled</th>
+                                <th>Require<br/>Artist</th>
+                                <th>Require<br/>Album</th>
+                                <th>Require<br/>Composer</th>
+                                <th>Date<br/>Start</th>
+                                <th>Date<br/>End</th>
+                                <th>Display<br/>Prompt</th>
                                 <th>Station</th>
                             </tr>
                         </thead>
@@ -130,47 +145,25 @@
                                 }
                                 else{
                                    
-                                   $QUERY = "SELECT * FROM socan order by Enabled DESC, StationID DESC, end DESC, start DESC";
+                                   $QUERY = "SELECT * FROM socan order by Enabled, StationID, end, start";
                                    //echo $QUERY;
                                    if($res = mysqli_query($con,$QUERY)){
                                        while($obj = $res->fetch_object()){
-                                           echo "<tr><td><input type='checkbox' onchange='EditOnly()' name='delete[]' value='".$obj->AuditID."'/>";
-                                           echo "<input type='hidden' name='UID[]' value='".$obj->AuditID."'/></td>";
-                                           echo "<td><input onchange='EditOnly()' type='text' min='0' max='900' name='C_Name[]' placeholder='Unique Name' title='Origional:".addslashes($obj->genreid)."' value='".addslashes($obj->genreid)."'/></td>";
-                                           echo "<input type='hidden' name='C_OLD_NAME[]' value='".addslashes($obj->genreid)."' />";
-                                           echo "<td><input onchange='EditOnly()' type='number' min='0' max='999' name='C_Cancon[]' placeholder='CC/Hr' value='".$obj->cancon."'/></td>";
-                                           echo "<td><input onchange='EditOnly()' type='number' min='0' max='200' name='C_Playlist[]' placeholder='PL/Hr' value='".$obj->playlist."'/></td>";
-                                           echo "<td><input onchange='EditOnly()' type='number' min='0' max='100' name='C_CCPerc[]' placeholder='CC %' value='";
-                                           echo floatval($obj->canconperc)*100;
-                                           echo "'/>%</td>";
-                                           echo "<td><input onchange='EditOnly()' type='number' min='0' max='100' name='C_PlPerc[]' placeholder='PL %' value='";
-                                           echo floatval($obj->playlistperc)*100;
-                                           echo "'/>%</td>";
-                                           echo "<td><select onchange='EditOnly()' name='C_CCType[]'>";
-                                           if($obj->CCType == 1){
-                                               echo"<option value='1' selected>Numeric</option><option value='0'>Percentage</option>";
-                                           }
-                                           else if($obj->CCType == 0){
-                                               echo"<option value='1'>Numeric</option><option selected value='0'>Percentage</option>";
-                                           }
-                                           else{
-                                               echo "<option value='1'>Numeric</option><option value='0'>Percentage</option><option selected style='color: red;' value='1'>Error / Reset to Percent</option>";
-                                           }
-                                           echo "</select></td>";
-                                           echo "<td><select onchange='EditOnly()' name='C_PlType[]'>";
-                                           if($obj->PlType == 1){
-                                               echo"<option value='1' selected>Numeric</option><option value='0'>Percentage</option>";
-                                           }
-                                           else if($obj->PlType == 0){
-                                               echo"<option value='1'>Numeric</option><option selected value='0'>Percentage</option>";
-                                           }
-                                           else{
-                                               echo "<option value='1'>Numeric</option><option value='0'>Percentage</option><option selected style='color: red;' value='1'>Error / Reset to Percent</option>";
-                                           }
-                                           echo "</select></td>";
-                                           echo "<td>".$obj->PGM_Count." (".($obj->Percent*100)."%)</td>";
-                                           echo "<td>".$obj->Station."</td>";
-                                           
+                                           echo "<tr><td><input type='checkbox' onchange='EditOnly()' name='delete[]' value='".$obj->AuditId."'/>";
+                                           echo "<input type='hidden' name='AuditID[]' value='".$obj->AuditId."'/></td>";
+                                           echo "<td><input onchange='EditOnly()' type='text' name='Description[]' placeholder='Unique Name' title='Origional:".addslashes($obj->Description)."' value='".addslashes($obj->Description)."'/></td>";
+                                           echo "<td><input onchange='EditOnly()' type='number' required min='0' max='1' name='Enabled[]' placeholder='CC/Hr' value='".$obj->Enabled."'/></td>";
+                                           echo "<td><input onchange='EditOnly()' type='number' required min='0' max='1' name='RQArtist[]' placeholder='PL/Hr' value='".$obj->RQArtist."'/></td>";
+                                           echo "<td><input onchange='EditOnly()' type='number' required min='0' max='1' name='RQAlbum[]' placeholder='CC %' value='";
+                                           echo $obj->RQAlbum;
+                                           echo "'/></td>";
+                                           echo "<td><input onchange='EditOnly()' type='number' min='0' max='1' name='RQComposer[]' placeholder='PL %' value='";
+                                           echo $obj->RQComposer;
+                                           echo "'/></td>";
+                                           echo "<td><input onchange='EditOnly()' type='date' required name='Start[]' placeholder='PL/Hr' value='".$obj->start."'/></td>";
+                                           echo "<td><input onchange='EditOnly()' type='date' required name='End[]' placeholder='PL/Hr' value='".$obj->end."'/></td>";
+                                           echo "<td><input onchange='EditOnly()' type='number' required min='0' max='1' name='ShowPrompt[]' placeholder='PL/Hr' value='".$obj->ShowPrompt."'/></td>";
+                                           echo "<td>".$obj->StationID."</td>";
                                        }
                                    }
                                    else{

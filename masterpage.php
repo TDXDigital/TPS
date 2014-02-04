@@ -200,7 +200,7 @@ if($_SESSION['access']=='1')
                     <td width="200"><a href="/station/p1updatestation.php">Modify Station Information</a></td>
                     <td><button onclick='window.location.href="/station/p1viewstation.php"' value="Audit">View Station</button></td>-->
                     <td><button onclick='window.location.href="station/p1settings.php"' value="Audit">Update Settings &amp; Information</button></td>
-                    <td><button onclick='window.location.href="station/Socan.php"' value="Socan">Socan &amp; Resound Audits</button></td>
+                    <td><button onclick='window.location.href="station/Audit/"' value="Socan">Socan &amp; Resound Audits</button></td>
                     <td><button onclick='window.location.href="Reports/Manual Logs.pdf"' value="MNL">Manual Log PDF</button></td>
                     <td><button onclick='promptWeeks();' value="Statistics">Statistics</button></td>   
                      <!--<td><button onclick='window.location.href="Reports/Stats.php"' value="STAT">Statistics</button></td>-->
