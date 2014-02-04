@@ -136,7 +136,7 @@ else{
              echo "<table width=\"100%\" border=\"0\" style='font-size: inherit;' >"; //style=\"background-color:black; color:white;\" >";
                   // Row 1
              echo "<tr><td colspan=\"2\" >";
-             echo "<img src=\"/images/Ckxu_logo_PNG.png\" width=\"150px\">";//"CKXU PROGRAM LOG"; //image Here
+             echo "<img src=\"../../images/Ckxu_logo_PNG.png\" width=\"150px\">";//"CKXU PROGRAM LOG"; //image Here
              echo "</td><td colspan=\"3\">";
 			 if($barcode){
 			 	echo "<img src='PHP/createBarcode.php?bcd=".$AUDITROW['EpNum']."&type=".$codef."'/>";
@@ -165,11 +165,17 @@ else{
 			 if($time12){
 			 	echo to12hour($AUDITROW['starttime']);
 			 }
+             else{
+                 echo $AUDITROW['starttime'];
+             }
              echo "</td><td>";
              echo "End Time: ";
              if($time12){
              	echo to12hour($AUDITROW['endtime']);
 			 }
+             else{
+                 echo $AUDITROW['endtime'];
+             }
              echo "</td><td>";
              echo "Total Spoken Time: " . $AUDITROW['totalspokentime'];
              echo "</td></tr>";
@@ -234,9 +240,24 @@ else{
 				  if($Stime){
 				  	echo "<th width=\"5%\">Time</th>";
 				  }
-                  echo "<th width=\"20%\">Artist</th><th width=\"20%\">Title</th><th width=\"20%\">Release Title</th><th width=\"2%\">CC</th><th width=\"2%\">Hit</th><th width=\"2%\">Ins</th><th width=\"4%\">Language</th></tr>";
-				  
-                  $query = "select * from SONG where callsign='" . $AUDITROW['callsign']. "' and programname='" . addslashes($AUDITROW['programname']) . "' and date='" . $AUDITROW['date'] . "' and starttime='" . $AUDITROW['starttime'] . "' order by time, songid";
+                  echo "<th width=\"20%\">Artist</th><th width=\"20%\">Title</th><th width=\"20%\">Release Title</th><th>Composer</th><th width=\"2%\">CC</th><th width=\"2%\">Hit</th><th width=\"2%\">Ins</th><th width=\"4%\">Language</th></tr>";
+				  if($_POST['type']=='CMP'){
+				      $query = "select * from SONG where callsign='" . $AUDITROW['callsign']. "' and programname='" . addslashes($AUDITROW['programname']) . "' and date='" . $AUDITROW['date'] . "' and starttime='" . $AUDITROW['starttime'] . "' order by time, songid";
+				  }
+                  elseif($_POST['type']=='MUO'){
+                      $query = "select * from SONG where category between 20 and 40 and callsign='" . $AUDITROW['callsign']. "' and programname='" . addslashes($AUDITROW['programname']) . "' and date='" . $AUDITROW['date'] . "' and starttime='" . $AUDITROW['starttime'] . "' order by time, songid";
+                  }
+                  elseif($_POST['type']=='SPO'){
+                      $query = "select * from SONG where category < 20 callsign='" . $AUDITROW['callsign']. "' and programname='" . addslashes($AUDITROW['programname']) . "' and date='" . $AUDITROW['date'] . "' and starttime='" . $AUDITROW['starttime'] . "' order by time, songid";
+                  }
+                  elseif($_POST['type']=='COM'){
+                      $query = "select * from SONG where category > 50 callsign='" . $AUDITROW['callsign']. "' and programname='" . addslashes($AUDITROW['programname']) . "' and date='" . $AUDITROW['date'] . "' and starttime='" . $AUDITROW['starttime'] . "' order by time, songid";
+                  }
+                  else{
+                      // Default to Complete
+                      $query = "select * from SONG where callsign='" . $AUDITROW['callsign']. "' and programname='" . addslashes($AUDITROW['programname']) . "' and date='" . $AUDITROW['date'] . "' and starttime='" . $AUDITROW['starttime'] . "' order by time, songid";
+                  }
+                  
                      $listed=mysql_query($query,$con);
                      if(mysql_num_rows($listed)=="0"){
                        echo "<tr><td colspan=\"10\" style=\"background-color:yellow;\">no data returned</td></tr>";
@@ -273,6 +294,13 @@ else{
                            echo "</td><td>";
                                 if(isset($list['album'])){
                                   echo $list['album'];
+                                }
+								else{
+									echo "&nbsp;";	
+								}
+                           echo "</td><td>";
+                                if(isset($list['composer'])){
+                                  echo $list['composer'];
                                 }
 								else{
 									echo "&nbsp;";	

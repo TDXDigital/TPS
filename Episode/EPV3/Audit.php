@@ -98,10 +98,10 @@
 					</div>
 					<div id="prt_opts" style="float: left; margin-left: 20px">
 						<h3>Audit Type</h3>
-						<input type="radio" name="type" disabled id="COT" title="Include Playlist Numbers"/><label for="COT">Commercial Only</label>
-						<input type="radio" name="type" disabled id="MOT" title="Create a barcoded EAN13 Report"/><label for="MOT">Music Only</label>
-						<input type="radio" name="type" disabled id="SOT" title="Place a page break after each log"/><label for="SOT">Spoken Only</label>
-						<input type="radio" name="type" id="CMT" checked="checked" title="Generate individual Log Statistics"/><label for="CMT">Complete</label>
+						<input type="radio" name="type" value="COM" id="COT" title="Include Playlist Numbers"/><label for="COT">Commercial Only</label>
+						<input type="radio" name="type" value="MUO" id="MOT" title="Create a barcoded EAN13 Report"/><label for="MOT">Music Only</label>
+						<input type="radio" name="type" value="SPO" id="SOT" title="Place a page break after each log"/><label for="SOT">Spoken Only</label>
+						<input type="radio" name="type" value="CMP" id="CMT" checked="checked" title="Generate individual Log Statistics"/><label for="CMT">Complete</label>
 					</div>
 					<div id="order" style="float: left; margin-left: 20px">
 						<h3>Order By</h3>
