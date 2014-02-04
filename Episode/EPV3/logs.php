@@ -1,10 +1,10 @@
 <?php
 	session_start();
 	if(!isset($_GET['program'])&&$_GET['p']!=""){
-		$_SESSION['program'] = addslashes($_GET['p']);
-		$_SESSION['time'] = addslashes($_GET['t']);
-		$_SESSION['date'] = addslashes($_GET['d']);
-		$_SESSION['callsign'] = addslashes($_GET['c']);
+		$_SESSION['program'] = addslashes(urldecode($_GET['p']));
+		$_SESSION['time'] = addslashes(urldecode($_GET['t']));
+		$_SESSION['date'] = addslashes(urldecode($_GET['d']));
+		$_SESSION['callsign'] = addslashes(urldecode($_GET['c']));
 	}
 
     // ALLOW DEBUG LEVEL USERS ONLY
