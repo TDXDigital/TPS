@@ -34,7 +34,7 @@ else if($con){
 	if(isset($_POST['exempt'])){
 		$EXEM = $_POST['exempt'];
 		for($iex=0 ; $iex < sizeof($EXEM); ++$iex){
-			$SQL2 .= "and programname!='" . addslashes($EXEM[$iex]) . "' "; 
+			$SQL2 .= "and programname!='" . htmlspecialchars(addslashes($EXEM[$iex])) . "' "; 
 		}
 	}
 	
@@ -63,10 +63,10 @@ else if($con){
             */
             if($_POST['verification']=="soundex"){
                 if($_POST['from']!='' && $_POST['to']!=''){
-                    $SNDX_SQL = "SELECT playlistnumber, count(*) as count, (SELECT count(*) from song where playlistnumber='".$row['playlist']."' and date between '".addslashes($_POST['from'])."' and '".addslashes($_POST['to'])."') as total, soundex(artist) as sndx FROM song WHERE playlistnumber='".addslashes($row['playlist'])."' and date between '".addslashes($_POST['from'])."' and '".addslashes($_POST['to'])."' group by soundex(album) order by count desc limit 1 ";
+                    $SNDX_SQL = "SELECT playlistnumber, count(*) as count, (SELECT count(*) from song where playlistnumber='".$row['playlist']."' $SQL2 and date between '".addslashes($_POST['from'])."' and '".addslashes($_POST['to'])."') as total, soundex(artist) as sndx FROM song WHERE playlistnumber='".addslashes($row['playlist'])."' and date between '".addslashes($_POST['from'])."' and '".addslashes($_POST['to'])."' $SQL2 group by soundex(album) order by count desc limit 1 ";
                 }
                 else{
-                    $SNDX_SQL = "SELECT playlistnumber, count(*) as count, (SELECT count(*) from song where playlistnumber='".$row['playlist']."') as total, soundex(artist) as sndx FROM song WHERE playlistnumber='".addslashes($row['playlist'])."' group by soundex(album) order by count desc limit 1 ";
+                    $SNDX_SQL = "SELECT playlistnumber, count(*) as count, (SELECT count(*) from song where playlistnumber='".$row['playlist']."' $SQL2) as total, soundex(artist) as sndx FROM song WHERE playlistnumber='".addslashes($row['playlist'])."' $SQL2 group by soundex(album) order by count desc limit 1 ";
                 }
                 $soundex = mysql_query($SNDX_SQL) or die(mysql_error());
                 $sound = mysql_fetch_array($soundex);
