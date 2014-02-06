@@ -296,8 +296,8 @@ else if($con){
 	</div>
 	
 <?php
-    //$con.close();
-    mysqli_
+    $con.close();
+    //mysqli_close($con);
 }
 else{
 	echo 'ERROR!';
