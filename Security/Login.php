@@ -44,10 +44,10 @@ if((string)$convars->ID==$db_ID){
 	        //header("location: http://ckxuradio.su.uleth.ca/index.php/digital-program-logs?args=LoginFailedCode1");
 	        //header("Location: $ORIGIN&auth=Access Denied Invalid Credentials");
 	        //echo "Login Failed";
-            echo "<hr/><br/><h2>Login Failed</h2><br/>Click <a href='$ORIGIN'>HERE</a> to return to login and try again";
+            echo "<hr/><br/><h2>LDAP Login Failed</h2><br/>Click <a href='$ORIGIN'>HERE</a> to return to login and try again";
         }
     }
-    else if((string)$convard->AUTH == strtoupper("MYSQL_DB")){
+    else if((string)$convars->AUTH == strtoupper("MYSQL_DB")){
     	if(DB_AUTH($postuser, $postpass, $convars)){
     		if($des==0){
     			header("Location: $dest");
@@ -57,8 +57,15 @@ if((string)$convars->ID==$db_ID){
     		}
     	}
     	else{
-    		echo "<hr/><br/><h2>Login Failed</h2><br/>Click <a href='$ORIGIN'>HERE</a> to return to login and try again";
+    		echo "<hr/><br/><h2>MYSQL Login Failed</h2><br/>Click <a href='$ORIGIN'>HERE</a> to return to login and try again";
     	}
+    }
+    else if((string)$convars->AUTH == strtoupper("SECL")){
+    	header("Location: SecureLogin/Login.php?q=".$convars->ID);
+    }
+    else{
+        echo "<hr/><br/><h2>Login Failed</h2><br/><p>Could Not Determine Login Type:".$convars->AUTH;
+        echo "</p>Click <a href='$ORIGIN'>HERE</a> to return to login and try again";
     }
 	//$_SESSION['SRVPOST']=$db_ID;
 }

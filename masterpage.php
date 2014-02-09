@@ -55,7 +55,11 @@ else{
 
 if($_SESSION['access']=='1')
 {
-  header('location: ./djhome.php');
+  header('location: djhome.php');
+}
+else if($_SESSION['access']=='0')
+{
+header('location: djhome.php');
 }
 ?>
 <!DOCTYPE HTML>
