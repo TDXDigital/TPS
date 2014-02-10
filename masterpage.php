@@ -1,5 +1,6 @@
 <?php
-      session_start();
+    include_once "TPSBIN/functions.php";
+      sec_session_start();
 
 function getBrowser()
      {
@@ -173,8 +174,9 @@ header('location: djhome.php');
 	            <td><button onclick='window.location.href="program/p1remove.php"' value="Remove Program"> Remove Program </button></td>
              </tr>
              <tr height="50" valign="middle">
-              	<td><button onclick='window.location.href="Playlist/p1playlistmgr.php"' value="New Program"> Playlist Management </button></td>
-	            <!--<td><button onclick='window.location.href="program/p1view.php"' value="View Program"> </button></td>
+              	<td><button onclick='window.location.href="Playlist/p1playlistmgr.php"' value="PlaylistManagement"> Playlist Management </button></td>
+	            <td><button onclick='window.location.href="Playlist/bulkupdate.php"' value="PlaylistManagement">Upload Playlist (Bulk Update)</button></td>
+                  <!--<td><button onclick='window.location.href="program/p1view.php"' value="View Program"> </button></td>
 	            <td><button onclick='window.location.href="program/p1advupdate.php"' value="Edit Program"> </button></td>
 	            <td><button onclick='window.location.href="program/p1remove.php"' value="Remove Program"> </button></td>-->
              </tr>
