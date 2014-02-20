@@ -64,16 +64,17 @@
 </table>
     <?php
         if($_SESSION['access']='2'){
+            echo "<div style='float:left'><strong>PGM#</strong><span style='color:#FF9900'>".$show['EpNum']."&nbsp;<span></div>";
             echo "<div><strong>DJ(s): </strong>";
             $SEC_PROG=mysql_real_escape_string($show['programname']);
-            $DJS = mysql_query("SELECT * FROM performs WHERE programname='$SEC_PROG' and '".$show['date']."' between STdate and ENdate");
+            $DJS = mysql_query("SELECT performs.*,dj.active,dj.djname AS RealName,dj.alias AS DjName FROM performs,dj WHERE programname='$SEC_PROG' and '".$show['date']."' between STdate and ENdate and dj.Alias=performs.Alias");
             $LOOPED = FALSE;
             if(!mysql_errno()){
                 while($DJ=mysql_fetch_array($DJS)){
                     if($LOOPED){
                         echo ",&nbsp;";
                     }
-                    echo "<span style='color: #FF9900'>".$DJ['Alias']."</span>";
+                    echo "<span style='color: #FF9900'>".$DJ['RealName']."</span>";
                     $LOOPED=TRUE;
                 }
             }
