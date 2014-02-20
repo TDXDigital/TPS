@@ -11,7 +11,7 @@
 		return DATE("H:i", STRTOTIME($hour2));
 	}
 	
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
+$con = mysql_connect($_SESSION['HOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
@@ -170,8 +170,8 @@ else if($con){
 			echo "1";
 		}
 		echo "</div>";
-		echo "<div id='adreq'>".$REC51."</div>";
-		echo "<div id='adfill'>".$ADREQ."</div>";
+		echo "<div id='adfill'>".$REC51."</div>";
+		echo "<div id='adreq'>".$ADREQ."</div>";
 		echo "<div id='hithas'>".$RECHI."</div>";
 		echo "<div id='hitlim'>".$HITLIM."</div>";
 		echo "<div id='psafill'>".$RECPSA."</div>";

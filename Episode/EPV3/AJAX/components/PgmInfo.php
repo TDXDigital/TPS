@@ -1,10 +1,18 @@
-<div style="width: inherit;"><table style="text-align: left; width: inherit;">
+<div style="width: inherit;">
+    <script>
+        $(function () {
+            // Handler for .ready() called.
+            UpdateCounts();
+        });
+    </script>
+    <table style="text-align: left; width: inherit;">
 	<tr><th>Type</th><th>Program</th><th>Sponsor</th><th>Start Time</th><th>Genre</th><th>Date</th><th>Record Date</th>
 		<th id="Date" style="text-align:center;">Current Time</th>
 		<th style="text-align: center;">CC</th><th style="text-align: center;">PL</th><th style="text-align: center;">ADs</th>
 		<th style="text-align: center;">PSA</th><th style="text-align: center;">HITS</th></tr>
 <?php
-	session_start();
+    include_once "../../../../TPSBIN/functions.php";
+	sec_session_start();
 	$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
 	$friends = array();
 	if (!$con){
@@ -34,7 +42,7 @@
 	else{
 		$type = "Timeless";
 	}
-	echo mysql_num_rows($show);
+	//echo mysql_num_rows($showarr);
 	echo "<tr><td>".$type."</td><td>".$show['programname']."</td><td></td><td>".$show['starttime']."</td><td>".$show['genre']."</td><td>".$show['date']."</td><td>".$show['prerecorddate']."</td>"
 		
 ?>
@@ -49,9 +57,30 @@
 </td>
   <td style="color: #FF9900; font-weight: 500; text-align: center; text-shadow:0 0 1px" id="cc_c">_/_</td>
   <td style="color: #FF9900; font-weight: 500; text-align: center; text-shadow:0 0 1px" id="pl_c">_/_</td>
-  <td style="color: #FF9900; font weight: 500; text-align: center; text-shadow:0 0 1px" id="ad_c">_/_</td>
+  <td style="color: #FF9900; font-weight: 500; text-align: center; text-shadow:0 0 1px" id="ad_c">_/_</td>
   <td style="color: #FF9900; font-weight: 500; text-align: center; text-shadow:0 0 1px" id="psa_c">_/_</td>
   <td style="color: #FF9900; font-weight: 500; text-align: center; text-shadow:0 0 1px" id="hit_c">_/_</td>
 </tr>
 </table>
+    <?php
+        if($_SESSION['access']='2'){
+            echo "<div><strong>DJ(s): </strong>";
+            $SEC_PROG=mysql_real_escape_string($show['programname']);
+            $DJS = mysql_query("SELECT * FROM performs WHERE programname='$SEC_PROG' and '".$show['date']."' between STdate and ENdate");
+            $LOOPED = FALSE;
+            if(!mysql_errno()){
+                while($DJ=mysql_fetch_array($DJS)){
+                    if($LOOPED){
+                        echo ",&nbsp;";
+                    }
+                    echo "<span style='color: #FF9900'>".$DJ['Alias']."</span>";
+                    $LOOPED=TRUE;
+                }
+            }
+            else{
+                echo mysql_error();
+            }
+            echo "</div>";
+        }
+ ?>
 </div>

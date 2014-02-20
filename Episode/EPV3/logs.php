@@ -1,5 +1,6 @@
 <?php
-	session_start();
+    include_once "../../TPSBIN/functions.php";
+	sec_session_start();
 	if(!isset($_GET['program'])&&$_GET['p']!=""){
 		$_SESSION['program'] = addslashes(urldecode($_GET['p']));
 		$_SESSION['time'] = addslashes(urldecode($_GET['t']));
