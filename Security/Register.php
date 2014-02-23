@@ -9,7 +9,7 @@ include_once '../TPSBIN/functions.php';
         <title>Secure Login: Registration Form</title>
         <script type="text/JavaScript" src="../TPSBIN/JS/sha512.js"></script> 
         <script type="text/JavaScript" src="../TPSBIN/JS/forms.js"></script>
-        <link rel="stylesheet" href="../TPSBIN/CSS/main.css" />
+        <link rel="stylesheet" href="../phpstyle.css" />
     </head>
     <body>
         <!-- Registration form to be output if the POST variables are not
@@ -57,4 +57,3 @@ include_once '../TPSBIN/functions.php';
         <p>Return to the <a href="Login.html">login page</a>.</p>
     </body>
 </html>
-?>
