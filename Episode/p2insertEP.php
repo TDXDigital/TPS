@@ -4,7 +4,7 @@
       $ADIDS = array();
       $ADOPT = "";
       $DEBUG = FALSE;
-      if(isset($_POST['description']){
+      if(isset($_POST['description'])){
         $DESCRIPTION = addslashes($_POST['description']);
       }
       else{
