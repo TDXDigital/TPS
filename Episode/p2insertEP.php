@@ -1,5 +1,7 @@
 <?php
-      session_start();
+    include_once "../TPSBIN/functions.php";
+      sec_session_start();
+      $ADIDS = array();
 
 $con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
@@ -714,7 +716,6 @@ if(false){
 				}
 				else
 				{
-					$ADIDS = array();
 					if(isset($SPONS)){
 						$ADOPT .= "<option value='".$SPONS['AdId']."'>".$SPONS['AdName']."</option>";
 						array_push($ADIDS,$avadi['AdId']);
