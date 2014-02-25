@@ -113,59 +113,59 @@ else{
 	</div>
 <table border="0" class="tablecss">
     <tr>
-				<th width="50px">
+				<th style="width: 50px">
 					<img src="Images/infoSmall.png" alt="Ch" />
 				</th>
-				<th width="200px">
+				<th style="width: 200px">
 					Type
 				</th>
-				<th width="75px">
+				<th style="width: 75px">
 					Playlist
 				</th>
-				<th width="75px">
+				<th style="width: 75px">
 					Spoken
 				</th>
-				<th width="75px">
+				<th style="width: 75px">
 					Time
 				</th>
 				<?php
 				if($TitleFirst){
-					echo "<th width=\"150px\">
+					echo "<th style=\"width: 150px\">
 								Title
 							</th>
-							<th width=\"150px\">
+							<th style=\"width: 150px\">
 								Artist
 							</th>";
 				}
 				else{
-					echo "<th width=\"150px\">
+					echo "<th style=\"width: 150px\">
 								Artist
 							</th>
-							<th width=\"150px\">
+							<th style=\"width: 150px\">
 								Title
 							</th>";
 				}
 				?>
 				
-				<th width="150px">
+				<th style="width: 150px">
 					Album
 				</th>
-				<th width="150px">
+				<th style="width: 150px">
 					Composer
 				</th>
-				<th width="25px">CC</th>
-				<th width="25px">Hit</th>
-				<th width="25px">Ins</th>
+				<th style="width: 25px">CC</th>
+				<th style="width: 25px">Hit</th>
+				<th style="width: 25px">Ins</th>
 				<th>Language</th>
-				<th wifth="50px">Note</th>
-				<th width="75px">
+				<th style="width: 50px">Note</th>
+				<th style="width: 75px">
 					<img src="Images/errorSmall.png" alt="Del" />
 				</th>
 			</tr>
 			
 
 <?php
-	$FETSON = "SELECT * from SONG where programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and callsign='" . $CALL ."' order by time ".$vars['displayorder'];
+	$FETSON = "SELECT * from SONG where programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and callsign='" . $CALL ."' order by time ".$vars['displayorder'] . ', Timestamp desc';
 	//ho $FETSON; // sql qUEREY pRINT oUT
 	
 	//echo $FETSON; //DEBUG USE ONLY

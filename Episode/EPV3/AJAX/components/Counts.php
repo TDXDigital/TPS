@@ -23,7 +23,8 @@ else if($con){
 
 	// GLOBAL SETTINGS
 	//$SETW = "1350px";
-	
+    
+    
 	// FETCH UNIVERSAL POST VALUES
 	if(isset($_SESSION['program'])){
 		$SHOW = addslashes($_SESSION['program']);
@@ -51,7 +52,17 @@ else if($con){
 	}
 	else{
 		$CALL = "NULL";
-	}/*
+	}
+
+    // GET SYSTEM SETTINGS
+	$SETTA = mysql_query("SELECT * FROM station,program where station.callsign = program.callsign and program.callsign = '".$CALL."' and program.programname='".$SHOW."'");
+    if(sizeof($SETTA)===1){
+        $SETTINGS = mysql_fetch_array($SETTA);
+    }
+    else{
+        die("Program Error 005");
+    }
+    /*
 	$ccfill = 0;
 	$ccf = "SELECT count(songid) from song where callsign='".$CALL."' and starttime='".$START."' and programname='".$SHOW."' and date='".$DATE."' and cancon='1'";
 	$resultarrcf = mysql_query($ccf);

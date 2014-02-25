@@ -24,7 +24,7 @@
         (SELECT count(*) FROM song WHERE programname='" . addslashes($EPINFO['programname']) . "' and date='" . addslashes($EPINFO['date']) . "' and starttime='" . addslashes($EPINFO['starttime']). "' and category not like '1%' and category not like '4%' and category not like '5%') AS Total,
         (SELECT count(*) FROM song WHERE programname='" . addslashes($EPINFO['programname']) . "' and date='" . addslashes($EPINFO['date']) . "' and starttime='" . addslashes($EPINFO['starttime']). "' and category not like '1%' and category not like '4%' and category not like '5%' and Playlistnumber IS NOT NULL) AS Count,
         (SELECT round(((Count / Total)*100),2)) AS Percent";
-
+        $PLARR = $mysqli->
         $SQL_CC_COUNT = "SELECT 
         (SELECT count(*) FROM song WHERE callsign='" . addslashes($EPINFO['callsign']) . "' and programname='" . addslashes($EPINFO['programname']) . "' and date='" . addslashes($EPINFO['date']) . "' and starttime='" . addslashes($EPINFO['starttime']). "' and category not like '1%' and category not like '4%' and category not like '5%') AS Total,
         (SELECT count(*) FROM song WHERE callsign='" . addslashes($EPINFO['callsign']) . "' and programname='" . addslashes($EPINFO['programname']) . "' and date='" . addslashes($EPINFO['date']) . "' and starttime='" . addslashes($EPINFO['starttime']). "' and category not like '1%' and category not like '4%' and category not like '5%' and cancon='1') AS CC_Num,
