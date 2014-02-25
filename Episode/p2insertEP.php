@@ -817,7 +817,7 @@ if(false){
         	<input type="time" name="user_time" hidden value=<?php echo "\"" . $_POST['user_time'] . "\"";?>/>
         	<input type="text" name="program" hidden value=<?php echo "\"" . $_POST['program'] . "\"";?> />
         	<input type="text" name="station" hidden value=<?php echo "\"" . $CALLSHOW . "\"";?> />
-        	<input type="text" name="description" hidden value=<?php echo "\"" . $_POST['description'] . "\""; ?> />
+        	<input type="text" name="description" hidden value=<?php echo "\"" . $DESCRIPTION . "\""; ?> />
         	<input type="hidden" name="artist" hidden value=<?php echo "\"" . $CALLSHOW . "\""; ?> />
         	<input type="hidden" name="album" hidden value="Advertisement" />
         	<!--<input type="text"-->
@@ -961,7 +961,7 @@ if(false){
         	<input type="time" name="user_time" hidden value=<?php echo "\"" . $_POST['user_time'] . "\"";?>/>
         	<input type="text" name="program" hidden value=<?php echo "\"" . $_POST['program'] . "\"";?> />
         	<input type="text" name="station" hidden value=<?php echo "\"" . $CALLSHOW . "\"";?> />
-        	<input type="text" name="description" hidden value=<?php echo "\"" . $_POST['description'] . "\""; ?> />
+        	<input type="text" name="description" hidden value=<?php echo "\"" . $DESCRIPTION . "\""; ?> />
         	<input type="text" name="artist" hidden="true" value=<?php echo "\"" . $CALLSHOW . "\""; ?> />
         	<input type="text" name="album" hidden="true" value="Advertisement" />
         	<!--<input type="text"-->
@@ -1086,7 +1086,7 @@ if(false){
         	<input type="time" name="user_time" hidden value=<?php echo "\"" . $_POST['user_time'] . "\"";?>/>
         	<input type="text" name="program" hidden value=<?php echo "\"" . $_POST['program'] . "\"";?> />
         	<input type="text" name="station" hidden value=<?php echo "\"" . $CALLSHOW . "\"";?> />
-        	<input type="text" name="description" hidden value=<?php echo "\"" . $_POST['description'] . "\""; ?> />
+        	<input type="text" name="description" hidden value=<?php echo "\"" . $DESCRIPTION . "\""; ?> />
         	   <!-- //// END FORM DEFINITION //// --> 
         <div id="inputdiv" style="width: 100%; text-align: center; ">
             <table colspan="7" width="1350" valign="top" style="background-color:white;">
