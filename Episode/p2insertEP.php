@@ -2,6 +2,14 @@
     include_once "../TPSBIN/functions.php";
       sec_session_start();
       $ADIDS = array();
+      $ADOPT = "";
+      $DEBUG = FALSE;
+      if(isset($_POST['description']){
+        $DESCRIPTION = mysqli_escape_string($_POST['description']);
+      }
+      else{
+          $DESCRIPTION = "";
+      }
 
 $con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
@@ -47,23 +55,24 @@ else{
         $RESEPSEL=mysql_query($INSEPSEL,$con);
         $EPINFO=mysql_fetch_array($RESEPSEL);
         
+        
 		$SETTINGS = mysql_fetch_array(mysql_query("SELECT * FROM station WHERE callsign='".$CALLSHOW."' "));
 		
 		
 		//echo $_POST['title'];
         if(mysql_numrows($RESEPSEL)=="0"){
         	if($_POST['brType']>0){
-        		$inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '" . addslashes($_POST['description']) . "' )";
+        		$inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '" . $DESCRIPTION . "' )";
         	}
 		  else if(!isset($_POST['enprerec']))
           {
-            $inep = "insert into episode (callsign, programname, date, starttime, description) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['description']) . "' )";
+            $inep = "insert into episode (callsign, programname, date, starttime, description) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . $DESCRIPTION . "' )";
             
           }
           else
           {
 
-            $inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '" . addslashes($_POST['description']) . "' )";
+            $inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '" . $DESCRIPTION . "' )";
           }
             if(!mysql_query($inep,$con))
             {
