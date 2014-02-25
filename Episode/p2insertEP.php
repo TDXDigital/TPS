@@ -5,7 +5,7 @@
       $ADOPT = "";
       $DEBUG = FALSE;
       if(isset($_POST['description']){
-        $DESCRIPTION = mysqli_escape_string($_POST['description']);
+        $DESCRIPTION = addslashes($_POST['description']);
       }
       else{
           $DESCRIPTION = "";
