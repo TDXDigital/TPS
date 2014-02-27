@@ -21,7 +21,7 @@
         <ID>CKXU002</ID>
         <NAME>CKXU_RIKER</NAME>
         <LOGO_PATH></LOGO_PATH>
-        <ACTIVE>0</ACTIVE>
+        <ACTIVE>1</ACTIVE>
         <RESOLVE>IPV4</RESOLVE>
         <URL>riker.local.ckxu.com</URL>
         <IPV4>172.22.10.12</IPV4>

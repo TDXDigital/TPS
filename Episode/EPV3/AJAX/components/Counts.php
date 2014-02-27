@@ -225,7 +225,15 @@ else if($con){
 		
 		
         if($SETTINGS['PlType']==0){
-            echo "<div id='plfill'>".$REC['Playlist_Percent']."</div>";
+            echo "<div id='plfill'>";
+            if(!isset($REC['Playlist_Percent']))
+            {
+                echo "0";
+            }
+            else{
+                echo $REC['Playlist_Percent'];
+            }
+            echo "</div>";
             echo "<div id='plreq'>";
             echo ($SETTINGS['playlistperc']*100)."%";
             echo "</div>";

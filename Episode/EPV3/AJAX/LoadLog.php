@@ -37,8 +37,19 @@ else if($con){
 			$_SESSION['date'] = $showresult['date'];
 			$_SESSION['time'] = $showresult['starttime'];
 			$_SESSION['callsign'] = $showresult['callsign'];
+            
+            parse_str($from, $vars);
+            unset($vars['disable']);
+            unset($vars['load']);
+            unset($vars['argm']);
+            //$location = http_build_query($vars);
+            //echo urlencode($location);
+            //header("location: $location");
+            header("location: $from?disable=true&load=false");
 		}
-		header("location: $from?disable=true&load=true&argm=No Record Found");
+        else{
+		    header("location: $from?disable=true&load=true&argm=No Record Found");
+        }
 		
 	}
 }	
