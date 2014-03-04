@@ -21,7 +21,7 @@
         <ID>CKXU002</ID>
         <NAME>CKXU_RIKER</NAME>
         <LOGO_PATH></LOGO_PATH>
-        <ACTIVE>1</ACTIVE>
+        <ACTIVE>0</ACTIVE>
         <RESOLVE>IPV4</RESOLVE>
         <URL>riker.local.ckxu.com</URL>
         <IPV4>172.22.10.12</IPV4>
@@ -31,8 +31,8 @@
         <AUTH>LDAP</AUTH>
         <LDP_PORT>389</LDP_PORT>
         <LDP_SERVER>172.22.10.12</LDP_SERVER>
-        <LDP_BASE_DN>CN=Users,DC=ckxu,DC=net</LDP_BASE_DN>
-        <LDP_DOMAIN>CKXU</LDP_DOMAIN>
+        <LDP_BASE_DN>CN=Users,DC=local,DC=ckxu,DC=com</LDP_BASE_DN>
+        <LDP_DOMAIN>CKXU-FM</LDP_DOMAIN>
     </SERVER>
 <SERVER>
         <ID>CKXU003</ID>
