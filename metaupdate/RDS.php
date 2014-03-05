@@ -10,20 +10,20 @@ function SaveStorage(){
     echo "<h3>Saving Storage...</h3>";
     if (function_exists('file_put_contents')) {
         echo "prefered function exists, proceeding<br/>";
-        file_put_contents("save.txt", $GLOBALS['STORAGE']);
+        file_put_contents("C:\inetpub\Drupal\TPS\metaupdate\Now_Playing.txt", $GLOBALS['STORAGE']);
         //file_put_contents("save.txt",$STORAGE['TPS']);
-        echo "Storage saved to save.txt";
+        echo "Storage saved to C:\inetpub\Drupal\TPS\metaupdate\Now_Playing.txt";
     }
     else{
         echo "<span style='color:red'>prefered function not supported, proceeding with alternative</span><br/>";
-        fwrite("save.txt",$GLOBALS['STORAGE']);
+        fwrite("C:\inetpub\Drupal\TPS\metaupdate\Now_Playing.txt",$GLOBALS['STORAGE']);
         //fwrite("save.txt",$STORAGE['TPS']);
-        echo "Storage saved to save.txt";
+        echo "Storage saved to .txt";
     }
 }
 
 function LoadStorage(){
-    $GLOBALS['STORAGE'] = file_get_contents("save.txt");
+    $GLOBALS['STORAGE'] = file_get_contents("C:\inetpub\Drupal\TPS\metaupdate\Now_Playing.txt");
 }
 
 function UpdateMeta(){
