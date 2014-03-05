@@ -104,7 +104,7 @@ order by song.time desc, episode.starttime desc limit 1;");
         $data = $tps['title'] . " - " . $tps['artist'];
     }
     else if(isset($tps['programname'])){
-        $data = $tps['programname'] . " Show";
+        $data = "The ". $tps['programname'] . " Show";
     }
 
     // Update Medtadata servers if global is different
