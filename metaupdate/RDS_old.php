@@ -18,15 +18,15 @@
 
 	$SQL_Select_Show = "SELECT * FROM episode WHERE callsign = '" . $STATIONCALL . "' and date = '" . $Date . "' Type != '" . $EXCLUDE . "' ORDER BY starttime desc LIMIT 0, 5";
 	
-	$con = mysql_connect($SERVER,$USER,$RPWCON);
+	$con = mysqli_connect($SERVER,$USER,$RPWCON);
 	if($con){
 		echo "Connection Established to " . $SERVER;
-		if(!$result = mysql_query($SQL_Select_Show)){
+		if(!$result = mysqli_query($SQL_Select_Show)){
 			echo "Error Connecting";
 			break;
 		}
 		else{
-			$Program = mysql_fetch_array($result);
+			$Program = mysqli_fetch_array($result);
 			$endTime = $Program['endtime'];
 			if(date('H:i:s') < $endTime){ // QUERY Logs
 				echo "query Logging System";
