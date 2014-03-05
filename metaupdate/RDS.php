@@ -73,7 +73,7 @@ function UpdateMeta(){
     if ($dbl->connect_errno || $dba->connect_errno) {
         printf("Connect a error: %s\n", $dbl->connect_error);
         printf("Connect b error: %s\n", $dba->connect_error);
-        exit();
+        return 0;
     }
     else{
         echo "Databases connected!<br/>";
@@ -87,17 +87,18 @@ function UpdateMeta(){
 
     // Get Current Program on air and song
     $l_result = $dbl->query("
-    SELECT episode.programname, song.title, song.artist, song.time
-    FROM episode
-    LEFT JOIN song on
-    song.programname = episode.programname
-    and song.date = episode.date
-    and song.starttime = episode.starttime
-    and (song.category like \"2%\" or song.category like \"3%\")
-    where date_format(episode.date, \"%Y-%m-%d\") = current_date()
-    and ADDDATE(episode.starttime,INTERVAL (SELECT length FROM program where program.programname=episode.programname)+10 minute) > current_time()
-    and episode.starttime < current_time()
-    order by song.time desc, episode.starttime desc limit 1;");
+SELECT episode.programname, song.title, song.artist, song.time, episode.starttime, ADDDATE(episode.starttime,INTERVAL (SELECT length FROM program where program.programname=episode.programname) minute) AS endtime
+FROM episode
+LEFT JOIN song on
+song.programname = episode.programname
+and song.date = episode.date
+and song.starttime = episode.starttime
+and (song.category like \"2%\" or song.category like \"3%\")
+and song.time > current_time()-10
+where date_format(episode.date, \"%Y-%m-%d\") = current_date()
+and ADDDATE(episode.starttime,INTERVAL (SELECT length FROM program where program.programname=episode.programname)+10 minute) > current_time()
+and episode.starttime < current_time()
+order by song.time desc, episode.starttime desc limit 1;");
     $tps = $l_result->fetch_array();
     if(isset($tps['artist'])&&isset($tps['title'])){
         $data = $tps['title'] . " - " . $tps['artist'];
@@ -133,8 +134,10 @@ function UpdateMeta(){
                 curl_setopt($mysession, CURLOPT_CONNECTTIMEOUT, 2);
                 echo "Connecting to ".$Server['host']."<br/>";
                 curl_exec($mysession);
+                $http_status = curl_getinfo($http, CURLINFO_HTTP_CODE);
                 curl_close($mysession);
-                echo "Completed <br/>";
+                echo "Completed with code $http_status<br/>";
+                $dbl.query("INSERT INTO `rds` (`rds_status`,`value`,`server`) values (".mysqli_escape_string($http_status).",'".mysqli_escape_string($data),"',".mysqli_escape_string($Server['Host'].':'.$Server['Port'])."')")
         }
         echo "<strong>Updates Finished Disconnecting...</strong></br>";
     }
