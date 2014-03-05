@@ -94,9 +94,9 @@ song.programname = episode.programname
 and song.date = episode.date
 and song.starttime = episode.starttime
 and (song.category like \"2%\" or song.category like \"3%\")
-and song.time > current_time()-10
+and song.time > ADDDATE(current_time(), INTERVAL -10 minute)
 where date_format(episode.date, \"%Y-%m-%d\") = current_date()
-and ADDDATE(episode.starttime,INTERVAL (SELECT length FROM program where program.programname=episode.programname)+3 minute) > current_time()
+and ADDDATE(episode.starttime,INTERVAL (SELECT length FROM program where program.programname=episode.programname)+10 minute) > current_time()
 and episode.starttime < current_time()
 order by song.time desc, episode.starttime desc limit 1;");
     $tps = $l_result->fetch_array();
@@ -137,7 +137,8 @@ order by song.time desc, episode.starttime desc limit 1;");
                 $http_status = curl_getinfo($mysession, CURLINFO_HTTP_CODE);
                 curl_close($mysession);
                 echo "Completed with code $http_status<br/>";
-                $dbl->query("INSERT INTO `rds` (`rds_status`,`value`,`server`) values (".mysqli_escape_string($http_status).",'".mysqli_escape_string($data),"','".mysqli_escape_string($Server['Host'].':'.$Server['Port'])."')");
+                $dbl->query("INSERT INTO `rds` (`rds_status`,`value`,`server`) values ($http_status,'".addslashes($data),"','".addslashes($Server['host'].':'.$Server['port'])."')");
+                //echo "<p>INSERT INTO `rds` (`rds_status`,`value`,`server`) values ($http_status,'".addslashes($data),"','".addslashes($Server['host'].':'.$Server['port'])."')</p>";
         }
         echo "<strong>Updates Finished Disconnecting...</strong></br>";
     }
