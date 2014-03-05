@@ -96,7 +96,7 @@ and song.starttime = episode.starttime
 and (song.category like \"2%\" or song.category like \"3%\")
 and song.time > current_time()-10
 where date_format(episode.date, \"%Y-%m-%d\") = current_date()
-and ADDDATE(episode.starttime,INTERVAL (SELECT length FROM program where program.programname=episode.programname)+10 minute) > current_time()
+and ADDDATE(episode.starttime,INTERVAL (SELECT length FROM program where program.programname=episode.programname)+3 minute) > current_time()
 and episode.starttime < current_time()
 order by song.time desc, episode.starttime desc limit 1;");
     $tps = $l_result->fetch_array();
