@@ -135,12 +135,11 @@ function UpdateMeta(){
                 curl_exec($mysession);
                 curl_close($mysession);
                 echo "Completed <br/>";
-            //}
-            /*echo $Server['Host'];
-            echo $Server['port'];
-            echo $Server['password'];
-            echo "<br/>";*/
         }
+        echo "<strong>Updates Finished Disconnecting...</strong></br>";
+    }
+    else{
+        echo "<span>No Updates Yet Disconnecting...</span></br>";
     }
 
     $dbl->close();
@@ -149,9 +148,9 @@ function UpdateMeta(){
 }
 
 LoadStorage();
-for($i=0;$i<3;$i++){
+for($i=0;$i<5;$i++){
     UpdateMeta();
-    sleep(20);
+    sleep(10);
 }
 SaveStorage();
 ?>
