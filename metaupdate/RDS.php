@@ -134,7 +134,7 @@ order by song.time desc, episode.starttime desc limit 1;");
                 curl_setopt($mysession, CURLOPT_CONNECTTIMEOUT, 2);
                 echo "Connecting to ".$Server['host']."<br/>";
                 curl_exec($mysession);
-                $http_status = curl_getinfo($http, CURLINFO_HTTP_CODE);
+                $http_status = curl_getinfo($mysession, CURLINFO_HTTP_CODE);
                 curl_close($mysession);
                 echo "Completed with code $http_status<br/>";
                 $dbl.query("INSERT INTO `rds` (`rds_status`,`value`,`server`) values (".mysqli_escape_string($http_status).",'".mysqli_escape_string($data),"',".mysqli_escape_string($Server['Host'].':'.$Server['Port'])."')");
