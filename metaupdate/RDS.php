@@ -3,6 +3,12 @@
 // TO get around serial issue: have com listener open as well as TCP port
 // on change touch php file that will update db
 
+//Report fatal errors only
+error_reporting(E_ERROR | E_PARSE);
+
+// Storage File (full Directory)
+$DIR = "C:\inetpub\Drupal\TPS\metaupdate\Now_Playing.txt";
+
 $STORAGE = "";
 // Implement Timestamp check against DB for switch changes
 
@@ -10,24 +16,30 @@ function SaveStorage(){
     echo "<h3>Saving Storage...</h3>";
     if (function_exists('file_put_contents')) {
         echo "prefered function exists, proceeding<br/>";
-        file_put_contents("C:\inetpub\Drupal\TPS\metaupdate\Now_Playing.txt", $GLOBALS['STORAGE']);
+        file_put_contents($GLOBALS['DIR'], $GLOBALS['STORAGE']);
         //file_put_contents("save.txt",$STORAGE['TPS']);
-        echo "Storage saved to C:\inetpub\Drupal\TPS\metaupdate\Now_Playing.txt";
+        echo "Storage saved to ".$GLOBALS['DIR'];
     }
     else{
         echo "<span style='color:red'>prefered function not supported, proceeding with alternative</span><br/>";
-        fwrite("C:\inetpub\Drupal\TPS\metaupdate\Now_Playing.txt",$GLOBALS['STORAGE']);
+        fwrite($GLOBALS['DIR'],$GLOBALS['STORAGE']);
         //fwrite("save.txt",$STORAGE['TPS']);
-        echo "Storage saved to .txt";
+        echo "Storage saved to ".$GLOBALS['DIR'];
     }
 }
 
 function LoadStorage(){
-    $GLOBALS['STORAGE'] = file_get_contents("C:\inetpub\Drupal\TPS\metaupdate\Now_Playing.txt");
+    $GLOBALS['STORAGE'] = file_get_contents($GLOBALS['DIR']);
 }
 
 function UpdateMeta(){
+    /* Destination Servers
+     * sid>0 => Shoutcast DNAS 2
+     * sid=0 => Shoutcast DNAS 1
+     * sid=-1 =>Write to File (TODO)
+     */
 
+     LoadStorage();
     $RDS = array(
         0 => array(
             'host'=>'hyperstream.local.ckxu.com',
@@ -124,7 +136,7 @@ order by song.time desc, episode.starttime desc limit 1;");
                 else{
                     curl_setopt($mysession, CURLOPT_URL, "http://".$Server["host"].":".$Server["port"]."/admin.cgi?mode=updinfo&song=".rawurlencode(trim($data)));
                 }
-                curl_setopt($mysession, CURLOPT_HEADER, false);
+                curl_setopt($mysession, CURLOPT_HEADER, true);
                 curl_setopt($mysession, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($mysession, CURLOPT_POST, false);
                 curl_setopt($mysession, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
@@ -137,13 +149,17 @@ order by song.time desc, episode.starttime desc limit 1;");
                 $http_status = curl_getinfo($mysession, CURLINFO_HTTP_CODE);
                 curl_close($mysession);
                 echo "Completed with code $http_status<br/>";
-                $dbl->query("INSERT INTO `rds` (`rds_status`,`value`,`server`) values ($http_status,'".addslashes($data),"','".addslashes($Server['host'].':'.$Server['port'])."')");
-                //echo "<p>INSERT INTO `rds` (`rds_status`,`value`,`server`) values ($http_status,'".addslashes($data),"','".addslashes($Server['host'].':'.$Server['port'])."')</p>";
+                $dbl->query("INSERT INTO rds (rds_status,value,server,type) values ('$http_status','".htmlspecialchars($data)."','".htmlspecialchars($Server['host'].':'.$Server['port'])."','".$Server['sid']."')");
+                echo "INSERT INTO rds (rds_status,value,server,type) values ('$http_status','".htmlspecialchars($data)."','".htmlspecialchars($Server['host'].':'.$Server['port'])."','".$Server['sid']."')<br/>";
+                if($dbl->error){
+                    echo "<p style='color: red;'>".$dbl->error."</p>";
+                }
         }
         echo "<strong>Updates Finished Disconnecting...</strong></br>";
     }
     else{
         echo "<span>No Updates Yet Disconnecting...</span></br>";
+        echo "INSERT INTO rds (rds_status,value,server,type) values (`$http_status`,`".htmlspecialchars($data)."`,`".htmlspecialchars($Server['host'].':'.$Server['port'])."`,`".$Server['sid']."`)<br/>";
     }
 
     $dbl->close();
