@@ -32,6 +32,10 @@ function LoadStorage(){
     $GLOBALS['STORAGE'] = file_get_contents($GLOBALS['DIR']);
 }
 
+function int CheckStorage(){
+    
+}
+
 function UpdateMeta(){
     /* Destination Servers
      * sid>0 => Shoutcast DNAS 2
@@ -40,6 +44,7 @@ function UpdateMeta(){
      */
 
      LoadStorage();
+
     $RDS = array(
         0 => array(
             'host'=>'hyperstream.local.ckxu.com',
@@ -94,7 +99,7 @@ function UpdateMeta(){
     // Get currently playing on RadioDJ
     $a_result = $dba->query("SELECT `date_played`, `artist`, `title`, `duration` FROM `history` WHERE `song_type` = 0 ORDER BY `date_played` DESC LIMIT 1");
     $rdj = $a_result->fetch_array();
-    $data = $rdj['title'] . ' - ' . $rdj['artist'];
+    $data = $rdj['artist'] . ' - ' . $rdj['title'];
 
 
     // Get Current Program on air and song
@@ -113,7 +118,7 @@ and episode.starttime < current_time()
 order by song.time desc, episode.starttime desc limit 1;");
     $tps = $l_result->fetch_array();
     if(isset($tps['artist'])&&isset($tps['title'])){
-        $data = $tps['title'] . " - " . $tps['artist'];
+        $data = $tps['artist'] . " - " . $tps['title'];
     }
     else if(isset($tps['programname'])){
         $data = "The ". $tps['programname'] . " Show";
