@@ -122,7 +122,12 @@ else{
             }
         ?></table>
         <?php
-        	include "TPSBIN/XML/Emergency.php";
+        	try{
+        		include "TPSBIN/XML/Emergency.php";
+        	}
+        	catch (Exception $e){
+        		echo "<span>Error getting Emergency Alert</span>"
+        	}
         ?>
 	<table border="0" style="background-color:white; width: 1000px;">
 	<tr><td colspan="4" style="width: 1000px">
