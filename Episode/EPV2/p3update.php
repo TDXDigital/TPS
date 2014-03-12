@@ -487,6 +487,15 @@ else{
             </tr>
 		</table>
 	</div>
+	<?php
+		try{
+			include "../../TPSBIN/XML/Emergency.php";
+		}
+		catch (Exception $e)
+		{
+			Echo "<span> Error getting Emergency Alerts</span>";
+		}
+	?>
 	<div id="content" style="width: <?php echo $SETW ?>">
 		<table border="0" class="tablecss">
             <tbody>
