@@ -3,7 +3,8 @@ $data = "http://www.emergencyalert.alberta.ca/aeapublic/feed.atom";
 $entries = file_get_contents($data);
 $entries = new SimpleXmlElement($entries);
 if(count($entries)):
-    echo "<div style='background-color:#f20; color:#fff'>";
+    echo "<div style='background-color:#f20; color:#fff'>
+    <h2>Alberta Emergency Alert</h2><hr>";
     //echo "<pre>";print_r($entries);die;
     //alternate way other than registring NameSpace
     //$asin = $asins->xpath("//*[local-name() = 'ASIN']");
