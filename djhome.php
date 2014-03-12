@@ -61,6 +61,7 @@ else{
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="phpstyle.css" />
+<meta http-equiv="refresh" content="600;url=/" />
 <title>DPL User</title>
 </head>
 <body>
@@ -120,6 +121,9 @@ else{
               //  header("location: alteredhomepage.php");
             }
         ?></table>
+        <?php
+        	include "TPSBIN/XML/Emergency.php";
+        ?>
 	<table border="0" style="background-color:white; width: 1000px;">
 	<tr><td colspan="4" style="width: 1000px">
         <h2>Program Logs</h2>
