@@ -154,8 +154,8 @@ order by song.time desc, episode.starttime desc limit 1;");
                 $http_status = curl_getinfo($mysession, CURLINFO_HTTP_CODE);
                 curl_close($mysession);
                 echo "Completed with code $http_status<br/>";
-                $dbl->query("INSERT INTO rds (rds_status,value,server,type) values ('$http_status','".htmlspecialchars($data)."','".htmlspecialchars($Server['host'].':'.$Server['port'])."','".$Server['sid']."')");
-                echo "INSERT INTO rds (rds_status,value,server,type) values ('$http_status','".htmlspecialchars($data)."','".htmlspecialchars($Server['host'].':'.$Server['port'])."','".$Server['sid']."')<br/>";
+                $dbl->query("INSERT INTO rds (value,server,type) values ('".htmlspecialchars($data)."','".htmlspecialchars($Server['host'].':'.$Server['port'])."','".$Server['sid']."')");
+                echo "INSERT INTO rds (value,server,type) values ('".htmlspecialchars($data)."','".htmlspecialchars($Server['host'].':'.$Server['port'])."','".$Server['sid']."')<br/>";
                 if($dbl->error){
                     echo "<p style='color: red;'>".$dbl->error."</p>";
                 }
