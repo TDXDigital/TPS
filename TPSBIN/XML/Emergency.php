@@ -47,7 +47,7 @@ if(count($entries)):
         background-color:white;
     display: inline-block;
     float: left;
-    width: 10%;
+    width: 120px;
     /*height: 100px;*/
 }
 .alert_info{
@@ -55,7 +55,7 @@ if(count($entries)):
     /*float: left;*/
     padding: 0 0 0 0;
     margin: 0 0 0 0;
-    width: 89%;
+    width: 85%;
     height:100%;
     min-height: 126px;
     /*rgin-left:110px;*/
