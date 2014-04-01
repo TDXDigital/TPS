@@ -32,7 +32,7 @@ function LoadStorage(){
     $GLOBALS['STORAGE'] = file_get_contents($GLOBALS['DIR']);
 }
 
-function int CheckStorage(){
+function CheckStorage(){
     
 }
 
