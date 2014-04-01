@@ -161,10 +161,11 @@ order by song.time desc, episode.starttime desc limit 1;");
                 }
         }
         echo "<strong>Updates Finished Disconnecting...</strong></br>";
+        echo "INSERT INTO rds (rds_status,value,server,type) values (`$http_status`,`".htmlspecialchars($data)."`,`".htmlspecialchars($Server['host'].':'.$Server['port'])."`,`".$Server['sid']."`)<br/>";
+        SaveStorage();
     }
     else{
         echo "<span>No Updates Yet Disconnecting...</span></br>";
-        echo "INSERT INTO rds (rds_status,value,server,type) values (`$http_status`,`".htmlspecialchars($data)."`,`".htmlspecialchars($Server['host'].':'.$Server['port'])."`,`".$Server['sid']."`)<br/>";
     }
 
     $dbl->close();
