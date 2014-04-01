@@ -336,43 +336,74 @@ else{
     </style>
 	<!--<script src="../js/jquery/js/jquery-ui-1.10.0.custom.min.js"></script>-->
 	<script src="../js/jquery-blockui.js"></script>
-	<script type="text/javascript"> 
- 
-    // unblock when ajax activity stops 
-    //$(document).ajaxStop($.unblockUI); 
-    
-    
-    function test() { 
-        $.ajax({ url: 'wait.php', cache: false }); 
-    } 
- 
-    $(document).ready(function() { 
-        $('#artin').autocomplete({
-            source: "../MusicLib/DB_Search_Artist.php",
-            minLength: 2
-        });
-        /*$('input[name=sub]').click(function() { 
-            $.blockUI({ message: '<h1><img src="/images/GIF/ajax-loader1.gif" />Processing...</h1>' }); 
-            //test(); 
-            //$.blockUI({ message: '<h1><image src="/images/GIF/ajax-loader1.gif"/>Processing...</h1>' }); 
-        	setTimeout(function() { 
-            	$.unblockUI({ 
-                	onUnblock: function(){ alert('The server was unable to process your request in a reasonable time. \nPlease resubmit your data'); } 
-            	}); 
-        	}, 4000);
-        }); */
-        $('form').submit(function() { 
-            $.blockUI({ message: "<h1 style='width:width: max-content; text-align: center;' >Processing...</h1><progress id='pb_form_submit'></progress>" }); 
-            //test(); 
-            //$.blockUI({ message: '<h1><image src="/images/GIF/ajax-loader1.gif"/>Processing...</h1>' }); 
-        	setTimeout(function() { 
-            	$.unblockUI({ 
-                	onUnblock: function(){ alert('The server was unable to process your request in a reasonable time.'); } 
-            	}); 
-        	}, 4000);
-        }); 
-    }); 
- 
+	<script type="text/javascript">
+
+     // unblock when ajax activity stops 
+     //$(document).ajaxStop($.unblockUI); 
+
+
+     function test() {
+         $.ajax({ url: 'wait.php', cache: false });
+     }
+     function Display_RDS() {
+         var rds = $.ajax({
+             url: "EPV3/AJAX/components/RDS_Episode.php",
+             cache: false
+         });
+         rds.done(function (msg) {
+             $("#current_song").html(msg);
+         });
+         rds.fail(function (jqXHR, textStatus) {
+             $("#current_song").html("Request failed: " + textStatus);
+         });
+     }
+     // EPV3/Switch.php
+     function Display_Switch() {
+         var switch_s = $.ajax({
+             url: "EPV3/Switch.php?q=V2",
+             cache: false
+         });
+         switch_s.done(function (msg) {
+             $("#switch_status").html(msg);
+         });
+         switch_s.fail(function (jqXHR, textStatus) {
+             $("#switch_status").html("Request failed: " + textStatus);
+         });
+     }
+
+     $(document).ready(function () {
+         $('#artin').autocomplete({
+             source: "../MusicLib/DB_Search_Artist.php",
+             minLength: 2
+         });
+         Display_RDS();
+         Display_Switch();
+         setInterval(function () {
+             Display_RDS();
+             Display_Switch();
+         }, 20000);
+         /*$('input[name=sub]').click(function() { 
+         $.blockUI({ message: '<h1><img src="/images/GIF/ajax-loader1.gif" />Processing...</h1>' }); 
+         //test(); 
+         //$.blockUI({ message: '<h1><image src="/images/GIF/ajax-loader1.gif"/>Processing...</h1>' }); 
+         setTimeout(function() { 
+         $.unblockUI({ 
+         onUnblock: function(){ alert('The server was unable to process your request in a reasonable time. \nPlease resubmit your data'); } 
+         }); 
+         }, 4000);
+         }); */
+         $('form').submit(function () {
+             $.blockUI({ message: "<h1 style='width:width: max-content; text-align: center;' >Processing...</h1><progress id='pb_form_submit'></progress>" });
+             //test(); 
+             //$.blockUI({ message: '<h1><image src="/images/GIF/ajax-loader1.gif"/>Processing...</h1>' }); 
+             setTimeout(function () {
+                 $.unblockUI({
+                     onUnblock: function () { alert('The server was unable to process your request in a reasonable time.'); }
+                 });
+             }, 4000);
+         });
+     }); 
+
 </script> 
 <link rel="stylesheet" type="text/css" href="../phpstyle.css" />
 <title>Log Addition</title>
@@ -394,7 +425,8 @@ if(false){
            <img src="../images/Ckxu_logo_PNG.png" alt="ckxu" height="90px"/>
         </td>
         <td style="width: 250px; height: 110px;" id="switchstat" colspan="1">
-        	<iframe src="EPV3/Switch.php" height="100px" width="100%" seamless="seamless" style="border:none">Iframe Not Supported</iframe>
+        	<!--<iframe src="EPV3/Switch.php" height="100px" width="100%" seamless="seamless" style="border:none">Iframe Not Supported</iframe>-->
+            <span id="switch_status"></span>
         </td></tr>
         <tr><td width="800px" colspan="1" style="background-color:white;">
 	<h2>Program Log Addition</h2></td>
@@ -634,7 +666,7 @@ if(false){
         <tr><td colspan="100%">
         	<hr>
             <div id="Emergency">
-                <?php include "../TPSBIN/XML/Emergency.php"?>
+                <?php /*include "../TPSBIN/XML/Emergency.php"*/ ?>
             </div>
         </td></tr>
         <!-- Row for displaying Ads and Friends -->
@@ -1371,10 +1403,10 @@ if(false){
                              ?>/>
         </td>
         <td colspan="1">
-        <input type="text" hidden="true" name="callsign" value=<?php echo "\"" . $CALLSHOW . "\"" ?> />
-        <input type="text" hidden="true" name="program" value=<?php echo "\"" . $_POST['program'] . "\"" ?> />
-        <input type="text" hidden="true" name="user_date" value=<?php echo "\"" . $_POST['user_date'] . "\"" ?> />
-        <input type="text" hidden="true" name="user_time" value=<?php echo "\"" . $_POST['user_time'] . "\"" ?> />
+        <input type="text" hidden name="callsign" value=<?php echo "\"" . $CALLSHOW . "\"" ?> />
+        <input type="text" hidden name="program" value=<?php echo "\"" . $_POST['program'] . "\"" ?> />
+        <input type="text" hidden name="user_date" value=<?php echo "\"" . $_POST['user_date'] . "\"" ?> />
+        <input type="text" hidden name="user_time" value=<?php echo "\"" . $_POST['user_time'] . "\"" ?> />
         <input type="submit" value="Finish Episode" />
         </td>
         </tr>
@@ -1439,14 +1471,12 @@ if(false){
         </form>
         </td>
         <td colspan="7">
+            <span>Current Song (RDS): </span>
+            <span id="current_song" style="color: #808080">Loading RDS Data...</span>
         </td><td>
         <img src="../images/mysqls.png" alt="MySQL Powered" />
         </td></tr>
 
         </table>
-        
-        <script>
-        	
-        </script>
 </body>
 </html>
