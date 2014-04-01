@@ -370,6 +370,30 @@ else{
              $("#switch_status").html("Request failed: " + textStatus);
          });
      }
+     
+
+     // START CLOCK
+  	setInterval( function() {
+		// Create a newDate() object and extract the seconds of the current time on the visitor's
+		var seconds = new Date().getSeconds();
+		// Add a leading zero to seconds value
+		$("#sec").html(( seconds < 10 ? "0" : "" ) + seconds);
+		},1000);
+		
+	setInterval( function() {
+		// Create a newDate() object and extract the minutes of the current time on the visitor's
+		var minutes = new Date().getMinutes();
+		// Add a leading zero to the minutes value
+		$("#min").html(( minutes < 10 ? "0" : "" ) + minutes);
+	    },1000);
+		
+	setInterval( function() {
+		// Create a newDate() object and extract the hours of the current time on the visitor's
+		var hours = new Date().getHours();
+		// Add a leading zero to the hours value
+		$("#hours").html(( hours < 10 ? "0" : "" ) + hours);
+	    }, 1000);
+  	// END CLOCK
 
      $(document).ready(function () {
          $('#artin').autocomplete({
@@ -813,9 +837,15 @@ if(false){
 				?>
 				<span style="font-style: italic;color:darkred;">Notice to all DJs: Ad Requirements have changed you are now required to play <strong>two (2) ads per hour</strong></span>
 			</td>
-			<td>
-				<!--<iframe src="http://free.timeanddate.com/clock/i39aufy9/n1100/fn17/fs20/fc009/tct/pct/ftb/th1" frameborder="0" width="102" height="26" allowTransparency="true"></iframe>-->
-			</td>
+			<td class="clock">
+	            <ul style="margin:0 auto; padding:0px; list-style:none; text-align:center;">
+		            <li id="hours" style="display:inline; text-align:center; font-family:'BebasNeueRegular', Arial, Helvetica, sans-serif; text-shadow:0 0 1px #00c6ff;">00</li>
+		            <li id="point" style="display:inline; text-align:center; font-family:'BebasNeueRegular', Arial, Helvetica, sans-serif; text-shadow:0 0 1px #00c6ff;">:</li>
+		            <li id="min" style="display:inline; text-align:center; font-family:'BebasNeueRegular', Arial, Helvetica, sans-serif; text-shadow:0 0 1px #00c6ff;">00</li>
+		            <li id="point" style="display:inline; text-align:center; font-family:'BebasNeueRegular', Arial, Helvetica, sans-serif; text-shadow:0 0 1px #00c6ff;">:</li>
+		            <li id="sec" style="display:inline; text-align:center; font-family:'BebasNeueRegular', Arial, Helvetica, sans-serif; text-shadow:0 0 1px #00c6ff;">00</li>
+	            </ul>
+            </td>
 		</tr>
         
         <tr> <!-- This is the second Row Of Data -->
@@ -1476,7 +1506,10 @@ if(false){
         </td><td>
         <img src="../images/mysqls.png" alt="MySQL Powered" />
         </td></tr>
-
+        <?php 
+            if("")
+            echo ""
+        ?>
         </table>
 </body>
 </html>
