@@ -1507,8 +1507,11 @@ if(false){
         <img src="../images/mysqls.png" alt="MySQL Powered" />
         </td></tr>
         <?php 
-            if("")
-            echo ""
+        $PROML = mysql_query("SELECT count(*) AS Result FROM PromptLog WHERE EpNum='".addslashes($EPINFO['EpNum'])."' ");
+        $PROMPTS = mysql_fetch_array($PROML);
+            if($_SESSION['access']=='2'){
+                echo "<tfoot class=\"ui-state-highlight\"><tr><td colspan='2'>ADMINISTRATOR ACCESS</td><td colspan='2'>EPISODE: ".$EPINFO['EpNum']."</td><td colspan='1'>Prompt Records: ".$PROMPTS['Result']."</td></tr></tfoot>";
+            }
         ?>
         </table>
 </body>
