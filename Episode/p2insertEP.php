@@ -51,7 +51,7 @@ else{
         $CALLROWS = mysql_fetch_array($SHOWQU);
         $CALLSHOW = $CALLROWS["callsign"];
 
-        $INSEPSEL = "select * from episode where callsign='" . addslashes($CALLSHOW) . "' and programname='" . addslashes($_POST['program']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' order by date";
+        $INSEPSEL = "select * from episode LEFT JOIN program on program.programname=episode.programname where episode.callsign='" . addslashes($CALLSHOW) . "' and episode.programname='" . addslashes($_POST['program']) . "' and episode.date='" . addslashes($_POST['user_date']) . "' and episode.starttime='" . addslashes($_POST['user_time']) . "' order by episode.date";
         $RESEPSEL=mysql_query($INSEPSEL,$con);
         $EPINFO=mysql_fetch_array($RESEPSEL);
         
@@ -440,9 +440,9 @@ if(false){
 ?>
 >
 	 
-    <div class="topbar">
+    <!--<div class="topbar">
            User: <?php echo(strtoupper($_SESSION['usr'])); ?>
-           </div>
+           </div>-->
 
         <table border="0" align="center" width="1354">
         <tr><td colspan="6">
@@ -1303,8 +1303,19 @@ if(false){
               </table>
               </div>
               <table width="1350" valign="top" style="background-color:white;">
-              	<td colspan="100%">Recorded Information</td>
-              	<tr><th width="100px">Category</th><th width="75px">Playlist</th><th width="75px">Spoken</th><th width="100px">Time</th><th width="230px">Title</th><th width="230px">Artist</th><th width="230px">Album</th><th width="250px">Composer</th><th width="20px">CC</th><th width="20px">Hit</th><th width="20px">Ins</th><th width="200px">Language</th></tr>
+              	<thead>
+                      <tr><td colspan="100%">Recorded Information</td></tr>
+                      <tr><th width="100px">Category</th><th width="75px">Playlist</th><th width="75px">Spoken</th><th width="100px">Time</th>
+                      <?php 
+                            if($EPINFO['Display_Order']==0){
+                                echo "<th width=\"230px\">Title</th><th width=\"230px\">Artist</th><th width=\"230px\">Album</th>";
+                            }
+                            else if ($EPINFO['Display_Order']==1){
+                                echo "<th width=\"230px\">Artist</th><th width=\"230px\">Album</th><th width=\"230px\">Title</th>";
+                            }
+
+                        ?>
+                      <th width="250px">Composer</th><th width="20px">CC</th><th width="20px">Hit</th><th width="20px">Ins</th><th width="200px">Language</th></tr></thead>
                <tr> <!-- Row for displaying already entered data -->
                    <?php
                    	$ORDERque = "select displayorder from program where callsign='" . addslashes($CALLSHOW) . "' and programname='" . addslashes($_POST['program']) . "' ";
@@ -1335,13 +1346,31 @@ if(false){
 						   echo $list['Spoken'];
                            echo "</td><td>";
                                 echo $list['time'];
-                           echo "</td><td>";
+                           echo "</td><td>"; /// Artist - Album - Title
+                           if($EPINFO['Display_Order']==0){
                                 echo $list['title'];
                            echo "</td><td>";
                                 echo $list['artist'];
                            echo "</td><td>";
                                 echo $list['album'];
                            echo "</td><td>";
+                           }
+                           else if($EPINFO['Display_Order']==1){
+                                echo $list['artist'];
+                           echo "</td><td>";
+                                echo $list['album'];
+                           echo "</td><td>";
+                                echo $list['title'];
+                           echo "</td><td>";
+                           }
+                           else{
+                                echo $list['title'];
+                           echo "</td><td>";
+                                echo $list['artist'];
+                           echo "</td><td>";
+                                echo $list['album'];
+                           echo "</td><td>";
+                           }
 						   		echo $list['composer'];
                            echo "</td><td>";
                                 echo $list['cancon'];
@@ -1501,8 +1530,7 @@ if(false){
         </form>
         </td>
         <td colspan="7">
-            <span>Current Song (RDS): </span>
-            <span id="current_song" style="color: #808080">Loading RDS Data...</span>
+            
         </td><td>
         <img src="../images/mysqls.png" alt="MySQL Powered" />
         </td></tr>
@@ -1514,5 +1542,13 @@ if(false){
             }
         ?>
         </table>
+    <div style="height: 30px;">&nbsp;</div>
+    <div style="position: fixed; bottom: 0; height: 20px; width: 100%; background-color: #000; color: #fff;  margin: 0 0 0 0; vertical-align: bottom; box-shadow: 0px 0px 30px #000;">
+        <span>Current Song (RDS): </span>
+        <span id="current_song" style="color: #808080">Loading RDS Data...</span>
+        <?php
+            echo "<span style='float:right; padding-right: 10px'>Terminal: ".$_SERVER['REMOTE_ADDR']."</span>";
+        ?>
+    </div>
 </body>
 </html>
