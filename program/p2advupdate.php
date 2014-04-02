@@ -174,16 +174,17 @@ else{
 </table>
 		
 		</div>
-	<div id="foot">
+    <div style="height: 90px;">&nbsp;</div>
+	<div id="foot"  style="bottom: 0; position: fixed; height: 50px; width: 100% ">
 		<table>
 			<tr>
 				<td>
 					<input type="submit" value="Select" /></form></td><td>
-					<form action="p1advupdate.php" method="POST">
-				<input type="submit" value="Advanced Search"/></form></td><td>
-					<form action="p1update.php" method="POST">
-				<input type="submit" disabled="true" value="Standard Search"/></form></td><td>
 				<input type="button" value="Reset" onClick="window.location.reload()"></td><td>
+                <form action="p2advupdate.php" method="POST">
+                    <input type="text" name="name" placeholder="Program Name"/></td><td>
+				    <input type="submit" value="Quick Search"/>
+                </form></td><td>
 				<form method="POST" action="../masterpage.php"><input type="submit" value="Menu"/></form>
 				</td>
 				<td width="100%" align="right"><img src="../images/mysqls.png" alt="MySQL Powered"/></td>

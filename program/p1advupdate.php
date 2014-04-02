@@ -102,7 +102,7 @@ else if($con){
 		</table>
 		
 		</div>
-	<div id="foot">
+	<div id="foot" style="bottom: 0; position: fixed; height: 50px; width: 100% ">
 		<table>
 			<tr>
 				<td>
@@ -114,6 +114,7 @@ else if($con){
 			</tr>
 		</table>
 	</div>
+    
 	<div id="content">
 			<h4>Help</h4>
 		<span>You can enter a % into the field to enter partial information. ie, if a show you 
@@ -121,7 +122,7 @@ else if($con){
 			find any shows that have "show" in the name or "%ever" for shows that end in "ever"</span>
 		
 	</div>
-	
+	<div style="height: 50px;">&nbsp</div>
 <?php
 
 }
