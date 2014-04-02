@@ -490,7 +490,7 @@ else{
 	<div id="content" style="width: <?php echo $SETW ?>">
         <?php
 		try{
-			include "../../TPSBIN/XML/Emergency.php";
+			//include "../../TPSBIN/XML/Emergency.php";
 		}
 		catch (Exception $e)
 		{
@@ -498,9 +498,9 @@ else{
 		}
 	?>
 		<table border="0" class="tablecss">
-            <tbody>
 			<!--<tr><td colspan="100%"><h2>*** Work in Progress ***</h2></td></tr>-->
-			
+
+			<thead><tr>
 				<th width="50px">
 					<span title="Changed Value" class="ui-icon ui-icon-transferthick-e-w"></span>
 				</th>
@@ -516,15 +516,17 @@ else{
 				<th width="75px">
 					Time
 				</th>
-				<th width="150px">
-					Title
-				</th>
-				<th width="150px">
-					Artist
-				</th>
-				<th width="150px">
-					Album
-				</th>
+                <?php
+				    if($vars['Display_Order']==0){
+                        echo "<th width=\"150px\">Title</th><th width=\"150px\">Artist</th><th width=\"150px\">Album</th>";
+                    }
+                    elseif($vars['Display_Order']==1){
+                        echo "<th width=\"150px\">Artist</th><th width=\"150px\">Album</th><th width=\"150px\">Title</th>";
+                    }
+                    else{
+                        echo "<th width=\"150px\">Title</th><th width=\"150px\">Artist</th><th width=\"150px\">Album</th>";
+                    }
+                    ?>
 				<th width="150px">
 					Composer
 				</th>
@@ -534,8 +536,7 @@ else{
 				<th width="75px">Language</th>
 				<th><span title="Note" class="ui-icon ui-icon-tag"></span></th>
 				<th><span title="Delete Record" class="ui-icon ui-icon-trash"></span></th>
-			</tr>
-            </tbody>
+			</tr></thead><tbody>
 			
 
 <?php
@@ -760,22 +761,60 @@ else{
 			echo "<td><input onchange=\"SetEdit('EDI".$CONT."')\" onmousewheel=\"javascript: return false\" onclick=\"SetEdit('EDI".$CONT."')\" type=\"number\" min=\"1\" size=\"6\" style=\"width:65px;\" name=\"Playlist[]\" value=\"" . $SONGS['playlistnumber'] . "\" /></td>";
 			echo "<td><input onchange=\"SetEdit('EDI".$CONT."')\" onmousewheel=\"javascript: return false\" onclick=\"SetEdit('EDI".$CONT."')\" type=\"number\" min=\"0\" size=\"6\" style=\"width:65px;\" name=\"Spoken[]\" step=\"0.25\" value=\"" . $SONGS['Spoken'] . "\" /></td>";
 			echo "<td><input onchange=\"SetEdit('EDI".$CONT."')\" onmousewheel=\"javascript: return false\" onclick=\"SetEdit('EDI".$CONT."')\" type=\"time\" name=\"times[]\" value=\"" . $SONGS['time']."\" /> </td>";
-			echo "<td><input ";
-			if($SONGS['category']=="51"){ //|| $SONGS['category']=="52" || $SONGS['category']=="53"))
-				echo " readonly=\"readonly\" ";
-			}
-			echo "onchange=\"SetEdit('EDI".$CONT."')\"  onclick=\"SetEdit('EDI".$CONT."')\" required type=\"text\" name=\"titles[]\" value=\"" . $SONGS['title'] . "\" maxlength=\"90\" /> </td>";
-			echo "<td><input ";
-			if($SONGS['category']=="51"){ //|| $SONGS['category']=="52" || $SONGS['category']=="53"))
-				echo " readonly=\"readonly\" ";
-			}
-			echo "onchange=\"SetEdit('EDI".$CONT."')\"  onclick=\"SetEdit('EDI".$CONT."')\" type=\"text\" name=\"artists[]\" value=\"" . $SONGS['artist'] . "\" maxlength=\"90\" /> </td>";
-			echo "<td><input ";
-			if($SONGS['category']=="51"){ //|| $SONGS['category']=="52" || $SONGS['category']=="53"))
-				echo " readonly=\"readonly\" ";
-			}
-			echo "onchange=\"SetEdit('EDI".$CONT."')\"  onclick=\"SetEdit('EDI".$CONT."')\" type=\"text\" name=\"albums[]\" value=\"" . $SONGS['album'] . "\" maxlength=\"90\" /> </td>";
-			echo "<td><input ";
+			// INPUT PARAMS
+            if($vars['Display_Order']==0){
+                echo "<td><input ";
+			    if($SONGS['category']=="51"){ //|| $SONGS['category']=="52" || $SONGS['category']=="53"))
+				    echo " readonly=\"readonly\" ";
+			    }
+			    echo "onchange=\"SetEdit('EDI".$CONT."')\"  onclick=\"SetEdit('EDI".$CONT."')\" required type=\"text\" name=\"titles[]\" value=\"" . $SONGS['title'] . "\" maxlength=\"90\" /> </td>";
+			    echo "<td><input ";
+			    if($SONGS['category']=="51"){ //|| $SONGS['category']=="52" || $SONGS['category']=="53"))
+				    echo " readonly=\"readonly\" ";
+			    }
+			    echo "onchange=\"SetEdit('EDI".$CONT."')\"  onclick=\"SetEdit('EDI".$CONT."')\" type=\"text\" name=\"artists[]\" value=\"" . $SONGS['artist'] . "\" maxlength=\"90\" /> </td>";
+			    echo "<td><input ";
+			    if($SONGS['category']=="51"){ //|| $SONGS['category']=="52" || $SONGS['category']=="53"))
+				    echo " readonly=\"readonly\" ";
+			    }
+			    echo "onchange=\"SetEdit('EDI".$CONT."')\"  onclick=\"SetEdit('EDI".$CONT."')\" type=\"text\" name=\"albums[]\" value=\"" . $SONGS['album'] . "\" maxlength=\"90\" /> </td>";
+            }
+            elseif($vars['Display_Order']==1){
+			    echo "<td><input ";
+			    if($SONGS['category']=="51"){ //|| $SONGS['category']=="52" || $SONGS['category']=="53"))
+				    echo " readonly=\"readonly\" ";
+			    }
+			    echo "onchange=\"SetEdit('EDI".$CONT."')\"  onclick=\"SetEdit('EDI".$CONT."')\" type=\"text\" name=\"artists[]\" value=\"" . $SONGS['artist'] . "\" maxlength=\"90\" /> </td>";
+			    echo "<td><input ";
+			    if($SONGS['category']=="51"){ //|| $SONGS['category']=="52" || $SONGS['category']=="53"))
+				    echo " readonly=\"readonly\" ";
+			    }
+			    echo "onchange=\"SetEdit('EDI".$CONT."')\"  onclick=\"SetEdit('EDI".$CONT."')\" type=\"text\" name=\"albums[]\" value=\"" . $SONGS['album'] . "\" maxlength=\"90\" /> </td>";
+                echo "<td><input ";
+			    if($SONGS['category']=="51"){ //|| $SONGS['category']=="52" || $SONGS['category']=="53"))
+				    echo " readonly=\"readonly\" ";
+			    }
+			    echo "onchange=\"SetEdit('EDI".$CONT."')\"  onclick=\"SetEdit('EDI".$CONT."')\" required type=\"text\" name=\"titles[]\" value=\"" . $SONGS['title'] . "\" maxlength=\"90\" /> </td>";
+            }
+            else{
+                echo "<td><input ";
+			    if($SONGS['category']=="51"){ //|| $SONGS['category']=="52" || $SONGS['category']=="53"))
+				    echo " readonly=\"readonly\" ";
+			    }
+			    echo "onchange=\"SetEdit('EDI".$CONT."')\"  onclick=\"SetEdit('EDI".$CONT."')\" required type=\"text\" name=\"titles[]\" value=\"" . $SONGS['title'] . "\" maxlength=\"90\" /> </td>";
+			    echo "<td><input ";
+			    if($SONGS['category']=="51"){ //|| $SONGS['category']=="52" || $SONGS['category']=="53"))
+				    echo " readonly=\"readonly\" ";
+			    }
+			    echo "onchange=\"SetEdit('EDI".$CONT."')\"  onclick=\"SetEdit('EDI".$CONT."')\" type=\"text\" name=\"artists[]\" value=\"" . $SONGS['artist'] . "\" maxlength=\"90\" /> </td>";
+			    echo "<td><input ";
+			    if($SONGS['category']=="51"){ //|| $SONGS['category']=="52" || $SONGS['category']=="53"))
+				    echo " readonly=\"readonly\" ";
+			    }
+			    echo "onchange=\"SetEdit('EDI".$CONT."')\"  onclick=\"SetEdit('EDI".$CONT."')\" type=\"text\" name=\"albums[]\" value=\"" . $SONGS['album'] . "\" maxlength=\"90\" /> </td>";
+            }
+			//  COMP+
+            echo "<td><input ";
 			if($SONGS['category']=="51"){ //|| $SONGS['category']=="52" || $SONGS['category']=="53"))
 				echo " readonly=\"readonly\" ";
 			}

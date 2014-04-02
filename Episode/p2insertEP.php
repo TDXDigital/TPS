@@ -1169,15 +1169,17 @@ if(false){
                        <th>
                            Time
                        </th>
-                       <th>
-                           Title
-                       </th>
-                       <th id="arHead">
-                           Artist
-                       </th>
-                       <th>
-                           Album (Release Title)
-                       </th>
+                      <?php if($EPINFO['Display_Order']==0){
+                            echo "<th>Title</th><th id=\"arHead\">Artist</th><th>Album (Release Title)</th>";
+                        }
+                        elseif($EPINFO['Display_Order']==1){
+                            echo "<th id=\"arHead\">Artist</th><th>Album (Release Title)</th><th>Title</th>";
+                        }
+                        else{
+                            echo "<th>Title</th><th id=\"arHead\">Artist</th><th>Album (Release Title)</th>";
+                        }
+                       
+                       ?>
                        <th>
                            Composer
                        </th>
@@ -1260,28 +1262,53 @@ if(false){
                              ?> onmousewheel="javascript: return false"/>
                        </th>
                        <th>
+                       <?php
+                           if($EPINFO['Display_Order']==0){
+                               echo"<input type=\"text\" name=\"title\" id=\"title001\" size=\"25\" required maxlength=\"90\" placeholder=\"Title\">
+                           <input list=\"spoken\" name=\"title\" id=\"data1\" size=\"25\" disabled required  maxlength=\"90\" style=\"display:none\" value=\"Spoken Word / Talk\"/>
+                           <datalist id=\"spoken\">
+                           		<option value=\"Spoken Word / Talk\">
+                           		<option value=\"PSA / Promo\">
+                           		<option value=\"News\">
+                           		<option value=\"Verbal Station ID\">
+                           </datalist></th><th>
+                           <input type=\"text\" id=\"artin\" name=\"artist\" size=\"25\" maxlength=\"90\" placeholder=\"Artist\"/>
+                       </th><th>
+                           <input type=\"text\" id=\"albin\" name=\"album\" size=\"25\" maxlength=\"90\" placeholder=\"Album\"/>
+                       </th>";
+                           }
+                           else if($EPINFO['Display_Order']==1){
+                               echo"<input type=\"text\" id=\"artin\" name=\"artist\" size=\"25\" maxlength=\"90\" placeholder=\"Artist\"/>
+                       </th><th>
+                           <input type=\"text\" id=\"albin\" name=\"album\" size=\"25\" maxlength=\"90\" placeholder=\"Album\"/>
+                       </th><th>
+                       <input type=\"text\" name=\"title\" id=\"title001\" size=\"25\" required maxlength=\"90\" placeholder=\"Title\"/>
+                           <input list=\"spoken\" name=\"title\" id=\"data1\" size=\"25\" disabled required  maxlength=\"90\" style=\"display:none\" value=\"Spoken Word / Talk\"/>
+                           <datalist id=\"spoken\">
+                           		<option value=\"Spoken Word / Talk\">
+                           		<option value=\"PSA / Promo\">
+                           		<option value=\"News\">
+                           		<option value=\"Verbal Station ID\">
+                           </datalist></th>";
+                           }
+                           else{
+                               echo"<input type=\"text\" name=\"title\" id=\"title001\" size=\"25\" required maxlength=\"90\">
+                           <input list=\"spoken\" name=\"title\" id=\"data1\" size=\"25\" disabled required  maxlength=\"90\" style=\"display:none\"/>
+                           <datalist id=\"spoken\">
+                           		<option value=\"Spoken Word / Talk\">
+                           		<option value=\"PSA / Promo\">
+                           		<option value=\"News\">
+                           		<option value=\"Verbal Station ID\">
+                           </datalist></th><th>
+                           <input type=\"text\" id=\"artin\" name=\"artist\" size=\"25\" maxlength=\"90\"/>
+                       </th><th>
+                           <input type=\"text\" id=\"albin\" name=\"album\" size=\"25\" maxlength=\"90\"/>
+                       </th>";
+                           }
+                       ?>    
                            
-                           <input type="text" name="title" id="title001" size="25" required="true" maxlength="90">
-                           <input list="spoken" name="title" id="data1" size="25" required="true" disabled="disabled" maxlength="90" style="display:none"/>
-                           <datalist id="spoken">
-                           		<option value="Spoken Word / Talk">
-                           		<option value="PSA / Promo">
-                           		<option value="News">
-                           		<option value="Verbal Station ID">
-                           </datalist>
-                           	
-                           	
-                       </th>
                        <th>
-                           
-                           <input type="text" id="artin" name="artist" size="25" maxlength="90"/>
-                       </th>
-                       <th>
-                           
-                           <input type="text" id="albin" name="album" size="25" maxlength="90"/>
-                       </th>
-                       <th>
-                           <input type="text" id="composer" name="composer" size="25" maxlength="90"/>
+                           <input type="text" id="composer" name="composer" size="25" maxlength="90" placeholder="Composer"/>
                        </th>
                        <th>
                            <input type="checkbox" id="ccin" name="cancon" value="1"/>
@@ -1293,7 +1320,11 @@ if(false){
                            <input type="checkbox" id="insin" name="instrumental" value="1"/>
                        </th>
                        <th>
-                           <input type="text" name="lang" required="true" value="English" size="10" maxleng="40"/>
+                           <input list="lang" name="lang" required value="English" size="10" maxlength="40"/>
+                           <datalist id="lang">
+                           		<option value="English">
+                           		<option value="French">
+                           </datalist>
                        </th>
                        <th>
                            <input name="sub" type="submit" value="Insert" onclick="formSubmit()"/>
