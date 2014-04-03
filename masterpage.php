@@ -230,7 +230,7 @@ header('location: djhome.php');
                     <td><button onclick='window.location.href="Reports/MissingLogRep.php"' value="Audit">Missing Log</button></td>
                     <td><button onclick='window.location.href="Reports/p1SongSearch.php"' value="Audit">Song Search</button></td>
              </tr>
-             <!--<tr>
+             <tr>
              	<th colspan="4">
         		<hr /><h2 id="Remote">Remote Settings and Control</h2></th>
              	<tr height="50">
@@ -240,7 +240,7 @@ header('location: djhome.php');
              		<td><button onclick='window.location.href="#Remote"' value="IP_ASSIGN">Permissions</button></td>
              	</tr>             	
              </tr>
-             <tr>-->
+             <tr></tr>
              <td colspan="4" height="20">
              <hr/>
              </td>

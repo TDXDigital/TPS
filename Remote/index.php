@@ -41,7 +41,8 @@ if($_SESSION['access']!=2)
 					<a href="/logout.php">Logout</a>
 				</li>
 			</li>
-			<button onclick="LoadSettings();">Switch Settings</button>
+			<button onclick="Get_Switch_Poll('0U');">Switch Settings</button>
+            <button onclick="Get_Switch_Poll('0SL');">POLL Switch</button>
 			<div id="error">
 			</div>
 			<div id="bay">

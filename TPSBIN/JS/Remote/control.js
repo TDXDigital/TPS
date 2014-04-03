@@ -29,3 +29,18 @@ function LoadSettings(){
 		$("#bay").html("<span>an Error Occured</span>");
 	}
 }
+
+function Get_Switch_Poll(cmd) {
+    $("#bay").html("<progress/>");
+
+         var switch_s = $.ajax({
+             url: "../TPSBIN/Control/TCP/TCP_SW.Control.php?q="+cmd,
+             cache: false
+         });
+         switch_s.done(function (msg) {
+             $("#bay").html(msg);
+         });
+         switch_s.fail(function (jqXHR, textStatus) {
+             $("#bay").html("Request failed: " + textStatus);
+         });
+     }

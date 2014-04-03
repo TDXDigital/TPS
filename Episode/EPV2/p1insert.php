@@ -4,12 +4,11 @@
 $con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
-
-	username=' . $_SESSION["username"]);
+	//die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . '; username=' . $_SESSION["username"]);
+    header("location: /");
 }
 else if($con){
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../../login.php');}
+	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /');}
 	$GENRE = "SELECT * from GENRE order by genreid asc";
 	$GENRES = mysql_query($GENRE,$con);
 	$genop = "<OPTION VALUE=\"%\">Select Genre</option>";
@@ -240,7 +239,7 @@ else if($con){
 					Air Date
 				</th>
 				<th id="s6">
-					Time
+					Air Time (Not Record)
 				</th>
 				<th style="width:325px" id="s7">
 					Description
