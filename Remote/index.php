@@ -81,7 +81,7 @@ if($_SESSION['access']!=2)
             </optgroup>
         </select>
             <button onclick="Get_Control()">Execute</button>
-            <button onclick='window.location.href="../masterpage"'>Menu</button>
+            <button onclick='window.location.href="../masterpage.php"'>Menu</button>
         </div>
         <div id="dialog-confirm" title="Confirm Execute" style="display:none;">
           <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>This will change a active switch status, If a program is on air you might hard cut it!</p>

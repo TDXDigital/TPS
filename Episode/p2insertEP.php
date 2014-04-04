@@ -1000,19 +1000,66 @@ if(false){
                            			echo "<option value='0'>NO ADS AVAILABLE</option>";
                            		}
 								else{
+                                    $ADGR_AVAIL = array();
+                                    $ADGR_REQUI = array();
+                                    $ADGR_INVAL = array();
 									while($ADZL=mysql_fetch_array($SRZ)){
-										echo "<option value=\"" . $ADZL['AdId'] . "\" ";
+                                        $AVAIL=FALSE;
+                                        $REQUIRE=FALSE;
+										$TEMP = "<option value=\"" . $ADZL['AdId'] . "\" ";
 										if(in_array($ADZL['AdId'], $ADIDS)){
-											echo " style=\"background-color:green; color:white\" ";
+                                            $AVAIL = TRUE;
+											$TEMP .= " style=\"background-color:green; color:white\" ";
 										}
 										else if(in_array($ADZL['AdId'], $RQADSIDS)){
-											echo " style=\"background-color:blue; color:white\" ";
+                                            $REQUIRE = TRUE;
+											$TEMP .= " style=\"background-color:blue; color:white\" ";
 										}
-										echo " >". $ADZL['AdName'] ."</option>
-				
-										";
+										$TEMP .= " >". $ADZL['AdName'] ."</option>";
+                                        if($REQUIRE){
+                                            array_push($ADGR_REQUI,$TEMP);
+                                        }
+                                        elseif($AVAIL){
+                                            array_push($ADGR_AVAIL,$TEMP);
+                                        }
+                                        else{
+                                            array_push($ADGR_INVAL,$TEMP);
+                                        }
 									}
 								}
+                            echo "<optgroup label='Required Advertisements";
+                                if(empty($ADGR_REQUI)){
+                                    echo " (None)'>";
+                                }
+                                else{
+                                    echo "'>";
+                                    foreach ($ADGR_REQUI as $opt){
+                                        echo $opt;
+                                    }
+                                }
+                            echo "</optgroup>";
+                            echo "<optgroup label='Available Advertisements";
+                                if(empty($ADGR_AVAIL)){
+                                    echo " (None)'>";
+                                }
+                                else{
+                                    echo "'>";
+                                    foreach ($ADGR_AVAIL as $opt){
+                                        echo $opt;
+                                    }
+                                }
+                            echo "</optgroup>";
+                            echo "<optgroup label='Invalid Advertisements";
+                                if(empty($ADGR_INVAL)){
+                                    echo " (None)'>";
+                                }
+                                else{
+                                    echo "'>";
+                                    foreach ($ADGR_INVAL as $opt){
+                                        echo $opt;
+                                    }
+                                }
+                            echo "</optgroup>";
                            	echo "</select>";
                            ?>
                        </th>
