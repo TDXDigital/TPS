@@ -370,30 +370,30 @@ else{
              $("#switch_status").html("Request failed: " + textStatus);
          });
      }
-     
+
 
      // START CLOCK
-  	setInterval( function() {
-		// Create a newDate() object and extract the seconds of the current time on the visitor's
-		var seconds = new Date().getSeconds();
-		// Add a leading zero to seconds value
-		$("#sec").html(( seconds < 10 ? "0" : "" ) + seconds);
-		},1000);
-		
-	setInterval( function() {
-		// Create a newDate() object and extract the minutes of the current time on the visitor's
-		var minutes = new Date().getMinutes();
-		// Add a leading zero to the minutes value
-		$("#min").html(( minutes < 10 ? "0" : "" ) + minutes);
-	    },1000);
-		
-	setInterval( function() {
-		// Create a newDate() object and extract the hours of the current time on the visitor's
-		var hours = new Date().getHours();
-		// Add a leading zero to the hours value
-		$("#hours").html(( hours < 10 ? "0" : "" ) + hours);
-	    }, 1000);
-  	// END CLOCK
+     setInterval(function () {
+         // Create a newDate() object and extract the seconds of the current time on the visitor's
+         var seconds = new Date().getSeconds();
+         // Add a leading zero to seconds value
+         $("#sec").html((seconds < 10 ? "0" : "") + seconds);
+     }, 1000);
+
+     setInterval(function () {
+         // Create a newDate() object and extract the minutes of the current time on the visitor's
+         var minutes = new Date().getMinutes();
+         // Add a leading zero to the minutes value
+         $("#min").html((minutes < 10 ? "0" : "") + minutes);
+     }, 1000);
+
+     setInterval(function () {
+         // Create a newDate() object and extract the hours of the current time on the visitor's
+         var hours = new Date().getHours();
+         // Add a leading zero to the hours value
+         $("#hours").html((hours < 10 ? "0" : "") + hours);
+     }, 1000);
+     // END CLOCK
 
      $(document).ready(function () {
          $('#artin').autocomplete({
@@ -422,7 +422,13 @@ else{
              //$.blockUI({ message: '<h1><image src="/images/GIF/ajax-loader1.gif"/>Processing...</h1>' }); 
              setTimeout(function () {
                  $.unblockUI({
-                     onUnblock: function () { alert('The server was unable to process your request in a reasonable time.'); }
+                     onUnblock: function () {
+                         /*alert('The server was unable to process your request in a reasonable time.');*/
+                         $("#Alert").html("Something didn't go as planned... the server was being moody, or you pressed cancel...");
+                         $("#Alert").slideDown("slow", function () {
+                             $("#Alert").slideUp(600);
+                         }).delay(3000);
+                     }
                  });
              }, 4000);
          });
@@ -630,9 +636,9 @@ if(false){
 			}
 			if(sizeof($warning) > 0){
                 // style=\"background-color:Black; color:yellow;\"
-				echo "<tr class='ui-state-error ui-corner-all'><th colspan=\"100%\">Warnings &amp; Information</th></tr><tr>";
+				echo "<tr class='ui-state-error'><th colspan=\"100%\">Warnings &amp; Information</th></tr>";
 				while($VAL = array_pop($warning)){
-					echo "<tr style=\"background-color:#FFFF99; color:black;\"><td colspan=\"100%\">".$VAL."</td></tr>";
+					echo "<tr class='ui-state-error'\"><td colspan=\"100%\"><span>".$VAL."<span></td></tr>";
 				}
 			}
         ?>
@@ -870,7 +876,7 @@ if(false){
         -->
         <!--<tr>-->
         </table>
-        <div id="Alert"></div>
+        <div id="Alert" class="ui-state-error" style="width: 1350px; text-align: center; display: none;"></div>
          <div id="processing" style="width: 1350px; background-color: white; text-align: center; float: left; display: none">
         			<!--<img src="/images/GIF/spinner.gif" height="50px" alt="Processing"/>-->
         			<img src="../images/GIF/ajax-loader2.gif" alt="..."/><span>Processing...</span>

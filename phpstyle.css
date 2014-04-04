@@ -47,7 +47,7 @@ background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #D9D4D4 60%, #A6A2A2 
 /* W3C Markup, IE10 Release Preview */ 
 background-image: linear-gradient(to bottom, #FFFFFF 0%, #D9D4D4 60%, #A6A2A2 90%, #FFFFFF 100%);
 
-	margin: 0;
+	margin: 0 0 0 0;
 	padding: 0;
 	/*background-color: #000000;
 	background-image:url(background.png)*/
@@ -65,6 +65,7 @@ background-image: linear-gradient(to bottom, #FFFFFF 0%, #D9D4D4 60%, #A6A2A2 90
 
 html, body {
 text-align: center;
+margin: 0 0 0 0;
 }
 p {text-align: left;}
 

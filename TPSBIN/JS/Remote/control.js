@@ -33,15 +33,42 @@ function LoadSettings(){
 function Get_Switch_Poll(cmd) {
     $("#bay").html("<progress/>");
 
-         var switch_s = $.ajax({
-             url: "../TPSBIN/Control/TCP/TCP_SW.Control.php?q="+cmd,
-             cache: false
-         });
-         switch_s.done(function (msg) {
-             $("#bay").html(msg);
-         });
-         switch_s.fail(function (jqXHR, textStatus) {
-             $("#error").html("Request failed: " + textStatus);
-             $("#error").slidedown();
-         });
-     }
+    var switch_s = $.ajax({
+        url: "../TPSBIN/Control/TCP/TCP_SW.Control.php?q="+cmd,
+        cache: false
+    });
+    switch_s.done(function (msg) {
+        msg.replace("\n", "<br />", "g");
+        $("#bay").html(msg);
+        $("#bay").show();
+        $("#error").hide();
+        //$('#bay').val().replace("\n", "<br />", "g")
+    });
+    switch_s.fail(function (jqXHR, textStatus) {
+        $("#error").html("Request failed: " + textStatus);
+        $("#error").show();
+        $("#bay").hide();
+    });
+}
+
+function Get_Control(){
+    var value = $("#control_select").val();
+    $(function () {
+        $("#dialog-confirm").dialog({
+            resizable: false,
+            height: 300,
+            modal: true,
+            buttons: {
+                "Confirm": function () {
+                    Get_Switch_Poll(value);
+                    $(this).dialog("close");
+                },
+                Cancel: function () {
+                    $(this).dialog("close");
+                    $("#bay").hide();
+                    $("#error").hide();
+                }
+            }
+        });
+    });
+}
