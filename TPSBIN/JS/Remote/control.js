@@ -41,6 +41,7 @@ function Get_Switch_Poll(cmd) {
              $("#bay").html(msg);
          });
          switch_s.fail(function (jqXHR, textStatus) {
-             $("#bay").html("Request failed: " + textStatus);
+             $("#error").html("Request failed: " + textStatus);
+             $("#error").slidedown();
          });
      }

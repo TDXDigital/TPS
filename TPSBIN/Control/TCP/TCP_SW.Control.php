@@ -12,14 +12,22 @@ if (!$fp) {
     elseif($_GET['q']=="0U"){
         $out = "*0Y";
     }
+    elseif($_GET['q']=="EM24"){
+        $out = "*0B,B,A,A,A,A,A,A,A";
+    }
+    elseif($_GET['q']=="lock"){
+        $out = "*0CLL";
+    }
+    elseif($_GET['q']=="unlock"){
+        $out = "*0CLU";
+    }
     else{
         die("Unknown Command");
     }
     fwrite($fp, $out);
-    stream_set_timeout($fp,3);
-    $res = fread($fp,2000);
+    stream_set_timeout($fp,4);
+    $res = fread($fp,8180);
     $info = stream_get_meta_data($fp);
-
     fclose($fp);
     
     if ($info['timed_out']) {
