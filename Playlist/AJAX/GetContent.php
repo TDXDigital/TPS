@@ -18,7 +18,7 @@ else{
 	echo 'ERROR!';
 }
 	//$query = "Select * from playlist where ";
-    $query = "SELECT * FROM library LEFT JOIN playlist ON library.playlistid=playlist.PlaylistId LEFT JOIN recordlabel ON library.labelid=recordlabel.LabelNumber;";
+    $query = "SELECT * FROM library LEFT JOIN playlist ON library.playlistid=playlist.PlaylistId LEFT JOIN recordlabel ON library.labelid=recordlabel.LabelNumber limit 100;";
 	if($from = $_GET['f']){
 		if($limit = $_GET['l']){
 			$query .= " limit " . $from . "," . $limit;
