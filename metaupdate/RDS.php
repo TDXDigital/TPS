@@ -111,17 +111,18 @@ song.programname = episode.programname
 and song.date = episode.date
 and song.starttime = episode.starttime
 and (song.category like \"2%\" or song.category like \"3%\")
-and song.time > ADDDATE(current_time(), INTERVAL -10 minute)
+and song.time < ADDDATE(current_time(), INTERVAL 1 minute)
 where date_format(episode.date, \"%Y-%m-%d\") = current_date()
 and ADDDATE(episode.starttime,INTERVAL (SELECT length FROM program where program.programname=episode.programname)+10 minute) > current_time()
 and episode.starttime < current_time()
 order by song.time desc, episode.starttime desc limit 1;");
+//ADDDATE(current_time(), INTERVAL -10 minute) // Not sure why this is happening???
     $tps = $l_result->fetch_array();
     if(isset($tps['artist'])&&isset($tps['title'])){
         $data = $tps['artist'] . " - " . $tps['title'];
     }
     else if(isset($tps['programname'])){
-        $data = "The ". $tps['programname'] . " Show";
+        $data = "". $tps['programname'] . " on CKXU 88.3 FM";
     }
 
     // Update Medtadata servers if global is different
