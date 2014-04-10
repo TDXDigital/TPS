@@ -17,9 +17,17 @@
     </script>
 <form action="upload_playlist.php" method="post" onsubmit="submitted();"
 enctype="multipart/form-data">
-<label for="file">Filename:</label>
-<input type="file" name="file" id="file"><br>
-<input type="submit" name="submit" value="Submit">
+    <fieldset title="XLS / XLSX Library Update">
+        <label for="file">Filename:</label>
+        <input type="file" name="file" id="file"><br>
+        <fieldset title="Range">
+            <label for="start">Start Row</label>
+            <input type="number" name="START" step="1" min="1" id="start"><br>
+            <label for="end">End Row (blank for all)</label>
+            <input type="number" name="END" step="1" min="1" id="end"><br>
+        </fieldset>
+        <input type="submit" name="submit" value="Submit">
+    </fieldset>
 </form>
     <div id="processing" style="display: none;"><progress></progress>Working...</div>
 
