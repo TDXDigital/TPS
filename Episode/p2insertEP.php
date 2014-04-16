@@ -651,7 +651,7 @@ if(false){
                         $Equipment_List = mysql_query("SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='".$EPINFO['callsign']."' and in_service='1' and ipv4_address IS NOT NULL group by hardware.hardwareid order by friendly_name desc");
                         $BOOTH = 0;
                         while($Equipment_row = mysql_fetch_array($Equipment_List)){
-                            if($_SESSION['Access']!=2&&$Equipment_row['ipv4_address']!=$SERVER['REMOTE_ADDR']){
+                            if($Equipment_row['ipv4_address']!=$SERVER['REMOTE_ADDR']||$_SESSION['Access']==2){
                                 echo "<div id=\"toolbar".$Equipment_row['hardwareid']."\"  style=\"color: white; background:#000; width:100%; display: block\">
                                 <span>".strtoupper($Equipment_row['Manufacturer'])." ".$Equipment_row['device_code']." - ".$Equipment_row['friendly_name']."</span><span style='width:100%'>&nbsp</span>
                                 <span id='RES".$Equipment_row['hardwareid']."' style=\"color: white; background: #7690a3; width: 100%; display: inline-block;\"> - DENON - </span>
