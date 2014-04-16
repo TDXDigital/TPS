@@ -326,6 +326,7 @@ else{
 <head>
 	<!--<script src="../js/jquery/js/jquery-1.9.1.min.js"></script>-->
     <script type="text/javascript" src="../TPSBIN/JS/Episode/V2CoreJS.js"></script>
+    <script type="text/javascript" src="../TPSBIN/JS/Control/Device.js"></script>
     <script type="text/javascript" src="../js/jquery/js/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="../js/jquery/js/jquery-ui-1.10.0.custom.min.js"></script>
     <link rel="stylesheet" href="../js/jquery/css/ui-lightness/jquery-ui-1.10.0.custom.min.css"/>
@@ -643,6 +644,34 @@ if(false){
 			}
         ?>
         </table>
+    <div style="margin: 0 auto 0 auto; width: 1354px; background-color: #000; color: white">
+        <?php
+            if(TRUE){
+                        echo "<h3>Hardware Control</h3>";
+                        $Equipment_List = mysql_query("SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='".$EPINFO['callsign']."' and in_service='1' and ipv4_address IS NOT NULL group by hardware.hardwareid order by friendly_name desc");
+                        $BOOTH = 0;
+                        while($Equipment_row = mysql_fetch_array($Equipment_List)){
+                            if($_SESSION['Access']!=2&&$Equipment_row['ipv4_address']!=$SERVER['REMOTE_ADDR']){
+                                echo "<div id=\"toolbar".$Equipment_row['hardwareid']."\"  style=\"color: white; background:#000; width:100%; display: block\">
+                                <span>".strtoupper($Equipment_row['Manufacturer'])." ".$Equipment_row['device_code']." - ".$Equipment_row['friendly_name']."</span><span style='width:100%'>&nbsp</span>
+                                <span id='RES".$Equipment_row['hardwareid']."' style=\"color: white; background: #7690a3; width: 100%; display: inline-block;\"> - DENON - </span>
+                                <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','8','".$Equipment_row['hardwareid']."')\" title=\"Eject\"><span class=\"ui-icon ui-icon-eject\"></span></button>
+                                <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','2','".$Equipment_row['hardwareid']."')\" title=\"Stop\"><span class=\"ui-icon ui-icon-stop\"></span></button>
+                                <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','20','".$Equipment_row['hardwareid']."')\" title=\"CUE NEXT\"><span class=\"ui-icon ui-icon-arrowthickstop-1-s\"></span></button>
+                                <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','1','".$Equipment_row['hardwareid']."')\" title=\"Play\"><span class=\"ui-icon ui-icon-play\"></span></button>
+                                <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','9','".$Equipment_row['hardwareid']."')\" title=\"Pause\"><span class=\"ui-icon ui-icon-pause\"></span></button>
+                                <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','5','".$Equipment_row['hardwareid']."')\" title=\"Previous\"><span class=\"ui-icon ui-icon-seek-first\"></span></button>
+                                <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','4','".$Equipment_row['hardwareid']."')\" title=\"Next\"><span class=\"ui-icon ui-icon-seek-end\"></span></button>
+                                <button onclick=\"Update_Device_Status('RES".$Equipment_row['hardwareid']."','".$Equipment_row['hardwareid']."')\" title=\"Refresh Device\"><span class=\"ui-icon ui-icon-refresh\"></span></button>
+                                <!--<button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','7','".$Equipment_row['hardwareid']."')\">Wake (Soft On)</button>
+                                <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','6','".$Equipment_row['hardwareid']."')\">Standby (Off)</button>-->
+                                </div>";
+                            }
+                        }
+            }
+
+        ?>
+    </div>
         <table width="1350" style="background-color:white;">
         <tr><th width="8%">
         Air Date
@@ -1622,7 +1651,16 @@ if(false){
         $PROML = mysql_query("SELECT count(*) AS Result FROM PromptLog WHERE EpNum='".addslashes($EPINFO['EpNum'])."' ");
         $PROMPTS = mysql_fetch_array($PROML);
             if($_SESSION['access']=='2'){
-                echo "<tfoot class=\"ui-state-highlight\"><tr><td colspan='2'>ADMINISTRATOR ACCESS</td><td colspan='2'>EPISODE: ".$EPINFO['EpNum']."</td><td colspan='1'>Prompt Records: ".$PROMPTS['Result']."</td></tr></tfoot>";
+                $LOCATION = addslashes($_POST['IPOR']);//"172.22.10.185";
+                if(empty($LOCATION)){
+                    $LOCATION = $_SERVER['REMOTE_ADDR'];
+                }
+                $QUERY_HWD = "SELECT count(*) AS hardware FROM hardware WHERE ipv4_address='$LOCATION' and in_service='1' and station='".$EPINFO['callsign']."'";
+                $Equipment = mysql_fetch_array(mysql_query($QUERY_HWD));
+
+                echo "<tfoot class=\"ui-state-highlight\"><tr><td colspan='2'>ADMINISTRATOR ACCESS</td><td colspan='2'>EPISODE: ".$EPINFO['EpNum']."</td><td colspan='1'>Prompt Records: ".$PROMPTS['Result']."</td>
+                <td>Hardware Count: ".$Equipment['hardware']."</td>
+                </tr></tfoot>";
             }
         ?>
         </table>
