@@ -648,13 +648,13 @@ if(false){
         <?php
             if(TRUE){
                         echo "<h3>Hardware Control</h3>";
-                        $Equipment_List = mysql_query("SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='".$EPINFO['callsign']."' and in_service='1' and ipv4_address IS NOT NULL group by hardware.hardwareid order by friendly_name desc");
+                        $Equipment_List = mysql_query("SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='".$EPINFO['callsign']."' and in_service='1' and ipv4_address IS NOT NULL group by hardware.hardwareid order by friendly_name ASC");
                         $BOOTH = 0;
                         while($Equipment_row = mysql_fetch_array($Equipment_List)){
-                            if($Equipment_row['ipv4_address']!=$SERVER['REMOTE_ADDR']||$_SESSION['Access']==2){
-                                echo "<div id=\"toolbar".$Equipment_row['hardwareid']."\"  style=\"color: white; background:#000; width:100%; display: block\">
-                                <span>".strtoupper($Equipment_row['Manufacturer'])." ".$Equipment_row['device_code']." - ".$Equipment_row['friendly_name']."</span><span style='width:100%'>&nbsp</span>
-                                <span id='RES".$Equipment_row['hardwareid']."' style=\"color: white; background: #7690a3; width: 100%; display: inline-block;\"> - DENON - </span>
+                            if($Equipment_row['ipv4_address']==$SERVER['REMOTE_ADDR']||$_SESSION['Access']==2){
+                                echo "<hr><div id=\"toolbar".$Equipment_row['hardwareid']."\"  style=\"color: white; background:#000; width:100%; display: block\">
+                                <span >".strtoupper($Equipment_row['Manufacturer'])." ".$Equipment_row['device_code']." - ".$Equipment_row['friendly_name']."</span><span style='width:100%'>&nbsp</span>
+                                <span id='RES".$Equipment_row['hardwareid']."' style=\"color: white; background: #7690a3; width:100%; text-align: center; background-color: #7690a3;\">&nbsp;- DENON - </span><br>
                                 <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','8','".$Equipment_row['hardwareid']."')\" title=\"Eject\"><span class=\"ui-icon ui-icon-eject\"></span></button>
                                 <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','2','".$Equipment_row['hardwareid']."')\" title=\"Stop\"><span class=\"ui-icon ui-icon-stop\"></span></button>
                                 <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','20','".$Equipment_row['hardwareid']."')\" title=\"CUE NEXT\"><span class=\"ui-icon ui-icon-arrowthickstop-1-s\"></span></button>
@@ -663,8 +663,8 @@ if(false){
                                 <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','5','".$Equipment_row['hardwareid']."')\" title=\"Previous\"><span class=\"ui-icon ui-icon-seek-first\"></span></button>
                                 <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','4','".$Equipment_row['hardwareid']."')\" title=\"Next\"><span class=\"ui-icon ui-icon-seek-end\"></span></button>
                                 <button onclick=\"Update_Device_Status('RES".$Equipment_row['hardwareid']."','".$Equipment_row['hardwareid']."')\" title=\"Refresh Device\"><span class=\"ui-icon ui-icon-refresh\"></span></button>
-                                <!--<button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','7','".$Equipment_row['hardwareid']."')\">Wake (Soft On)</button>
-                                <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','6','".$Equipment_row['hardwareid']."')\">Standby (Off)</button>-->
+                                <button style=\"float: right\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','7','".$Equipment_row['hardwareid']."')\">Wake (Soft On)</button>
+                                <button style=\"float: right\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','6','".$Equipment_row['hardwareid']."')\">Standby (Off)</button>
                                 </div>";
                             }
                         }
