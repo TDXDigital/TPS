@@ -1660,7 +1660,7 @@ if(false){
                 $Equipment = mysql_fetch_array(mysql_query($QUERY_HWD));
 
                 echo "<tfoot class=\"ui-state-highlight\"><tr><td colspan='2'>ADMINISTRATOR ACCESS</td><td colspan='2'>EPISODE: ".$EPINFO['EpNum']."</td><td colspan='1'>Prompt Records: ".$PROMPTS['Result']."</td>
-                <td>Hardware Count: ".$Equipment['hardware']."</td>
+                <td><a href='javascript:void(0)'>Hardware Count: ".$Equipment['hardware']."</a></td>
                 </tr></tfoot>";
             }
         ?>
