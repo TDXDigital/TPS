@@ -1,12 +1,15 @@
 <?php
-    session_start();
+    include_once "../../TPSBIN/functions.php";
+    include_once "../../TPSBIN/db_connect.php";
+    sec_session_start();
 
 $con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
+	/*die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
 
-	username=' . $_SESSION["username"]);
+	username=' . $_SESSION["username"]);=*/
+    header("location:AJAX/Login.php");
 }
 else if($con){
 	if(!mysql_select_db("CKXU")){header('Location: ../../login.php');}
@@ -32,13 +35,13 @@ else if($con){
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="../../altstyle.css" />
+<link rel="stylesheet" type="text/css" href="../../js/css/jMenu.jquery.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="../../js/jquery-ui-1.9.2.blitzer/css/blitzer/jquery-ui-1.9.2.custom.css"/>
 <script src="../../js/jquery-ui-1.9.2.blitzer/js/jquery-1.8.3.js"></script>
 <script src="../../js/jquery-ui-1.9.2.blitzer/js/jquery-ui-1.9.2.custom.js"></script>
 <script src="../../js/globalize-master/lib/globalize.js"></script>
 <script src="../../js/modernizr.js"></script>
 <script type="text/javascript" src="../../js/jquery-blockui.js"></script>
-<link rel="stylesheet" type="text/css" href="../../js/css/jMenu.jquery.css" media="screen" />
-<link rel="stylesheet" type="text/css" href="../../js/jquery-ui-1.9.2.blitzer/css/blitzer/jquery-ui-1.9.2.custom.css"/>
 	<script type="text/javascript">
 	$.widget( "ui.timespinner", $.ui.spinner, {
         options: {
