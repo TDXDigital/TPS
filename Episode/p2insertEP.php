@@ -43,7 +43,7 @@ else{
     }
     elseif($booth1 == "0"){
         //array_push($warning,"<strong><br/>Notice: No valid audio source is to air. pleae check switch or warning settings<br/><br/></strong>");
-    }
+    }o
 	// END Switch Check
 	
         $SHOWQ = "select callsign from program where programname='" . addslashes($_POST['program']) . "' ";
