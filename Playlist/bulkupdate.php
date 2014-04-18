@@ -19,7 +19,7 @@
 enctype="multipart/form-data">
     <fieldset title="XLS / XLSX Library Update">
         <label for="file">Filename:</label>
-        <input type="file" name="file" id="file"><br>
+        <input type="file" name="file" id="file" required><br>
         <fieldset title="Range">
             <label for="start">Start Row</label>
             <input type="number" name="START" step="1" min="1" id="start"><br>

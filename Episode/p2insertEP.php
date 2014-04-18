@@ -28,6 +28,7 @@ else{
 	//##########################//
 	// Check Switch Status      //
 	//##########################//
+
 	$switchqu = "select * from switchstatus ORDER BY ID DESC limit 1 ";
 	$switchre = mysql_query($switchqu);
 	$switchArray = mysql_fetch_array($switchre);
@@ -62,23 +63,23 @@ else{
 		//echo $_POST['title'];
         if(mysql_numrows($RESEPSEL)=="0"){
         	if($_POST['brType']>0){
-        		$inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '" . $DESCRIPTION . "' )";
+        		$inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '$DESCRIPTION' )";
         	}
 		  else if(!isset($_POST['enprerec']))
           {
-            $inep = "insert into episode (callsign, programname, date, starttime, description) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . $DESCRIPTION . "' )";
+            $inep = "insert into episode (callsign, programname, date, starttime, description) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '$DESCRIPTION' )";
             
           }
           else
           {
 
-            $inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '" . $DESCRIPTION . "' )";
+            $inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '$DESCRIPTION' )";
           }
             if(!mysql_query($inep,$con))
             {
               echo 'SQL Error<br />';
               echo mysql_error() . "<br/>";
-			  echo $inep . "<br/>";
+			  die($inep . "<br/>");
             }
 		$RESEPSEL=mysql_query($INSEPSEL,$con);
 		$EPINFO=mysql_fetch_array($RESEPSEL);
@@ -453,7 +454,7 @@ if(false){
 
         <table border="0" align="center" width="1354">
         <tr><td colspan="6">
-           <img src="../images/Ckxu_logo_PNG.png" alt="ckxu" height="90px"/>
+           <img src="../<?php echo $_SESSION['logo']; ?>" alt="ckxu" height="90px"/>
         </td>
         <td style="width: 250px; height: 110px;" id="switchstat" colspan="1">
         	<!--<iframe src="EPV3/Switch.php" height="100px" width="100%" seamless="seamless" style="border:none">Iframe Not Supported</iframe>-->
@@ -647,28 +648,28 @@ if(false){
     <div style="margin: 0 auto 0 auto; width: 1354px; background-color: #000; color: white">
         <?php
             if(TRUE){
-                        echo "<h3>Hardware Control</h3>";
-                        $Equipment_List = mysql_query("SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='".$EPINFO['callsign']."' and in_service='1' and ipv4_address IS NOT NULL group by hardware.hardwareid order by friendly_name ASC");
-                        $BOOTH = 0;
-                        while($Equipment_row = mysql_fetch_array($Equipment_List)){
-                            if($Equipment_row['ipv4_address']==$_SERVER['REMOTE_ADDR'] || $_SESSION['access']==2){
+                echo "<h3>Hardware Control</h3>";
+                $Equipment_List = mysql_query("SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='".$EPINFO['callsign']."' and in_service='1' and ipv4_address IS NOT NULL group by hardware.hardwareid order by friendly_name ASC");
+                $BOOTH = 0;
+                while($Equipment_row = mysql_fetch_array($Equipment_List)){
+                    if($Equipment_row['ipv4_address']==$_SERVER['REMOTE_ADDR'] || $_SESSION['access']==2){
 
-                                echo "<hr><div id=\"toolbar".$Equipment_row['hardwareid']."\"  style=\"color: white; background:#000; width:100%; display: block\">
-                                <span >".strtoupper($Equipment_row['Manufacturer'])." ".$Equipment_row['device_code']." - ".$Equipment_row['friendly_name']."</span><span style='width:100%'>&nbsp</span>
-                                <span id='RES".$Equipment_row['hardwareid']."' style=\"color: white; background: #7690a3; width:100%; text-align: center; background-color: #7690a3;\">&nbsp;- DENON - </span><br>
-                                <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','8','".$Equipment_row['hardwareid']."')\" title=\"Eject\"><span class=\"ui-icon ui-icon-eject\"></span></button>
-                                <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','2','".$Equipment_row['hardwareid']."')\" title=\"Stop\"><span class=\"ui-icon ui-icon-stop\"></span></button>
-                                <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','20','".$Equipment_row['hardwareid']."')\" title=\"CUE NEXT\"><span class=\"ui-icon ui-icon-arrowthickstop-1-s\"></span></button>
-                                <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','1','".$Equipment_row['hardwareid']."')\" title=\"Play\"><span class=\"ui-icon ui-icon-play\"></span></button>
-                                <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','9','".$Equipment_row['hardwareid']."')\" title=\"Pause\"><span class=\"ui-icon ui-icon-pause\"></span></button>
-                                <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','5','".$Equipment_row['hardwareid']."')\" title=\"Previous\"><span class=\"ui-icon ui-icon-seek-first\"></span></button>
-                                <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','4','".$Equipment_row['hardwareid']."')\" title=\"Next\"><span class=\"ui-icon ui-icon-seek-end\"></span></button>
-                                <button onclick=\"Update_Device_Status('RES".$Equipment_row['hardwareid']."','".$Equipment_row['hardwareid']."')\" title=\"Refresh Device\"><span class=\"ui-icon ui-icon-refresh\"></span></button>
-                                <button style=\"float: right\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','7','".$Equipment_row['hardwareid']."')\">Wake (Soft On)</button>
-                                <button style=\"float: right\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','6','".$Equipment_row['hardwareid']."')\">Standby (Off)</button>
-                                </div>";
-                            }
-                        }
+                        echo "<hr><div id=\"toolbar".$Equipment_row['hardwareid']."\"  style=\"color: white; background:#000; width:100%; display: block\">
+                        <span >".strtoupper($Equipment_row['Manufacturer'])." ".$Equipment_row['device_code']." - ".$Equipment_row['friendly_name']."</span><span style='width:100%'>&nbsp</span>
+                        <span id='RES".$Equipment_row['hardwareid']."' style=\"color: white; background: #7690a3; width:100%; text-align: center; background-color: #7690a3;\">&nbsp;- DENON - </span><br>
+                        <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','8','".$Equipment_row['hardwareid']."')\" title=\"Eject\"><span class=\"ui-icon ui-icon-eject\"></span></button>
+                        <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','2','".$Equipment_row['hardwareid']."')\" title=\"Stop\"><span class=\"ui-icon ui-icon-stop\"></span></button>
+                        <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','20','".$Equipment_row['hardwareid']."')\" title=\"CUE NEXT\"><span class=\"ui-icon ui-icon-arrowthickstop-1-s\"></span></button>
+                        <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','1','".$Equipment_row['hardwareid']."')\" title=\"Play\"><span class=\"ui-icon ui-icon-play\"></span></button>
+                        <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','9','".$Equipment_row['hardwareid']."')\" title=\"Pause\"><span class=\"ui-icon ui-icon-pause\"></span></button>
+                        <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','5','".$Equipment_row['hardwareid']."')\" title=\"Previous\"><span class=\"ui-icon ui-icon-seek-first\"></span></button>
+                        <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','4','".$Equipment_row['hardwareid']."')\" title=\"Next\"><span class=\"ui-icon ui-icon-seek-end\"></span></button>
+                        <button onclick=\"Update_Device_Status('RES".$Equipment_row['hardwareid']."','".$Equipment_row['hardwareid']."')\" title=\"Refresh Device\"><span class=\"ui-icon ui-icon-refresh\"></span></button>
+                        <button style=\"float: right\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','7','".$Equipment_row['hardwareid']."')\">Wake (Soft On)</button>
+                        <button style=\"float: right\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','6','".$Equipment_row['hardwareid']."')\">Standby (Off)</button>
+                        </div>";
+                    }
+                }
             }
 
         ?>
@@ -1652,7 +1653,12 @@ if(false){
         $PROML = mysql_query("SELECT count(*) AS Result FROM PromptLog WHERE EpNum='".addslashes($EPINFO['EpNum'])."' ");
         $PROMPTS = mysql_fetch_array($PROML);
             if($_SESSION['access']=='2'){
-                $LOCATION = addslashes($_POST['IPOR']);//"172.22.10.185";
+                if(isset($_POST['IPOR'])){
+                    $LOCATION = addslashes($_POST['IPOR']);
+                }
+                else{
+                    $LOCATION="";
+                }
                 if(empty($LOCATION)){
                     $LOCATION = $_SERVER['REMOTE_ADDR'];
                 }

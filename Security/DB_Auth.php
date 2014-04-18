@@ -1,9 +1,3 @@
-// TUTORIAL
-// http://www.wikihow.com/Create-a-Secure-Login-Script-in-PHP-and-MySQL
-//
-// THIS CODE IS INTENDED TO AUTHENTICATE A USER AGAINST A DB HOSTED AUTHLIST
-//
-//
 <?php
 
 $mysqli = new mysqli(HOST, USER, PASSWORD, DATABASE);

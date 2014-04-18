@@ -2,7 +2,7 @@
 session_start();
 if($_SESSION['access']!=2)
 {
-  header('location: /djhome.php');
+  header('location: ../');
 }
 ?>
 <!DOCTYPE html>

@@ -1,10 +1,13 @@
 <?php
+    if(!isset($DEBUG)){
+        $DEBUG = "";
+    }
 function LDAP_AUTH($user, $password, $xml_server) {
     if((string)$xml_server->ACTIVE == '0'){
-        echo "<p>ERROR: Selected server has been disabled by an administrator</p>";
+        $DEBUG .= "<p>ERROR: Selected server has been disabled by an administrator</p>";
         die("<p>Click <a href='$ORIGIN'>Here</a> to return to login");
     }
-    echo "<br/>";
+    $DEBUG .= "<br/>";
     // Active Directory server
     $ldap_host = (string)$xml_server->LDP_SERVER;//"ldap://picard.local.ckxu.com/";
 
@@ -27,23 +30,23 @@ function LDAP_AUTH($user, $password, $xml_server) {
     $ldap_usr_dom = (string)$xml_server->LDP_DOMAIN;//"CKXU-FM";
 
     // connect to active directory
-    echo "<span>SERVER: $ldap_host<br/></span>";
+    $DEBUG .= "<span>SERVER: $ldap_host<br/></span>";
     if($ldap_port=='636'){
-        echo "<span style='color:green'>USING LDAP OVER SSL<br/></span>";
+        $DEBUG .= "<span style='color:green'>USING LDAP OVER SSL<br/></span>";
     }
     elseif($ldap_port=='389'){
-        echo "<span style='color:blue'>USING STANDARD LDAP<br/></span>";
+        $DEBUG .= "<span style='color:blue'>USING STANDARD LDAP<br/></span>";
     }
     else{
-        echo "<span style='color:yellow; background-color: black;'>LDAP PORT UNKNOWN:$ldap_port<br/></span>";
+        $DEBUG .= "<span style='color:yellow; background-color: black;'>LDAP PORT UNKNOWN:$ldap_port<br/></span>";
     }
-    echo "<span>Attempting LDAP Connection:</span>";
+    $DEBUG .= "<span>Attempting LDAP Connection:</span>";
 	try{
         if($ldap = ldap_connect($ldap_host,$ldap_port)){
-            echo "<span style='color: green;'> [Connection Established]<br/></span>";
+            $DEBUG .= "<span style='color: green;'> [Connection Established]<br/></span>";
         }
         else{
-            echo "<span style='color: red;'> [Connection Refused]<br/></span>";
+            $DEBUG .= "<span style='color: red;'> [Connection Refused]<br/></span>";
         }
     }
     catch (Exception $e){
@@ -57,11 +60,11 @@ function LDAP_AUTH($user, $password, $xml_server) {
     $bindpassword = $password;//"K1w1679";
 
     // verify user and password
-    echo "<span>Attempting LDAP bind with $ldap_usr_dom\\$bindUser<br/></span>";
-    echo "<span>Using DN:$ldap_dn<br/></span>";
+    $DEBUG .= "<span>Attempting LDAP bind with $ldap_usr_dom\\$bindUser<br/></span>";
+    $DEBUG .= "<span>Using DN:$ldap_dn<br/></span>";
     try{
         if($bind = @ldap_bind($ldap, $ldap_usr_dom . '\\' . $bindUser, $bindpassword)) {
-	    echo "<span style='color: green;'>Bind Accepted with $ldap_usr_dom\\$bindUser<br/></span>";
+	    $DEBUG .= "<span style='color: green;'>Bind Accepted with $ldap_usr_dom\\$bindUser<br/></span>";
             // valid
             // check presence in groups
             $filter = "(sAMAccountName=" . $user . ")";
@@ -112,13 +115,13 @@ function LDAP_AUTH($user, $password, $xml_server) {
                 return true;
             } else {
                 // user has no rights
-		    echo "Access Denied<br/>";
+		        $DEBUG .= "Access Denied<br/>";
                 return false;
             }
 
         } else {
             // invalid name or password
-	    echo "<span style='color: red;'>Invalid Username or password using <span style='color: blue;'>$ldap_usr_dom\\$bindUser</span> with password ".
+	    $DEBUG .= "<span style='color: red;'>Invalid Username or password using <span style='color: blue;'>$ldap_usr_dom\\$bindUser</span> with password ".
         isset($bindpassword)."<br/><br/></span>";
             return false;
         }

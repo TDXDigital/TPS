@@ -1,7 +1,7 @@
 function Query_Device(target,code,hid){
     var result_status = "";
     $.ajax({
-        url: "EPV3/AJAX/components/hardware_query.JSON.php?HID=" + hid + "&CMD=" + code,
+        url: "EPV3/AJAX/components/hardware_query.php?HID=" + hid + "&CMD=" + code,
         beforeSend: function () {
             $('#' + target).html("<processing></processing>");
         },

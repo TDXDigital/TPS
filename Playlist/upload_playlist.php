@@ -10,8 +10,8 @@ include_once "../TPSBIN/db_connect.php";
 include "../includes/phpexcel/Classes/PHPExcel/IOFactory.php";
 sec_session_start();
 
-$_GET['START'];
-$_GET['END'];
+/*$_GET['START'];
+$_GET['END'];*/
 
 if ($_FILES["file"]["error"] > 0)
   {
@@ -60,13 +60,14 @@ INSERT INTO `library` (artist, album, datein, year, labelid) VALUES (?,?,?,?,lab
 END");*/
 //Connosseurs of Porn	Dead Pets	Disappointing Promises	2014	2014-02-14
 $recd = $mysqli->prepare("INSERT IGNORE INTO recordlabel (Name) VALUES (?);");
-$stmt = $mysqli->prepare("INSERT INTO `library` (artist, album, datein, year, labelid) VALUES (?,?,?,?,?);");
+$stmt = $mysqli->prepare("INSERT IGNORE INTO `library` (artist, album, datein, year, labelid) VALUES (?,?,?,?,?);");
 //$label_stmt = $mysqli->prepare("");
 $stmt->bind_param('ssssi',$artist,$album,$datein,$year,$labelid); // LABEL REMOVED
 $recd->bind_param('s',$label);
 
 //  Loop through each row of the worksheet in turn
-if(isset($_GET['END'])){
+if(isset($_POST['end'])){
+    $END = $_POST['end'];
     if(is_numeric($END)){
         $terminate = $END;
     }
@@ -77,7 +78,8 @@ if(isset($_GET['END'])){
 else{
     $terminate = $highestRow;
 }
-if(isset($_GET['START'])){
+if(isset($_POST['start'])){
+    $START = $_POST['start'];
     if(is_numeric($START)){
         $initiate = $START;
     }
@@ -95,7 +97,7 @@ if($initiate>$terminate){
 elseif($terminate>$highestRow){
     $terminate=$highestRow;
 }
-for ($row = $initiate; $row <= $terminate; $row++){ 
+for ($row = $initiate; $row <= $terminate; $row++){ //50; $row++){//
     //  Read a row of data into an array
     $rowData = $sheet->rangeToArray('A' . $row . ':' . $highestColumn . $row,
                                     NULL,
