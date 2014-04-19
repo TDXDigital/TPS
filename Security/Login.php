@@ -6,7 +6,7 @@ include("DB_Auth.php");
 sec_session_start();
 
 // SET BASE REF
-$_SESSION['BASE_REF']="/TPS/";
+$_SESSION['BASE_REF']="/TPS";
 
 // LOAD SERVERS
 $dbxml = simplexml_load_file("../TPSBIN/XML/DBSETTINGS.xml");

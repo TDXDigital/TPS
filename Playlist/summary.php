@@ -1,7 +1,11 @@
 <?php
-   include("../TPSBIN/functions.php");
-// Establish Session
-sec_session_start();
+    include("../TPSBIN/functions.php");
+    include("../TPSBIN/db_connect.php");
+
+    // Establish Session
+    sec_session_start();
+
+    // GET data
 ?>
 <!DOCTYPE HTML>
 <html lang="en">
@@ -45,7 +49,7 @@ sec_session_start();
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="/">Home</a></li>
+            <li><a href="<?php echo $_SESSION['BASE_REF'];?>/">Home</a></li>
             <li><a href="/TPSlogin">Login</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
@@ -66,20 +70,25 @@ sec_session_start();
     <div class="container" style="margin-top: 30px">
         <div class="page-header">Library Upload Summary</div>
             <div class="ui-state-highlight">
-                <div class="alert alert-success">
-                    COMPLETED: <?php echo $_SESSION['COMPLETE']; ?>
+                <div class="panel panel-success">
+                    <div class="panel-heading">COMPLETED: <?php echo $_SESSION['COMPLETE']; ?></div>
+                    <?php?>
+                    <div class="panel-body"></div>
                 </div>
-                <div class="alert alert-warning">
-                    DUPLICATES (Skipped):<?php echo $_SESSION['DUPLICATE_COUNT'];?>
+                <div class="panel panel-warning">
+                    <div class="panel-heading">DUPLICATES (Skipped): <?php echo $_SESSION['DUPLICATE_COUNT'];?></div>
+                    <div class="panel-body"></div>
                 </div>
-                <div class="alert alert-danger">
-                    ERRORS (Omitted):<?php echo $_SESSION['ERROR_COUNT'];?>
+                <div class="panel panel-danger">
+                    <div class="panel-heading">ERRORS (Omitted): <?php echo $_SESSION['ERROR_COUNT'];?></div>
+                    <div class="panel-body"></div>
                 </div>
-                <div class="alert alert-info">
-                    TOTAL RECORDS:<?php echo $_SESSION['TOTAL'];?>
+                <div class="panel panel-info">
+                    <div class="panel-heading">TOTAL RECORDS: <?php echo $_SESSION['TOTAL'];?></div>
+                    <div class="panel-body"></div>
                 </div><br>
                 <span>
-                    RUNTIME:<?php echo $_SESSION['EXEC_TIME'];?>
+                    RUNTIME: <?php echo $_SESSION['EXEC_TIME'];?> Minutes
                 </span>
                 <div class="progress">
                     <div class="progress-bar progress-bar-success" style="width: <?php echo round(($_SESSION['COMPLETE']/$_SESSION['TOTAL'])*100,2);?>%"><span class="sr-only"><?php echo ($_SESSION['COMPLETE']/$_SESSION['TOTAL'])*100;?>% Complete (success)</span></div>
