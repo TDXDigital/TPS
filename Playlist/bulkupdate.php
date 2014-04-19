@@ -27,6 +27,7 @@
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="<?php echo $_SESSION['BASE_REF'];?>/TPSBIN/JS/GLOBAL/Utilities.js"></script>
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -37,43 +38,12 @@
             function submitted() {
                 $("#input").hide();
                 $("#processing").show();
+                startTimer("timer");
             }
         </script>
     </head>
     <body role="document" style="">
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="<?php echo $_SESSION['BASE_REF'];?>/">TPS Radio System</a>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="<?php echo $_SESSION['BASE_REF'];?>/">Home</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Host / Program<b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li class="dropdown-header">DJ / Hosts</li>
-                <li><a href="#">New User</a></li>
-                <li><a href="#">Edit User</a></li>
-                <li><a href="#">Remove User</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Programs</li>
-                <li><a href="#">New Program</a></li>
-                <li><a href="#">Edit Program</a></li>
-                <li><a href="#">Edit Logs</a></li>
-              </ul>
-            </li>
-            <li><a href="/TPSlogin">Login</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </div>
+    <?php include "../TPSBIN/bs_menu.php"?>
     <div class="container" style="margin-top: 30px">
         <div class="page-header">Library Upload</div>
             <div class="ui-state-highlight">
@@ -101,9 +71,9 @@
                         <div ><progress></progress></div>
                     </div>
                 </div>
-                <span>
-                    RUNTIME: 0:00
-                </span>
+                <div>
+                    <span>RUNTIME: </span><span id="timer">00:00:00</span>
+                </div>
                 <div class="progress">
                     <!--<div class="progress-bar progress-bar-success" style="width: <?php echo round(($_SESSION['COMPLETE']/$_SESSION['TOTAL'])*100,2);?>%"><span class="sr-only"><?php echo ($_SESSION['COMPLETE']/$_SESSION['TOTAL'])*100;?>% Complete (success)</span></div>
                     <div class="progress-bar progress-bar-success" style="width: <?php echo round(($_SESSION['DUPLICATE_COUNT']/$_SESSION['TOTAL'])*100,2);?>%"><span class="sr-only"><?php echo ($_SESSION['DUPLICATE_COUNT']/$_SESSION['TOTAL'])*100;?>% Duplicate (Omitted)</span></div>

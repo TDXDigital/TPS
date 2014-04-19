@@ -61,7 +61,7 @@ INSERT INTO `library` (artist, album, datein, year, labelid) VALUES (?,?,?,?,lab
 END");*/
 //Connosseurs of Porn	Dead Pets	Disappointing Promises	2014	2014-02-14
 $recd = $mysqli->prepare("INSERT IGNORE INTO recordlabel (Name) VALUES (?);");
-$stmt = $mysqli->prepare("INSERT IGNORE INTO `library` (artist, album, datein, year, labelid) VALUES (?,?,?,?,?);");
+$stmt = $mysqli->prepare("INSERT INTO `library` (artist, album, datein, year, labelid) VALUES (?,?,?,?,?);");
 //$label_stmt = $mysqli->prepare("");
 $stmt->bind_param('ssssi',$artist,$album,$datein,$year,$labelid); // LABEL REMOVED
 $recd->bind_param('s',$label);
@@ -69,24 +69,25 @@ $recd->bind_param('s',$label);
 //  Loop through each row of the worksheet in turn
 if(isset($_POST['end'])){
     $END = $_POST['end'];
-    if(is_numeric($END)){
+    /*if(is_numeric($END)){
+        */
         $terminate = $END;
-    }
+    /*}
     else{
         $terminate = $highestRow;
-    }
+    }*/
 }
 else{
     $terminate = $highestRow;
 }
 if(isset($_POST['start'])){
     $START = $_POST['start'];
-    if(is_numeric($START)){
+    //if(is_numeric($START)){
         $initiate = $START;
-    }
+    /*}
     else{
         $initiate = 1;
-    }
+    }*/
 }
 else{
     $initiate = 1;
