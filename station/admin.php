@@ -65,7 +65,7 @@
               <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Advertising<b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="Advertisements/p1adins">New Commercial</a></li>
+                <li><a href="Advertisements/p1advins.php">New Commercial</a></li>
                 <li><a href="Advertisements/p1update.php">Edit Commercial</a></li>
               </ul>
             </li>
@@ -127,9 +127,10 @@
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h1 class="page-header">Administration Dashboard</h1>
-            <h3 class="sub-header">New Admin Interface</h3>
+            <!--<h3 class="sub-header">New Admin Interface</h3>-->
               <p>Welcome to the new administration interface! please take a moment to become comfortable with the updated theme, please note that most options have been relocated to the top right menus.</p>
               <p>Statistics and Reports will be presented in this section in future releases and has been loaded with excample information as placeholders</p>
+              <div class="alert alert-danger">If you need to force the system to use the old style dashboard enter "?old" after /TPS in the address bar ie."/TPS/?old" </div>
           <div class="row placeholders">
               <h2 class="sub-header">Example Charts / Graphs</h2>
             <div class="col-xs-6 col-sm-3 placeholder">
