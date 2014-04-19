@@ -1,11 +1,26 @@
 <?php
     include "TPSBIN/functions.php";
     sec_session_start();
-
-    if($_SESSION['access']==2){
-        include_once "masterpage.php";
+    if(isset($_GET['old'])){
+        if($_SESSION['access']==2){
+            include_once "admin_old.php";
+            //header("location: masterpage.php");
+        }
+        else{
+            include_once "djhome.php";
+            //header("djhome.php");
+        }
     }
+
     else{
-        include_once "djhome.php";
+        if($_SESSION['access']==2){
+            include_once "station/admin.php";
+            //header("location: masterpage.php");
+        }
+        else{
+            //include_once "station/user.php";
+            include_once "djhome.php";
+            //header("djhome.php");
+        }
     }
 ?>

@@ -1,9 +1,10 @@
 <?php session_start(); ?>
+<!DOCTYPE HTML>
+<html>
 <head>
 <link rel="stylesheet" type="text/css" href="../phpstyle.css" />
 <title>DPL Administration</title>
 </head>
-<html>
 <body>
       <div class="topbar">
            <a class="right" href="../logout.php"> Logout </a>Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
