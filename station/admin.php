@@ -121,7 +121,15 @@
                     timeline: { colorByRowLabel: true }
                   };
 
-                  chart.draw(dataTable, options);
+                  <?php
+                      if(!$first)
+                      {
+                          echo "chart.draw(dataTable, options);";
+                      }
+                      else{
+                          echo '$(\'#LiveSchedule\').html(\'No Programs Found\');';
+                      }
+                    ?>
                 }
 
                 </script>
@@ -188,7 +196,7 @@
                 }
 
                 </script>
-                <div id="LiveSchedule" style="width: 100%; height: 300px;"></div>
+                <div id="LiveSchedule" style="width: 100%; min-height: 150px;"></div>
                 <h2 class="sub-header">Upcoming PreRecords (30 Days)</h2>
                 <div id="PreRecord" style="width: 100%; height: 100px;"></div>
             <!--<div class="col-xs-6 col-sm-3 placeholder">

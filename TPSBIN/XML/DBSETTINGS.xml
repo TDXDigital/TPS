@@ -4,6 +4,7 @@
         <ID>CKXU001</ID>
         <NAME>CKXU_PICARD</NAME>
         <LOGO_PATH>images/Ckxu_logo_PNG.png</LOGO_PATH>
+        <MENU_LOGO_PATH>images/logo.png</MENU_LOGO_PATH>
         <ACTIVE>1</ACTIVE>
         <RESOLVE>URL</RESOLVE>
         <URL>localhost</URL>
