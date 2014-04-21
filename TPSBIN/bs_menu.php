@@ -1,6 +1,23 @@
 <?php 
     // THIS FILE SHOULD BE INCLUDED WITHIN A PAGET THAT HAS ALREADY RUN sec_session_start!
+    if(!isset($_SESSION)){
+        // PRINT OUT LOGIN
+        echo "<a href='login'>login</a>";
+    }
+
     $base = $_SESSION['BASE_REF'];
+    $logo = $_SESSION['m_logo']?: $_SESSION['logo'];
+    $menu = array(
+        array(0,"<div class=\"navbar navbar-inverse navbar-fixed-top\" role=\"navigation\">"),
+        array(0,"<div class=\"container-fluid\">"),
+        array(0,"<div class=\"navbar-header\">"),
+        array(0,"<button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\".navbar-collapse\">"),
+        array(0,"<span class=\"sr-only\">Toggle navigation</span>"),
+        array(0,"<span class=\"icon-bar\"></span>"),
+        array(0,"<span class=\"icon-bar\"></span>"),
+        array(0,"<span class=\"icon-bar\"></span>"),
+        array(0,"</button>"),
+    )
     ?>
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container-fluid">
@@ -11,8 +28,8 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-            
-          <a class="navbar-brand" href="<?php echo $base;?>/"><img src="<?php echo $base;?>/images/logo.png" style="height: 20px;" alt="logo"/>TPS Broadcast</a>
+            <!--Completed Mini Menu-->
+          <a class="navbar-brand" href="<?php echo $base;?>/"><img src="<?php echo $base."/".$logo;?>" style="height: 20px;" alt="logo"/>TPS Broadcast</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
