@@ -131,6 +131,8 @@ function load(){
 			document.getElementById("spokcon").style.display="none";
 			//document.getElementById("Spokcon").required="true";
 			
+			// SET Value of spoken minutes to Null as element is hidden
+			document.getElementById("spokenc").value="";
 			document.getElementById("title001").value="";
 			document.getElementById("artin").disabled=false;
 			document.getElementById("albin").disabled=false;
@@ -158,7 +160,16 @@ function load(){
 			document.getElementById("ccin").disabled="true";
 			document.getElementById("hitin").disabled="true";
 			document.getElementById("insin").disabled="true";
-		}	
+		}
+		else if(document.getElementById("DDLNormal").options[document.getElementById("DDLNormal").selectedIndex].value==43)
+		{
+			document.getElementById("title001").value="Musical Station ID";
+			document.getElementById("artin").readonly="TRUE";
+			document.getElementById("albin").readonly="TRUE";
+			document.getElementById("hitin").disabled="TRUE";
+			document.getElementById("ccin").disabled="TRUE";
+			document.getElementById("insin").disabled="TRUE";
+		}
 		/*else{
 			var x=document.getElementById("DDLNormal").selectedIndex;
 			var y=document.getElementById("DDLNormal").options;
@@ -171,6 +182,7 @@ function load(){
 			if(NOTE!=null&&NOTE!=''){
 				document.getElementById('NF1').value=NOTE;
 			}
+			$("NoteField").SlideDown();
 	}
 	
 	function SpokenWord(){
@@ -180,9 +192,13 @@ function load(){
 	function NotSpoken(){
 		
 	}
-	
+	function ClearWarning(){
+		$("#warning").html("");
+		$("warning").hide();
+	}
 	function DefineCC(){
-		alert("Definition: \n Instrumental \n\n defined as music that is performed with no vocals/singers performing in the piece.");
+		$("#warning").html("<span>Definition: \n Instrumental \n\n defined as music that is performed with no vocals/singers performing in the piece.</span>");
+		SetTimeout(ClearWarning(),2000);
 	}
 	
 	function DefineHit(){
