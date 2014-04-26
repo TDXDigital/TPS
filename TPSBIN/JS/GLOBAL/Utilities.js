@@ -31,18 +31,24 @@ t=setTimeout(function(){startTime()},500);
 
 function startTimer(target)
 {
-var today=new Date();
-var h = "00";
-var m = "00";
-var s = "00";
-// add a zero in front of numbers<10
-m=checkTime(m);
-s=checkTime(s);
-document.getElementById(target).innerHTML=h+":"+m+":"+s;
-t=setTimeout(function(){startTime()},500);
+    var initialTime = Date.now();
+
+    function checkTime(){
+      var timeDifference = Date.now() - initialTime;
+      var formatted = convertTime(timeDifference);
+      document.getElementById(target).innerHTML = '' + formatted;
+    }
+
+    function convertTime(miliseconds) {
+      var totalSeconds = Math.floor(miliseconds/1000);
+      var minutes = Math.floor(totalSeconds/60);
+      var seconds = totalSeconds - minutes * 60;
+      return checkTimeFormat(minutes) + ':' + checkTimeFormat(seconds);
+    }
+    window.setInterval(checkTime, 500);
 }
 
-function checkTime(i)
+function checkTimeFormat(i)
 {
 if (i<10)
   {

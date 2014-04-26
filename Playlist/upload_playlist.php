@@ -11,6 +11,10 @@ include_once "../TPSBIN/db_connect.php";
 include "../includes/phpexcel/Classes/PHPExcel/IOFactory.php";
 sec_session_start();
 
+unset($_SESSION['REFCODE']);
+$_SESSION['REFCODE'] = array();
+unset($_SESSION['ERROR']);
+$_SESSION['ERROR'] = array();
 /*$_GET['START'];
 $_GET['END'];*/
 
@@ -156,7 +160,7 @@ for ($row = $initiate; $row <= $terminate; $row++){ //50; $row++){//
                 }
                 else{
                     $result[2]++;
-                    $ERR.="Error: ". $stmt->error;
+                    $ERR.="Error: ". $stmt->error."<br>";
                     $ERR.= $select_query."<br>";
                     $ERR.= "[";
                     $ERR.= $datein.",";
@@ -164,12 +168,14 @@ for ($row = $initiate; $row <= $terminate; $row++){ //50; $row++){//
                     $ERR.= $album.",";
                     $ERR.= $year.",";
                     $ERR.= $labelid;
-                    $ERR.= ']<br>';
+                    $ERR.= ']<br><hr>';
                 }
 
             }
             else{
                 $result[3]++;
+                //array_push()
+                array_push($_SESSION['REFCODE'],$stmt->insert_id); //$_SESSION['REFCODE']
             }
         }
         //printf("<br> %d Row inserted.\n", $stmt->affected_rows);
@@ -179,6 +185,7 @@ for ($row = $initiate; $row <= $terminate; $row++){ //50; $row++){//
     }
     //echo "</td></tr>";
 }
+array_push($_SESSION['ERROR'],$ERR);
 $recd->close();
 $stmt->close();
 $mysqli->close();
@@ -197,5 +204,6 @@ $_SESSION['ERROR_COUNT']=$result[2];
 $_SESSION['DUPLICATE_COUNT']=$result[1];
 $_SESSION['TOTAL']=$result[0];
 $_SESSION['COMPLETE']=$result[3];
+$_SESSION['FILE_UPLOAD']=$_FILES["file"]["tmp_name"];
 header("location: summary.php");
 ?>

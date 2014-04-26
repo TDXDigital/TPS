@@ -72,9 +72,9 @@
                     </div>
                 </div>
                 <div>
-                    <span>RUNTIME: </span><span id="timer">00:00:00</span>
+                    <span>RUNTIME: </span><span id="timer">00:00</span>
                 </div>
-                <div class="progress">
+                <div id="progressbar">
                     <!--<div class="progress-bar progress-bar-success" style="width: <?php echo round(($_SESSION['COMPLETE']/$_SESSION['TOTAL'])*100,2);?>%"><span class="sr-only"><?php echo ($_SESSION['COMPLETE']/$_SESSION['TOTAL'])*100;?>% Complete (success)</span></div>
                     <div class="progress-bar progress-bar-success" style="width: <?php echo round(($_SESSION['DUPLICATE_COUNT']/$_SESSION['TOTAL'])*100,2);?>%"><span class="sr-only"><?php echo ($_SESSION['DUPLICATE_COUNT']/$_SESSION['TOTAL'])*100;?>% Duplicate (Omitted)</span></div>
                     <div class="progress-bar progress-bar-success" style="width: <?php echo round(($_SESSION['ERROR_COUNT']/$_SESSION['TOTAL'])*100,2);?>%"><span class="sr-only"><?php echo ($_SESSION['ERROR_COUNT']/$_SESSION['TOTAL'])*100;?>% Errors (Failed)</span></div>-->

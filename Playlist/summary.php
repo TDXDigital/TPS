@@ -1,6 +1,6 @@
 <?php
-    include("../TPSBIN/functions.php");
-    include("../TPSBIN/db_connect.php");
+    include_once("../TPSBIN/functions.php");
+    include_once("../TPSBIN/db_connect.php");
 
     // Establish Session
     sec_session_start();
@@ -36,43 +36,24 @@
         
     </head>
     <body role="document" style="">
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">TPS Radio System</a>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="<?php echo $_SESSION['BASE_REF'];?>/">Home</a></li>
-            <li><a href="/TPSlogin">Login</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </div>
+    <?php include_once "../TPSBIN/bs_menu.php";?>
     <div class="container" style="margin-top: 30px">
         <div class="page-header">Library Upload Summary</div>
+        <div class="jumbotron">Library Updated, Would you like to <a href="playlist_update.php">update the Playlist Next?</a></div>
             <div class="ui-state-highlight">
                 <div class="panel panel-success">
                     <div class="panel-heading">COMPLETED: <?php echo $_SESSION['COMPLETE']; ?></div>
-                    <?php?>
+                    <?php
+                        foreach($_SESSION['REFCODE'] as $ref){
+                            $result = mysqli_fetch_array($mysqli->query("SELECT library.*, recordlabel.Name, recordlabel.name_alias_duplicate, recordlabel.Size FROM library LEFT JOIN recordlabel ON recordlabel.LabelNumber=library.labelid WHERE library.refcode='".addslashes($ref)."'"));
+                            echo "<form id='$ref'>";
+                            echo "<input type='text' name='artist' value='".$result['artist']."'/>";
+                            echo "<input type='text' name='album' value='".$result['album']."'/>";
+                            echo "<input type='text' name='label' value='".$result['name']."'/>";
+                            echo "</form>";
+                            //echo $ref."<br>";
+                        }
+                    ?>
                     <div class="panel-body"></div>
                 </div>
                 <div class="panel panel-warning">
@@ -81,7 +62,12 @@
                 </div>
                 <div class="panel panel-danger">
                     <div class="panel-heading">ERRORS (Omitted): <?php echo $_SESSION['ERROR_COUNT'];?></div>
-                    <div class="panel-body"></div>
+                    <div class="panel-body">
+                    <?php
+                        foreach($_SESSION['ERROR'] as $error){
+                            echo $error."<br>";
+                        }
+                    ?></div>
                 </div>
                 <div class="panel panel-info">
                     <div class="panel-heading">TOTAL RECORDS: <?php echo $_SESSION['TOTAL'];?></div>

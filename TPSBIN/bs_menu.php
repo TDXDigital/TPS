@@ -34,7 +34,7 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
             <li><a <?php echo "href=\"".$base; ?>/">Dashboard</a></li>
-            <li><a href="<?php echo $base; ?>/station/p1settings.php">Settings</a></li>
+            <li><a href="<?php echo $base; ?>/station/settings.php?old">Settings</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Host / Program<b class="caret"></b></a>
               <ul class="dropdown-menu">
