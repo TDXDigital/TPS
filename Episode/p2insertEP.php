@@ -657,16 +657,16 @@ if(false){
                         echo "<hr><div id=\"toolbar".$Equipment_row['hardwareid']."\"  style=\"color: white; background:#000; width:100%; display: block\">
                         <span >".strtoupper($Equipment_row['Manufacturer'])." ".$Equipment_row['device_code']." - ".$Equipment_row['friendly_name']."</span><span style='width:100%'>&nbsp</span>
                         <span id='RES".$Equipment_row['hardwareid']."' style=\"color: white; background: #7690a3; width:100%; text-align: center; background-color: #7690a3;\">&nbsp;- DENON - </span><br>
-                        <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','8','".$Equipment_row['hardwareid']."')\" title=\"Eject\"><span class=\"ui-icon ui-icon-eject\"></span></button>
-                        <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','2','".$Equipment_row['hardwareid']."')\" title=\"Stop\"><span class=\"ui-icon ui-icon-stop\"></span></button>
-                        <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','20','".$Equipment_row['hardwareid']."')\" title=\"CUE NEXT\"><span class=\"ui-icon ui-icon-arrowthickstop-1-s\"></span></button>
-                        <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','1','".$Equipment_row['hardwareid']."')\" title=\"Play\"><span class=\"ui-icon ui-icon-play\"></span></button>
-                        <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','9','".$Equipment_row['hardwareid']."')\" title=\"Pause\"><span class=\"ui-icon ui-icon-pause\"></span></button>
-                        <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','5','".$Equipment_row['hardwareid']."')\" title=\"Previous\"><span class=\"ui-icon ui-icon-seek-first\"></span></button>
-                        <button onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','4','".$Equipment_row['hardwareid']."')\" title=\"Next\"><span class=\"ui-icon ui-icon-seek-end\"></span></button>
-                        <button onclick=\"Update_Device_Status('RES".$Equipment_row['hardwareid']."','".$Equipment_row['hardwareid']."')\" title=\"Refresh Device\"><span class=\"ui-icon ui-icon-refresh\"></span></button>
-                        <button style=\"float: right\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','7','".$Equipment_row['hardwareid']."')\">Wake (Soft On)</button>
-                        <button style=\"float: right\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','6','".$Equipment_row['hardwareid']."')\">Standby (Off)</button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','8','".$Equipment_row['hardwareid']."')\" title=\"Eject\"><span class=\"ui-icon ui-icon-eject \"></span></button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','2','".$Equipment_row['hardwareid']."')\" title=\"Stop\"><span class=\"ui-icon ui-icon-stop\"></span></button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','20','".$Equipment_row['hardwareid']."')\" title=\"CUE NEXT\"><span class=\"ui-icon ui-icon-arrowthickstop-1-s\"></span></button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','1','".$Equipment_row['hardwareid']."')\" title=\"Play\"><span class=\"ui-icon ui-icon-play\"></span></button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','9','".$Equipment_row['hardwareid']."')\" title=\"Pause\"><span class=\"ui-icon ui-icon-pause\"></span></button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','5','".$Equipment_row['hardwareid']."')\" title=\"Previous\"><span class=\"ui-icon ui-icon-seek-first\"></span></button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','4','".$Equipment_row['hardwareid']."')\" title=\"Next\"><span class=\"ui-icon ui-icon-seek-end\"></span></button>
+                        <button class=\"HID-RE-".$Equipment_row['hardwareid']."\" onclick=\"Update_Device_Status('RES".$Equipment_row['hardwareid']."','".$Equipment_row['hardwareid']."')\" title=\"Refresh Device\"><span class=\"ui-icon ui-icon-refresh\"></span></button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" style=\"float: right\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','7','".$Equipment_row['hardwareid']."')\">Wake (Soft On)</button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" style=\"float: right\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','6','".$Equipment_row['hardwareid']."')\">Standby (Off)</button>
                         </div>";
                     }
                 }

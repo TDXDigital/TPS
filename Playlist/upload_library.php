@@ -43,7 +43,7 @@ try {
 
 
 //  Get worksheet dimensions
-$sheet = $objPHPExcel->getSheet(0); 
+$sheet = $objPHPExcel->getSheet(2); 
 $highestRow = $sheet->getHighestRow(); 
 $highestColumn = $sheet->getHighestColumn();
 echo "<pre>";
@@ -53,9 +53,6 @@ $result[1]=0;
 $result[2]=0;
 $result[3]=0;
 
-
-
-/// EVerthing below here needs to go --- [TODO]
 /*
 $stmt = $mysqli->prepare("IF Not EXISTS (SELECT LabelNumber AS label FROM recordlabel WHERE Name=?)
 BEGIN  
@@ -67,9 +64,7 @@ BEGIN
 INSERT INTO `library` (artist, album, datein, year, labelid) VALUES (?,?,?,?,label)
 END");*/
 //Connosseurs of Porn	Dead Pets	Disappointing Promises	2014	2014-02-14
-$recd = $mysqli->prepare("SELECT * FROM playlist where SmallCode=? and (Expire is NULL or Expire > date(NOW));");
-
-$libid = $mysqli->prepare("SELECT * FROM library where artist=? and album=?;");
+$recd = $mysqli->prepare("INSERT IGNORE INTO recordlabel (Name) VALUES (?);");
 $stmt = $mysqli->prepare("INSERT INTO `library` (artist, album, datein, year, labelid) VALUES (?,?,?,?,?);");
 //$label_stmt = $mysqli->prepare("");
 $stmt->bind_param('ssssi',$artist,$album,$datein,$year,$labelid); // LABEL REMOVED

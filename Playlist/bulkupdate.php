@@ -49,7 +49,7 @@
             <div class="ui-state-highlight">
                 <div id="input" class="panel panel-success">
                     <div class="panel-heading">File To Upload</div>
-                    <div class="panel-body"><form action="upload_playlist.php" method="post" onsubmit="submitted();"
+                    <div class="panel-body"><form action="upload_library.php" method="post" onsubmit="submitted();"
                         enctype="multipart/form-data">
                             <fieldset title="XLS / XLSX Library Update">
                                 <label for="file">Filename:</label>
