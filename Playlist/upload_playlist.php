@@ -53,22 +53,17 @@ $result[1]=0;
 $result[2]=0;
 $result[3]=0;
 
+$pl_select = $mysqli->prepare("SELECT * FROM playlist where SmallCode=? and (Expire is NULL or Expire > date(NOW));");
+
+if(){
+  
+}
 
 
-/// EVerthing below here needs to go --- [TODO]
-/*
-$stmt = $mysqli->prepare("IF Not EXISTS (SELECT LabelNumber AS label FROM recordlabel WHERE Name=?)
-BEGIN  
-  INSERT INTO `recordlabel` (Name) VALUES (?);
-  INSERT INTO `library` (artist, album, datein, year, labelid) VALUES (?,?,?,?,LAST_INSERT_ID());
-END
-ELSE
-BEGIN
-INSERT INTO `library` (artist, album, datein, year, labelid) VALUES (?,?,?,?,label)
-END");*/
-//Connosseurs of Porn	Dead Pets	Disappointing Promises	2014	2014-02-14
-$recd = $mysqli->prepare("SELECT * FROM playlist where SmallCode=? and (Expire is NULL or Expire > date(NOW));");
 
+
+
+/// Everthing below here needs to go --- [TODO]
 $libid = $mysqli->prepare("SELECT * FROM library where artist=? and album=?;");
 $stmt = $mysqli->prepare("INSERT INTO `library` (artist, album, datein, year, labelid) VALUES (?,?,?,?,?);");
 //$label_stmt = $mysqli->prepare("");
