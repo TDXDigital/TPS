@@ -3,7 +3,7 @@
     sec_session_start();
     if(isset($_GET['old'])){
         if($_SESSION['access']==2){
-            include_once "admin_old.php";
+            include_once "station/admin_old.php";
             //header("location: masterpage.php");
         }
         else{
