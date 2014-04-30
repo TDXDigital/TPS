@@ -67,7 +67,7 @@
                 <li class="dropdown-header">Programming</li>
                 <li><a href="<?php echo $base; ?>/Reports/Stats.php?w=12">12 Week Statistics</a></li>
                 <li><a href="<?php echo $base; ?>/Episode/EPV3/Audit.php">Programming Audit</a></li>
-                <li><a href="<?php echo $base; ?>/Episode/EPV3/Audit.php">CRTC / Government Auditing</a></li>
+                <li><a href="<?php echo $base; ?>/station/Audit/">Reporting Audits</a></li>
                 <li class="divider"></li>
                 <li class="dropdown-header">Music Department</li>
                 <li><a href="<?php echo $base; ?>/Reports/MissingLogRep.php">Missing Logs</a></li>
