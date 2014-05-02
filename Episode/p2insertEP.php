@@ -667,6 +667,7 @@ if(false){
                         <button class=\"HID-RE-".$Equipment_row['hardwareid']."\" onclick=\"Update_Device_Status('RES".$Equipment_row['hardwareid']."','".$Equipment_row['hardwareid']."')\" title=\"Refresh Device\"><span class=\"ui-icon ui-icon-refresh\"></span></button>
                         <button class=\"HID-".$Equipment_row['hardwareid']."\" style=\"float: right\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','7','".$Equipment_row['hardwareid']."')\">Wake (Soft On)</button>
                         <button class=\"HID-".$Equipment_row['hardwareid']."\" style=\"float: right\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','6','".$Equipment_row['hardwareid']."')\">Standby (Off)</button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" style=\"float: right\" onclick=\"Get_Info('title001','artin','albin','".$Equipment_row['hardwareid']."')\">Get Information</button>
                         </div>";
                     }
                 }
@@ -739,7 +740,7 @@ if(false){
 				<span title="NON OPTIONAL paid ads">Required Commercials This Hour</span>
 			</td>
 			<td colspan="2" style="color:orange;">
-				<span title="Available Promos">Required PSA/Promo</span>
+				<span title="Available Promos">Message</span>
 			</td>
 		</tr>
 		<tr>
@@ -872,7 +873,7 @@ if(false){
 				<?php
 					//echo sizeof($ADIDS);
 				?>
-				<span style="font-style: italic;color:darkred;">Notice to all DJs: Ad Requirements have changed you are now required to play <strong>two (2) ads per hour</strong></span>
+				<span style="font-style: italic;color: #eb4b20"><strong>IMPORTANT: When prompted to play required ADs you are <u>ONLY</u> to play the required ADs until they are no longer prompted. Then, and only then are you permitted to play a friend ad <u>IF</u> you have not met your AD requirements</strong></span>
 			</td>
 			<td class="clock">
 	            <ul style="margin:0 auto; padding:0px; list-style:none; text-align:center;">
