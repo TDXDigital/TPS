@@ -59,7 +59,8 @@
               <ul class="dropdown-menu">
                 <li><a href="<?php echo $base; ?>/Advertisements/?q=new">New Commercial</a></li>
                 <li><a href="<?php echo $base; ?>/Advertisements/?q=active">Edit Commercial</a></li>
-                <li><a style="color: #ff6a00" href="<?php echo $base; ?>/Advertisements/?old">Legacy System</a></li>
+                <li><a style="color: #ff6a00" href="<?php echo $base; ?>/Advertisements/?old">Legacy New Commercial</a></li>
+                  <li><a style="color: #ff6a00" href="<?php echo $base; ?>/Advertisements/p1update.php">Legacy Edit Commercial</a></li>
               </ul>
             </li>
               <li class="dropdown">
