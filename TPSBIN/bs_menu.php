@@ -57,8 +57,9 @@
               <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Advertising<b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="<?php echo $base; ?>/Advertisements/p1advins.php">New Commercial</a></li>
-                <li><a href="<?php echo $base; ?>/Advertisements/p1update.php">Edit Commercial</a></li>
+                <li><a href="<?php echo $base; ?>/Advertisements/?q=new">New Commercial</a></li>
+                <li><a href="<?php echo $base; ?>/Advertisements/?q=active">Edit Commercial</a></li>
+                <li><a style="color: #ff6a00" href="<?php echo $base; ?>/Advertisements/?old">Legacy System</a></li>
               </ul>
             </li>
               <li class="dropdown">

@@ -625,7 +625,7 @@ if(false){
 			$SOCANA = mysql_query($SOCANC);
 			if(mysql_num_rows($SOCANA)>0){
 				echo "<tr style=\"background-color:red; height:30px; color:white;\"><th colspan=\"100%\">
-				NOTICE: A SOCAN audit is in effect at this station. Accurate reporting is vital at this time, extra information may be required. See your program director for more information
+				NOTICE: An audit is in effect at this station. Accurate reporting is vital at this time, extra information may be required. See your program director for more information
 				</th></tr>";
 			}
 			if(sizeof($error) > 0){
@@ -762,7 +762,7 @@ if(false){
 					else if(mysql_num_rows($READS)==0){
 						$REQAD .= "<option value='-1'>No Paid Commercials</option>";
 					}
-					else{
+					else if(!isset($SPONS)){
 						while($PdAds=mysql_fetch_array($READS)){
 							if($PdAds['Limit'] == NULL || $PdAds['Playcount'] < $PdAds['Limit']){
 								// Check BlockLimit
@@ -817,7 +817,7 @@ if(false){
 					}
 
 				// Friends Ads
-				if(sizeof($RQADSIDS) > 0){
+				if(sizeof($RQADSIDS) > 0 && !isset($SPONS)){
 					$ADOPT .= "<option>Paid Ad Required [".sizeof($RQADSIDS)."]</option>";
 				}
 				else
@@ -860,11 +860,14 @@ if(false){
 			<td colspan="2">
 				<select name="rqAds">
 				<?php
-				if($REQAD!=""){
+				if($REQAD!=""&&!isset($SPONS)){
 					echo $REQAD;
 				}
+                else if(isset($SPONS)){
+                    echo "<option>Sponsored Program</option>";
+                }
 				else{
-					echo "<option>No Required Ads [Er3]</option>";
+					echo "<option>No Required Ads [E3]</option>";
 				}
 				?>
 				</select>

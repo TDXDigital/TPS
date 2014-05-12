@@ -1,6 +1,11 @@
 <?php
     include "TPSBIN/functions.php";
-    sec_session_start();
+    if (!isset($_SESSION)) {
+        sec_session_start();
+    }
+    /*else{
+        header('location: Security/login.html');
+    }*/
     if(isset($_GET['old'])){
         if($_SESSION['access']==2){
             include_once "station/admin_old.php";
