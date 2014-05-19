@@ -47,13 +47,13 @@ function UpdateMeta(){
 
     $RDS = array(
         0 => array(
-            'host'=>'hyperstream.local.ckxu.com',
+            'host'=>'home.local.ckxu.com',
             'port'=>8000,
             'password'=>'88.3ForLife',
             'sid'=>2
         ),
         1 => array(
-            'host'=>'hyperstream.local.ckxu.com',
+            'host'=>'home.local.ckxu.com',
             'port'=>8000,
             'password'=>'88.3ForLife',
             'sid'=>3
@@ -63,6 +63,12 @@ function UpdateMeta(){
             'port'=>8715,
             'password'=>'88.3ForLife',
             'sid'=>0
+        ),
+        3 => array(
+            'host'=>'home.local.ckxu.com',
+            'port'=>8000,
+            'password'=>'88.3ForLife',
+            'sid'=>1
         )
     );
 
