@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Democracy Now! Video</title>
+    <atom:link title="Democracy Now! Video" href="http://www.democracynow.org/podcast-video.xml" rel="self" xmlns:atom="http://www.w3.org/2005/Atom"/>
+    <link>http://www.democracynow.org/</link>
+    <description>A daily TV/radio news program, hosted by Amy Goodman and Juan Gonzalez, airing on over 1,000 stations, pioneering the largest community media collaboration in the United States.</description>
+    <language>en-US</language>
+    <managingEditor>mail@democracynow.org (Amy Goodman)</managingEditor>
+    <webMaster>mail@democracynow.org (Democray Now!)</webMaster>
+    <image>
+      <url>http://www.democracynow.org/images/dn-logo-for-podcast.png</url>
+      <link>http://www.democracynow.org/</link>
+      <width>144</width>
+      <height>144</height>
+      <title>Democracy Now! Video</title>
+    </image>
+    <itunes:author>Amy Goodman</itunes:author>
+    <itunes:category text="News &amp; Politics"/>
+    <itunes:category text="Government &amp; Organizations">
+      <itunes:category text="Non-Profit"/>
+    </itunes:category>
+    <itunes:owner>
+      <itunes:email>mlc@democracynow.org</itunes:email>
+      <itunes:name>Mike Castleman</itunes:name>
+      <!-- Note: this email address is for iTunes use only; other contacts here will be ignored. -->
+    </itunes:owner>
+    <itunes:explicit>clean</itunes:explicit>
+    <itunes:image href="http://www.democracynow.org/images/dn-logo-for-itunes.jpg"/>
+    <docs>http://www.rssboard.org/rss-specification</docs>
+    <item>
+      <title>Democracy Now! 2012-06-22 Friday</title>
+      <link>http://www.democracynow.org/shows/2012/6/22</link>
+      <description>Headlines for June 22, 2012; Torture in U.S. Prisons? Historic Senate Hearing Takes Up Solitary Confinement's Devastating Toll; From Death Row to Exoneration: Fmr. Texas Prisoner Anthony Graves on Surviving Solitary Confinement; Dark Money: Will Secret Spending by a Group of Billionaires Decide the 2012 Election? (Pt. 1)</description>
+      <pubDate>Fri, 22 Jun 2012 08:00:00 -0400</pubDate>
+      <guid isPermaLink="false">tag:democracynow.org,2012-06-22:media/mpeg4download/c7d1a5</guid>
+      <enclosure type="video/mp4" length="47032160" url="http://dncdn.dvlabs.com/ipod/dn2012-0622.mp4"/>
+      <itunes:explicit>clean</itunes:explicit>
+      <itunes:duration>59:00</itunes:duration>
+      <itunes:summary>Headlines for June 22, 2012; Torture in U.S. Prisons? Historic Senate Hearing Takes Up Solitary Confinement's Devastating Toll; From Death Row to Exoneration: Fmr. Texas Prisoner Anthony Graves on Surviving Solitary Confinement; Dark Money: Will Secret Spending by a Group of Billionaires Decide the 2012 Election? (Pt. 1)</itunes:summary>
+      <media:thumbnail url="http://www.democracynow.org/images/story/70/21670/medium/graves_hearing.png"/>
+      <media:content type="video/mp4" lang="en" expression="full" fileSize="47032160" url="http://dncdn.dvlabs.com/ipod/dn2012-0622.mp4" medium="video" duration="3540">
+        <media:title type="plain">Democracy Now! 2012-06-22 Friday</media:title>
+        <media:description>Headlines for June 22, 2012; Torture in U.S. Prisons? Historic Senate Hearing Takes Up Solitary Confinement's Devastating Toll; From Death Row to Exoneration: Fmr. Texas Prisoner Anthony Graves on Surviving Solitary Confinement; Dark Money: Will Secret Spending by a Group of Billionaires Decide the 2012 Election? (Pt. 1)</media:description>
+        <media:rating scheme="urn:simple">nonadult</media:rating>
+        <media:rating scheme="urn:v-chip">tv-g</media:rating>
+        <media:credit role="production company">Democracy Now!</media:credit>
+        <media:category>News</media:category>
+      </media:content>
+      <content:encoded>
+        <![CDATA[<h1>Democracy Now! 2012-06-22 Friday</h1><ul><li>Headlines for June 22, 2012</li><li>Torture in U.S. Prisons? Historic Senate Hearing Takes Up Solitary Confinement's Devastating Toll</li><li>From Death Row to Exoneration: Fmr. Texas Prisoner Anthony Graves on Surviving Solitary Confinement</li><li>Dark Money: Will Secret Spending by a Group of Billionaires Decide the 2012 Election? (Pt. 1)</li></ul><p><a href="http://dncdn.dvlabs.com/ipod/dn2012-0622.mp4">Download this show</a></p>]]>
+      </content:encoded>
+    </item>
+    <item>
+      <title>Democracy Now! 2012-06-21 Thursday</title>
+      <link>http://www.democracynow.org/shows/2012/6/21</link>
+      <description>Headlines for June 21, 2012; &quot;Are You Here to Save Face -- or Save Us?&quot;: Brittany Trilford, 17, Addresses World Leaders at Rio+20; Nigerian Activist Nnimmo Bassey: Rio+20 Summit Will Not Get Us Out of Environmental Crisis; At Rio+20, Severn Cullis-Suzuki Revisits Historic '92 Speech, Fights for Next Generation's Survival</description>
+      <pubDate>Thu, 21 Jun 2012 08:00:00 -0400</pubDate>
+      <guid isPermaLink="false">tag:democracynow.org,2012-06-21:media/mpeg4download/f1f7f0</guid>
+      <enclosure type="video/mp4" length="52081859" url="http://dncdn.dvlabs.com/ipod/dn2012-0621.mp4"/>
+      <itunes:explicit>clean</itunes:explicit>
+      <itunes:duration>59:00</itunes:duration>
+      <itunes:summary>Headlines for June 21, 2012; &quot;Are You Here to Save Face -- or Save Us?&quot;: Brittany Trilford, 17, Addresses World Leaders at Rio+20; Nigerian Activist Nnimmo Bassey: Rio+20 Summit Will Not Get Us Out of Environmental Crisis; At Rio+20, Severn Cullis-Suzuki Revisits Historic '92 Speech, Fights for Next Generation's Survival</itunes:summary>
+      <media:thumbnail url="http://www.democracynow.org/images/story/65/21665/medium/brittany_trilford.png"/>
+      <media:content type="video/mp4" lang="en" expression="full" fileSize="52081859" url="http://dncdn.dvlabs.com/ipod/dn2012-0621.mp4" medium="video" duration="3540">
+        <media:title type="plain">Democracy Now! 2012-06-21 Thursday</media:title>
+        <media:description>Headlines for June 21, 2012; &quot;Are You Here to Save Face -- or Save Us?&quot;: Brittany Trilford, 17, Addresses World Leaders at Rio+20; Nigerian Activist Nnimmo Bassey: Rio+20 Summit Will Not Get Us Out of Environmental Crisis; At Rio+20, Severn Cullis-Suzuki Revisits Historic '92 Speech, Fights for Next Generation's Survival</media:description>
+        <media:rating scheme="urn:simple">nonadult</media:rating>
+        <media:rating scheme="urn:v-chip">tv-g</media:rating>
+        <media:credit role="production company">Democracy Now!</media:credit>
+        <media:category>News</media:category>
+      </media:content>
+      <content:encoded>
+        <![CDATA[<h1>Democracy Now! 2012-06-21 Thursday</h1><ul><li>Headlines for June 21, 2012</li><li>"Are You Here to Save Face -- or Save Us?": Brittany Trilford, 17, Addresses World Leaders at Rio+20</li><li>Nigerian Activist Nnimmo Bassey: Rio+20 Summit Will Not Get Us Out of Environmental Crisis</li><li>At Rio+20, Severn Cullis-Suzuki Revisits Historic '92 Speech, Fights for Next Generation's Survival</li></ul><p><a href="http://dncdn.dvlabs.com/ipod/dn2012-0621.mp4">Download this show</a></p>]]>
+      </content:encoded>
+    </item>
+    <item>
+      <title>Democracy Now! 2012-06-20 Wednesday</title>
+      <link>http://www.democracynow.org/shows/2012/6/20</link>
+      <description>Headlines for June 20, 2012; A Coup in Cairo: As Muslim Brotherhood Claims Election Victory, Military Strips President of Power; Julian Assange of WikiLeaks Seeks Asylum in Ecuador in Attempt to Avoid Extradition to U.S.; Failed Pledges, Weak Draft Lower Hopes for Rio+20 U.N. Conference on Sustainable Development in Brazil</description>
+      <pubDate>Wed, 20 Jun 2012 08:00:00 -0400</pubDate>
+      <guid isPermaLink="false">tag:democracynow.org,2012-06-20:media/mpeg4download/dba8a3</guid>
+      <enclosure type="video/mp4" length="60197854" url="http://dncdn.dvlabs.com/ipod/dn2012-0620.mp4"/>
+      <itunes:explicit>clean</itunes:explicit>
+      <itunes:duration>59:00</itunes:duration>
+      <itunes:summary>Headlines for June 20, 2012; A Coup in Cairo: As Muslim Brotherhood Claims Election Victory, Military Strips President of Power; Julian Assange of WikiLeaks Seeks Asylum in Ecuador in Attempt to Avoid Extradition to U.S.; Failed Pledges, Weak Draft Lower Hopes for Rio+20 U.N. Conference on Sustainable Development in Brazil</itunes:summary>
+      <media:thumbnail url="http://www.democracynow.org/images/story/63/21663/medium/sharif.png"/>
+      <media:content type="video/mp4" lang="en" expression="full" fileSize="60197854" url="http://dncdn.dvlabs.com/ipod/dn2012-0620.mp4" medium="video" duration="3540">
+        <media:title type="plain">Democracy Now! 2012-06-20 Wednesday</media:title>
+        <media:description>Headlines for June 20, 2012; A Coup in Cairo: As Muslim Brotherhood Claims Election Victory, Military Strips President of Power; Julian Assange of WikiLeaks Seeks Asylum in Ecuador in Attempt to Avoid Extradition to U.S.; Failed Pledges, Weak Draft Lower Hopes for Rio+20 U.N. Conference on Sustainable Development in Brazil</media:description>
+        <media:rating scheme="urn:simple">nonadult</media:rating>
+        <media:rating scheme="urn:v-chip">tv-g</media:rating>
+        <media:credit role="production company">Democracy Now!</media:credit>
+        <media:category>News</media:category>
+      </media:content>
+      <content:encoded>
+        <![CDATA[<h1>Democracy Now! 2012-06-20 Wednesday</h1><ul><li>Headlines for June 20, 2012</li><li>A Coup in Cairo: As Muslim Brotherhood Claims Election Victory, Military Strips President of Power</li><li>Julian Assange of WikiLeaks Seeks Asylum in Ecuador in Attempt to Avoid Extradition to U.S.</li><li>Failed Pledges, Weak Draft Lower Hopes for Rio+20 U.N. Conference on Sustainable Development in Brazil</li></ul><p><a href="http://dncdn.dvlabs.com/ipod/dn2012-0620.mp4">Download this show</a></p>]]>
+      </content:encoded>
+    </item>
+    <item>
+      <title>Democracy Now! 2012-06-19 Tuesday</title>
+      <link>http://www.democracynow.org/shows/2012/6/19</link>
+      <description>Headlines for June 19, 2012; Ramarley Graham, Unarmed Black Teen Slain by NYPD, Remembered at Weekly Vigils Outside Bronx Home; Ramarley Graham's Mother Speaks Out: NYPD Cop Who Killed My Son Should Be Charged with Murder; From Youth to Elderly, NYPD's &quot;Stop-and-Frisk&quot; Targets People of Color Across Multiple Generations; Dick Gregory, Legendary Comedian and Activist, Condemns Routine Targeting of Black Youth by NYPD; &quot;They're Invading Me&quot;: Vietnam Veteran John Covington on Being Targeted by Police Stop-and-Frisks; Actor J.D. Williams of HBO's &quot;The Wire&quot;: Fear of Police Harassment &quot;Second Nature&quot; for Black Youths; Stop &quot;Stop-and-Frisk&quot;: Bronx Great-Grandmother Joyce Williams, Organizer Thenjiwe McHarris Speak Out</description>
+      <pubDate>Tue, 19 Jun 2012 08:00:00 -0400</pubDate>
+      <guid isPermaLink="false">tag:democracynow.org,2012-06-19:media/mpeg4download/b7b64e</guid>
+      <enclosure type="video/mp4" length="67170045" url="http://dncdn.dvlabs.com/ipod/dn2012-0619.mp4"/>
+      <itunes:explicit>clean</itunes:explicit>
+      <itunes:duration>59:00</itunes:duration>
+      <itunes:summary>Headlines for June 19, 2012; Ramarley Graham, Unarmed Black Teen Slain by NYPD, Remembered at Weekly Vigils Outside Bronx Home; Ramarley Graham's Mother Speaks Out: NYPD Cop Who Killed My Son Should Be Charged with Murder; From Youth to Elderly, NYPD's &quot;Stop-and-Frisk&quot; Targets People of Color Across Multiple Generations; Dick Gregory, Legendary Comedian and Activist, Condemns Routine Targeting of Black Youth by NYPD; &quot;They're Invading Me&quot;: Vietnam Veteran John Covington on Being Targeted by Police Stop-and-Frisks; Actor J.D. Williams of HBO's &quot;The Wire&quot;: Fear of Police Harassment &quot;Second Nature&quot; for Black Youths; Stop &quot;Stop-and-Frisk&quot;: Bronx Great-Grandmother Joyce Williams, Organizer Thenjiwe McHarris Speak Out</itunes:summary>
+      <media:thumbnail url="http://www.democracynow.org/images/story/53/21653/medium/ramarley.png"/>
+      <media:content type="video/mp4" lang="en" expression="full" fileSize="67170045" url="http://dncdn.dvlabs.com/ipod/dn2012-0619.mp4" medium="video" duration="3540">
+        <media:title type="plain">Democracy Now! 2012-06-19 Tuesday</media:title>
+        <media:description>Headlines for June 19, 2012; Ramarley Graham, Unarmed Black Teen Slain by NYPD, Remembered at Weekly Vigils Outside Bronx Home; Ramarley Graham's Mother Speaks Out: NYPD Cop Who Killed My Son Should Be Charged with Murder; From Youth to Elderly, NYPD's &quot;Stop-and-Frisk&quot; Targets People of Color Across Multiple Generations; Dick Gregory, Legendary Comedian and Activist, Condemns Routine Targeting of Black Youth by NYPD; &quot;They're Invading Me&quot;: Vietnam Veteran John Covington on Being Targeted by Police Stop-and-Frisks; Actor J.D. Williams of HBO's &quot;The Wire&quot;: Fear of Police Harassment &quot;Second Nature&quot; for Black Youths; Stop &quot;Stop-and-Frisk&quot;: Bronx Great-Grandmother Joyce Williams, Organizer Thenjiwe McHarris Speak Out</media:description>
+        <media:rating scheme="urn:simple">nonadult</media:rating>
+        <media:rating scheme="urn:v-chip">tv-g</media:rating>
+        <media:credit role="production company">Democracy Now!</media:credit>
+        <media:category>News</media:category>
+      </media:content>
+      <content:encoded>
+        <![CDATA[<h1>Democracy Now! 2012-06-19 Tuesday</h1><ul><li>Headlines for June 19, 2012</li><li>Ramarley Graham, Unarmed Black Teen Slain by NYPD, Remembered at Weekly Vigils Outside Bronx Home</li><li>Ramarley Graham's Mother Speaks Out: NYPD Cop Who Killed My Son Should Be Charged with Murder</li><li>From Youth to Elderly, NYPD's "Stop-and-Frisk" Targets People of Color Across Multiple Generations</li><li>Dick Gregory, Legendary Comedian and Activist, Condemns Routine Targeting of Black Youth by NYPD</li><li>"They're Invading Me": Vietnam Veteran John Covington on Being Targeted by Police Stop-and-Frisks</li><li>Actor J.D. Williams of HBO's "The Wire": Fear of Police Harassment "Second Nature" for Black Youths</li><li>Stop "Stop-and-Frisk": Bronx Great-Grandmother Joyce Williams, Organizer Thenjiwe McHarris Speak Out</li></ul><p><a href="http://dncdn.dvlabs.com/ipod/dn2012-0619.mp4">Download this show</a></p>]]>
+      </content:encoded>
+    </item>
+    <item>
+      <title>Democracy Now! 2012-06-18 Monday</title>
+      <link>http://www.democracynow.org/shows/2012/6/18</link>
+      <description>Headlines for June 18, 2012; Rep. Luis Guti&#233;rrez: In Obama Deportation Move, Long-Term Immigration Activism &quot;Has Been Rewarded&quot;; After Years of Struggle, DREAM Act Activists Hail Monumental Victory for Immigrants Living in Fear; Thousands Hold Silent March to Mayor Bloomberg's Home in Protest of NYPD's &quot;Stop-and-Frisk&quot;</description>
+      <pubDate>Mon, 18 Jun 2012 08:00:00 -0400</pubDate>
+      <guid isPermaLink="false">tag:democracynow.org,2012-06-18:media/mpeg4download/f82512</guid>
+      <enclosure type="video/mp4" length="60451762" url="http://dncdn.dvlabs.com/ipod/dn2012-0618.mp4"/>
+      <itunes:explicit>clean</itunes:explicit>
+      <itunes:duration>59:00</itunes:duration>
+      <itunes:summary>Headlines for June 18, 2012; Rep. Luis Guti&#233;rrez: In Obama Deportation Move, Long-Term Immigration Activism &quot;Has Been Rewarded&quot;; After Years of Struggle, DREAM Act Activists Hail Monumental Victory for Immigrants Living in Fear; Thousands Hold Silent March to Mayor Bloomberg's Home in Protest of NYPD's &quot;Stop-and-Frisk&quot;</itunes:summary>
+      <media:thumbnail url="http://www.democracynow.org/images/story/51/21651/medium/button-gutierrez.jpg"/>
+      <media:content type="video/mp4" lang="en" expression="full" fileSize="60451762" url="http://dncdn.dvlabs.com/ipod/dn2012-0618.mp4" medium="video" duration="3540">
+        <media:title type="plain">Democracy Now! 2012-06-18 Monday</media:title>
+        <media:description>Headlines for June 18, 2012; Rep. Luis Guti&#233;rrez: In Obama Deportation Move, Long-Term Immigration Activism &quot;Has Been Rewarded&quot;; After Years of Struggle, DREAM Act Activists Hail Monumental Victory for Immigrants Living in Fear; Thousands Hold Silent March to Mayor Bloomberg's Home in Protest of NYPD's &quot;Stop-and-Frisk&quot;</media:description>
+        <media:rating scheme="urn:simple">nonadult</media:rating>
+        <media:rating scheme="urn:v-chip">tv-g</media:rating>
+        <media:credit role="production company">Democracy Now!</media:credit>
+        <media:category>News</media:category>
+      </media:content>
+      <content:encoded>
+        <![CDATA[<h1>Democracy Now! 2012-06-18 Monday</h1><ul><li>Headlines for June 18, 2012</li><li>Rep. Luis Gutiérrez: In Obama Deportation Move, Long-Term Immigration Activism "Has Been Rewarded"</li><li>After Years of Struggle, DREAM Act Activists Hail Monumental Victory for Immigrants Living in Fear</li><li>Thousands Hold Silent March to Mayor Bloomberg's Home in Protest of NYPD's "Stop-and-Frisk"</li></ul><p><a href="http://dncdn.dvlabs.com/ipod/dn2012-0618.mp4">Download this show</a></p>]]>
+      </content:encoded>
+    </item>
+    <item>
+      <title>Democracy Now! 2012-06-15 Friday</title>
+      <link>http://www.democracynow.org/shows/2012/6/15</link>
+      <description>Headlines for June 15, 2012; A Judicial Coup in Egypt: Muslim Brotherhood-Controlled Parliament Dissolved, Military Gains Power; Ralph Nader: 30 Million Workers Would Benefit from Raising Minimum Wage to 1968 Level; Overcoming Corporatism: Nader on 2012 Race, Wisconsin Recall, Attack on Pensions &amp; the Supreme Court</description>
+      <pubDate>Fri, 15 Jun 2012 08:00:00 -0400</pubDate>
+      <guid isPermaLink="false">tag:democracynow.org,2012-06-15:media/mpeg4download/672ba5</guid>
+      <enclosure type="video/mp4" length="53532755" url="http://dncdn.dvlabs.com/ipod/dn2012-0615.mp4"/>
+      <itunes:explicit>clean</itunes:explicit>
+      <itunes:duration>59:00</itunes:duration>
+      <itunes:summary>Headlines for June 15, 2012; A Judicial Coup in Egypt: Muslim Brotherhood-Controlled Parliament Dissolved, Military Gains Power; Ralph Nader: 30 Million Workers Would Benefit from Raising Minimum Wage to 1968 Level; Overcoming Corporatism: Nader on 2012 Race, Wisconsin Recall, Attack on Pensions &amp; the Supreme Court</itunes:summary>
+      <media:thumbnail url="http://www.democracynow.org/images/story/45/21645/medium/button-sharif-heads.jpeg"/>
+      <media:content type="video/mp4" lang="en" expression="full" fileSize="53532755" url="http://dncdn.dvlabs.com/ipod/dn2012-0615.mp4" medium="video" duration="3540">
+        <media:title type="plain">Democracy Now! 2012-06-15 Friday</media:title>
+        <media:description>Headlines for June 15, 2012; A Judicial Coup in Egypt: Muslim Brotherhood-Controlled Parliament Dissolved, Military Gains Power; Ralph Nader: 30 Million Workers Would Benefit from Raising Minimum Wage to 1968 Level; Overcoming Corporatism: Nader on 2012 Race, Wisconsin Recall, Attack on Pensions &amp; the Supreme Court</media:description>
+        <media:rating scheme="urn:simple">nonadult</media:rating>
+        <media:rating scheme="urn:v-chip">tv-g</media:rating>
+        <media:credit role="production company">Democracy Now!</media:credit>
+        <media:category>News</media:category>
+      </media:content>
+      <content:encoded>
+        <![CDATA[<h1>Democracy Now! 2012-06-15 Friday</h1><ul><li>Headlines for June 15, 2012</li><li>A Judicial Coup in Egypt: Muslim Brotherhood-Controlled Parliament Dissolved, Military Gains Power</li><li>Ralph Nader: 30 Million Workers Would Benefit from Raising Minimum Wage to 1968 Level</li><li>Overcoming Corporatism: Nader on 2012 Race, Wisconsin Recall, Attack on Pensions & the Supreme Court</li></ul><p><a href="http://dncdn.dvlabs.com/ipod/dn2012-0615.mp4">Download this show</a></p>]]>
+      </content:encoded>
+    </item>
+    <item>
+      <title>Democracy Now! 2012-06-14 Thursday</title>
+      <link>http://www.democracynow.org/shows/2012/6/14</link>
+      <description>Headlines for June 14, 2012; JPMorgan Chase CEO Gets Warm Hill Welcome from Senators Flooded with Millions in Wall St. Donations; Breaking '08 Pledge, Leaked Trade Doc Shows Obama Wants to Help Corporations Avoid Regulations; After Unprecedented Attack on Whistleblowers, Obama Admin Accused of Leaking Info for Political Gain</description>
+      <pubDate>Thu, 14 Jun 2012 08:00:00 -0400</pubDate>
+      <guid isPermaLink="false">tag:democracynow.org,2012-06-14:media/mpeg4download/25efba</guid>
+      <enclosure type="video/mp4" length="48787681" url="http://dncdn.dvlabs.com/ipod/dn2012-0614.mp4"/>
+      <itunes:explicit>clean</itunes:explicit>
+      <itunes:duration>59:00</itunes:duration>
+      <itunes:summary>Headlines for June 14, 2012; JPMorgan Chase CEO Gets Warm Hill Welcome from Senators Flooded with Millions in Wall St. Donations; Breaking '08 Pledge, Leaked Trade Doc Shows Obama Wants to Help Corporations Avoid Regulations; After Unprecedented Attack on Whistleblowers, Obama Admin Accused of Leaking Info for Political Gain</itunes:summary>
+      <media:thumbnail url="http://www.democracynow.org/images/story/41/21641/medium/button-diman.jpeg"/>
+      <media:content type="video/mp4" lang="en" expression="full" fileSize="48787681" url="http://dncdn.dvlabs.com/ipod/dn2012-0614.mp4" medium="video" duration="3540">
+        <media:title type="plain">Democracy Now! 2012-06-14 Thursday</media:title>
+        <media:description>Headlines for June 14, 2012; JPMorgan Chase CEO Gets Warm Hill Welcome from Senators Flooded with Millions in Wall St. Donations; Breaking '08 Pledge, Leaked Trade Doc Shows Obama Wants to Help Corporations Avoid Regulations; After Unprecedented Attack on Whistleblowers, Obama Admin Accused of Leaking Info for Political Gain</media:description>
+        <media:rating scheme="urn:simple">nonadult</media:rating>
+        <media:rating scheme="urn:v-chip">tv-g</media:rating>
+        <media:credit role="production company">Democracy Now!</media:credit>
+        <media:category>News</media:category>
+      </media:content>
+      <content:encoded>
+        <![CDATA[<h1>Democracy Now! 2012-06-14 Thursday</h1><ul><li>Headlines for June 14, 2012</li><li>JPMorgan Chase CEO Gets Warm Hill Welcome from Senators Flooded with Millions in Wall St. Donations</li><li>Breaking '08 Pledge, Leaked Trade Doc Shows Obama Wants to Help Corporations Avoid Regulations</li><li>After Unprecedented Attack on Whistleblowers, Obama Admin Accused of Leaking Info for Political Gain</li></ul><p><a href="http://dncdn.dvlabs.com/ipod/dn2012-0614.mp4">Download this show</a></p>]]>
+      </content:encoded>
+    </item>
+    <item>
+      <title>Democracy Now! 2012-06-13 Wednesday</title>
+      <link>http://www.democracynow.org/shows/2012/6/13</link>
+      <description>Headlines for June 13, 2012; Is Syria in a Civil War? Journalist Patrick Seale Debates Activist Rafif Jouejati on a Just Response; Military Suicide Epidemic: More U.S. Soldiers Have Killed Themselves Than Died on Battlefield in 2012</description>
+      <pubDate>Wed, 13 Jun 2012 08:00:00 -0400</pubDate>
+      <guid isPermaLink="false">tag:democracynow.org,2012-06-13:media/mpeg4download/bdc984</guid>
+      <enclosure type="video/mp4" length="50194792" url="http://dncdn.dvlabs.com/ipod/dn2012-0613.mp4"/>
+      <itunes:explicit>clean</itunes:explicit>
+      <itunes:duration>59:00</itunes:duration>
+      <itunes:summary>Headlines for June 13, 2012; Is Syria in a Civil War? Journalist Patrick Seale Debates Activist Rafif Jouejati on a Just Response; Military Suicide Epidemic: More U.S. Soldiers Have Killed Themselves Than Died on Battlefield in 2012</itunes:summary>
+      <media:thumbnail url="http://www.democracynow.org/images/story/39/21639/medium/button-syria-debate.jpeg"/>
+      <media:content type="video/mp4" lang="en" expression="full" fileSize="50194792" url="http://dncdn.dvlabs.com/ipod/dn2012-0613.mp4" medium="video" duration="3540">
+        <media:title type="plain">Democracy Now! 2012-06-13 Wednesday</media:title>
+        <media:description>Headlines for June 13, 2012; Is Syria in a Civil War? Journalist Patrick Seale Debates Activist Rafif Jouejati on a Just Response; Military Suicide Epidemic: More U.S. Soldiers Have Killed Themselves Than Died on Battlefield in 2012</media:description>
+        <media:rating scheme="urn:simple">nonadult</media:rating>
+        <media:rating scheme="urn:v-chip">tv-g</media:rating>
+        <media:credit role="production company">Democracy Now!</media:credit>
+        <media:category>News</media:category>
+      </media:content>
+      <content:encoded>
+        <![CDATA[<h1>Democracy Now! 2012-06-13 Wednesday</h1><ul><li>Headlines for June 13, 2012</li><li>Is Syria in a Civil War? Journalist Patrick Seale Debates Activist Rafif Jouejati on a Just Response</li><li>Military Suicide Epidemic: More U.S. Soldiers Have Killed Themselves Than Died on Battlefield in 2012</li></ul><p><a href="http://dncdn.dvlabs.com/ipod/dn2012-0613.mp4">Download this show</a></p>]]>
+      </content:encoded>
+    </item>
+    <item>
+      <title>Democracy Now! 2012-06-12 Tuesday</title>
+      <link>http://www.democracynow.org/shows/2012/6/12</link>
+      <description>Headlines for June 12, 2012; Supreme Court Rejects Gitmo Appeals, Spelling Potential End to Prisoners' Legal Fight for Release; Romney Blocked Anti-Bullying Guide as Mass. Governor over Mention of &quot;Bisexual,&quot; &quot;Transgender&quot;; Bloomberg Cuts Threaten Thousands with Eviction as NYC Homeless Population Hits Record 43,000</description>
+      <pubDate>Tue, 12 Jun 2012 08:00:00 -0400</pubDate>
+      <guid isPermaLink="false">tag:democracynow.org,2012-06-12:media/mpeg4download/d6cca9</guid>
+      <enclosure type="video/mp4" length="51343692" url="http://dncdn.dvlabs.com/ipod/dn2012-0612.mp4"/>
+      <itunes:explicit>clean</itunes:explicit>
+      <itunes:duration>59:00</itunes:duration>
+      <itunes:summary>Headlines for June 12, 2012; Supreme Court Rejects Gitmo Appeals, Spelling Potential End to Prisoners' Legal Fight for Release; Romney Blocked Anti-Bullying Guide as Mass. Governor over Mention of &quot;Bisexual,&quot; &quot;Transgender&quot;; Bloomberg Cuts Threaten Thousands with Eviction as NYC Homeless Population Hits Record 43,000</itunes:summary>
+      <media:thumbnail url="http://www.democracynow.org/images/story/36/21636/medium/button-gitmo.jpeg"/>
+      <media:content type="video/mp4" lang="en" expression="full" fileSize="51343692" url="http://dncdn.dvlabs.com/ipod/dn2012-0612.mp4" medium="video" duration="3540">
+        <media:title type="plain">Democracy Now! 2012-06-12 Tuesday</media:title>
+        <media:description>Headlines for June 12, 2012; Supreme Court Rejects Gitmo Appeals, Spelling Potential End to Prisoners' Legal Fight for Release; Romney Blocked Anti-Bullying Guide as Mass. Governor over Mention of &quot;Bisexual,&quot; &quot;Transgender&quot;; Bloomberg Cuts Threaten Thousands with Eviction as NYC Homeless Population Hits Record 43,000</media:description>
+        <media:rating scheme="urn:simple">nonadult</media:rating>
+        <media:rating scheme="urn:v-chip">tv-g</media:rating>
+        <media:credit role="production company">Democracy Now!</media:credit>
+        <media:category>News</media:category>
+      </media:content>
+      <content:encoded>
+        <![CDATA[<h1>Democracy Now! 2012-06-12 Tuesday</h1><ul><li>Headlines for June 12, 2012</li><li>Supreme Court Rejects Gitmo Appeals, Spelling Potential End to Prisoners' Legal Fight for Release</li><li>Romney Blocked Anti-Bullying Guide as Mass. Governor over Mention of "Bisexual," "Transgender"</li><li>Bloomberg Cuts Threaten Thousands with Eviction as NYC Homeless Population Hits Record 43,000</li></ul><p><a href="http://dncdn.dvlabs.com/ipod/dn2012-0612.mp4">Download this show</a></p>]]>
+      </content:encoded>
+    </item>
+    <item>
+      <title>Democracy Now! 2012-06-11 Monday</title>
+      <link>http://www.democracynow.org/shows/2012/6/11</link>
+      <description>Headlines for June 11, 2012; Mariela Castro, Daughter of Cuban President, Helps Lead Struggle for LGBTQ Rights in Changing Cuba; Mariela Castro on Ending the Embargo &amp; Swapping Cuban Five for Jailed U.S. Contractor Alan Gross; Will the Real Terrorist Please Stand Up: Saul Landau on U.S.-Aided Anti-Castro Militants &amp; the Cuban 5</description>
+      <pubDate>Mon, 11 Jun 2012 08:00:00 -0400</pubDate>
+      <guid isPermaLink="false">tag:democracynow.org,2012-06-11:media/mpeg4download/f999d6</guid>
+      <enclosure type="video/mp4" length="51835279" url="http://dncdn.dvlabs.com/ipod/dn2012-0611.mp4"/>
+      <itunes:explicit>clean</itunes:explicit>
+      <itunes:duration>59:00</itunes:duration>
+      <itunes:summary>Headlines for June 11, 2012; Mariela Castro, Daughter of Cuban President, Helps Lead Struggle for LGBTQ Rights in Changing Cuba; Mariela Castro on Ending the Embargo &amp; Swapping Cuban Five for Jailed U.S. Contractor Alan Gross; Will the Real Terrorist Please Stand Up: Saul Landau on U.S.-Aided Anti-Castro Militants &amp; the Cuban 5</itunes:summary>
+      <media:thumbnail url="http://www.democracynow.org/images/story/32/21632/medium/mariela_castro_pride.jpg"/>
+      <media:content type="video/mp4" lang="en" expression="full" fileSize="51835279" url="http://dncdn.dvlabs.com/ipod/dn2012-0611.mp4" medium="video" duration="3540">
+        <media:title type="plain">Democracy Now! 2012-06-11 Monday</media:title>
+        <media:description>Headlines for June 11, 2012; Mariela Castro, Daughter of Cuban President, Helps Lead Struggle for LGBTQ Rights in Changing Cuba; Mariela Castro on Ending the Embargo &amp; Swapping Cuban Five for Jailed U.S. Contractor Alan Gross; Will the Real Terrorist Please Stand Up: Saul Landau on U.S.-Aided Anti-Castro Militants &amp; the Cuban 5</media:description>
+        <media:rating scheme="urn:simple">nonadult</media:rating>
+        <media:rating scheme="urn:v-chip">tv-g</media:rating>
+        <media:credit role="production company">Democracy Now!</media:credit>
+        <media:category>News</media:category>
+      </media:content>
+      <content:encoded>
+        <![CDATA[<h1>Democracy Now! 2012-06-11 Monday</h1><ul><li>Headlines for June 11, 2012</li><li>Mariela Castro, Daughter of Cuban President, Helps Lead Struggle for LGBTQ Rights in Changing Cuba</li><li>Mariela Castro on Ending the Embargo & Swapping Cuban Five for Jailed U.S. Contractor Alan Gross</li><li>Will the Real Terrorist Please Stand Up: Saul Landau on U.S.-Aided Anti-Castro Militants & the Cuban 5</li></ul><p><a href="http://dncdn.dvlabs.com/ipod/dn2012-0611.mp4">Download this show</a></p>]]>
+      </content:encoded>
+    </item>
+  </channel>
+</rss>
