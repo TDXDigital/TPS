@@ -1,13 +1,14 @@
 <?php
 include_once "../TPSBIN/functions.php";
 include_once "../TPSBIN/db_connect.php";
-$DEBUG = TRUE;//$_SESSION['DEBUG'];
 $STATUS = "Standard Traffic Incomplete";
-$ERROR = FALSE;
 if(!isset($_SESSION)){
     sec_session_start();
 }
 $CLIENT_ID=addslashes($_POST['client']);
+if(!isset($_POST['client'])){
+    header('location:'.$_SERVER['HTTP_REFERER'].'&m=ERROR, Missing Essential Information');
+}
 $AD_CATEGORY=addslashes($_POST['category']);
 $AD_START=addslashes($_POST['start']);
 if($_POST['end']!=''){
@@ -36,27 +37,18 @@ $mysqli->query("START TRANSACTION");
 $mysqli->query("INSERT INTO adverts (Category, Length, EndDate, StartDate, AdName, Active, Friend, Language, ClientID)
 VALUES ('$AD_CATEGORY','$AD_LENGTH','$AD_END','$AD_START','$AD_NAME',1,'$AD_FRIEND','$AD_LANG','$CLIENT_ID')");
 if($AD_FRIEND=='1'){
-    $min_arr = $mysqli->query("SELECT min(Playcount) as min FROM adverts where active='1' and EndDate>CURDATE() and StartDate<CURDATE() and AdId!='".$mysqli->insert_id."' and Friend='1'");    
+    $min_arr = $mysqli->query("SELECT min(Playcount) as min FROM adverts where active='1' and EndDate>CURDATE() and AdId!='".$mysqli->insert_id."' and Friend='1'");    
     $min = $min_arr->fetch_array();
-    $SQL_Update="UPDATE adverts SET `Playcount`=`Playcount`-".$min['min'].", `last_reset`=now() WHERE `active`='1' and `Friend`='1' and (EndDate>CURDATE() or EndDate=='9999-12-31') and `Playcount`>=".$min['min'];
-    $mysqli->query($SQL_Update);
+    $mysqli->query("UPDATE adverts SET Playcount='".$min['min']."' where active='1' and Friend='1' and EndDate>CURDATE()");
     if($mysqli->errno!='0'){
-        error_log("Traffic_Create caused SQL Error(".$mysqli->errno.") ".$mysqli->error);
-        error_log("SQL:$SQL_Update");
         // ROLLBACK if ANY errors occured
         $mysqli->query("ROLLBACK");
-        $STATUS=$mysqli->errno;
-        //"FRIEND ROLLBACK";
-        $ERROR=TRUE;
+        $STATUS="FRIEND ROLLBACK";
     }
     else{
         // Commit if no errors
         $mysqli->query("COMMIT");
         $STATUS="FRIEND TRAFFIC COMPLETE";
-    }
-    if($DEBUG){
-        error_log("Traffic_Create caused SQL Error(".$mysqli->errno.") ".$mysqli->error);
-        error_log("SQL:$SQL_Update");
     }
 }
 else{
@@ -65,11 +57,8 @@ else{
 }
 
 
-if($mysqli->errno=='0'&&!$ERROR){
-    header('location:'.$_SERVER['HTTP_REFERER'].'&m=Traffic%20Created%20(STATUS:'.$STATUS.')');
-}
-elseif ($mysqli->errno=='0'&&$ERROR){
-    header('location:'.$_SERVER['HTTP_REFERER'].'&e=Traffic%20Failed%20(STATUS:'.$STATUS.')');
+if($mysqli->errno=='0'){
+    header('location:'.$_SERVER['HTTP_REFERER'].'&m=Traffic%20Created (STATUS: '.$STATUS.')');
 }
 else{
     echo $mysqli->error;

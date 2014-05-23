@@ -47,13 +47,13 @@ function UpdateMeta(){
 
     $RDS = array(
         0 => array(
-            'host'=>'home.local.ckxu.com',
+            'host'=>'172.22.10.13',
             'port'=>8000,
             'password'=>'88.3ForLife',
             'sid'=>2
         ),
         1 => array(
-            'host'=>'home.local.ckxu.com',
+            'host'=>'172.22.10.13',
             'port'=>8000,
             'password'=>'88.3ForLife',
             'sid'=>3
@@ -65,7 +65,7 @@ function UpdateMeta(){
             'sid'=>0
         ),
         3 => array(
-            'host'=>'home.local.ckxu.com',
+            'host'=>'172.22.10.13',
             'port'=>8000,
             'password'=>'88.3ForLife',
             'sid'=>1

@@ -11,6 +11,9 @@ else{
         case "active":
             echo "Active Commercials to be listed for edit";
         break;
+        case "ver":
+            include_once("traffic.verify_ad.php");
+        break;
         default:
             echo "undefined value: ".$PAGE;
     }

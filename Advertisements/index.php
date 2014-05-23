@@ -60,9 +60,10 @@
             <li <?php if($PAGE=="clean"){echo "class='active' ";}?>><a href="?q=clean">Traffic Cleanup</a></li>
           </ul>
           <ul class="nav nav-sidebar">
-            <li <?php if($PAGE=="overview"){echo "class='active' ";}?>><a href="?q=clin">Create Client</a></li>
-            <li <?php if($PAGE=="overview"){echo "class='active' ";}?>><a href="?q=pmt">Record Payment</a></li>
-            <li <?php if($PAGE=="overview"){echo "class='active' ";}?>><a href="?q=wro">Writeoffs</a></li>
+            <li <?php if($PAGE=="clin"){echo "class='active' ";}?>><a href="?q=clin">Create Client</a></li>
+            <li <?php if($PAGE=="pmt"){echo "class='active' ";}?>><a href="?q=pmt">Record Payment</a></li>
+            <li <?php if($PAGE=="wro"){echo "class='active' ";}?>><a href="?q=wro">Writeoffs</a></li>
+            <li <?php if($PAGE=="ver"){echo "class='active' ";}?>><a href="?q=ver">Verification</a></li>
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
