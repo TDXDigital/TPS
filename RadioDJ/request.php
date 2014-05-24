@@ -343,6 +343,7 @@ if($reqid == ""){
 		echo '<table class="main_table" border="0" cellspacing="0" cellpadding="5">';
 		echo " <tr>" . "\n";
 		echo "   <td class=\"header_no\">#</td>\n";
+        echo "   <td class=\"header_live\">DBID</td>\n";
 		echo "   <td class=\"header_live\">" . COL_ARTIST . "</td>\n";
 		echo "   <td class=\"header_live\">" . COL_TITLE . "</td>\n";
 		echo "   <td class=\"header_live\">" . COL_DURATION . "</td>\n";
@@ -355,6 +356,7 @@ if($reqid == ""){
 		while($row = mysql_fetch_assoc($result)) {
 			echo " <tr>" . "\n";
 			echo "  <td class=\"entry_no\">$cnt.</td>\n";
+            echo "  <td>" . $row['ID'] . "</td>\n";
 			echo "  <td>" . $row['artist'] . "</td>\n";
 			echo "  <td>" . $row['title'] . "</td>\n";
 			echo "  <td class=\"entry_no\">" . convertTime($row['duration']) . "</td>\n";
