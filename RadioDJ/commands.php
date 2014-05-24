@@ -72,7 +72,7 @@ if(isset($_POST['submit'])) {
 ?>
 
 <div align="left" style="padding:10px;">
-<form name="comform" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" method="post">
+<form name="comform" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>?q=tcpc" method="post">
 	Available Commands:
 	<hr />
 	<input type="radio" name="command" value="PlayPlaylistTrack" onChange="resetArgs()" checked>Play Playlist Track<br />

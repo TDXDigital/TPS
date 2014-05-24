@@ -252,7 +252,7 @@ if($reqid == ""){
 		$paginate .= "<div class='paginate'>";
 		// Previous
 		if ($page > 1){
-			$paginate.= "<a href='$targetpage?page=$prev$srchpath'>" . NAV_NEXT . "</a>";
+			$paginate.= "<a href='$targetpage?q=requests&page=$prev$srchpath'>" . NAV_PREV . "</a>";
 		}else{
 			$paginate.= "<span class='disabled'>" . NAV_PREV . "</span>";
 		}
@@ -275,43 +275,43 @@ if($reqid == ""){
 					if ($counter == $page){
 						$paginate.= "<span class='current'>$counter</span>";
 					}else{
-						$paginate.= "<a href='$targetpage?page=$counter$srchpath'>$counter</a>";
+						$paginate.= "<a href='$targetpage?q=requests&page=$counter$srchpath'>$counter</a>";
 					}					
 				}
 			
 				$paginate.= "...";
-				$paginate.= "<a href='$targetpage?page=$LastPagem1$srchpath'>$LastPagem1</a>";
-				$paginate.= "<a href='$targetpage?page=$lastpage$srchpath'>$lastpage</a>";
+				$paginate.= "<a href='$targetpage?q=requests&page=$LastPagem1$srchpath'>$LastPagem1</a>";
+				$paginate.= "<a href='$targetpage?q=requests&page=$lastpage$srchpath'>$lastpage</a>";
 				
 			} elseif($lastpage - ($stages * 2) > $page && $page > ($stages * 2)){
 			
-				$paginate.= "<a href='$targetpage?page=1$srchpath'>1</a>";
-				$paginate.= "<a href='$targetpage?page=2$srchpath'>2</a>";
+				$paginate.= "<a href='$targetpage?q=requests&page=1$srchpath'>1</a>";
+				$paginate.= "<a href='$targetpage?1=requests&page=2$srchpath'>2</a>";
 				$paginate.= "...";
 				
 				for ($counter = $page - $stages; $counter <= $page + $stages; $counter++){
 					if ($counter == $page){
 						$paginate.= "<span class='current'>$counter</span>";
 					}else{
-						$paginate.= "<a href='$targetpage?page=$counter$srchpath'>$counter</a>";
+						$paginate.= "<a href='$targetpage?q=requests&page=$counter$srchpath'>$counter</a>";
 					}
 				}
 				
 				$paginate.= "...";
-				$paginate.= "<a href='$targetpage?page=$LastPagem1$srchpath'>$LastPagem1</a>";
-				$paginate.= "<a href='$targetpage?page=$lastpage$srchpath'>$lastpage</a>";
+				$paginate.= "<a href='$targetpage?q=requests&page=$LastPagem1$srchpath'>$LastPagem1</a>";
+				$paginate.= "<a href='$targetpage?q=requests&page=$lastpage$srchpath'>$lastpage</a>";
 
 			} else {
 			
-				$paginate.= "<a href='$targetpage?page=1$srchpath'>1</a>";
-				$paginate.= "<a href='$targetpage?page=2$srchpath'>2</a>";
+				$paginate.= "<a href='$targetpage?q=requests&page=1$srchpath'>1</a>";
+				$paginate.= "<a href='$targetpage?q=requests&page=2$srchpath'>2</a>";
 				$paginate.= "...";
 				
 				for ($counter = $lastpage - (2 + ($stages * 2)); $counter <= $lastpage; $counter++) {
 					if ($counter == $page){
 						$paginate.= "<span class='current'>$counter</span>";
 					}else{
-						$paginate.= "<a href='$targetpage?page=$counter$srchpath'>$counter</a>";
+						$paginate.= "<a href='$targetpage?q=requests&page=$counter$srchpath'>$counter</a>";
 					}
 				}
 			}
@@ -319,7 +319,7 @@ if($reqid == ""){
 					
 		// Next
 		if ($page < $counter - 1){ 
-			$paginate.= "<a href='$targetpage?page=$next$srchpath'>" . NAV_NEXT . "</a>";
+			$paginate.= "<a href='$targetpage?q=requests&page=$next$srchpath'>" . NAV_NEXT . "</a>";
 		}else{
 			$paginate.= "<span class='disabled'>" . NAV_NEXT . "</span>";
 		}	
@@ -329,6 +329,7 @@ if($reqid == ""){
 	//Search box
 	echo '<div align="center">';
 	echo "<form name=\"input\" action=\"$targetpage\" method=\"get\">";
+    echo "<input type=\"hidden\" value=\"requests\" name=\"q\">";
 	echo SEARCH_TXT . " <input type=\"text\" value=\"$srch\" name=\"searchterm\"> <input type=\"submit\" value=\"" . SEARCH_BUTTON . "\">";
 	echo '<br />';
 	echo '</form>';
@@ -362,7 +363,7 @@ if($reqid == ""){
 			echo "  <td class=\"entry_no\">" . convertTime($row['duration']) . "</td>\n";
 
 			if(track_can_play($row['date_played'], $row['artist_played']) == true) {
-				echo "  <td class=\"entry_no\"><a href=\"$targetpage?page=$page&requestid=" . $row['ID'] . "\" title=\"" . ALT_REQ . "\">
+				echo "  <td class=\"entry_no\"><a href=\"$targetpage?q=requests&page=$page&requestid=" . $row['ID'] . "\" title=\"" . ALT_REQ . "\">
 				<img src=\"images/add.png\" alt=\"" . ALT_REQ . "\" /></a></td>\n";
 			}else{
 				echo "  <td class=\"entry_no\"><img src=\"images/delete.png\" /></td>\n";

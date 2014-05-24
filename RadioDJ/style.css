@@ -1,4 +1,4 @@
-body,td,th {
+/*body,td,th {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	color: #000000;
@@ -39,7 +39,7 @@ a:hover {
 a:active {
 	color: #FF0000;
 	text-decoration: none;
-}
+}*/
 .main_table {
 	margin-left:auto;
 	margin-right:auto;
@@ -107,7 +107,7 @@ div.requestcontainer {
 	background-color: #F9E8D9;
 	border: 1px solid #000000;
 }
-
+/*
 div.menu {
 	width: 100%;
 	background: url(images/date_bg.png) repeat-x;
@@ -127,7 +127,7 @@ div.menu a:visited {
 div.menu a:hover {
 	color: #FF0000;
 }
-
+    */
 div.footer {
 	width: 100%;
 	background: url(images/date_bg.png) repeat-x;

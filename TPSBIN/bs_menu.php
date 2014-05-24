@@ -64,6 +64,16 @@
               </ul>
             </li>
               <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Automation<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="<?php echo $base; ?>/RadioDJ/?q=history">History</a></li>
+                <li><a href="<?php echo $base; ?>/RadioDJ/?q=t_songs">Top Songs</a></li>
+                <li><a href="<?php echo $base; ?>/RadioDJ/?q=t_albums">Top Albums</a></li>
+                <li><a href="<?php echo $base; ?>/RadioDJ/?q=requests">Requests</a></li>
+                <li><a href="<?php echo $base; ?>/RadioDJ/?q=tcpc">Remote Commands</a></li>
+              </ul>
+            </li>
+              <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports and Management<b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li class="dropdown-header">Programming</li>

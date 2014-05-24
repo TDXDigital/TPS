@@ -1,71 +1,77 @@
 <?php
-
-/*
-
-VERSION: 2.1
-AUTHOR: Marius Vaida
-WEBSITE: http://radiodj.ro
-
-*/
-
-
-/* ============================================================================= */
-// EDIT BELOW
-/* ============================================================================= */
-
-$pageTitle = "CKXU Radio Society";
-
-/* ============================================================================= */
-// END EDIT
-/* ============================================================================= */
-
-require_once('serv_inc.php');
-require_once('header.php');
+    include_once "../TPSBIN/functions.php";
+    include_once "../TPSBIN/db_connect.php";
+    if(!isset($_SESSION)){
+        sec_session_start();
+    }
+    if(isset($_GET)){
+        if(isset($_GET['old'])){
+            header("location: p1advins.php");
+        }
+        else if(isset($_GET['q'])){
+            $PAGE = urldecode($_GET['q']);
+        }
+    }
 ?>
-<h1>Welcome to RadioDJ Demo script 2.2!</h1>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="<?php echo $_SESSION['BASE_REF'];?>/favicon.ico">
 
-<div align="left" style="padding:10px;">
+    <title>RadioDJ Management</title>
 
-<strong>WHAT IS THIS?</strong>
-<br />
-<ul>
-	<li>This script's purpose is to show you how can your website interact with RadioDJ;</li>
-	<li>Most of the sections are dynamically generated, so they won't need any maintenance;</li>
-</ul>
+    <!-- Bootstrap core CSS -->
+    <link href="<?php echo $_SESSION['BASE_REF'];?>/js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-<hr />
-<br />
+    <!-- Custom styles for this template -->
+    <link href="<?php echo $_SESSION['BASE_REF'];?>/js/bootstrap/css/dashboard.css" rel="stylesheet">
+    <!--<link href="js/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">-->
 
-<strong>HOW TO INSTALL?</strong>
-<br />
-<ul>
-	<li>Open serv_inc.php and enter your MySQL server details;</li>
-	<li>Make sure you set the time-zone to your area!</li>
-</ul>
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 
-<hr />
-<br />
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  <style id="holderjs-style" type="text/css"></style></head>
 
-<strong>CHANGES IN V2.2:</strong>
+  <body>
+    <?php include "../TPSBIN/bs_menu.php"?>
 
-<ul>
-	<li>Added support for TCP-IP server plugin and demo commands provided;</li>
-</ul>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li <?php if($PAGE=="listen"){echo "class='active' ";}?>><a href="?q=listen">Listen</a></li>
+            <li <?php if($PAGE=="history"){echo "class='active' ";}?>><a href="?q=history">History</a></li>
+            <li <?php if($PAGE=="t_songs"){echo "class='active' ";}?>><a href="?q=t_songs">Top Songs</a></li>
+            <li <?php if($PAGE=="t_albums"){echo "class='active' ";}?>><a href="?q=t_albums">Top Albums</a></li>
+            <li <?php if($PAGE=="requests"){echo "class='active' ";}?>><a href="?q=requests">Song Requests (24 Hr)</a></li>
+            <!--<li><a href="#">Export</a></li>-->
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li <?php if($PAGE=="tcpc"){echo "class='active' ";}?>><a href="?q=tcpc">TCP-IP Commnads</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Automation Control</h1>
+            <?php include_once("automation.core.php");?>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<strong>CHANGES IN V2.1:</strong>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="<?php echo $_SESSION['BASE_REF'];?>/js/bootstrap/js/bootstrap.min.js"></script>
+    <!--<script src="../../assets/js/docs.min.js"></script>-->
+  
 
-<ul>
-	<li>Requested song will not be added to the database if the requested track is already in the queue and not played;</li>
-	<li>Request number can be limited for each IP for a 24 hours period.</li>
-	<li>Messages and displayed text in Request section can be customized.</li>
-</ul>
-
-<hr />
-</div>
-
-
-<?php
-
-require_once('footer.php'); 
-
-?>
+</body></html>

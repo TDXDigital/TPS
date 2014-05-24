@@ -14,7 +14,7 @@ $resLimit		= 30;				// How many history tracks to display?
 /* ============================================================================= */
 
 require_once('serv_inc.php');
-require_once('header.php');
+//require_once('header.php');
 	
 function convertTime($seconds) {
 	$sec = $seconds;
@@ -144,5 +144,5 @@ db_close($opened_db);
 
 ?>
 </table>
-<?php require_once('footer.php'); ?>
+<?php// require_once('footer.php'); ?>
 
