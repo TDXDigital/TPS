@@ -236,7 +236,7 @@ if($reqid == ""){
 	$total_pages = $total_pages['num'];
 
 	//Get page data
-	$query1 = "SELECT `ID`, `artist`, `title`, `duration`, `date_played`, `artist_played` FROM `songs` WHERE `enabled`='1' $srcquery AND`song_type`=0 ORDER BY `artist` ASC LIMIT $start, $limit";
+	$query1 = "SELECT `ID`, `enabled`, `artist`, `title`, `duration`, `date_played`, `artist_played` FROM `songs` WHERE `enabled`='1' $srcquery AND`song_type`=0 ORDER BY `artist` ASC LIMIT $start, $limit";
 	$result = mysql_query($query1);
 		
 	// Initial page num setup
@@ -361,8 +361,7 @@ if($reqid == ""){
 			echo "  <td>" . $row['artist'] . "</td>\n";
 			echo "  <td>" . $row['title'] . "</td>\n";
 			echo "  <td class=\"entry_no\">" . convertTime($row['duration']) . "</td>\n";
-
-			if(track_can_play($row['date_played'], $row['artist_played']) == true) {
+			if(track_can_play($row['date_played'], $row['artist_played']) == true && $row['enabled']=='1') {
 				echo "  <td class=\"entry_no\"><a href=\"$targetpage?q=requests&page=$page&requestid=" . $row['ID'] . "\" title=\"" . ALT_REQ . "\">
 				<img src=\"images/add.png\" alt=\"" . ALT_REQ . "\" /></a></td>\n";
 			}else{
