@@ -17,10 +17,22 @@ $password = "88.3ForLife";
 require_once('serv_inc.php');
 require_once('header.php');
 
-if(isset($_POST['submit'])) {
+$OVERRIDE=FALSE;
+if(isset($_GET['command'])&&isset($_GET['argument'])){
+    $OVERRIDE=TRUE;
+}
 
-	$command = htmlentities($_POST['command']);
-	$args = htmlentities($_POST['argument']);
+
+if(isset($_POST['submit'])||$OVERRIDE) {
+    if($OVERRIDE){
+        $command = htmlentities($_GET['command']);
+	    $args = htmlentities($_GET['argument']);
+    }
+    else{
+        $command = htmlentities($_POST['command']);
+	    $args = htmlentities($_POST['argument']);
+    }
+	
 
 	echo "<div class=\"noticediv\">Sent Command: " . $command . "</div>\n
 	<br />";
