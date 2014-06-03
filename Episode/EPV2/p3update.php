@@ -93,7 +93,7 @@ else if($con){
 			}
 		}*/
 		 if($_POST['NSHN']!=""){
-		 	$SQNS = "Update Epside, song SET episode.programname=\"";
+		 	$SQNS = "Update Epside, song SET episode.programname=\"".addslashes($_POST['NSHN'])."\" , ";
 		 }
 		
 		// UPDATE Air Date
