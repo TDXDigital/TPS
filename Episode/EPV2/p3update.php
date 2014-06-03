@@ -72,9 +72,9 @@ else if($con){
 			}
 		}
 		
-		// To Be Update Program Name
+		// To Be Update Program Name (does not work...)
 		// UPDATE Air Date
-		if($_POST['NSHN']!=""){
+		/*if($_POST['NSHN']!=""){
 			$SQSN = "Update Episode SET programname=\"".addslashes($_POST['NSHN'])."\" where programname=\"" . $SHOW . "\" and date='" . $DATE . "' and starttime='" . $START . "' and callsign='" . $CALL . "'";
 			if(!mysql_query($SQSN)){
 				//array_push($ERRLOG,mysql_errno(),mysql_error());
@@ -91,8 +91,10 @@ else if($con){
 					$SHOW=addslashes($_POST['NSHN']);
 				}
 			}
-		}
-		 
+		}*/
+		 if($_POST['NSHN']!=""){
+		 	$SQNS = "Update Epside, song SET episode.programname=\"";
+		 }
 		
 		// UPDATE Air Date
 		if($_POST['shdate']!=""){
