@@ -504,7 +504,15 @@ else{
         <?php
             if(TRUE){
                 echo "<span id=\"HDW_title_open\"><!--<button onclick=\"HideHardware()\" title=\"Hide\"><span class=\"ui-icon ui-icon-carat-1-n\"></span></button>--><span>Hardware Control</span></span>";
-                $Equipment_List = mysql_query("SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='".$CALL."' and in_service='1' and ipv4_address IS NOT NULL group by hardware.hardwareid order by friendly_name ASC");
+                if($_SESSION['access']==2){
+                    $Hardware_Query="SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='$CALL' and in_service='1' and ipv4_address IS NOT NULL group by hardware.hardwareid order by friendly_name ASC";
+                }
+                else{
+                $Hardware_Query="SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='$CALL' and in_service='1' and ipv4_address IS NOT NULL and hardware.room=(SELECT `hardware`.`room` AS `room_ip` FROM hardware WHERE hardware.ipv4_address='".$_SERVER['REMOTE_ADDR']."' and `hardware`.`hardware_type`='1' and `hardware`.`in_service`='1' order by `hardware`.`hardwareid` LIMIT 1) group by hardware.hardwareid order by friendly_name ASC";
+                }
+                if(!$Equipment_List = mysql_query($Hardware_Query)){
+                    error_log("Encountered Error: p3update.php, Query HArdware_Query returned invalid result: ".mysql_error());
+                }
                 $BOOTH = 0;
                 while($Equipment_row = mysql_fetch_array($Equipment_List)){
                     if($Equipment_row['ipv4_address']==$_SERVER['REMOTE_ADDR'] || $_SESSION['access']==2){
