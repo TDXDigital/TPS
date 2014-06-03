@@ -282,6 +282,7 @@ else{
 <link rel="stylesheet" type="text/css" href="../../altstyle.css" />
     <link rel="stylesheet" type="text/css" href="../../js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css" />
     <script src="../../js/jquery/js/jquery-2.0.3.min.js"></script>
+    <script src="../../TPSBIN/JS/Control/Device.js"></script>
     <script src="../../js/jquery/js/jquery-ui-1.10.0.custom.min.js"></script>
 <title>Log Editor</title>
 </head>
@@ -308,6 +309,17 @@ else{
 			//document.forms['general'].Row.checked="true";
 			document.getElementById(Row).checked="true";
 		}
+        function HideHardware() {
+             $("#HDW_title_open").hide();
+             $("#hdw_prompt").show();
+             $("#hdw").hide();
+         }
+
+         function ShowHardware() {
+             $("#hdw").show();
+             $("#HDW_title_open").show();
+             $("#hdw_prompt").hide();
+         }
 		
 		function SetNote(ELID,EDI){
 			//var VAL = document.getElementById(ELID).value;
@@ -323,7 +335,7 @@ else{
            USER: <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
 	<div id="header" style="width: <?php echo $SETW ?>">
-		<a href="#"><img src="../../images/Ckxu_logo_PNG.png" alt="CKXU" /></a>
+		<a href="#"><img src="../../<?php echo $_SESSION['logo'];?>" alt="CKXU" /></a>
 	</div>
 	<div id="top" style="width: <?php echo $SETW ?>">
 		<table><tr><td width="200px"><span style="font-size: 25px;">Update/Edit Log</span></td><td width="100px"></td><td width="300px"><span>Sponsor:<?php
@@ -487,6 +499,37 @@ else{
             </tr>
 		</table>
 	</div>
+    <!--<div id="hdw_prompt" style="margin: 0 auto 0 auto; width: 1354px; background-color: #000; color: white; display:none;"><button onclick="ShowHardware()" title="Show"><span class="ui-icon ui-icon-carat-1-s"></span></button><span>Hardware Control</span></div>-->
+    <div id="hdw" style="margin: 0 auto 0 auto; width: 1354px; background-color: #000; color: white; text-align: left;">
+        <?php
+            if(TRUE){
+                echo "<span id=\"HDW_title_open\"><!--<button onclick=\"HideHardware()\" title=\"Hide\"><span class=\"ui-icon ui-icon-carat-1-n\"></span></button>--><span>Hardware Control</span></span>";
+                $Equipment_List = mysql_query("SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='".$CALL."' and in_service='1' and ipv4_address IS NOT NULL group by hardware.hardwareid order by friendly_name ASC");
+                $BOOTH = 0;
+                while($Equipment_row = mysql_fetch_array($Equipment_List)){
+                    if($Equipment_row['ipv4_address']==$_SERVER['REMOTE_ADDR'] || $_SESSION['access']==2){
+
+                        echo "<hr><div id=\"toolbar".$Equipment_row['hardwareid']."\"  style=\"color: white; background:#000; width:100%; display: block\">
+                        <span >".strtoupper($Equipment_row['Manufacturer'])." ".$Equipment_row['device_code']." - ".$Equipment_row['friendly_name']."</span><span style='width:100%'>&nbsp</span>
+                        <span id='RES".$Equipment_row['hardwareid']."' style=\"color: white; background: #7690a3; width:100%; text-align: center; background-color: #7690a3;\">&nbsp;- DENON - </span><br>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','8','".$Equipment_row['hardwareid']."')\" title=\"Eject\"><span class=\"ui-icon ui-icon-eject \"></span></button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','20','".$Equipment_row['hardwareid']."')\" title=\"CUE NEXT\"><span class=\"ui-icon ui-icon-arrowthickstop-1-s\"></span></button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','1','".$Equipment_row['hardwareid']."')\" title=\"Play\"><span class=\"ui-icon ui-icon-play\"></span></button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','9','".$Equipment_row['hardwareid']."')\" title=\"Pause\"><span class=\"ui-icon ui-icon-pause\"></span></button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','2','".$Equipment_row['hardwareid']."')\" title=\"Stop\"><span class=\"ui-icon ui-icon-stop\"></span></button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','5','".$Equipment_row['hardwareid']."')\" title=\"Previous\"><span class=\"ui-icon ui-icon-seek-first\"></span></button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','4','".$Equipment_row['hardwareid']."')\" title=\"Next\"><span class=\"ui-icon ui-icon-seek-end\"></span></button>
+                        <button class=\"HID-RE-".$Equipment_row['hardwareid']."\" onclick=\"Update_Device_Status('RES".$Equipment_row['hardwareid']."','".$Equipment_row['hardwareid']."')\" title=\"Refresh Device\"><span class=\"ui-icon ui-icon-refresh\"></span></button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" style=\"float: right\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','7','".$Equipment_row['hardwareid']."')\">Wake (Soft On)</button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" style=\"float: right\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','6','".$Equipment_row['hardwareid']."')\">Standby (Off)</button>
+                        <button class=\"HID-".$Equipment_row['hardwareid']."\" style=\"float: right\" onclick=\"Get_Info('title001','artin','albin','".$Equipment_row['hardwareid']."')\">Get Information</button>
+                        </div>";
+                    }
+                }
+            }
+
+        ?>
+    </div>
 	<div id="content" style="width: <?php echo $SETW ?>">
         <?php
 		try{
