@@ -584,6 +584,8 @@ else{
 				<th width="25px">CC</th>
 				<th width="25px">Hit</th>
 				<th width="25px">Ins</th>
+				<th width="25px">Fin</th>
+				<th width="25px">Type</th>
 				<th width="75px">Language</th>
 				<th><span title="Note" class="ui-icon ui-icon-tag"></span></th>
 				<th><span title="Delete Record" class="ui-icon ui-icon-trash"></span></th>
@@ -886,7 +888,15 @@ else{
 			if( $SONGS['instrumental'] == "1"){
 				echo " checked ";
 			}
+			echo "/></td>";
+			echo "<td><input readonly='readonly' onChange=\"SetEdit('EDI".$CONT."')\" type=\"checkbox\" name=\"complete[]\" value='".$SONGS['songid']."' ";
+			if( $SONGS['complete'] == "1"){
+				echo " checked ";
+			}
 			echo "/></td> ";
+			echo "<td>"; // Put Type Here
+				echo "<select readonly='readonly' name=type[] onChange=\"SetEdit('EDI".$CONT."')\">\n<option value='Background'>BG</option>\n<option value='FG'>FG</option>\n<option value='theme'>THM</option>\n</select>";
+			echo "</td>";
 			$LANS = mysql_fetch_array(mysql_query("SELECT languageid from language where songid=\"" . $SONGS['songid'] . "\" "));
 			echo "<td><input onchange=\"SetEdit('EDI".$CONT."')\" onclick=\"SetEdit('EDI".$CONT."')\" type=\"text\" name=\"language[]\" value=\"". $LANS['languageid'] . "\" size=\"10\" maxlength=\"40\" /></td>";
 			echo "<td><input type=\"button\" value=\"";
