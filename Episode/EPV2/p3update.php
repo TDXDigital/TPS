@@ -179,6 +179,8 @@ else if($con){
 	$CANC = $_POST['cc'];
 	$HITZ = $_POST['hit'];
 	$INST = $_POST['ins'];
+    $FINI = $_POST['complete'];
+    $TYPE = $_POST['type'];
 	$LANG = $_POST['language'];
 	$NOTE = $_POST['note'];
 	$REMO = $_POST['remove'];
@@ -340,7 +342,7 @@ else{
 		<a href="#"><img src="../../<?php echo $_SESSION['logo'];?>" alt="CKXU" /></a>
 	</div>
 	<div id="top" style="width: <?php echo $SETW ?>">
-		<table><tr><td width="200px"><span style="font-size: 25px;">Update/Edit Log</span></td><td width="100px"></td><td width="300px"><span>Sponsor:<?php
+		<table><tr><td style="width: 200px"><span style="font-size: 25px;">Update/Edit Log</span></td><td style="width: 100px"></td><td style="width: 300px"><span>Sponsor:<?php
 			$SELSPON = "SELECT * FROM program where programname='".$SHOW."' and callsign='".$CALL."' ";
 			$SEL = mysql_query($SELSPON);
 			$vars = mysql_fetch_array($SEL);
@@ -352,7 +354,7 @@ else{
 				echo " N/A ";
 			}
 		?>
-			</span></td><td width="300px">
+			</span></td><td style="width: 300px">
 				<span> Show Classification: <?php
 					echo $vars['genre'];
 				?></span>
@@ -407,7 +409,7 @@ else{
 				    echo $CC_VARS['EnteredCC']."/".$CCR;
 				}
 					?></span>
-			</td><td width="225px">
+			</td><td style="width: 225px">
 				<?php
                 if($req['PlType']=='0'){
                     $SQL_PL_COUNT = "SELECT 
@@ -554,19 +556,19 @@ else{
 			<!--<tr><td colspan="100%"><h2>*** Work in Progress ***</h2></td></tr>-->
 
 			<thead><tr>
-				<th width="50px">
+				<th style="width: 50px">
 					<span title="Changed Value" class="ui-icon ui-icon-transferthick-e-w"></span>
 				</th>
-				<th width="200px">
+				<th style="width: 200px">
 					Type
 				</th>
-				<th width="75px">
+				<th style="width: 75px">
 					Playlist
 				</th>
-				<th width="75px">
+				<th style="width: 75px">
 					Spoken
 				</th>
-				<th width="75px">
+				<th style="width: 75px">
 					Time
 				</th>
                 <?php
@@ -580,15 +582,15 @@ else{
                         echo "<th width=\"150px\">Title</th><th width=\"150px\">Artist</th><th width=\"150px\">Album</th>";
                     }
                     ?>
-				<th width="150px">
+				<th style="width: 150px">
 					Composer
 				</th>
-				<th width="25px">CC</th>
-				<th width="25px">Hit</th>
-				<th width="25px">Ins</th>
-				<th width="25px">Fin</th>
-				<th width="25px">Type</th>
-				<th width="75px">Language</th>
+				<th style="width: 25px">CC</th>
+				<th style="width: 25px">Hit</th>
+				<th style="width: 25px">Ins</th>
+				<th style="width: 25px">Fin</th>
+				<th style="width: 25px">Type</th>
+				<th style="width: 75px">Language</th>
 				<th><span title="Note" class="ui-icon ui-icon-tag"></span></th>
 				<th><span title="Delete Record" class="ui-icon ui-icon-trash"></span></th>
 			</tr></thead><tbody>
@@ -891,13 +893,29 @@ else{
 				echo " checked ";
 			}
 			echo "/></td>";
-			echo "<td><input readonly='readonly' onChange=\"SetEdit('EDI".$CONT."')\" type=\"checkbox\" name=\"complete[]\" value='".$SONGS['songid']."' ";
+			echo "<td><input disabled onChange=\"SetEdit('EDI".$CONT."')\" type=\"checkbox\" name=\"complete[]\" value='".$SONGS['songid']."' ";
 			if( $SONGS['complete'] == "1"){
 				echo " checked ";
 			}
 			echo "/></td> ";
 			echo "<td>"; // Put Type Here
-				echo "<select readonly='readonly' name=type[] onChange=\"SetEdit('EDI".$CONT."')\">\n<option value='Background'>BG</option>\n<option value='FG'>FG</option>\n<option value='theme'>THM</option>\n</select>";
+	        echo "<select disabled name=type[] onChange=\"SetEdit('EDI".$CONT."')\">";
+            echo "\n<option ";
+            if($SONGS['type']=="B"){
+                echo " selected ";
+            }
+            echo " value='Background'>BG</option>";
+            echo "\n<option ";
+            if($SONGS['type']=="F" || !isset($SONGS['type'])){
+                echo " selected ";
+            }
+            echo "value='FG'>FG</option>";
+            echo "\n<option ";
+            if($SONGS['type']=="T"){
+                echo " selected ";
+            }
+            echo "value='theme'>THM</option>";
+            echo "\n</select>";
 			echo "</td>";
 			$LANS = mysql_fetch_array(mysql_query("SELECT languageid from language where songid=\"" . $SONGS['songid'] . "\" "));
 			echo "<td><input onchange=\"SetEdit('EDI".$CONT."')\" onclick=\"SetEdit('EDI".$CONT."')\" type=\"text\" name=\"language[]\" value=\"". $LANS['languageid'] . "\" size=\"10\" maxlength=\"40\" /></td>";
@@ -946,7 +964,7 @@ else{
 					</form></td><td>
 				<!--<form method="POST" action="/masterpage.php"><input type="submit" value="Menu"/></form>-->
 				</td>
-				<td width="100%" align="right"><img src="../../images/mysqls.png" alt="MySQL Powered"/></td>
+				<td style="width: 100%" align="right"><img src="../../images/mysqls.png" alt="MySQL Powered"/></td>
 			</tr>
 		</table>
 	</div>
