@@ -36,24 +36,41 @@ if(count($entries)):
     //echo count($asin);
     //echo "<pre>";print_r($result);die;
     $i_Alert_EM_C=0;
+    $Alerts = "";
     if(sizeof($result)>0){
-        echo "<div class='ui-state-error'><!--<h2>Alberta Emergency Alert</h2>-->";
+        /*$Alerts .= "<div class='";
+        //ui-state-error
+        // check for alert level
+        if()
+        $Alerts .= "'><!--<h2>Alberta Emergency Alert</h2>-->";*/
         foreach ($result as $entry):
             //echo "<pre>";print_r($entry);die;
             if(strpos($entry->summary,'Lethbridge') !== false){
+                if(strpos($entry->title,'Test') !== FALSE){
+                    echo "<div class=\"ui-state-highlight\" style=\"background-color:green\">";
+                }
+                elseif(strpos($entry->title,'Information')!==FALSE){
+                    echo "<div class=\"ui-state-highlight\">";
+                }
+                else{
+                    echo "<div class=\"ui-state-error\">";
+                }
                 if($i_Alert_EM_C>0){
-                    echo "<hr/>";
+                    $Alerts .= "<hr/>";
                 }
                 $i_Alert_EM_C++;
-                echo "<span class='emergency_logo'><img style='margin: 10px 0px 10px 10px;' src='/TPS/images/AEMA.png'/></span>";
+                $Alerts .= "<span class='emergency_logo'><img style='margin: 10px 0px 10px 10px;' src='/TPS/images/AEMA.png'/></span>";
                 //$dc = $entry->children('urn:oasis:names:tc:emergency:cap:1.1');
-                echo "<span class='alert_info'><p><strong>".$entry->title."</strong><br/>";
+                $Alerts .= "<span class='alert_info'><p><strong><a href=\"".$entry->link->attributes()->href."\" target=\"_blank\">".$entry->title."</a></strong><br/>";
                 //echo $dc->name."<br/>";
-                echo $entry->summary."</p>";
-                echo "</span>";   
+                $Alerts .= $entry->summary."</p>";
+                $Alerts .= "</span>";   
+                $Alerts .= "</div>";
             }
         endforeach;
-        echo "</div>";
+        if($i_Alert_EM_C>0){
+            echo $Alerts;
+        }
     }
 endif;
 ?>
