@@ -747,7 +747,7 @@ if(false){
         <tr><td colspan="100%">
         	<hr>
             <div id="Emergency">
-                <?php /*include "../TPSBIN/XML/Emergency.php"*/ ?>
+                <?php require_once "../TPSBIN/XML/Emergency.php" ?>
             </div>
         </td></tr>
         <!-- Row for displaying Ads and Friends -->

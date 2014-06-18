@@ -545,7 +545,7 @@ else{
 	<div id="content" style="width: <?php echo $SETW ?>">
         <?php
 		try{
-			include "../../TPSBIN/XML/Emergency.php";
+			require_once "../../TPSBIN/XML/Emergency.php";
 		}
 		catch (Exception $e)
 		{
