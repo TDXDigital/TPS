@@ -330,6 +330,7 @@ else{
     <script type="text/javascript" src="../TPSBIN/JS/Control/Device.js"></script>
     <script type="text/javascript" src="../js/jquery/js/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="../js/jquery/js/jquery-ui-1.10.0.custom.min.js"></script>
+    <script type="text/javascript" src="../TPSBIN/JS/GLOBAL/Utilities.js"></script>
     <link rel="stylesheet" href="../js/jquery/css/ui-lightness/jquery-ui-1.10.0.custom.min.css"/>
     <style>
         .ui-autocomplete-loading {
@@ -413,6 +414,12 @@ else{
          });
          Display_RDS();
          Display_Switch();
+
+         // Load Emergency Information
+         GetEAS('EAS', '../');
+         setInterval(function () {
+            GetEAS('EAS', '../');
+         }, 15000);
 
          setInterval(function () {
              Display_RDS();
@@ -746,8 +753,8 @@ if(false){
         </td></tr>
         <tr><td colspan="100%">
         	<hr>
-            <div id="Emergency">
-                <?php require_once "../TPSBIN/XML/Emergency.php" ?>
+            <div id="EAS">
+                <?php /*require_once "../TPSBIN/XML/Emergency.php"*/ ?>
             </div>
         </td></tr>
         <!-- Row for displaying Ads and Friends -->

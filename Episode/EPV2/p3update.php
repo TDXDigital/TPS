@@ -284,56 +284,69 @@ else{
 <!DOCTYPE HTML>
 <head>
 <link rel="stylesheet" type="text/css" href="../../altstyle.css" />
-    <link rel="stylesheet" type="text/css" href="../../js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css" />
     <script src="../../js/jquery/js/jquery-2.0.3.min.js"></script>
     <script src="../../TPSBIN/JS/Control/Device.js"></script>
     <script src="../../js/jquery/js/jquery-ui-1.10.0.custom.min.js"></script>
+    <script type="text/javascript" src="../../TPSBIN/JS/GLOBAL/Utilities.js"></script>
+    <link rel="stylesheet" href="../../js/jquery/css/ui-lightness/jquery-ui-1.10.0.custom.min.css"/>
+    <style>
+        .ui-autocomplete-loading {
+            background: white url('../../images/GIF/ajax-loader3.gif') right center no-repeat;
+          }
+    </style>
 <title>Log Editor</title>
 </head>
 <html>
 <body>
 	<script type="text/javascript">
-		function SetRem(chk, ID , ROW , COUNT) {
-			if(chk == true){
-				document.getElementById(ID).style.background = 'red';	
-			}
-			else{
-				//alert('UNCHECK')
-				if(COUNT%2){
-					document.getElementById(ID).style.background = '#DAFFFF';//'#F9F9AA';
-				}
-				else{
-					document.getElementById(ID).style.background = 'white';
-				}
-			}
-		}
-		
-		function SetEdit(Row){
-			//alert(Row);
-			//document.forms['general'].Row.checked="true";
-			document.getElementById(Row).checked="true";
-		}
-        function HideHardware() {
-             $("#HDW_title_open").hide();
-             $("#hdw_prompt").show();
-             $("#hdw").hide();
+     function SetRem(chk, ID, ROW, COUNT) {
+         if (chk == true) {
+             document.getElementById(ID).style.background = 'red';
          }
+         else {
+             //alert('UNCHECK')
+             if (COUNT % 2) {
+                 document.getElementById(ID).style.background = '#DAFFFF'; //'#F9F9AA';
+             }
+             else {
+                 document.getElementById(ID).style.background = 'white';
+             }
+         }
+     }
 
-         function ShowHardware() {
-             $("#hdw").show();
-             $("#HDW_title_open").show();
-             $("#hdw_prompt").hide();
+     function SetEdit(Row) {
+         //alert(Row);
+         //document.forms['general'].Row.checked="true";
+         document.getElementById(Row).checked = "true";
+     }
+     function HideHardware() {
+         $("#HDW_title_open").hide();
+         $("#hdw_prompt").show();
+         $("#hdw").hide();
+     }
+
+     function ShowHardware() {
+         $("#hdw").show();
+         $("#HDW_title_open").show();
+         $("#hdw_prompt").hide();
+     }
+
+     function SetNote(ELID, EDI) {
+         //var VAL = document.getElementById(ELID).value;
+         //alert(document.getElementById(ELID).value)
+         document.getElementById(EDI).checked = "true";
+         var NOTE = prompt("Notes for individual song (90 char Max)", document.getElementById(ELID).value);
+         if (NOTE != null) {
+             document.getElementById(ELID).value = NOTE;
          }
-		
-		function SetNote(ELID,EDI){
-			//var VAL = document.getElementById(ELID).value;
-			//alert(document.getElementById(ELID).value)
-			document.getElementById(EDI).checked="true";
-			var NOTE = prompt("Notes for individual song (90 char Max)", document.getElementById(ELID).value );
-			if(NOTE != null){
-				document.getElementById(ELID).value = NOTE;
-			}			
-		}
+     }
+     $(document).ready(function () {
+         // Load Emergency Information
+         GetEAS('EAS', '../../');
+         setInterval(function () {
+            GetEAS('EAS', '../../');
+         }, 15000);
+     });
 	</script>
 	<div class="topbar">
            USER: <?php echo(strtoupper($_SESSION['usr'])); ?>
@@ -543,18 +556,9 @@ else{
         ?>
     </div>
 	<div id="content" style="width: <?php echo $SETW ?>">
-        <?php
-		try{
-			require_once "../../TPSBIN/XML/Emergency.php";
-		}
-		catch (Exception $e)
-		{
-			Echo "<span> Error getting Emergency Alerts</span>";
-		}
-	?>
+        <!-- Emergency Alert System (EAS)-->
+        <div id="EAS"></div>
 		<table border="0" class="tablecss">
-			<!--<tr><td colspan="100%"><h2>*** Work in Progress ***</h2></td></tr>-->
-
 			<thead><tr>
 				<th style="width: 50px">
 					<span title="Changed Value" class="ui-icon ui-icon-transferthick-e-w"></span>

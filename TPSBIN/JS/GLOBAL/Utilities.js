@@ -56,3 +56,19 @@ if (i<10)
   }
 return i;
 }
+
+function GetEAS(target,basedir){
+    //atom = typeof atom !== 'undefined' ? atom : "http://www.emergencyalert.alberta.ca/aeapublic/feed.atom";
+    atom = basedir + "TPSBIN/XML/Emergency.php";
+    //target = typeof target !== 'undefined' ? target : "EAS";
+    $.ajax({
+        url: atom
+    })
+    .done(function (data) {
+        var tgt_EAS = '#'.concat(target);
+        $(tgt_EAS).html(data)
+    })
+    .fail(function (textStatus) {
+        $(tgt_EAS).innerHTML("<span class='ui-state-error'>Could not load EAS data (Got " + textStatus + ")");
+    });
+}
