@@ -1694,7 +1694,7 @@ if(false){
         <input type="text" hidden name="program" value=<?php echo "\"" . $_POST['program'] . "\"" ?> />
         <input type="text" hidden name="user_date" value=<?php echo "\"" . $_POST['user_date'] . "\"" ?> />
         <input type="text" hidden name="user_time" value=<?php echo "\"" . $_POST['user_time'] . "\"" ?> />
-        <button id='confirm_final'>Finalize Episode</button>
+        <button type='button' id='confirm_final'>Finalize Episode</button>
         <div id="dialog-form" title="Create new user">
           <p class="validateTips">All form fields are required.</p>
  
