@@ -4,6 +4,7 @@
       $ADIDS = array();
       $ADOPT = "";
       $DEBUG = FALSE;
+      $FINALIZED = !isset($EPINFO['endtime']);
       if(isset($_POST['Description'])){
         $DESCRIPTION = addslashes($_POST['Description']);
       }
@@ -454,6 +455,88 @@ else{
      }); 
 
 </script> 
+    <script>
+  $(function() {
+    var name = $( "#name" ),
+      email = $( "#email" ),
+      password = $( "#password" ),
+      allFields = $( [] ).add( name ).add( email ).add( password ),
+      tips = $( ".validateTips" );
+ 
+    function updateTips( t ) {
+      tips
+        .text( t )
+        .addClass( "ui-state-highlight" );
+      setTimeout(function() {
+        tips.removeClass( "ui-state-highlight", 1500 );
+      }, 500 );
+    }
+ 
+    function checkLength( o, n, min, max ) {
+      if ( o.val().length > max || o.val().length < min ) {
+        o.addClass( "ui-state-error" );
+        updateTips( "Length of " + n + " must be between " +
+          min + " and " + max + "." );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    function checkRegexp( o, regexp, n ) {
+      if ( !( regexp.test( o.val() ) ) ) {
+        o.addClass( "ui-state-error" );
+        updateTips( n );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    $( "#dialog-form" ).dialog({
+      autoOpen: false,
+      height: 300,
+      width: 350,
+      modal: true,
+      buttons: {
+        "Create an account": function() {
+          var bValid = true;
+          allFields.removeClass( "ui-state-error" );
+ 
+          bValid = bValid && checkLength( name, "username", 3, 16 );
+          bValid = bValid && checkLength( email, "email", 6, 80 );
+          bValid = bValid && checkLength( password, "password", 5, 16 );
+ 
+          bValid = bValid && checkRegexp( name, /^[a-z]([0-9a-z_])+$/i, "Username may consist of a-z, 0-9, underscores, begin with a letter." );
+          // From jquery.validate.js (by joern), contributed by Scott Gonzalez: http://projects.scottsplayground.com/email_address_validation/
+          bValid = bValid && checkRegexp( email, /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i, "eg. ui@jquery.com" );
+          bValid = bValid && checkRegexp( password, /^([0-9a-zA-Z])+$/, "Password field only allow : a-z 0-9" );
+ 
+          if ( bValid ) {
+            $( "#users tbody" ).append( "<tr>" +
+              "<td>" + name.val() + "</td>" +
+              "<td>" + email.val() + "</td>" +
+              "<td>" + password.val() + "</td>" +
+            "</tr>" );
+            $( this ).dialog( "close" );
+          }
+        },
+        Cancel: function() {
+          $( this ).dialog( "close" );
+        }
+      },
+      close: function() {
+        allFields.val( "" ).removeClass( "ui-state-error" );
+      }
+    });
+ 
+    $( "#confirm_final" )
+      .button()
+      .click(function() {
+        $( "#dialog-form" ).dialog( "open" );
+      });
+  });
+  </script>
 <link rel="stylesheet" type="text/css" href="../phpstyle.css" />
 <title>Log Addition</title>
 </head>
@@ -1558,7 +1641,7 @@ if(false){
         <tr>
         
         	<?php
-        	if(!isset($EPINFO['endtime'])){
+        	if($FINALIZED){
         		echo "<td colspan=\"2\" style=\"background-color:white; color:darkred;\"><span>Active : Not Finalized</span>";
         	}
 			else{
@@ -1589,7 +1672,7 @@ if(false){
                              ?>/>
         </td>
         <td colspan="1">
-        <input type="time" name="end" value=<?php
+        <input is="end_time" type="time" name="end" value=<?php
                            if(isset($_POST['ENPREC']) || isset($EPINFO['prerecorddate'])){
                            	if(isset($EPINFO['endtime'])){
 	                             echo "\"" . $EPINFO['endtime'] . "\"";
@@ -1611,18 +1694,30 @@ if(false){
         <input type="text" hidden name="program" value=<?php echo "\"" . $_POST['program'] . "\"" ?> />
         <input type="text" hidden name="user_date" value=<?php echo "\"" . $_POST['user_date'] . "\"" ?> />
         <input type="text" hidden name="user_time" value=<?php echo "\"" . $_POST['user_time'] . "\"" ?> />
-        <input type="submit" value="Finish Episode" />
+        <button id='confirm_final'>Finalize Episode</button>
+        <div id="dialog-form" title="Create new user">
+          <p class="validateTips">All form fields are required.</p>
+ 
+          <form>
+          <fieldset>
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all">
+            <label for="email">Email</label>
+            <input type="text" name="email" id="email" value="" class="text ui-widget-content ui-corner-all">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all">
+          </fieldset>
+          </form>
+        </div>
         </td>
         </tr>
         </form>
-        <tr><td colspan="12" height="20">
+        <tr><td colspan="12" style="height:20px;">
         <hr />
         </td></tr>
         <tr>
         <?php
-          if($_SESSION['usr']=='user')
-          {
-            echo "<form name=\"exit\" action=\"../djhome.php\" method=\"POST\" ";
+            echo "<form name=\"exit\" action=\"../\" method=\"POST\" ";
             if(!isset($EPINFO['endtime'])){
             	echo " onSubmit=\"return confirm('WARNING: Unfinalized Episode\\n\\nThis episode is not finalized. Are you sure you want to exit?')\">";
             }
@@ -1636,41 +1731,24 @@ if(false){
                   <input type=\"text\" hidden=\"true\" name=\"user_time\" value=\"" . $_POST['user_time'] . "\"/>
                   <input type=\"submit\" value=\"Exit\" /></form>
                   </td><td></td>";
-          }
-          else
-          {
-            echo "<form name=\"exit\" action=\"../masterpage.php\" method=\"POST\" ";
-            if(!isset($EPINFO['endtime'])){
-            	echo " onSubmit=\"return confirm('WARNING: Unfinalized Episode\\n\\nThis episode is not finalized. Are you sure you want to exit?')\">";
-            }
-			else{
-				echo "\">";
-			}
-                  echo "<td colspan=\"1\">
-                  <input type=\"text\" hidden=\"true\" name=\"callsign\" value=\"" . $CALLSHOW . "\" />
-                  <input type=\"text\" hidden=\"true\" name=\"program\" value=\"" . $_POST['program'] . "\"/>
-                  <input type=\"text\" hidden=\"true\" name=\"user_date\" value=\"" . $_POST['user_date'] . "\"/>
-                  <input type=\"text\" hidden=\"true\" name=\"user_time\" value=\"" . $_POST['user_time'] . "\"/>
-                  <input type=\"submit\" value=\"Exit\" /></form>
-                  </td>";
-          }
+          
         ?>
         <td colspan="1">
         <!--<form name="exit" action="/Episode/p3update.php" method="POST">-->
         <form name="edit" action="EPV2/p3update.php" method="POST">
-        <input type="text" hidden="true" name="callsign" value=<?php echo "\"" . $CALLSHOW . "\"" ?> />
-        <input type="text" hidden="true" name="program" value=<?php echo "\"" . $_POST['program'] . "\"" ?> />
-        <input type="text" hidden="true" name="user_date" value=<?php echo "\"" . $_POST['user_date'] . "\"" ?> />
-        <input type="text" hidden="true" name="user_time" value=<?php echo "\"" . $_POST['user_time'] . "\"" ?> />
+        <input type="hidden" name="callsign" value=<?php echo "\"" . $CALLSHOW . "\"" ?> />
+        <input type="hidden" name="program" value=<?php echo "\"" . $_POST['program'] . "\"" ?> />
+        <input type="hidden" name="user_date" value=<?php echo "\"" . $_POST['user_date'] . "\"" ?> />
+        <input type="hidden" name="user_time" value=<?php echo "\"" . $_POST['user_time'] . "\"" ?> />
         <input type="submit" value="Edit" />
         </form>
         </td>
         <td colspan="1">
         <form name="refresh" action="p2insertEP.php" method="POST">
-        <input type="text" hidden="true" name="callsign" value=<?php echo "\"" . $CALLSHOW . "\"" ?> />
-        <input type="text" hidden="true" name="program" value=<?php echo "\"" . $_POST['program'] . "\"" ?> />
-        <input type="text" hidden="true" name="user_date" value=<?php echo "\"" . $_POST['user_date'] . "\"" ?> />
-        <input type="text" hidden="true" name="user_time" value=<?php echo "\"" . $_POST['user_time'] . "\"" ?> />
+        <input type="hidden" name="callsign" value=<?php echo "\"" . $CALLSHOW . "\"" ?> />
+        <input type="hidden" name="program" value=<?php echo "\"" . $_POST['program'] . "\"" ?> />
+        <input type="hidden" name="user_date" value=<?php echo "\"" . $_POST['user_date'] . "\"" ?> />
+        <input type="hidden" name="user_time" value=<?php echo "\"" . $_POST['user_time'] . "\"" ?> />
         <input type="submit" value="Refresh" />
         </form>
         </td>

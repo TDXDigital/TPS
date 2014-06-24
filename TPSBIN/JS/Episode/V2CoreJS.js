@@ -14,6 +14,7 @@ function load(){
 	}
 
 	function popitup(url) {
+        //opens a new window of size 500x300 (portorate for category listing)
 		newwindow=window.open(url,'name','height=500,width=300');
 		if (window.focus) {newwindow.focus()}
 		return false;
@@ -176,15 +177,15 @@ function load(){
 			alert("Index: " + y[x].index + " is " + y[x].text);
 		}*/
 	}
-	
-	function GetNotes(){
-			var NOTE = prompt("Short Notes Regarding current song (90 char max)");
-			if(NOTE!=null&&NOTE!=''){
-				document.getElementById('NF1').value=NOTE;
-			}
-			$("NoteField").SlideDown();
+
+	function GetNotes() {
+	    var NOTE = prompt("Short Notes Regarding current song (90 char max)");
+	    if (NOTE != null && NOTE != '') {
+	        document.getElementById('NF1').value = NOTE;
+	    }
+	    $("NoteField").SlideDown();
 	}
-	
+
 	function SpokenWord(){
 		alert("Definition: \n Spoken Word \n\n defined as locally produced spoken programming");
 	}
