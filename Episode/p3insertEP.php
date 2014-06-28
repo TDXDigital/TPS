@@ -15,7 +15,9 @@ else{
 
         $INSENDQU = "update episode set endtime='" . addslashes($_POST['end']) . "', totalspokentime='". addslashes($_POST['spoken'])."' WHERE callsign='".addslashes($_POST['callsign'])."' and programname='".addslashes($_POST['program'])."' and date='".addslashes($_POST['user_date'])."' ";
 
-        mysql_query($INSENDQU,$con);
+        if(!mysql_query($INSENDQU,$con)){
+            echo "Error Updating End Time";
+        }
         $PROGRAMQUERY = "select * from episode where callsign='". addslashes($_POST['callsign'])."' and programname='" . addslashes($_POST['program']) . "' and date='". addslashes($_POST['user_date'])."' and starttime='".addslashes($_POST['user_time'])."'";
         $PROGRAMDATA = mysql_query($PROGRAMQUERY);
         $PROGRAMARRAY = mysql_fetch_array($PROGRAMDATA);
