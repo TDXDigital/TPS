@@ -523,7 +523,7 @@ else{
                             //alert($("#time_final_confirm").val());
                             $("#end_time").val($("#time_final_confirm").val());
                             $(this).dialog("close");
-                            //$("#Complete").submit();
+                            $("#Complete").submit();
                         }
                     },
                     Cancel: function () {
