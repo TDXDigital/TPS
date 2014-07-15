@@ -25,10 +25,19 @@ else{
         else if(isset($_POST['remove'])){
           $RMSong = "DELETE FROM song WHERE songid='" . addslashes($_POST['songid']) . "' ";
           $RMLang = "DELETE FROM language WHERE songid='" . addslashes($_POST['songid']) . "' ";
+          $RMTRAFFIC_LOG = "DELETE FROM trafficaudit where songid='".addslashes($_POST['songid'])."' ";
 
           if(mysql_query($RMLang)){
             if(!mysql_query($RMSong)){
               echo "<table width=\"100%\" style=\"background-color:red; color:white;\"><tr><td>Error ".mysql_errno()."<br /> Removal Failed, Server Responded: " . mysql_error() ." </td></tr></table>";
+            }
+            else{
+                if(!mysql_query($RMTRAFFIC_LOG)){
+                    echo "<table width=\"100%\" style=\"background-color:red; color:white;\"><tr><td>Error ".mysql_errno()."<br /> Removal Failed, Server Responded: " . mysql_error() ." </td></tr></table>";
+                }
+                else{
+                    echo "<table width=\"100%\" style=\"background-color:#ffff99; color:white;\"><tr><td>Advert Removed (ID:".$_POST('songid').")</td></tr></table>";
+                }
             }
           }
           else

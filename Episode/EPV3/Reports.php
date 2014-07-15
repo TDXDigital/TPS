@@ -241,10 +241,7 @@ else{
 				  	echo "<th width=\"5%\">Time</th>";
 				  }
                   echo "<th width=\"20%\">Artist</th><th width=\"20%\">Title</th><th width=\"20%\">Release Title</th><th>Composer</th><th width=\"2%\">CC</th><th width=\"2%\">Hit</th><th width=\"2%\">Ins</th><th width=\"4%\">Language</th></tr>";
-				  if($_POST['type']=='CMP'){
-				      $query = "select * from SONG where callsign='" . $AUDITROW['callsign']. "' and programname='" . addslashes($AUDITROW['programname']) . "' and date='" . $AUDITROW['date'] . "' and starttime='" . $AUDITROW['starttime'] . "' order by time, songid";
-				  }
-                  elseif($_POST['type']=='MUO'){
+				  if($_POST['type']=='MUO'){
                       $query = "select * from SONG where category between 20 and 40 and callsign='" . $AUDITROW['callsign']. "' and programname='" . addslashes($AUDITROW['programname']) . "' and date='" . $AUDITROW['date'] . "' and starttime='" . $AUDITROW['starttime'] . "' order by time, songid";
                   }
                   elseif($_POST['type']=='SPO'){
@@ -253,21 +250,38 @@ else{
                   elseif($_POST['type']=='COM'){
                       $query = "select * from SONG where category > 50 callsign='" . $AUDITROW['callsign']. "' and programname='" . addslashes($AUDITROW['programname']) . "' and date='" . $AUDITROW['date'] . "' and starttime='" . $AUDITROW['starttime'] . "' order by time, songid";
                   }
+                  elseif($_POST['type']=='ADM'){
+                      $query = "select song.*,language.languageid from SONG left join language on language.songid=song.songid where song.callsign='" . $AUDITROW['callsign']. "' and song.programname='" . addslashes($AUDITROW['programname']) . "' and song.date='" . $AUDITROW['date'] . "' and song.starttime='" . $AUDITROW['starttime'] . "' order by time, songid";
+                  }
                   else{
                       // Default to Complete
-                      $query = "select * from SONG where callsign='" . $AUDITROW['callsign']. "' and programname='" . addslashes($AUDITROW['programname']) . "' and date='" . $AUDITROW['date'] . "' and starttime='" . $AUDITROW['starttime'] . "' order by time, songid";
+                      $query = "select song.*,language.languageid from SONG left join language on language.songid=song.songid where song.callsign='" . $AUDITROW['callsign']. "' and song.programname='" . addslashes($AUDITROW['programname']) . "' and song.date='" . $AUDITROW['date'] . "' and song.starttime='" . $AUDITROW['starttime'] . "' order by time, songid";
                   }
                   
                      $listed=mysql_query($query,$con);
-                     if(mysql_num_rows($listed)=="0"){
-                       echo "<tr><td colspan=\"10\" style=\"background-color:yellow;\">no data returned</td></tr>";
+                     if(mysql_errno($con)){
+                         echo "<tr><td colspan=\"11\" style=\"background-color:red;\">Query Error: ".mysql_error()."</td></tr>";
                      }
+                     if(mysql_num_rows($listed)=="0"){
+                       echo "<tr><td colspan=\"100%\" style=\"background-color:yellow;\">no data returned</td></tr>";
+                     }
+                     /*elseif($_POST['type']=='ADM'){ // Processed Separate due to large data numbers
+                         while ($list=mysql_fetch_array($listed)){
+                             
+                         }
+                         
+                     }*/
                      else
                      {
                          while ($list=mysql_fetch_array($listed))
                          {
+                           if($list['category']=='51'){
+                               echo "<tr><td style=\"background-color:#ffff99;\">";
+                               $promptsql="select * from promptlog where EpNum=`".$list['EpNum']."` and (SELECT "
+                               echo $list.
+                           }
                            echo "<tr>";
-                           echo "<td>";
+                            echo "<td>";
                                 echo $list['category'];
 							if($ple){
 								echo "</td><td style='text-align: center;'>";
@@ -278,60 +292,61 @@ else{
 									echo "&nbsp;";	
 								}
 							}
-                           if($Stime){
+                            if($Stime){
                            		echo "</td><td style='text-align: center;'>";
                                 echo $list['time'];
-						   }
-                           echo "</td><td>";
+						    }
+                            echo "</td><td>";
                                 if(isset($list['artist'])&&$list['artist']!=""){
-                                  echo $list['artist'];
+                                    echo $list['artist'];
                                 }
                                 else{
-                                  echo '&nbsp;'; // For some reason this is only occuring on the first result...
+                                    echo '&nbsp;'; // For some reason this is only occuring on the first result...
                                 } 
-                           echo "</td><td>";
+                            echo "</td><td>";
                                 echo $list['title'];
-                           echo "</td><td>";
+                            echo "</td><td>";
                                 if(isset($list['album'])){
-                                  echo $list['album'];
+                                    echo $list['album'];
                                 }
 								else{
 									echo "&nbsp;";	
 								}
-                           echo "</td><td>";
+                            echo "</td><td>";
                                 if(isset($list['composer'])){
-                                  echo $list['composer'];
+                                    echo $list['composer'];
                                 }
 								else{
 									echo "&nbsp;";	
 								}
-                           echo "</td><td style='text-align: center;'>";
+                            echo "</td><td style='text-align: center;'>";
                                 if($list['cancon']=="1"){
                                 	echo "X";
                                 }
 								else{
 									echo "&nbsp;";	
 								}
-                           echo "</td><td style='text-align: center;'>";
+                            echo "</td><td style='text-align: center;'>";
                                 if($list['hit']=='1'){
                                 	echo "X";
                                 }
 								else{
 									echo "&nbsp;";	
 								}
-                           echo "</td><td style='text-align: center;'>";
+                            echo "</td><td style='text-align: center;'>";
                                 if($list['instrumental']){
                                 	echo "X";
                                 }
 								else{
 									echo "&nbsp;";	
 								}
-                           $songlang = mysql_query("select languageid from LANGUAGE where callsign='" . $list['callsign'] . "' and programname='" . addslashes($list['programname']) . "' and date='" . $AUDITROW['date'] . "' and starttime='" . $AUDITROW['starttime'] . "' and songid='". $list['songid'] ."'");
-                           $rowlang = mysql_fetch_array($songlang);
-                           echo "</td><td>";
-                                echo $rowlang['languageid'];
-                           echo "</td>";
-                           echo "</tr>";
+                                
+                            //$songlang = mysql_query("select languageid from LANGUAGE where callsign='" . $list['callsign'] . "' and programname='" . addslashes($list['programname']) . "' and date='" . $AUDITROW['date'] . "' and starttime='" . $AUDITROW['starttime'] . "' and songid='". $list['songid'] ."'");
+                            //$rowlang = mysql_fetch_array($songlang);
+                            echo "</td><td>";
+                                echo $list['languageid'];
+                            echo "</td>";
+                            echo "</tr>";
                          }
                      }
              echo "</table></br>";

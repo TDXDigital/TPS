@@ -266,6 +266,7 @@ else if($con){
 	for($ct=0;$ct<count($REMO);$ct++){
 		$RMQ = "delete from song where songid='".$REMO[$ct]."' ";
 		$RML = "delete from language where songid='".$REMO[$ct]."' ";
+        $RMT = "delete from trafficaudit where songid='".$REMO[$ct]."' ";
 		if(!mysql_query($RMQ)){
 			echo mysql_error();
 		}
@@ -273,6 +274,35 @@ else if($con){
 			if(!mysql_query($RML)){
 				echo mysql_error();
 			}
+            else{
+                $adid="select advertid from trafficaudit where songid='".$REMO[$ct]."'";
+                //echo $adid;
+                if($RESU_ADID=mysql_query($adid)){
+                    $advert = mysql_fetch_array($RESU_ADID);
+                    if(mysql_num_rows($RESU_ADID)>0){
+                        if(!mysql_query("Update adverts set Playcount=Playcount-1 where AdId='".$advert['advertid']."'")){
+                            echo mysql_error();
+                            error_log(mysql_error());
+                            //echo "ERROR";
+                        }
+                        else{
+                            if(!mysql_query($RMT)){
+                                echo mysql_error();
+                            }
+                            else{
+                                //echo $RMT." --- ".$advert['AdId'];
+                            }
+                        }
+                    }
+                    else{
+                        echo "Not > 0";
+                    }
+                }
+                else{
+                    echo mysql_error();
+                }
+                //echo $RMT." -+- ".$advert['AdId'];
+            }
 		}
 	}
 	
@@ -284,9 +314,9 @@ else{
 <!DOCTYPE HTML>
 <head>
 <link rel="stylesheet" type="text/css" href="../../altstyle.css" />
-    <script src="../../js/jquery/js/jquery-2.0.3.min.js"></script>
+    <script src="../../js/jquery/js/jquery-2.1.1.min.js"></script>
     <script src="../../TPSBIN/JS/Control/Device.js"></script>
-    <script src="../../js/jquery/js/jquery-ui-1.10.0.custom.min.js"></script>
+    <script src="../../js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../../TPSBIN/JS/GLOBAL/Utilities.js"></script>
     <link rel="stylesheet" href="../../js/jquery/css/ui-lightness/jquery-ui-1.10.0.custom.min.css"/>
     <style>

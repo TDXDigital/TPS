@@ -57,7 +57,7 @@ else{
         $INSEPSEL = "select * from episode LEFT JOIN program on program.programname=episode.programname where episode.callsign='" . addslashes($CALLSHOW) . "' and episode.programname='" . addslashes($_POST['program']) . "' and episode.date='" . addslashes($_POST['user_date']) . "' and episode.starttime='" . addslashes($_POST['user_time']) . "' order by episode.date";
         $RESEPSEL=mysql_query($INSEPSEL,$con);
         $EPINFO=mysql_fetch_array($RESEPSEL);
-        
+        $ADINS=FALSE;
         
 		$SETTINGS = mysql_fetch_array(mysql_query("SELECT * FROM station WHERE callsign='".$CALLSHOW."' "));
 		
@@ -201,6 +201,7 @@ else{
 									echo "<div class='error'>AD ERROR: ".mysql_error() . " <br/>Using: $UPAD</div>";
 								}
 								else{
+                                    $ADINS=TRUE;
 									/*if($UPXREF!=""){
 										if(!mysql_query($UPXREF)){
 											echo $UPXREF;
@@ -218,6 +219,9 @@ else{
 					//echo $UPAD;
 					
               	}
+                else{
+                    $ADINS=FALSE;
+                }
                 $indyns.=", category";
                 $BUFFS.=", '" . addslashes($_POST['cat']) . "' ";
               }
@@ -248,6 +252,13 @@ else{
                           {
                               echo 'SQL Error, Language Insertion<br />';
                               echo mysql_error();
+                          }
+                          if($ADINS){
+                            $TRAFFIC_SQL="insert into trafficaudit (`songid`,`advertid`) values ('".addslashes($LASTLINK)."','".addslashes($_POST['AdNum'])."')";
+                            if(!mysql_query($TRAFFIC_SQL,$con)){
+                              echo 'SQL Error, traffic error - Generation<br />';
+                              echo mysql_error();
+                            }
                           }
               }
             }
@@ -330,8 +341,8 @@ else{
 	<!--<script src="../js/jquery/js/jquery-1.9.1.min.js"></script>-->
     <script type="text/javascript" src="../TPSBIN/JS/Episode/V2CoreJS.js"></script>
     <script type="text/javascript" src="../TPSBIN/JS/Control/Device.js"></script>
-    <script type="text/javascript" src="../js/jquery/js/jquery-2.0.3.min.js"></script>
-    <script type="text/javascript" src="../js/jquery/js/jquery-ui-1.10.0.custom.min.js"></script>
+    <script type="text/javascript" src="../js/jquery/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../TPSBIN/JS/GLOBAL/Utilities.js"></script>
     <link rel="stylesheet" href="../js/jquery/css/ui-lightness/jquery-ui-1.10.0.custom.min.css"/>
     <style>

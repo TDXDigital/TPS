@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html style="height: 100%;" lang="en">
 	<head>
-		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-		<script src="../../js/jquery-ui-1.9.2.blitzer/js/jquery-1.8.3.js"></script>
-		<script src="../../js/jquery-ui-1.9.2.blitzer/js/jquery-ui-1.9.2.custom.js"></script>
+		<!--<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
+        <script src="../../js/jquery/js/jquery-2.1.1.min.js"></script>
+		<script src="../../js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
 		<script src="../../js/globalize-master/lib/globalize.js"></script>
 		<script src="../../js/modernizr.js"></script>
 		<script type="text/javascript" src="../../js/jquery-blockui.js"></script>
@@ -11,7 +11,8 @@
 		<!-- CSS -->
 		<link rel="stylesheet" type="text/css" href="../../phpstyle.css" />
 		<link rel="stylesheet" type="text/css" href="../../js/css/jMenu.jquery.css" media="screen" />
-		<link rel="stylesheet" type="text/css" href="../../js/jquery/css/smoothness/jquery-ui-1.10.0.custom.css" />
+		<!--<link rel="stylesheet" type="text/css" href="../../js/jquery/css/smoothness/jquery-ui-1.10.0.custom.css" />-->
+        <link rel="stylesheet" type="text/css" href="../../js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.css" />
 		<title>Program Audit Configuration</title>
 		<meta http-equiv="Content-Type" content="text/html;" charset="UTF-8">
 		<script>
@@ -102,6 +103,7 @@
 						<input type="radio" name="type" value="MUO" id="MOT" title="Create a barcoded EAN13 Report"/><label for="MOT">Music Only</label>
 						<input type="radio" name="type" value="SPO" id="SOT" title="Place a page break after each log"/><label for="SOT">Spoken Only</label>
 						<input type="radio" name="type" value="CMP" id="CMT" checked="checked" title="Generate individual Log Statistics"/><label for="CMT">Complete</label>
+                        <input type="radio" name="type" value="ADM" id="ADM" title="Gives So Much Information..."/><label for="ADM">Admin Review (Very Detailed)</label>
 					</div>
 					<div id="order" style="float: left; margin-left: 20px">
 						<h3>Order By</h3>
