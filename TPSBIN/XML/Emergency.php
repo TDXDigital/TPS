@@ -3,12 +3,13 @@
     /*include "../functions.php";
     sec_session_start();*/
     //sec_session_start();
+    header("application/JSON");
 $data = "http://www.emergencyalert.alberta.ca/aeapublic/feed.atom";
 $entries = file_get_contents($data);
 $entries = new SimpleXmlElement($entries);
 if(count($entries)):
-    echo "<script src='../../js/jquery/js/jquery-2.0.3.min.js'></script>";
-    echo "<script src='../../js/jquery/js/jquery-ui-1.10.0.custom.min.js'></script>";
+    /*echo "<script src='../../js/jquery/js/jquery-2.1.1.min.js'></script>";
+    echo "<script src='../../js/jquery/js/jquery-ui-1.11.0.custom.min.js'></script>";*/
     echo "<style>.emergency_logo{
         background-color:white;
     display: inline-block;
