@@ -95,7 +95,8 @@
 					<div id="radio_fmt" style="float: left">
 						<h3>Format</h3>
 						<input type="radio" id="fmthtm" name="fmt" checked="checked"/><label for="fmthtm">HTML</label>
-						<input type="radio" id="fmtpdf" name="fmt" /><label for="fmtpdf">PDF</label>
+						<input type="radio" id="fmtpdf" name="fmt" disabled /><label for="fmtpdf">PDF</label>
+                        <input type="radio" id="fmtxls" name="fmt" disabled /><label for="fmtpdf">XLSX</label>
 					</div>
 					<div id="prt_opts" style="float: left; margin-left: 20px">
 						<h3>Audit Type</h3>

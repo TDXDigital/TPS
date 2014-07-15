@@ -334,6 +334,7 @@ else{
 		$resultPROMO = mysql_query($SQLCOUNTPROMO);
 		$RECPSA = mysql_num_rows($resultPROMO);
 		$RECPSA += mysql_num_rows($resultPSA);
+        
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -351,6 +352,16 @@ else{
           }
     </style>
 	<!--<script src="../js/jquery/js/jquery-ui-1.10.0.custom.min.js"></script>-->
+    <!--<script>
+        <?php          
+            if($_SESSION['hardware_prompt']=="FALSE"){
+                echo "global var hardware=off;";
+            }
+            else{
+                echo "global var hardware=on;";
+            }
+         ?>
+    </script>-->
 	<script src="../js/jquery-blockui.js"></script>
 	<script type="text/javascript">
 
@@ -411,14 +422,35 @@ else{
      }, 1000);
      // END CLOCK
      function HideHardware() {
-         $("#HDW_title_open").hide();
-         $("#hdw_prompt").show();
-         $("#hdw").hide();
+
+         $.ajax({
+             statusCode: {
+                 url: "EPV2/AJAX/setpref.php?c=SetHardwareOff",
+                 200: function () {
+                     $("#HDW_title_open").hide();
+                     $("#hdw_prompt").show();
+                     $("#hdw").hide();
+                 },
+                 403: function () {
+                     alert("Session Timed Out (Not Authorized)");
+                 }
+             }
+         });
      }
      function ShowHardware() {
-         $("#hdw").show();
-         $("#HDW_title_open").show();
-         $("#hdw_prompt").hide();
+        $.ajax({
+             statusCode: {
+                 url: "EPV2/AJAX/setpref.php?c=SetHardwareOn",
+                 200: function () {
+                     $("#hdw").show();
+                     $("#HDW_title_open").show();
+                     $("#hdw_prompt").hide();
+                 },
+                 403: function () {
+                     alert("Session Timed Out (Not Authorized)");
+                 }
+             }
+         });
      }
      function UpdateFinalize() {
          var value = $(this).val();
@@ -429,7 +461,11 @@ else{
              source: "../MusicLib/DB_Search_Artist.php",
              minLength: 2
          });
-
+        <?php          
+            if($_SESSION['hardware_prompt']=="FALSE"){
+                echo "HideHardware();";
+            }
+         ?>
          // set finalize actions and update field
          $("#end_time").change(UpdateFinalize);
 
@@ -764,7 +800,7 @@ if(false){
     <div id="hdw_prompt" style="margin: 0 auto 0 auto; width: 1354px; background-color: #000; color: white; display:none;"><button onclick="ShowHardware()" title="Show"><span class="ui-icon ui-icon-carat-1-s"></span></button><span>Hardware Control</span></div>
     <div id="hdw" style="margin: 0 auto 0 auto; width: 1354px; background-color: #000; color: white">
         <?php
-            if(TRUE){
+            if(TRUE){//implement system variable to determine if shown (stored in station)
                 echo "<span id=\"HDW_title_open\"><button onclick=\"HideHardware()\" title=\"Hide\"><span class=\"ui-icon ui-icon-carat-1-n\"></span></button><span>Hardware Control</span></span>";
                 if($_SESSION['access']==2){
                     $Hardware_Query="SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='".$EPINFO['callsign']."' and in_service='1' and ipv4_address IS NOT NULL group by hardware.hardwareid order by friendly_name ASC";
@@ -779,7 +815,7 @@ if(false){
                 while($Equipment_row = mysql_fetch_array($Equipment_List)){
                     if($Equipment_row['ipv4_address']==$_SERVER['REMOTE_ADDR'] || $_SESSION['access']==2){
 
-                        echo "<hr><div id=\"toolbar".$Equipment_row['hardwareid']."\"  style=\"color: white; background:#000; width:100%; display: block\">
+                        echo "<hr><div id=\"toolbar".$Equipment_row['hardwareid']."\"  style=\"color: white; background:#000; width:100%; display:block\">
                         <span >".strtoupper($Equipment_row['Manufacturer'])." ".$Equipment_row['device_code']." - ".$Equipment_row['friendly_name']."</span><span style='width:100%'>&nbsp</span>
                         <span id='RES".$Equipment_row['hardwareid']."' style=\"color: white; background: #7690a3; width:100%; text-align: center; background-color: #7690a3;\">&nbsp;- DENON - </span><br>
                         <button class=\"HID-".$Equipment_row['hardwareid']."\" onclick=\"Query_Device('RES".$Equipment_row['hardwareid']."','8','".$Equipment_row['hardwareid']."')\" title=\"Eject\"><span class=\"ui-icon ui-icon-eject \"></span></button>
@@ -1134,7 +1170,7 @@ if(false){
                            <input type="text" id="AdNum" name="AdNum" readonly="true" size="10"/>
                        </th>
                        <th>
-                           <input type="time" name="time" value=<?php
+                           <input type="time" id="ins_time" name="time" value=<?php
                            if(isset($_POST['ENPREC']) || isset($EPINFO['prerecorddate'])){
                            	if(isset($EPINFO['endtime'])){
 	                             echo "\"" . $EPINFO['endtime'] . "\"";
@@ -1234,7 +1270,7 @@ if(false){
               </div>
         
          <!--/////////////////////////// Input Form (Sponsor 53) //////////////////////////-->
-        	<form name="formad" method="post" id="frm3" action="p2insertEP.php" onsubmit="formsubmit()">  
+        	<form name="formad" method="post" id="frm3" action="p2insertEP.php" onsubmit="formsubmit()">
         	<input type="date" name="user_date" hidden value=<?php echo "\"" . $_POST['user_date'] . "\"";?>/>
         	<input type="time" name="user_time" hidden value=<?php echo "\"" . $_POST['user_time'] . "\"";?>/>
         	<input type="text" name="program" hidden value=<?php echo "\"" . $_POST['program'] . "\"";?> />
@@ -1248,7 +1284,7 @@ if(false){
         <div id="InputSponsor" style="width: 100%; text-align: center; display: none;">
             <table colspan="7" width="1350" valign="top" style="background-color:white;">
                   <tr><!-- Header Definitions for Advertisements -->
-                  	
+                  	<th colspan="7"><span>Category 53 is for sponsored promotion recording only (not friends, they are 51)</span></th></tr><tr>
                        <th width="5%">
                            Type  <input type="button" value="Define" onclick="return popitup('../help/definetype.html')"/>
                        </th>

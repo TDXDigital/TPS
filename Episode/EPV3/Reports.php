@@ -1,12 +1,14 @@
 <?php session_start(); ?>
-<head>
-<link rel="stylesheet" type="text/css" href="/phpstyle.css" />
-<title>Audit Report</title>
-<style>
-	font-size: 5px;
-</style>
-</head>
+
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/phpstyle.css" />
+        <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+        <title>Audit Report</title>
+        <style>
+	        font-size: 5px;
+        </style>
+    </head>
 <body style="background-color:white;">
 <?php
 
