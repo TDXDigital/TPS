@@ -17,7 +17,8 @@ function Query_Device(target,code,hid){
                 $('.HID-'+hid).attr("disabled",false);
                 $('.HID-'+hid).show();
             }
-        }
+        },
+        timeout:500
     });
     if ($(result_status).find('@0TR')==true){
         $('#' + target).html(" Track Changed"+result_status.substring(5,3));
@@ -54,7 +55,8 @@ function Check_Device(target,hid){
         },
         success: function (data) {
             clearInterval(progress);
-        }
+        },
+        timeout:500
     })
 }
 
@@ -64,6 +66,7 @@ function Update_Device_Status(target,hid){
     var temp = "";
     $.ajax({
         url: "EPV3/AJAX/components/hardware_query.php?HID=" + hid + "&CMD=17",
+        timeout:500,
         beforeSend: function () {
             $('#' + target).html("<progress>processing...</progress>");
             $('.' + hid).attr("disabled", true);
@@ -107,7 +110,7 @@ function Update_Device_Status(target,hid){
             temp = data;
         },
         error: function () {
-            $('#' + target).html("An Error Occured, Please verify Piracom is running");
+            $('#' + target).html("An Error Occured, Please verify Piracom is running and device master power is on");
         }
     });
     /*if ($(results).find('@0TR')){
