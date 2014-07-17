@@ -74,7 +74,8 @@ header('location: djhome.php');
     <script src="TPSBIN/JS/Home.js"></script>
 </head>
 <body>
-      <div class="topbar">
+    <div style="position: fixed; top:0; width: 100%; z-index: 100; background-color: #f00; margin-bottom: 10px; text-align: center; color: #fff"><strong>This page is no longer supported, pleases use the new dashboard. <a href="/" style="color: #fbcfcf">click here</a> to go to it</strong></div>
+      <div class="topbar" style="margin-top: 25px;">
            User: <?php echo(strtoupper($_SESSION['fname'])); ?>
            </div>
         <table border="0" align="center" width="1000">
