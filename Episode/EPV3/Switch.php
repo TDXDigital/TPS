@@ -1,5 +1,8 @@
 <?php
 	session_start();
+
+    include_once $_SESSION['BASEREF']."../../TPSBIN/db_connect.php";
+
     $DEBUG=FALSE;
 	$ROOT = addslashes($_GET['q']);
     $BASE = ".";
@@ -33,9 +36,9 @@
         }
     }
     // DO not Need for Now
-	$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
+	//$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 	
-	if (!$con){
+	/*if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
 	}
@@ -44,7 +47,7 @@
 	}
 	else{
 		echo 'ERROR! cannot obtain access... this terminal may not be authorised for access';
-	}
+	}*/
 	$sql = "select * from switchstatus ORDER BY ID DESC limit 1 ";
 	echo "<span style=\"font-size:9px;\">ACS 8.2 Plus Switch Status</span><table>
 	<tr>";
@@ -53,8 +56,8 @@
 	}
 	echo "<th>S</th></tr><tr>";
     //echo "<span style=\"font-size:9px;\">ACS 8.2 Plus Switch Status</span><br><span>";
-	$result = mysql_query($sql);
-	$srr = mysql_fetch_array($result);
+	$result = $mysqli->query($sql);
+	$srr = mysqli_fetch_array($result);
     if(!empty($res[0][0])&&!empty($res[0][1])&&!empty($res[1])){
         // CHECK BANK 1
         if($srr['Bank1']==$res[0][0]){
@@ -162,5 +165,8 @@
     //echo "</span>";
 	echo "</tr>";
 	echo "</table>";
+
+    $mysqli->query("INSERT into switchstatus (Bank1,Bank2,SS,UID) values ('".$bank1."','".$bank2."','".$silence."','0')");
+    $mysqli->close();
 	//echo "<span>Timespamp: ".$srr['timestamp']."</span>";
 ?>

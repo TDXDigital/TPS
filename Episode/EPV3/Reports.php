@@ -279,8 +279,8 @@ else{
                          {
                            if($list['category']=='51'){
                                echo "<tr><td style=\"background-color:#ffff99;\">";
-                               $promptsql="select * from promptlog where EpNum=`".$list['EpNum']."` and (SELECT "
-                               echo $list.
+                               //$promptsql="select * from promptlog where EpNum=`".$list['EpNum']."` and (SELECT ";
+                               //echo $list.
                            }
                            echo "<tr>";
                             echo "<td>";
