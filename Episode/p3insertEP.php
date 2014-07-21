@@ -13,10 +13,13 @@ else{
 	echo 'ERROR! cannot obtain access... this terminal may not be authorised for access';
 }
 
-        $INSENDQU = "update episode set endtime='" . addslashes($_POST['end']) . "', totalspokentime='". addslashes($_POST['spoken'])."' WHERE callsign='".addslashes($_POST['callsign'])."' and programname='".addslashes($_POST['program'])."' and date='".addslashes($_POST['user_date'])."' ";
+        $INSENDQU = "update episode set endtime='" . addslashes($_POST['end']) . "', totalspokentime='". addslashes($_POST['spoken'])."', IP_Finalized='".$_SERVER['REMOTE_ADDR']."',EndStamp=NOW() WHERE callsign='".addslashes($_POST['callsign'])."' and programname='".addslashes($_POST['program'])."' and date='".addslashes($_POST['user_date'])."' ";
 
         if(!mysql_query($INSENDQU,$con)){
-            echo "Error Updating End Time";
+            echo "Error Finalizing Episode<br>".mysql_error();
+        }
+        else{
+
         }
         $PROGRAMQUERY = "select * from episode where callsign='". addslashes($_POST['callsign'])."' and programname='" . addslashes($_POST['program']) . "' and date='". addslashes($_POST['user_date'])."' and starttime='".addslashes($_POST['user_time'])."'";
         $PROGRAMDATA = mysql_query($PROGRAMQUERY);

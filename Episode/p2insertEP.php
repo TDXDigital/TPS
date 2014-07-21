@@ -65,7 +65,7 @@ else{
 		//echo $_POST['title'];
         if(mysql_numrows($RESEPSEL)=="0"){
         	if($_POST['brType']>0){
-        		$inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '$DESCRIPTION' )";
+        		$inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description, IP_Created) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '$DESCRIPTION','".$_SERVER['REMOTE_ADDR']."' )";
         	}
 		  else if(!isset($_POST['enprerec']))
           {

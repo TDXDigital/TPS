@@ -1,6 +1,6 @@
 <?php
     include_once "../../TPSBIN/functions.php";
-    include_once "../../TPSBIN/db_connect.php";
+    //include_once "../../TPSBIN/db_connect.php";
     sec_session_start();
     //session_start();
 
@@ -36,7 +36,7 @@ else if($con){
 	<script type="text/javascript">
 	
 	</script>
-    <script src="../../js/jquery/js/jquery-2.0.3.min.js"></script>
+    <script src="../../js/jquery/js/jquery-2.1.1.min.js"></script>
     <script src="../../js/chosen.jquery.js"></script>
     <script src="../../TPSBIN/JS/Episode/Create.js"></script>
     <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />

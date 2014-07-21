@@ -104,7 +104,7 @@
                     foreach ( $result as $episode ){
                         echo "<br><br><span style='width:100%; text-align:center;'>RAW DATA</span><br>";
                         echo "<table><thead>
-                        <th>callsign</th><th>pgm</th><th>date</th><th>st_time</th><th>end_time</th><th>prerec</th><th>ttl_spkn</th><th>desc</th><th>Lock</th><th>Type</th><th>EPN</th><th>Guests</th><th>ENDStamp</th><th>LastAccess</th><th>score</th><th>Rvd_Date</th><th>genre</th><th>CC_R</th><th>PL_R</th><th>CCP_R</th><th>PLP_R</th><th>G-UID</th><th>PlType</th><th>CcType</th><th>gcall</th></tr>
+                        <th>callsign</th><th>pgm</th><th>date</th><th>st_time</th><th>end_time</th><th>prerec</th><th>ttl_spkn</th><th>desc</th><th>Lock</th><th>Type</th><th>EPN</th><th>Guests</th><th>ENDStamp</th><th>LastAccess</th><th>score</th><th>Rvd_Date</th><th>creation Timestamp</th><th>IP_Created</th><th>IP_last_access</th><th>IP_Finalized</th><th>genre</th><th>CC_R</th><th>PL_R</th><th>CCP_R</th><th>PLP_R</th><th>G-UID</th><th>PlType</th><th>CcType</th><th>gcall</th></tr>
                         </thead><tbody>
                         ";
                         foreach ($episode as $p)
