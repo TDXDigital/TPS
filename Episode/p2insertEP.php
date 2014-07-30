@@ -817,7 +817,10 @@ if(false){
                 $BOOTH = 0;
                 while($Equipment_row = mysql_fetch_array($Equipment_List)){
                     if($Equipment_row['ipv4_address']==$_SERVER['REMOTE_ADDR'] || $_SESSION['access']==2){
-
+                        /*echo "<script>
+                        setInterval(function(){
+                            Query_Device('RES".$Equipment_row['hardwareid']."','8','".$Equipment_row['hardwareid']."');
+                            },'".$Equipment_row['hardwareid']."0000');</script>";*/
                         echo "<hr><div id=\"toolbar".$Equipment_row['hardwareid']."\"  style=\"color: white; background:#000; width:100%; display:block\">
                         <span >".strtoupper($Equipment_row['Manufacturer'])." ".$Equipment_row['device_code']." - ".$Equipment_row['friendly_name']."</span><span style='width:100%'>&nbsp</span>
                         <span id='RES".$Equipment_row['hardwareid']."' style=\"color: white; background: #7690a3; width:100%; text-align: center; background-color: #7690a3;\">&nbsp;- DENON - </span>
