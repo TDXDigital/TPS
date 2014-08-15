@@ -1,215 +1,80 @@
 <?php
-      session_start();
-
-function getBrowser()
-     {
-         $u_agent = $_SERVER['HTTP_USER_AGENT'];
-		 $broswer = get_browser(null, true);
-         $ub = '';
-         if(preg_match('/MSIE/i',$u_agent))
-         {
-             $ub = "Internet Explorer";
-         }
-         else if(preg_match('/Mozilla/i',$u_agent))
-         {
-             $ub = "Mozilla";
-         }
-         else if(preg_match('/Safari/i',$u_agent))
-         {
-             $ub = "Apple Safari";
-         }
-         else if(preg_match('/Chrome/i',$u_agent))
-         {
-             $ub = "Google Chrome";
-         }
-         else if(preg_match('/Flock/i',$u_agent))
-          {
-             $ub = "Flock";
-         }
-         else if(preg_match('/Opera/i',$u_agent))
-         {
-             $ub = "Opera";
-         }
-         else if(preg_match('/Netscape/i',$u_agent))
-         {
-             $ub = "Netscape";
-         }
-		 else{
-		 	$ub = "Undefined";
-		 }
-         return $ub;
-     }
-
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
-if (!$con){
-	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
-	}
-else if($con){
-	if(!mysql_select_db("CKXU")){header('Location: Security/login.php');} // or die("<h1>Error ".mysql_errno() ."</h1><br />check access (privileges) to the SQL server db CKXU for this user <br /><br /><hr />Error details:<br />" .mysql_error() . "<br /><br /><a href=login.php>Return</a>");
-}
-else{
-	echo 'ERROR!';
-}
-
-/*if($_SESSION['usr']=='user')
-{
-  header('location: episode/p1insertEP.php');
-}*/
+    if(!isset($_SESSION)){
+        sec_session_start();
+    }
+    include_once "TPSBIN/functions.php";
+    include_once "TPSBIN/db_connect.php";
+    if(isset($_GET)){
+        if(isset($_GET['old'])){
+            header("location: p1advins.php");
+        }
+        else if(isset($_GET['q'])){
+            $PAGE = urldecode($_GET['q']);
+        }
+        else{
+            $PAGE = 'undefined';
+        }
+    }
 ?>
-<!DOCTYPE HTML>
-<html>
-<head>
-<link rel="stylesheet" type="text/css" href="phpstyle.css" />
-<meta http-equiv="refresh" content="600;url=/" />
-<title>DPL User</title>
-</head>
-<body>
-      <div class="topbar">
-           User: <?php echo(strtoupper($_SESSION['fname'])); ?>
-           </div>
-        <table border="0" style="text-align:center; width: 1000px;">
-        <tr><td style="width:1000px" colspan="4">
-           <img src="images/Ckxu_logo_PNG.png" alt="ckxu login"/>
-        </td></tr>
-        <tr><td colspan="2" style="background-color:white; width:1000px">
-	<h2>Main Page</h2>
-	<p>
-	<?php
-		echo "Welcome, " . strtoupper($_SESSION['account']);
-	?>
-	</p></td></tr>
-	<?php
-             //echo $_SERVER['HTTP_USER_AGENT'] . "\n\n";
-             $br = strtolower($_SERVER['HTTP_USER_AGENT']); // what browser they use.
-            //echo $br;
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="<?php echo $_SESSION['BASE_REF'];?>/favicon.ico">
 
-            if(ereg("opera", $br)) {
-              //echo 'Browser Supported';
-            //    header("location: originalhomepage.php");
-            echo "<!-- This browser has been verified to contain FULL SUPPORT for this page -->";
-            	$ACCnew = FALSE;
-				$ACCold = TRUE;
-            }
-			else if (ereg("chrome", $br)) {
-				$ACCnew = FALSE;
-				$ACCold = TRUE;
-			}
-			else if (getBrowser()=="Mozilla"){//ereg("Mozilla", $br)){
-				$ACCnew = FALSE;
-				$ACCold = TRUE;
-			}
-			else if (ereg("Apple Safari", $br)){
-				$ACCnew = TRUE;
-				$ACCold = FALSE;
-			}
-			else if (getBrowser()=="Internet Explorer"){
-				$ACCnew = TRUE;
-				$ACCold = FALSE;
-			}
-			 // following block access revoked at Program Directors Request
-            /*else if(ereg("chrome", $br)) {
-              echo "<!-- This browser has been verified to contain PARTIAL SUPPORT for this page -->";
-            }*/
-            else if(getBrowser()=="Mozilla") {
-              echo "<!-- This browser has been verified to contain PARTIAL SUPPORT for this page -->";
-				$ACCnew = TRUE;
-				$ACCold = FALSE;
-            }
-            else {
-              // header('Location: /browserUnsupported.php');
-              //  header("location: alteredhomepage.php");
-            }
-        ?></table>
-	<table border="0" style="background-color:white; width: 1000px;">
-        <tr><td colspan="100%"><?php
-        	/*try{
-        		include "TPSBIN/XML/Emergency.php";
-        	}
-        	catch (Exception $e){
-        		echo "<span>Error getting Emergency Alert</span>";
-        	}*/
-        ?></td></tr>
-	<tr><td colspan="4" style="width: 1000px">
-        <h2>Program Logs</h2>
-        <?php
-        	if($ACCold != TRUE){
-        		 echo " <!-- ";
-				//header("location:/Episode/EPV3/logs.php?b=$br");
-        	}
-        ?>
-        <!--<h3>(Version 0.2)</h3><span style="font-size: 9px"><i>works with: Opera</i></span>-->
-        </td></tr>
-        <tr style="height:50px; vertical-align: middle">
-                  <td style="width: 450px">
-	            <button onclick="window.location.href='Episode/EPV2/p1insert.php'" <?php
-	            	if($ACCold != TRUE){
-	            		 echo " disabled ";
-	            	}
-	            ?>value="New Program Log">New Program Log</button>
-	     </td><td style="width: 450px">
-	            <button onclick="window.location.href='Episode/p1update.php'"<?php
-	            	if($ACCold != TRUE){
-	            		 echo " disabled ";
-	            	}
-	            ?> value="View Program Log">Retrieve Program Log</button>
-	     </td><td style="width: 450px">
-	            
-	     </td></tr>
-	 	<?php
-	    if($ACCold != TRUE){
-	    	echo " --> ";
-	    }
-		?>
-	 <tr><td colspan="4" style="width:1000px">
-     <h3>(Version 0.3)</h3><span style="font-size: 9px"><i>works with: IE, Safari, Firefox, Chrome</i></span>
-        </td></tr>
-        <tr style="height: 50px; vertical-align: middle;">
-                  <td style="width:450px">
-	            <!--<a href="Episode/p1insertep.php">New Program Log</a>-->
-	            <button onclick="window.location.href='/Episode/EPV3/logs.php?ref=1'" <?php
-	            	if($ACCnew != TRUE){
-	            		 echo " disabled ";
-	            	}
-	            ?> value="New Program Log">Digital Program Logs</button>
-	     </td></tr>
-    <tr><td colspan="4">
-        <hr /><h2>Account Maintenance</h2>
-        </td></tr><tr style="height: 50px; vertical-align: middle">
-               <td><button onclick='window.location.href="dj/p1viewdj.php"' value="Update Account" disabled>Update Account</button></td>
-        </tr>
-	<tr><td colspan="4">
-        <hr /><h2>Program Maintenance</h2>
-        </td></tr>
-              <tr style="height: 50px; vertical-align: middle">
-	            <td><button onclick='window.location.href="program/p1view.php"' value="View Program" disabled>Update Program</button></td>
-             </tr>
-        <!--<tr><td colspan="4">
-        <hr />  <h2>Reports</h2>
-        </td></tr>
-             <tr height="50" valign="middle">
-                    <td width="200"><a href="/PlayRep.php">Playlist Report</a></td>
-                    <td width="200"><a href="/Top15Rep.php">Top 15 Report</a></td> 
-                    <td><button onclick='window.location.href="/Episode/p1Audit.php"' value="Audit">Audit</button></td>
-                    <td><button onclick='window.location.href="Reports/PlaylistRep.php"' value="Audit">Charts</button></td>
-             </tr>-->
-             <tr>
-             <td colspan="4" style="height: 20px">
-             <hr/>
-             </td>
-             </tr>
-             <tr>
-             <td>
-             <form name="logout" action="logout.php" method="POST">
-                   <input type="submit" value="Logout">
-             </form>
-             </td>
-             <td colspan=""></td>
-             <td style="text-align:right;">
-             	<span>Version 0.3.205 </span>
-        <img src="images/mysqls.png" alt="MySQL Powered"> 
-        </td></tr>
-        </table>
-        </table>
-</body>
-</html>
+    <title>TPS Dashboard</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="<?php echo $_SESSION['BASE_REF'];?>/js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="<?php echo $_SESSION['BASE_REF'];?>/js/bootstrap/css/dashboard.css" rel="stylesheet">
+    <!--<link href="js/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">-->
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  <style id="holderjs-style" type="text/css"></style></head>
+
+  <body>
+    <?php include "TPSBIN/bs_menu.php";?>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li <?php if($PAGE=="new"){echo "class='active' ";}?>><a href="?q=new">New Playsheet   (Log)</a></li>
+            <li <?php if($PAGE=="load"){echo "class='active' ";}?>><a href="?q=load">Load Playsheet   (Log)</a></li>
+            <!--<li <?php if($PAGE=="contact"){echo "class='active' ";}?>><a href="?q=t_songs">Contacts</a></li>-->
+            <!--<li <?php if($PAGE=="settings"){echo "class='active' ";}?>><a href="?q=settings">Settings</a></li>-->
+            <!--<li <?php if($PAGE=="requests"){echo "class='active' ";}?>><a href="?q=requests"></a></li>-->
+            <!--<li><a href="#">Export</a></li>-->
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href="logout.php">Logout</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <!--<h1 class="page-header">Automation Control</h1>-->
+            <?php include_once("TPSBIN/CORE/user.core.php");?>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="<?php echo $_SESSION['BASE_REF'];?>/js/bootstrap/js/bootstrap.min.js"></script>
+    <!--<script src="../../assets/js/docs.min.js"></script>-->
+  
+
+</body></html>
