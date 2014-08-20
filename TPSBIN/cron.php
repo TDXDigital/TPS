@@ -106,7 +106,7 @@
                 $info[0] = stream_get_meta_data($fp);
                 $out = "*0SS";
                 fwrite($fp, $out);
-                stream_set_timeout($fp,2,0);
+                stream_set_timeout($fp,0,500);
                   $res[1] = fread($fp, 8192);
                 $info[1] = stream_get_meta_data($fp);
                 fclose($fp);

@@ -69,13 +69,12 @@ else{
         	}
 		  else if(!isset($_POST['enprerec']))
           {
-            $inep = "insert into episode (callsign, programname, date, starttime, description) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '$DESCRIPTION' )";
+            $inep = "insert into episode (callsign, programname, date, starttime, description, IP_Created) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '$DESCRIPTION','".$_SERVER['REMOTE_ADDR']."' )";
             
           }
           else
           {
-
-            $inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '$DESCRIPTION' )";
+            $inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description, IP_Created) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '$DESCRIPTION','".$_SERVER['REMOTE_ADDR']."' )";
           }
             if(!mysql_query($inep,$con))
             {

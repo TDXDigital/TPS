@@ -26,7 +26,7 @@
         else{
             //include_once "station/user.php";
             //include_once "djhome.php";
-            include_once "station/user.php";
+            include_once "station/user_old.php";
             //header("djhome.php");
         }
     }

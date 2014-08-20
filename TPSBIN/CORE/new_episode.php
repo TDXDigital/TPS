@@ -1,9 +1,9 @@
-<div class="jumbotron">
+<!--<div class="jumbotron">
     <div class="container">
         <h1>New Episode</h1>
     </div>
     
-</div>
+</div>-->
 <?php
     $base = $_SESSION['BASE_REF'];
     $logo = $_SESSION['m_logo']?: $_SESSION['logo'];
@@ -46,45 +46,70 @@ if($opened_db===TRUE){
 ?>
 <form method="post" action="Episode/p2insertEP.php">
     <div class="container">
-        <div class="row">
-            <div class="col-md-3">
-                <h2>Program</h2>
-                <select required name="program"><option>Select Your Show [REQUIRED]</option>
-                    <?php
-                        //while($program->)
-                        foreach ($program as $row){
-                            print("<option value='".$row['programname']."'>".$row['programname']."</option>");
-                        }
-                    ?>
-                </select>
-                <input type="hidden" name="callsign" value="CKXU"><!--should not be defaulted-->
-            </div>
-            <div class="col-md-3">
-                <h2>Broadcast Type</h2>
-                <select required name="brType">
-                    <option value="0">Live to Air</option>
-                    <option value="1">Pre-Record</option>
-                    <option value="2">Timeless</option>
-                </select>
-                <input type="hidden" value="CKXU"><!--should not be defaulted-->
-            </div>
-            <div class="col-md-2">
-                <h2>Record Date</h2>
-                <input name="prdate" type="date"><!--should not be defaulted-->
-            </div>
-            <div class="col-md-2">
-                <h2>Air Date</h2>
-                <input name="user_date" type="date"><!--should not be defaulted-->
-            </div>
-            <div class="col-md-2">
-                <h2>Air Time</h2>
-                <input name="user_time" type="time"><!--should not be defaulted-->
-            </div>
-            <div class="col-md-6">
-                <h2>Comment</h2>
-                <input name="Description" type="text" maxlength="90"><!--should not be defaulted-->
-            </div>
+    <div class="row">
+        <!--<div class="col-sm-4">
+            <h4>Program</h4>
         </div>
+        <div class="col-sm-2">
+            <h4>Broadcast Type</h4>
+        </div>
+        <div class="col-sm-2">
+            <h4>Record Date</h4>
+        </div>
+        <div class="col-sm-2">
+            <h4>Air Date</h4>
+        </div>
+        <div class="col-sm-2">
+            <h4>Air Time</h4>
+        </div>
+        <div class="col-sm-6">
+            <h4>Comment</h4>
+        </div>
+        <br>-->
+    <!-- INPUTS -->
+        <div class="col-sm-4">
+            <h4>Program</h4>
+            <select required name="program"><option>Select Your Show [REQUIRED]</option>
+                <?php
+                    //while($program->)
+                    foreach ($program as $row){
+                        print("<option value='".$row['programname']."'>".$row['programname']."</option>");
+                    }
+                ?>
+            </select>
+            <input type="hidden" name="callsign" value="CKXU"><!--should not be defaulted-->
+        </div>
+        <div class="col-sm-2">
+            <h4>Broadcast Type</h4>
+            <select required name="brType">
+                <option value="0">Live to Air</option>
+                <option value="1">Pre-Record</option>
+                <option value="2">Timeless</option>
+            </select>
+            <input type="hidden" value="CKXU"><!--should not be defaulted-->
+        </div>
+        <!--<div class="clearfix visible-xs"></div>-->
+        <div class="col-sm-2">
+            <h4>Record Date</h4>
+            <input name="prdate" type="date"><!--should not be defaulted-->
+        </div>
+        <div class="col-sm-2">
+            <h4>Air Date</h4>
+            <input name="user_date" type="date"><!--should not be defaulted-->
+        </div>
+        <div class="col-sm-2">
+            <h4>Air Time</h4>
+            <input name="user_time" type="time"><!--should not be defaulted-->
+        </div>
+        <div class="clearfix visible-sm"></div>
+        <div class="col-sm-6">
+            <h4>Comment</h4>
+            <input name="Description" type="text" maxlength="90"><!--should not be defaulted-->
+        </div>
+    </div>
+    <div class="alert alert-info">
+        <input type="submit"/>
+    </div>
 </div>
 </form>
 <footer>
