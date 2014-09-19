@@ -185,6 +185,7 @@ else{
 								}*/
 									// SET FLAG IF NOT AVAILABLE
 		              			$result_Flag = mysql_query("select Playcount from adverts where AdId='" . addslashes($_POST['AdNum']) . "' and Category='51'");
+                                //$result_AdType = mysql_query("select Playcount from adverts where AdId='" . addslashes($_POST['AdNum']) . "' and Category='51'");
 		              			$FlCheck = mysql_fetch_array($result_Flag);
 								//echo $FlCheck['Playcount'];
 								$Sel51Flag = $minplaysql51 = "select MIN(Playcount) from adverts where Category='51' and Active='1' and Friend='1' ";
@@ -802,8 +803,7 @@ if(false){
     <div id="hdw_prompt" style="margin: 0 auto 0 auto; width: 1354px; background-color: #000; color: white; display:none;"><button onclick="ShowHardware()" title="Show"><span class="ui-icon ui-icon-carat-1-s"></span></button><span>Hardware Control</span></div>
     <div id="hdw" style="margin: 0 auto 0 auto; width: 1354px; background-color: #000; color: white">
         <?php
-            if(TRUE){//implement system variable to determine if shown (stored in station)
-                echo "<span id=\"HDW_title_open\"><button onclick=\"HideHardware()\" title=\"Hide\"><span class=\"ui-icon ui-icon-carat-1-n\"></span></button><span>Hardware Control</span></span>";
+            if(FALSE){//implement system variable to determine if shown (stored in station)
                 if($_SESSION['access']==2){
                     $Hardware_Query="SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='".$EPINFO['callsign']."' and in_service='1' and ipv4_address IS NOT NULL group by hardware.hardwareid order by friendly_name ASC";
                 }
@@ -814,13 +814,17 @@ if(false){
                     error_log("Encountered Error: p2indexEP.php, Query HArdware_Query returned invalid result: ".mysql_error());
                 }
                 $BOOTH = 0;
+                $hardware_number=0;
+                $hardware_buffer="<span id=\"HDW_title_open\"><button onclick=\"HideHardware()\" title=\"Hide\"><span class=\"ui-icon ui-icon-carat-1-n\"></span></button><span>Hardware Control</span></span>";
+
                 while($Equipment_row = mysql_fetch_array($Equipment_List)){
                     if($Equipment_row['ipv4_address']==$_SERVER['REMOTE_ADDR'] || $_SESSION['access']==2){
+                        $hardware_number++;
                         /*echo "<script>
                         setInterval(function(){
                             Query_Device('RES".$Equipment_row['hardwareid']."','8','".$Equipment_row['hardwareid']."');
                             },'".$Equipment_row['hardwareid']."0000');</script>";*/
-                        echo "<hr><div id=\"toolbar".$Equipment_row['hardwareid']."\"  style=\"color: white; background:#000; width:100%; display:block\">
+                        $hardware_buffer += "<hr><div id=\"toolbar".$Equipment_row['hardwareid']."\"  style=\"color: white; background:#000; width:100%; display:block\">
                         <span >".strtoupper($Equipment_row['Manufacturer'])." ".$Equipment_row['device_code']." - ".$Equipment_row['friendly_name']."</span><span style='width:100%'>&nbsp</span>
                         <span id='RES".$Equipment_row['hardwareid']."' style=\"color: white; background: #7690a3; width:100%; text-align: center; background-color: #7690a3;\">&nbsp;- DENON - </span>
                         <span id='RES".$Equipment_row['hardwareid']."-timer' style=\"color: white; background: #7690a3; width:100%; text-align: center; background-color: #7690a3;\"></span><br>
@@ -843,40 +847,40 @@ if(false){
         ?>
     </div>
         <table style="background-color:white; width:1350px;">
-        <tr><th width="8%">
+        <tr><th style="width:8%">
         Air Date
-        </th><th width="6%">
+        </th><th style="width:6%">
         Air Time
-        </th><th width="14%">
+        </th><th style="width:14%">
         Program
-        </th><th width="7%">
+        </th><th style="width:7%">
         Station
-        </th><th width="58%">
+        </th><th style="width:58%">
         Description
-        </th><th width="8%">
+        </th><th style="width:8%">
         Pre-Record
-        </th><th width="5%">
+        </th><th style="width:5%">
 
         </th>
         </tr>
         
-        <tr><td valign="top">
+        <tr><td style="vertical-align:top">
 
 	    
 	    <?php echo $EPINFO['date']; ?>
-        </td><td valign="top">
+        </td><td style="vertical-align:top">
 	    
 	    <?php echo $EPINFO['starttime']; ?>
-        </td><td valign="top">
+        </td><td style="vertical-align:top">
              
              <?php echo $EPINFO['programname'];?>
-        </td><td valign="top">
+        </td><td style="vertical-align:top">
              
              <?php echo $EPINFO['callsign'];?>
-        </td><td valign="top">
+        </td><td style="vertical-align:top">
              
              <?php echo $EPINFO['description']; ?>
-        </td><td valign="top">
+        </td><td style="vertical-align:top">
 	    <?php 
 	     	
 	     	//chec if not enabled
@@ -932,7 +936,7 @@ if(false){
 					else if(!isset($SPONS)){
 						while($PdAds=mysql_fetch_array($READS)){
 							if($PdAds['Limit'] == NULL || $PdAds['Playcount'] < $PdAds['Limit']){
-								// Check BlockLimit
+								// Check BlockLimit (BLIM)
 								$CHECKBLIM = "SELECT count(song.songid) FROM adrotation,song WHERE adrotation.AdId='".$PdAds['AdId']."' AND song.title='".$PdAds['AdName']."' and song.date='".$EPINFO['date']."' and song.time BETWEEN '".$PdAds['startTime']."' AND '".$PdAds['endTime']."' ";
 								$BL_lim_R = mysql_query($CHECKBLIM);
 								$BL_lim = mysql_fetch_array($BL_lim_R);
@@ -946,6 +950,7 @@ if(false){
                                     $SQL_PL_AD = "INSERT INTO promptlog (EpNum,AdNum) VALUES (".$EPINFO['EpNum'].",".$PdAds['AdId'].")";
                                     if(!mysql_query($SQL_PL_AD)){
                                         echo "<!-- ERROR: " . mysql_error() . "-->";
+                                        error_log("TPS Error; Line 951: Could not perform SQL Query - ".mysql_error());
                                     }
                                     else{
                                         echo "<!-- Inserted into Log -->";
@@ -985,7 +990,7 @@ if(false){
 
 				// Friends Ads
 				if(sizeof($RQADSIDS) > 0 && !isset($SPONS)){
-					$ADOPT .= "<option>Paid Ad Required [".sizeof($RQADSIDS)."]</option>";
+					$ADOPT .= "<option>Paid Ad Required this hour [".sizeof($RQADSIDS)."]</option>";
 				}
 				else
 				{
@@ -1027,6 +1032,7 @@ if(false){
 			<td colspan="2">
 				<select name="rqAds">
 				<?php
+        if(sizeof($RQADSIDS)>0){
 				if($REQAD!=""&&!isset($SPONS)){
 					echo $REQAD;
 				}
@@ -1036,6 +1042,10 @@ if(false){
 				else{
 					echo "<option>No Required Ads [E3]</option>";
 				}
+        }
+        else{
+            echo "<option>No Required Ads</option>";
+        }
 				?>
 				</select>
 			</td>
@@ -1097,13 +1107,13 @@ if(false){
         	  
         	   <!-- //// END FORM DEFINITION //// --> 
         <div id="InputAdvert" style="width: 100%; text-align: center; display: none;">
-            <table colspan="7" width="1350" valign="top" style="background-color:white;">
+            <table style="width: 1350px; vertical-align: top; background-color:white;">
                   <tr><!-- Header Definitions for Advertisements -->
                   	
-                       <th width="5%">
+                       <th style="width:5%">
                            Type  <input type="button" value="Define" onclick="return popitup('../help/definetype.html')"/>
                        </th>
-                       <th width="5%" id="Adnumer">
+                       <th style="width:5%" id="Adnumer">
                            Identifier
                        </th>
                        <th id="Adtime">
@@ -1209,17 +1219,19 @@ if(false){
                                         $AVAIL=FALSE;
                                         $REQUIRE=FALSE;
 										$TEMP = "<option value=\"" . $ADZL['AdId'] . "\" ";
-										if(in_array($ADZL['AdId'], $ADIDS)){
+										if(in_array((int)$ADZL['AdId'], $ADIDS)){
                                             $AVAIL = TRUE;
 											$TEMP .= " style=\"background-color:green; color:white\" ";
 										}
-										else if(in_array($ADZL['AdId'], $RQADSIDS)){
+										else if((int)in_array($ADZL['AdId'], $RQADSIDS)){
                                             $REQUIRE = TRUE;
 											$TEMP .= " style=\"background-color:blue; color:white\" ";
 										}
 										$TEMP .= " >". $ADZL['AdName'] ."</option>";
+
                                         if($REQUIRE){
                                             array_push($ADGR_REQUI,$TEMP);
+                                            echo "<!-- Entered Require -->";
                                         }
                                         elseif($AVAIL){
                                             array_push($ADGR_AVAIL,$TEMP);
@@ -1231,7 +1243,14 @@ if(false){
 								}
                             echo "<optgroup label='Required Advertisements";
                                 if(empty($ADGR_REQUI)){
-                                    echo " (None)'>";
+                                    if(sizeof($ADGR_REQUI)<sizeof($RQADSIDS)){
+                                        echo " (DIFF-OVERRIDE) [".sizeof($ADGR_REQUI)."/".sizeof($RQADSIDS)."]'>";
+                                        echo $REQAD;
+                                        error_log("TPS Error, Could not account for required Adverts, possible code error values ".var_dump($RQADSIDS)." ");
+                                    }
+                                    else{
+                                        echo " (None) [".sizeof($ADGR_REQUI)."/".sizeof($RQADSIDS)."]'>";
+                                    }
                                 }
                                 else{
                                     echo "'>";
