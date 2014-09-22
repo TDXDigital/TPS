@@ -328,7 +328,7 @@ else{
 		
 		//COUNT PSA
 		$SQLCOUNTPROMO = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . addslashes($_POST['program']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category='45'";
-		$SQLCOUNTPSA = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . addslashes($_POST['program']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category like '1%' and title like '%PSA%' ";
+		$SQLCOUNTPSA = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . addslashes($_POST['program']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category like '1%' and (title like '%PSA%' or Artist like 'Station PSA')";
 		//$SQLCOUNTPSA = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . addslashes($_POST['program']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category like '1%' and title like '%Promo%' ";
 		$resultPSA = mysql_query($SQLCOUNTPSA);
 		$resultPROMO = mysql_query($SQLCOUNTPROMO);
@@ -389,16 +389,27 @@ else{
      }
      // EPV3/Switch.php
      function Display_Switch() {
-         var switch_s = $.ajax({
-             url: "EPV3/Switch.php?q=V2",
-             cache: false
-         });
-         switch_s.done(function (msg) {
-             $("#switch_status").html(msg);
-         });
-         switch_s.fail(function (jqXHR, textStatus) {
-             $("#switch_status").html("Request failed: " + textStatus);
-         });
+        if(typeof(Worker) !== "undefined") {
+            if(typeof(switch_worker) == "undefined") {
+                switch_worker = new Worker("../TPSBIN/JS/Episode/switch_worker.js");
+            }
+            switch_worker.onmessage = function(event) {
+                //document.getElementById("result").innerHTML = event.data;
+                $("#switch_status").html(event.data);
+            };
+        } else {
+            // Sorry! No Web Worker support..
+             var switch_s = $.ajax({
+                 url: "EPV3/Switch.php?q=V2",
+                 cache: false
+             });
+             switch_s.done(function (msg) {
+                 $("#switch_status").html(msg);
+             });
+             switch_s.fail(function (jqXHR, textStatus) {
+                 $("#switch_status").html("Request failed: " + textStatus);
+             });
+        }
      }
 
 

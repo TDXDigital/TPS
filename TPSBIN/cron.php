@@ -106,7 +106,7 @@
                 $info[0] = stream_get_meta_data($fp);
                 $out = "*0SS";
                 fwrite($fp, $out);
-                stream_set_timeout($fp,0,500);
+                stream_set_timeout($fp,2,0);
                   $res[1] = fread($fp, 8192);
                 $info[1] = stream_get_meta_data($fp);
                 fclose($fp);
@@ -115,6 +115,11 @@
                     $output .= 'Connection timed out!';
                 } else {
                     //echo $res[0].$res[1];
+                    if(isset($DEBUG)){
+                        if($DEBUG==TRUE){
+                            echo var_dump($res[0])." -- ".var_dump($res[1]);
+                        }
+                    }
                 }
             }
 	        $sql = "select * from switchstatus ORDER BY ID DESC limit 1 ";
@@ -126,7 +131,7 @@
 	        $output .= "<th>S</th></tr><tr>";
 	        $result = $mysqli->query($sql);
 	        $srr = mysqli_fetch_array($result);
-            if(!empty($res[0][0])&&!empty($res[0][1])&&!empty($res[1])){
+            if(!empty($res[0][0])&&!empty($res[0][1])){
                 // CHECK BANK 1
                 if($srr['Bank1']==$res[0][0]){
                     $bank1=$srr['Bank1'];
@@ -171,7 +176,7 @@
                 }
             }
             else{
-        
+
             }
 	        $track = 0;
             $title = 1;
