@@ -223,3 +223,10 @@ text-decoration:none;
 color:#CCCCCC;
 }
 
+.striped tr:nth-child(even) {
+    background-color: #E1FFFF;
+}
+
+.striped tr:nth-child(odd) {
+    background-color: #FFFFFF;
+}

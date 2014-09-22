@@ -607,7 +607,7 @@ if(false){
            User: <?php echo(strtoupper($_SESSION['usr'])); ?>
            </div>-->
 
-        <table border="0" align="center" width="1354">
+        <table border="0" style="text-align:center; width:1350px;">
         <tr><td colspan="6">
            <img src="../<?php echo $_SESSION['logo']; ?>" alt="ckxu" height="90px"/>
         </td>
@@ -695,7 +695,6 @@ if(false){
     }
     echo "</td><td width=\"300px\"";
     //---------------------------------//
-    //---------< UPDATED CODE >--------//
     //-----------< PLAYLIST >----------//
     //---------------------------------//
 	if($Requirements['PlType']=='0'){
@@ -725,22 +724,7 @@ if(false){
             if($DEBUG){
                 echo "[".$PER_PL['Count']."/".$PER_PL['Total']."]";
             }
-        }/*
-	    if($RECCC>=$CC){
-	 	    echo "style=\"background-color:".$SETTINGS['ST_ColorPass'].";\">";
-	    }
-	    else{
-		    echo "style=\"background-color:".$SETTINGS['ST_ColorFail'].";\">";
-	    }
-		    echo "Canadian Content Required:  <strong>" . $RECCC . "/" . $CC . "</strong>";
-	    echo "</td><td width=\"300px\"";
-	 
-	    if($RECPL>=$PL){
-	 	    echo "style=\"background-color:".$SETTINGS['ST_ColorPass'].";\">";
-	    }
-	    else{
-		    echo "style=\"background-color:".$SETTINGS['ST_ColorFail'].";\">";
-	    }*/
+        }
 	}
     else{
 	    // NUMERICAL REPRESENTATION
@@ -753,17 +737,9 @@ if(false){
 		echo "Playlist Required:  <strong>" . $RECPL. "/" . $PL . "</strong>";
     }
 	echo "</td></tr>";
+             /*
              $br = strtolower($_SERVER['HTTP_USER_AGENT']); // what browser they use.
-
-            if(ereg("opera", $br)) {
-            }
-            else if(ereg("chrome", $br)) {
-              /*echo "<tr><td>
-              <h3 width=\"100%\" style=\"background-color:yellow; color:black;\"><strong>WARNING: This browser does not support the needed HTML5 forms on Windows<br />
-              please launch or download opera that supports these required forms. This does not apply to MAC OS</strong></h3>
-              </td></tr>";*/
-            }
-            else if(ereg("safari", $br)) {
+            if(ereg("safari", $br)) {
               echo "<tr><td>
               <h3 width=\"100%\" style=\"background-color:yellow; color:black;\"><strong>WARNING: This browser does not support the needed HTML5 forms on Windows<br />
               please launch or download opera that supports these required forms. This does not apply to MAC OS</strong></h3>
@@ -775,13 +751,17 @@ if(false){
               please launch or download opera that supports these required forms</strong></h3>
               </td></tr>";
             }
+            */
 			
-			$SOCANC = "select * from socan where Enabled='1' and '" . addslashes($_POST['user_date']) ."' between start and end";
+			$SOCANC = "select Statement from socan where Enabled='1' and '" . addslashes($_POST['user_date']) ."' between start and end";
 			$SOCANA = mysql_query($SOCANC);
 			if(mysql_num_rows($SOCANA)>0){
-				echo "<tr style=\"background-color:red; height:30px; color:white;\"><th colspan=\"100%\">
-				NOTICE: An audit is in effect at this station. Accurate reporting is vital at this time, extra information may be required. See your program director for more information
-				</th></tr>";
+                while($audit_entity=mysql_fetch_array($SOCANA)){
+				    echo "<tr style=\"background-color:red; height:30px; color:white;\"><th style=\"text-align:center; font-size: 110%; font-familt:Verdana;\" colspan=\"100%\">";
+				    echo $audit_entity['Statement'];
+				    echo "</th></tr>";
+                }
+                //echo "<tr style=\"background-color:red; height:30px; color:white;\"><th colspan=\"100%\">";
 			}
 			if(sizeof($error) > 0){
 				echo "<tr style=\"background-color:black; color:red;\"><th colspan=\"100%\">Errors</th></tr><tr>";
@@ -911,7 +891,7 @@ if(false){
 				<span title="NON OPTIONAL paid ads">Required Commercials This Hour</span>
 			</td>
 			<td colspan="2" style="color:orange;">
-				<span title="Available Promos">Message</span>
+				<span title="Available Promos">Messages</span>
 			</td>
 		</tr>
 		<tr>
@@ -947,6 +927,7 @@ if(false){
 									//echo "<option value='-2'>BL_Lim:".$BL_lim['count(song.songid)']."</option>";
 									$REQAD .= "<option value='".$PdAds['AdId']."'>".$PdAds['AdName']."</option>";
 									array_push($RQADSIDS,$PdAds['AdId']);
+                                    array_push($ADIDS,$PdAds['AdId']);
                                     $SQL_PL_AD = "INSERT INTO promptlog (EpNum,AdNum) VALUES (".$EPINFO['EpNum'].",".$PdAds['AdId'].")";
                                     if(!mysql_query($SQL_PL_AD)){
                                         echo "<!-- ERROR: " . mysql_error() . "-->";
@@ -1295,21 +1276,21 @@ if(false){
               </div>
         
          <!--/////////////////////////// Input Form (Sponsor 53) //////////////////////////-->
-        	<form name="formad" method="post" id="frm3" action="p2insertEP.php" onsubmit="formsubmit()">
+        	<!--<form name="formad" method="post" id="frm3" action="p2insertEP.php" onsubmit="formsubmit()">
         	<input type="date" name="user_date" hidden value=<?php echo "\"" . $_POST['user_date'] . "\"";?>/>
         	<input type="time" name="user_time" hidden value=<?php echo "\"" . $_POST['user_time'] . "\"";?>/>
         	<input type="text" name="program" hidden value=<?php echo "\"" . $_POST['program'] . "\"";?> />
         	<input type="text" name="station" hidden value=<?php echo "\"" . $CALLSHOW . "\"";?> />
         	<input type="text" name="description" hidden value=<?php echo "\"" . $DESCRIPTION . "\""; ?> />
         	<input type="text" name="artist" hidden="true" value=<?php echo "\"" . $CALLSHOW . "\""; ?> />
-        	<input type="text" name="album" hidden="true" value="Advertisement" />
+        	<input type="text" name="album" hidden="true" value="Advertisement" />-->
         	<!--<input type="text"-->
         	  
         	   <!-- //// END FORM DEFINITION //// --> 
-        <div id="InputSponsor" style="width: 100%; text-align: center; display: none;">
+        <!--<div id="InputSponsor" style="width: 100%; text-align: center; display: none;">
             <table colspan="7" width="1350" valign="top" style="background-color:white;">
-                  <tr><!-- Header Definitions for Advertisements -->
-                  	<th colspan="7"><span>Category 53 is for sponsored promotion recording only (not friends, they are 51)</span></th></tr><tr>
+                  <tr>--><!-- Header Definitions for Advertisements -->
+                  	<!--<th colspan="7"><span>Category 53 is for sponsored promotion recording only (not friends, they are 51)</span></th></tr><tr>
                        <th width="5%">
                            Type  <input type="button" value="Define" onclick="return popitup('../help/definetype.html')"/>
                        </th>
@@ -1325,17 +1306,9 @@ if(false){
  
                        </th>
               </tr>
-              <tr ><!-- Blank Row for song insertion -->
-                       <td>
+              <tr >--><!-- Blank Row for song insertion -->
+                       <!--<td>
                            <select name="cat" id="DDLAdvert" onchange="UnCHtype()">
-                                   <!--
-                                   <OPTION VALUE="5">5, Commercial</OPTION>
-                                   <OPTION VALUE="4">4, Musical Production</option>
-                                   <OPTION VALUE="3">3, Special Interest</option>
-                                   <OPTION VALUE="2" selected="selected">2, Popular Music</option>
-                                   <option value="1">1, Spoken</option>
-                                   -->
-                                   <!-- Using Sub Categories -->
                                    
                                    <option value="53">53, Sponsored Promotion</option>
                                    <OPTION value="52">52, Sponsor Indentification</OPTION>
@@ -1351,12 +1324,10 @@ if(false){
                                    	<option value="33">33, World/International</option>
                                    	<option value="32">32, Folk</option>
                                    	<option value="31">31, Concert</option>
-                                   	<!--<option value="3">3, Special Interest</option>-->
                                    	<option value="24">24, Easy Listening</option>
                                    	<option value="23">23, Acoustic</option>
                                    	<option value="22">22, Country</option>
                                    	<option value="21">21, Pop, Rock and Dance</option>
-                                   	<!--<option value="2" selected="True">2, Popular Music</option>-->
                                    <option value="12">12, PSA/Spoken Word Other</option>
                                    <OPTION VALUE="11">11, News</option>
 
@@ -1417,7 +1388,7 @@ if(false){
               </tr>
               </table>
               </div>
-        
+        -->
         
         <!--/////////////////////////// Input Form (regular) //////////////////////////-->
         	<form name="form1" method="post" id="frm2" action="p2insertEP.php" onsubmit="formsubmit()">  
@@ -1444,10 +1415,10 @@ if(false){
                            Time
                        </th>
                       <?php if($EPINFO['Display_Order']==0){
-                            echo "<th>Title</th><th id=\"arHead\">Artist</th><th>Album (Release Title)</th>";
+                            echo "<th style=\"width:40px;\">Title</th><th id=\"arHead\">Artist</th><th>Album (Release Title)</th>";
                         }
                         elseif($EPINFO['Display_Order']==1){
-                            echo "<th id=\"arHead\">Artist</th><th>Album (Release Title)</th><th>Title</th>";
+                            echo "<th style=\"width:40px;\"id=\"arHead\">Artist</th><th>Album (Release Title)</th><th>Title</th>";
                         }
                         else{
                             echo "<th>Title</th><th id=\"arHead\">Artist</th><th>Album (Release Title)</th>";
@@ -1607,10 +1578,10 @@ if(false){
               </tr>
               </table>
               </div>
-              <table width="1350" valign="top" style="background-color:white;">
-              	<thead>
+              <table style="width:1350px; vertical-align:top; background-color:white;">
+              	<thead style="width:1350px;">
                       <tr><td colspan="100%">Recorded Information</td></tr>
-                      <tr><th width="100px">Category</th><th width="75px">Playlist</th><th width="75px">Spoken</th><th width="100px">Time</th>
+                      <tr><th style="width:70px">Category</th><th style="width:50px">Playlist</th><th style="width:50px">Spoken</th><th style="width:60px">Time</th>
                       <?php 
                             if($EPINFO['Display_Order']==0){
                                 echo "<th width=\"230px\">Title</th><th width=\"230px\">Artist</th><th width=\"230px\">Album</th>";
@@ -1620,8 +1591,8 @@ if(false){
                             }
 
                         ?>
-                      <th width="250px">Composer</th><th width="20px">CC</th><th width="20px">Hit</th><th width="20px">Ins</th><th width="200px">Language</th></tr></thead>
-               <tr> <!-- Row for displaying already entered data -->
+                      <th style="width:250px;">Composer</th><th style="width:20px;">CC</th><th width="20px">Hit</th><th width="20px">Ins</th><th width="200px">Language</th></tr></thead>
+               <tbody class="striped"><tr> <!-- Row for displaying already entered data -->
                    <?php
                    	$ORDERque = "select displayorder from program where callsign='" . addslashes($CALLSHOW) . "' and programname='" . addslashes($_POST['program']) . "' ";
 					$ORDER = mysql_fetch_array(mysql_query($ORDERque));
@@ -1677,12 +1648,42 @@ if(false){
                            echo "</td><td>";
                            }
 						   		echo $list['composer'];
-                           echo "</td><td>";
-                                echo $list['cancon'];
-                           echo "</td><td>";
-                                echo $list['hit'];
-                           echo "</td><td>";
-                                echo $list['instrumental'];
+                           if($list['category']=="51"){
+                               print("</td><td><span class=\"ui-icon ui-icon-minus\"></span></td><td><span class=\"ui-icon ui-icon-minus\"></span></td><td><span class=\"ui-icon ui-icon-minus\"></span>");
+                           }
+                           else{
+                               echo "</td><td>";
+                           
+                                   if($list['cancon']==1){
+                                       echo "<span class=\"ui-icon ui-icon-check\"></span>";
+                                   }
+                                   else if($list['cancon']==0){
+                                       // do nothing
+                                   }
+                                   else{
+                                       echo "<span class=\"ui-icon ui-icon-notice\"></span>";
+                                   }
+                               echo "</td><td>";
+                                    if($list['hit']==1){
+                                       echo "<span class=\"ui-icon ui-icon-check\"></span>";
+                                   }
+                                   else if($list['hit']==0){
+                                       // do nothing
+                                   }
+                                   else{
+                                       echo "<span class=\"ui-icon ui-icon-notice\"></span>";
+                                   }
+                               echo "</td><td>";
+                                    if($list['instrumental']==1){
+                                       echo "<span class=\"ui-icon ui-icon-check\"></span>";
+                                   }
+                                   else if($list['instrumental']==0){
+                                       // do nothing
+                                   }
+                                   else{
+                                       echo "<span class=\"ui-icon ui-icon-notice\"></span>";
+                                   }
+                           }
                            $songlang = mysql_query("select languageid from LANGUAGE where callsign='" . addslashes($CALLSHOW) . "' and programname='" . addslashes($_POST['program']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and songid='". addslashes($list['songid']) ."'");
                            $rowlang = mysql_fetch_array($songlang);
                            echo "</td><td>";
@@ -1698,6 +1699,7 @@ if(false){
                    ?>
                </tr>
         </tr>
+        <tfoot>
         <form id="Complete" name="Complete" method="POST" action="p3insertEP.php">
         <tr>
         <td colspan="12" height="10">
@@ -1706,7 +1708,7 @@ if(false){
         </tr>
         <tr>
         <th colspan="2">
-        Status
+        <!--Status-->
         </th>
         <th colspan="2">
         Calculated Spoken Time
@@ -1719,10 +1721,16 @@ if(false){
         
         	<?php
         	if(!isset($EPINFO['endtime'])){
-        		echo "<td colspan=\"2\" style=\"background-color:white; color:darkred;\"><span>Active : Not Finalized</span>";
+        		echo "<td colspan=\"2\" style=\"background-color:white; color:darkred;\"><span>Active:<br>Not Finalized</span>";
         	}
+            elseif(!isset($EPINFO['EndStamp'])){
+                echo "<td colspan=\"2\" style=\"background-color: #BB6599; color: black;\"><span>Complete:<br>Finalized - No Audit</span>";
+            }
+            elseif(strtotime($EPINFO['EndStamp'])>strtotime('yesterday')){
+                echo "<td colspan=\"2\" style=\"background-color: #FFFF00; color: black;\"><span>Complete:<br>Finalized - Editable</span>";
+            }
 			else{
-				echo "<td colspan=\"2\" style=\"background-color:red; color:white;\"><span>Complete : Finalized</span>";
+				echo "<td colspan=\"2\" style=\"background-color:red; color:white;\"><span>Complete:<br>Finalized - Locked</span>";
 			}
         	?>
         </td>
@@ -1832,7 +1840,7 @@ if(false){
         <td colspan="7">
             
         </td><td>
-        <img src="../images/mysqls.png" alt="MySQL Powered" />
+        <!--<img src="../images/mysqls.png" alt="MySQL Powered" />-->
         </td></tr>
         <?php 
         $PROML = mysql_query("SELECT count(*) AS Result FROM PromptLog WHERE EpNum='".addslashes($EPINFO['EpNum'])."' ");
@@ -1850,11 +1858,12 @@ if(false){
                 $QUERY_HWD = "SELECT count(*) AS hardware FROM hardware WHERE ipv4_address='$LOCATION' and in_service='1' and station='".$EPINFO['callsign']."'";
                 $Equipment = mysql_fetch_array(mysql_query($QUERY_HWD));
 
-                echo "<tfoot class=\"ui-state-highlight\"><tr><td colspan='2'>ADMINISTRATOR ACCESS</td><td colspan='2'>EPISODE: ".$EPINFO['EpNum']."</td><td colspan='1'>Prompt Records: ".$PROMPTS['Result']."</td>
+                echo "<tr style=\"background-color:#FFD633;\"><td colspan='2'>ADMINISTRATOR ACCESS</td><td colspan='2'>EPISODE: ".$EPINFO['EpNum']."</td><td colspan='1'>Prompt Records: ".$PROMPTS['Result']."</td>
                 <td><a href='javascript:void(0)'>Hardware Count: ".$Equipment['hardware']."</a></td>
-                </tr></tfoot>";
+                </tr>";
             }
         ?>
+                  </tfoot>
         </table>
     <div style="height: 30px;">&nbsp;</div>
     <div style="position: fixed; bottom: 0; height: 20px; width: 100%; background-color: #000; color: #fff;  margin: 0 0 0 0; vertical-align: bottom; box-shadow: 0px 0px 30px #000;">
