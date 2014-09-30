@@ -110,8 +110,10 @@
                 $out = "*0SS";
                 fwrite($fp, $out);
                 stream_set_timeout($fp,2,0);
-                  $res[1]=fread($fp, 8192);
-                  $res[1] = str_replace(' ', '', $res[1]);
+                  $temp1=fread($fp, 8192);
+                  //$temp2=rtrim($temp1," \n");
+                  $temp2[]=explode("\n",$temp1);
+                  $res[1] = str_replace(' ', '', $temp2[0]);
                   //array_push($res,fread($fp,8192));
                 $info[1] = stream_get_meta_data($fp);
                 fclose($fp);
@@ -136,9 +138,9 @@
 	        $output .= "<th>S</th></tr><tr>";
 	        $result = $mysqli->query($sql);
 	        $srr = mysqli_fetch_array($result);
-            if((!empty($res[0][0])&&!empty($res[0][1])&&!empty($res[1]))&&(strlen($res[1])>8&&strlen($res[0][0])>20&&strlen($res[0][1])>20)){
+            if((!empty($res[0][0])&&!empty($res[0][1])&&!empty($res[1]))&&(strlen($res[0][0])>20&&strlen($res[0][1])>20)){
                 // CHECK BANK 1
-                if(strcmp($srr['Bank1'],$res[0][0])!=1){
+                if(strcasecmp($srr['Bank1'],$res[0][0])==0){
                     $Bank1=$srr['Bank1'];
                 }
                 else{
@@ -152,7 +154,7 @@
 
                 }
                 // CHECK BANK 2
-                if(strcmp($srr['Bank2'],$res[0][1])!=0){
+                if(strcasecmp($srr['Bank2'],$res[0][1])==0){
                     $Bank2=$srr['Bank2'];
                 }
                 else{
@@ -165,7 +167,7 @@
                     //}
                 }
                 // silence Sensors
-                if(strcmp($srr['SS'],$res[1])!=0){
+                if(strcasecmp($srr['SS'],$res[1])==0){
                     $silence=$srr['SS'];
                 }
                 else{
@@ -178,8 +180,8 @@
                     //}
 
                 }
-                $time=$srr['timestamp'];
-                $output.="<br><span>$time<span>";
+                //$time=$srr['timestamp'];
+                //$output.="<br><span>$time<span>";
             }
             else{
                 if($DEBUG){
@@ -246,7 +248,7 @@
 		            $output.="<td><img src=\"$BASE/Images/LIGHTS/AmberOff.png\" title=\"$SS2\"/></td>";
 	            }
 	            $output.= "</tr></table>";
-                if(!$Bank1==""){    
+                if(!$Bank1==""||$MISMATCH){    
                     $mysqli->query("INSERT into switchstatus (Bank1,Bank2,SS,UID) values ('".$Bank1."','".$Bank2."','".$silence."','0')");
                     if($DEBUG){
                         echo "<br><span>INSERT into switchstatus (Bank1,Bank2,SS,UID) values ('".$Bank1."','".$Bank2."','".$silence."','0')</span>";
