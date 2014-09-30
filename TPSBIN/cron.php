@@ -139,7 +139,7 @@
             if((!empty($res[0][0])&&!empty($res[0][1])&&!empty($res[1]))&&(strlen($res[1])>8&&strlen($res[0][0])>20&&strlen($res[0][1])>20)){
                 // CHECK BANK 1
                 if(strcmp($srr['Bank1'],$res[0][0])!=1){
-                    $bank1=$srr['Bank1'];
+                    $Bank1=$srr['Bank1'];
                 }
                 else{
                     $MISMATCH=TRUE;
@@ -147,13 +147,13 @@
                         $output .= "<br><div class='ui-state ui-state-error'><span>ERROR (AS1)</span><br>".$res[0][0]."<br>".$srr['Bank1']."</span></div>";
                     }
                     //if($res[0][0]!=""){
-                        $bank1=$res[0][0];
+                        $Bank1=$res[0][0];
                     //}
 
                 }
                 // CHECK BANK 2
                 if(strcmp($srr['Bank2'],$res[0][1])!=0){
-                    $bank2=$srr['Bank2'];
+                    $Bank2=$srr['Bank2'];
                 }
                 else{
                     $MISMATCH=TRUE;
@@ -161,7 +161,7 @@
                         $output .= "<br><div class='ui-state ui-state-error'><span>ERROR (AS2)</span><br>QR: ".$res[0][1]."<br>DB: ".$srr['Bank2']."</span></div>";
                     }
                     //if($res[0][1]!=""){
-                        $bank2=$res[0][1];
+                        $Bank2=$res[0][1];
                     //}
                 }
                 // silence Sensors
@@ -185,8 +185,8 @@
                 if($DEBUG){
                     $output="<br><br>ERROR P1: Empty Variable or Malformed Response";
                 }
-                $bank1=$srr['Bank1'];
-                $bank2=$srr['Bank2'];
+                $Bank1=$srr['Bank1'];
+                $Bank2=$srr['Bank2'];
                 $silence=$srr['SS'];
                 $time=$srr['timestamp'];
                 $output.="<br><span>outdated: $time<span>";
@@ -195,7 +195,7 @@
                 $track = 0;
                 $title = 1;
 	            for($i = 16; $i > 0; $i=$i-2){
-		            $dl = substr($bank1,($i*(-1)),1); 	
+		            $dl = substr($Bank1,($i*(-1)),1); 	
 		            if($dl=='0'){
 			            $output .= "<td><img src=\"$BASE/Images/LIGHTS/GreenOff.png\" title=\"Switch &#35;1 - $title\" alt=\"0\"/></td>";
 		            }	
@@ -222,7 +222,7 @@
 	            $output .= "</tr><tr>";
                 $title = 1;
 	            for($i = 16; $i > 0; $i=$i-2){
-		            $dl = substr($bank2,($i*(-1)),1); 	
+		            $dl = substr($Bank2,($i*(-1)),1); 	
 		            if($dl=='0'){
 			            $output.="<td><img src=\"$BASE/Images/LIGHTS/RedOff.png\" title=\"Switch &#35;2 - $title\" alt=\"0\"/></td>";
 		            }	
@@ -246,10 +246,10 @@
 		            $output.="<td><img src=\"$BASE/Images/LIGHTS/AmberOff.png\" title=\"$SS2\"/></td>";
 	            }
 	            $output.= "</tr></table>";
-                if(!$bank1==""){    
-                    $mysqli->query("INSERT into switchstatus (Bank1,Bank2,SS,UID) values ('".$bank1."','".$bank2."','".$silence."','0')");
+                if(!$Bank1==""){    
+                    $mysqli->query("INSERT into switchstatus (Bank1,Bank2,SS,UID) values ('".$Bank1."','".$Bank2."','".$silence."','0')");
                     if($DEBUG){
-                        echo "<br><span>INSERT into switchstatus (Bank1,Bank2,SS,UID) values ('".$bank1."','".$bank2."','".$silence."','0')</span>";
+                        echo "<br><span>INSERT into switchstatus (Bank1,Bank2,SS,UID) values ('".$Bank1."','".$Bank2."','".$silence."','0')</span>";
                     }
                 }
                 $mysqli->close();
