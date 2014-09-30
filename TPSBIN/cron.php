@@ -260,6 +260,29 @@
             }
 	        
         }
+        static public function get_now_playing_foobar($mute=FALSE,$server){
+            // does not output result of query to screen, only to database
+            
+            //include_once "db_connect.php";
+            global $res;
+            unset($res);
+            $output = "";
+            $DEBUG=FALSE;
+	        $ROOT = addslashes($_GET['q']);
+            //$server = "ckxu3400lg.local.ckxu.com";
+            //$mute=FALSE;
+            
+            // read Now Playing file from remote server
+            $playing = file_get_contents('\\\\'.$server.'\\Now_Playing\\Now_Playing.txt');
+            
+            
+            if($ROOT=='V2'){
+                $BASE="./EPV3";
+            }
+            else{
+                $BASE = ".";
+            }
+        }
         static public function grade_episode($episode_num=NULL,$new_only=TRUE){
             include_once "db_connect.php";
             /*if(!$mysqli->connected){
