@@ -74,7 +74,8 @@
             // does not output result of query to screen, only to database
             
             include_once "db_connect.php";
-
+            global $res;
+            unset($res);
             $output = "";
             $DEBUG=FALSE;
 	        $ROOT = addslashes($_GET['q']);
