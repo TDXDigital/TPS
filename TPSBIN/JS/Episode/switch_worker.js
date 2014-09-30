@@ -33,6 +33,7 @@ function check_switch() {
 
     xmlhttp.open("GET", "../../../Episode/EPV3/Switch.php?q=V2", true);
     xmlhttp.send();
+    setTimeout("check_switch()",5000);
     /*var switch_s = $.ajax({
         url: "EPV3/Switch.php?q=V2",
         cache: false

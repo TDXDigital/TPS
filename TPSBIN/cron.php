@@ -102,12 +102,16 @@
                 fwrite($fp, $out);
                 stream_set_timeout($fp,2,0);
                   $temp = fread($fp, 8192);
-                  $res[0] = explode("\n",$temp);
+                  $res[] = explode("\n",$temp);
+                  $res[0][0] = str_replace(' ', '', $res[0][0]);
+                  $res[0][1] = str_replace(' ', '', $res[0][1]);
                 $info[0] = stream_get_meta_data($fp);
                 $out = "*0SS";
                 fwrite($fp, $out);
                 stream_set_timeout($fp,2,0);
-                  $res[1] = fread($fp, 8192);
+                  $res[1]=fread($fp, 8192);
+                  $res[1] = str_replace(' ', '', $res[1]);
+                  //array_push($res,fread($fp,8192));
                 $info[1] = stream_get_meta_data($fp);
                 fclose($fp);
     
@@ -117,7 +121,7 @@
                     //echo $res[0].$res[1];
                     if(isset($DEBUG)){
                         if($DEBUG==TRUE){
-                            echo var_dump($res[0])." -- ".var_dump($res[1]);
+                            echo var_dump($res);
                         }
                     }
                 }
@@ -131,113 +135,127 @@
 	        $output .= "<th>S</th></tr><tr>";
 	        $result = $mysqli->query($sql);
 	        $srr = mysqli_fetch_array($result);
-            if(!empty($res[0][0])&&!empty($res[0][1])){
+            if((!empty($res[0][0])&&!empty($res[0][1])&&!empty($res[1]))&&(strlen($res[1])>8&&strlen($res[0][0])>20&&strlen($res[0][1])>20)){
                 // CHECK BANK 1
-                if($srr['Bank1']==$res[0][0]){
+                if(strcmp($srr['Bank1'],$res[0][0])!=1){
                     $bank1=$srr['Bank1'];
                 }
                 else{
                     $MISMATCH=TRUE;
                     if($DEBUG){
-                        $output .= "<br><div class='ui-state ui-state-error'><span>ERROR (B)</span><br>".$res[0][0]."<br>".$srr['Bank1']."</span></div>";
+                        $output .= "<br><div class='ui-state ui-state-error'><span>ERROR (AS1)</span><br>".$res[0][0]."<br>".$srr['Bank1']."</span></div>";
                     }
-                    if($res[0][0]!=""){
+                    //if($res[0][0]!=""){
                         $bank1=$res[0][0];
-                    }
+                    //}
 
                 }
                 // CHECK BANK 2
-                if($srr['Bank2']==$res[0][1]){
-                    $bank2=$srr['Bank1'];
+                if(strcmp($srr['Bank2'],$res[0][1])!=0){
+                    $bank2=$srr['Bank2'];
                 }
                 else{
                     $MISMATCH=TRUE;
                     if($DEBUG){
-                        $output .= "<br><div class='ui-state ui-state-error'><span>ERROR (R)</span><br>".$res[0][1]."<br>".$srr['Bank2']."</span></div>";
+                        $output .= "<br><div class='ui-state ui-state-error'><span>ERROR (AS2)</span><br>QR: ".$res[0][1]."<br>DB: ".$srr['Bank2']."</span></div>";
                     }
-                    if($res[0][1]!=""){
+                    //if($res[0][1]!=""){
                         $bank2=$res[0][1];
-                    }
-
+                    //}
                 }
-                // CHECK BANK 2
-                if($srr['SS']==$res[1]){
+                // silence Sensors
+                if(strcmp($srr['SS'],$res[1])!=0){
                     $silence=$srr['SS'];
                 }
                 else{
                     $MISMATCH=TRUE;
                     if($DEBUG){
-                        $output .= "<br><div class='ui-state ui-state-error'><span>ERROR (S)</span><br>QR: ".$res[1]."<br>DB: ".$srr['SS']."</span></div>";
+                        $output .= "<br><div class='ui-state ui-state-error'><span>ERROR (SS)</span><br>QR: ".$res[1]."<br>DB: ".$srr['SS']."</span></div>";
                     }
-                    if($res[1]!=""){
+                    //if($res[1]!=""){
                         $silence=$res[1];
-                    }
+                    //}
 
                 }
+                $time=$srr['timestamp'];
+                $output.="<br><span>$time<span>";
             }
             else{
-
+                if($DEBUG){
+                    $output="<br><br>ERROR P1: Empty Variable or Malformed Response";
+                }
+                $bank1=$srr['Bank1'];
+                $bank2=$srr['Bank2'];
+                $silence=$srr['SS'];
+                $time=$srr['timestamp'];
+                $output.="<br><span>outdated: $time<span>";
             }
-	        $track = 0;
-            $title = 1;
-	        for($i = 16; $i > 0; $i=$i-2){
-		        $dl = substr($bank1,($i*(-1)),1); 	
-		        if($dl=='0'){
-			        $output .= "<td><img src=\"$BASE/Images/LIGHTS/GreenOff.png\" title=\"Switch &#35;1 - $title\" alt=\"0\"/></td>";
-		        }	
-		        else if($dl=='1'){
-			        $output .= "<td><img src=\"$BASE/Images/LIGHTS/GreenOn.png\" title=\"Switch &#35;1 - $title\" alt=\"1\"/></td>";
-		        }
-		        else{
-			        $output .= "<td><img src=\"$BASE/Images/LIGHTS/AmberOff.png\" title=\"Switch &#35;1 - $title\" alt=\"2\"/></td>";
-		        }
-		        $title++;
-	        }
-            $title = "Broadcast Silence Sensor";
-	        //$silence = $srr['SS'];
-	        $SS1 = substr($silence,-1);
-	        if($SS1 == "0"){
-		        $output .= "<td><img src=\"$BASE/Images/LIGHTS/AmberOff.png\" title=\"$title\" alt=\"0\"/></td>";
-	        }
-	        else if($SS1 == "1"){
-		        $output .= "<td><img src=\"$BASE/Images/LIGHTS/AmberOn.png\" title=\"$title\" alt=\"1\"/></td>";
-	        }
-	        else{
-		        $output .= "<td><img src=\"$BASE/Images/LIGHTS/AmberOff.png\" title=\"$SS1\" alt=\"2\"/></td>";
-	        }
-	        $output .= "</tr><tr>";
-            $title = 1;
-	        for($i = 16; $i > 0; $i=$i-2){
-		        $dl = substr($bank2,($i*(-1)),1); 	
-		        if($dl=='0'){
-			        $output.="<td><img src=\"$BASE/Images/LIGHTS/RedOff.png\" title=\"Switch &#35;2 - $title\" alt=\"0\"/></td>";
-		        }	
-		        else if($dl=='1'){
-			        $output.="<td><img src=\"$BASE/Images/LIGHTS/RedOn.png\" title=\"Switch &#35;2 - $title\" alt=\"1\"/></td>";
-		        }
-		        else{
-			        $output.="<td><img src=\"$BASE/Images/LIGHTS/RedOff.png\" title=\"Switch &#35;2 - $title\"alt=\"2\"/></td>";
-		        }
-		        $title++;
-	        }
-	        $title = "Record Silence Sensor";
-	        $SS2 = substr($silence,-2,-1);
-	        if($SS2 == "0"){
-		        $output.="<td><img src=\"$BASE/Images/LIGHTS/AmberOff.png\" title=\"$title\" alt=\"0\"/></td>";
-	        }
-	        else if($SS2 == "1"){
-		        $output.="<td><img src=\"$BASE/Images/LIGHTS/AmberOn.png\" title=\"$title\" alt=\"1\"/></td>";
-	        }
-	        else{
-		        $output.="<td><img src=\"$BASE/Images/LIGHTS/AmberOff.png\" title=\"$SS2\"/></td>";
-	        }
-	        $output.= "</tr></table>";
-
-            $mysqli->query("INSERT into switchstatus (Bank1,Bank2,SS,UID) values ('".$bank1."','".$bank2."','".$silence."','0')");
-            $mysqli->close();
+            // prep output
+                $track = 0;
+                $title = 1;
+	            for($i = 16; $i > 0; $i=$i-2){
+		            $dl = substr($bank1,($i*(-1)),1); 	
+		            if($dl=='0'){
+			            $output .= "<td><img src=\"$BASE/Images/LIGHTS/GreenOff.png\" title=\"Switch &#35;1 - $title\" alt=\"0\"/></td>";
+		            }	
+		            else if($dl=='1'){
+			            $output .= "<td><img src=\"$BASE/Images/LIGHTS/GreenOn.png\" title=\"Switch &#35;1 - $title\" alt=\"1\"/></td>";
+		            }
+		            else{
+			            $output .= "<td><img src=\"$BASE/Images/LIGHTS/AmberOff.png\" title=\"Switch &#35;1 - $title\" alt=\"2\"/></td>";
+		            }
+		            $title++;
+	            }
+                $title = "Broadcast Silence Sensor";
+	            //$silence = $srr['SS'];
+	            $SS1 = substr($silence,-1);
+	            if($SS1 == "0"){
+		            $output .= "<td><img src=\"$BASE/Images/LIGHTS/AmberOff.png\" title=\"$title\" alt=\"0\"/></td>";
+	            }
+	            else if($SS1 == "1"){
+		            $output .= "<td><img src=\"$BASE/Images/LIGHTS/AmberOn.png\" title=\"$title\" alt=\"1\"/></td>";
+	            }
+	            else{
+		            $output .= "<td><img src=\"$BASE/Images/LIGHTS/AmberOff.png\" title=\"$SS1\" alt=\"2\"/></td>";
+	            }
+	            $output .= "</tr><tr>";
+                $title = 1;
+	            for($i = 16; $i > 0; $i=$i-2){
+		            $dl = substr($bank2,($i*(-1)),1); 	
+		            if($dl=='0'){
+			            $output.="<td><img src=\"$BASE/Images/LIGHTS/RedOff.png\" title=\"Switch &#35;2 - $title\" alt=\"0\"/></td>";
+		            }	
+		            else if($dl=='1'){
+			            $output.="<td><img src=\"$BASE/Images/LIGHTS/RedOn.png\" title=\"Switch &#35;2 - $title\" alt=\"1\"/></td>";
+		            }
+		            else{
+			            $output.="<td><img src=\"$BASE/Images/LIGHTS/RedOff.png\" title=\"Switch &#35;2 - $title\"alt=\"2\"/></td>";
+		            }
+		            $title++;
+	            }
+	            $title = "Record Silence Sensor";
+	            $SS2 = substr($silence,-2,-1);
+	            if($SS2 == "0"){
+		            $output.="<td><img src=\"$BASE/Images/LIGHTS/AmberOff.png\" title=\"$title\" alt=\"0\"/></td>";
+	            }
+	            else if($SS2 == "1"){
+		            $output.="<td><img src=\"$BASE/Images/LIGHTS/AmberOn.png\" title=\"$title\" alt=\"1\"/></td>";
+	            }
+	            else{
+		            $output.="<td><img src=\"$BASE/Images/LIGHTS/AmberOff.png\" title=\"$SS2\"/></td>";
+	            }
+	            $output.= "</tr></table>";
+                if(!$bank1==""){    
+                    $mysqli->query("INSERT into switchstatus (Bank1,Bank2,SS,UID) values ('".$bank1."','".$bank2."','".$silence."','0')");
+                    if($DEBUG){
+                        echo "<br><span>INSERT into switchstatus (Bank1,Bank2,SS,UID) values ('".$bank1."','".$bank2."','".$silence."','0')</span>";
+                    }
+                }
+                $mysqli->close();
             if($mute!=TRUE){
                 print($output);
             }
+	        
         }
         static public function grade_episode($episode_num=NULL,$new_only=TRUE){
             include_once "db_connect.php";
