@@ -18,6 +18,12 @@
          });
      }
      
+     process_foobar(np_data){
+          var html_info="<div id='notice' class=''>";
+          html_info += "<span class='ui-state ui-state-highlight'></span></div>";
+          $("#info_player").html(html_info);
+     }
+     
         // EPV3/Switch.php
         // generate web workers to handle updating diapla
      function Display_Switch() {
@@ -65,7 +71,9 @@
                  cache: false
              });
              foobar_s.done(function (msg) {
-                 $("#info_player").html(msg);
+                 //$("#info_player").html(msg);
+                 var np_data = JSON.parse(xmlhttp.responseText);
+                 process_foobar(np_data);
              });
              foobar_s.fail(function (jqXHR, textStatus) {
                  $("#info_player").html("Request failed: " + textStatus);
