@@ -384,6 +384,7 @@ else{
          // set displays
          Display_RDS();
          Display_Switch();
+         Foobar2000();
 
          // Load Emergency Information
          GetEAS('EAS', '../');
@@ -1486,6 +1487,8 @@ if(false){
                        </th>
               </tr>
               </table>
+    <div id="info_player" <?php if($_SESSION['access']<2){print("style=\"display:none;\"");}?>>
+    </div>
               </div>
               <table style="width:1350px; vertical-align:top; background-color:white;">
               	<thead style="width:1350px;">

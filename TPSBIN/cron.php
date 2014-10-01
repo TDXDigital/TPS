@@ -5,6 +5,19 @@
         sec_session_start();
     }
 
+    class playing{
+        public $status = "";
+        public $volume = "";
+        public $title = "";
+        public $artist = "";
+        public $album_artist = "";
+        public $track_artist = "";
+        public $playback_time = "";
+        public $length = "";
+        public $path = "";
+        public $version = "";
+    }
+
     class TPS_Cron{
         
         // Set to overridde grading 
@@ -260,9 +273,28 @@
             }
 	        
         }
-        static public function get_now_playing_foobar($mute=FALSE,$server){
+        static public function get_now_playing_foobar($server=""){
             // does not output result of query to screen, only to database
+            /*
+            EXPECTS FOOBAR OUTPUT FROM:
+
+            $if(%isplaying%,
+            $if(%ispaused%,
+            paused:%volume%
+            ,
+            playing:%volume%
+            ):%title%:%artist%:%album artist%:%track artist%:%playback_time_remaining_seconds%:%length_seconds%:%path%:%_foobar2000_version%,
+            stopped:%_foobar2000_version%
+            )
             
+            eg:
+            playing:-11.42:Harm:Deerfoot:Deerfoot:?:240:308:C:\EACRips\Deerfoot - 2006 - Deerfoot\12 - Harm.flac:foobar2000 v1.3.1
+            */
+            //$server=_SERVER
+            if(empty($server)){
+                $server=$_SERVER['REMOTE_ADDR'];
+            }
+
             //include_once "db_connect.php";
             global $res;
             unset($res);
@@ -271,9 +303,10 @@
 	        $ROOT = addslashes($_GET['q']);
             //$server = "ckxu3400lg.local.ckxu.com";
             //$mute=FALSE;
-            
+            $file='\\\\'.$server.'\Now_Playing\\Now_Playing.txt';
             // read Now Playing file from remote server
-            $playing = file_get_contents('\\\\'.$server.'\\Now_Playing\\Now_Playing.txt');
+            $playing = file_get_contents($file);
+            //fopen($file,'r');
             
             
             if($ROOT=='V2'){
@@ -282,6 +315,42 @@
             else{
                 $BASE = ".";
             }
+
+            $vars = array();
+            $vars=explode("::",$playing);
+            $j = new playing();
+            if(isset($vars[0])){
+                if($vars[0]=="playing"||$vars[0]=="paused"||$vars[0]=="stopped"){
+                    $j->status=$vars[0];
+                    $j->volume=$vars[1];
+                    $j->title=$vars[2];
+                    $j->artist=$vars[3];
+                    $j->album_artist=$vars[4];
+                    $j->track_artist=$vars[5];
+                    $j->playback_time=$vars[6];
+                    $j->length=$vars[7];
+                    $j->path=$vars[8];
+                    $j->version=$vars[9];
+                }
+                /*elseif($vars[0]=="paused"){
+                }
+                elseif($vars[0]=="stopped"){
+                }*/
+                elseif($vars[0]=="not running"){
+                    $j->status="closed";
+                    $j->version=$var[1];
+                }
+                else{
+                    $j->status="error";
+                    $j->path=$playing;
+                }
+            
+            echo json_encode($j);
+            //$JSON=
+            //json_encode($vars);
+            //return 
+            }
+
         }
         static public function grade_episode($episode_num=NULL,$new_only=TRUE){
             include_once "db_connect.php";

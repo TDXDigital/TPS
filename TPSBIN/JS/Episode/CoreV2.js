@@ -49,6 +49,35 @@
         switch_worker=undefined;
     }
 
+    function Foobar2000(server) {
+        if(typeof(Worker) !== "undefined") {
+            if(typeof(foobar_worker) == "undefined") {
+                foobar_worker = new Worker("../TPSBIN/JS/Episode/foobar_worker.js");
+            }
+            foobar_worker.onmessage = function(event) {
+                //document.getElementById("result").innerHTML = event.data;
+                $("#info_player").html(event.data);
+            };
+        } else {
+            // Sorry! No Web Worker support..
+             var foobar_s = $.ajax({
+                 url: "EPV3/workers.php?q=np",
+                 cache: false
+             });
+             foobar_s.done(function (msg) {
+                 $("#info_player").html(msg);
+             });
+             foobar_s.fail(function (jqXHR, textStatus) {
+                 $("#info_player").html("Request failed: " + textStatus);
+             });
+        }
+     }
+
+    function Foobar2000_stop(){
+        foobar_worker.terminate();
+        foobar_worker=undefined;
+    }
+
 
      // START CLOCK
      setInterval(function () {
