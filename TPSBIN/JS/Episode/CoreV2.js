@@ -18,9 +18,11 @@
          });
      }
      
-     process_foobar(np_data){
+     function process_foobar(np_data){
           var html_info="<div id='notice' class=''>";
-          html_info += "<span class='ui-state ui-state-highlight'></span></div>";
+          html_info += "<span class='ui-state ui-state-highlight'>";
+          html_info += "";
+          html_info += "</span></div>";
           $("#info_player").html(html_info);
      }
      
@@ -60,9 +62,11 @@
             if(typeof(foobar_worker) == "undefined") {
                 foobar_worker = new Worker("../TPSBIN/JS/Episode/foobar_worker.js");
             }
-            foobar_worker.onmessage = function(event) {
+            foobar_worker.onmessage = function (event) {
                 //document.getElementById("result").innerHTML = event.data;
-                $("#info_player").html(event.data);
+                //$("#info_player").html(event.data);
+                //var np_data = JSON.parse(event);
+                process_foobar(event.data);
             };
         } else {
             // Sorry! No Web Worker support..
@@ -72,8 +76,9 @@
              });
              foobar_s.done(function (msg) {
                  //$("#info_player").html(msg);
-                 var np_data = JSON.parse(xmlhttp.responseText);
-                 process_foobar(np_data);
+                 //var np_data = JSON.parse(xmlhttp.responseText);
+                 //process_foobar(np_data);
+                 process_foobar(msg.responseText);
              });
              foobar_s.fail(function (jqXHR, textStatus) {
                  $("#info_player").html("Request failed: " + textStatus);

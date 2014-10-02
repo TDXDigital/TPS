@@ -273,7 +273,7 @@
             }
 	        
         }
-        static public function get_now_playing_foobar($server=""){
+        static public function get_now_playing_foobar($server="172.22.10.185"){
             // does not output result of query to screen, only to database
             /*
             EXPECTS FOOBAR OUTPUT FROM:
