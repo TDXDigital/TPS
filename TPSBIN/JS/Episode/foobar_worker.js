@@ -14,26 +14,29 @@ function get_playing() {
         xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
     }
 
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 ) {
-           if(xmlhttp.status == 200){
-               //document.getElementById("myDiv").innerHTML = xmlhttp.responseText;
-               postMessage(xmlhttp.responseText);
-           }
-           else if(xmlhttp.status == 400) {
-               postMessage("error 400");
-              //alert('There was an error 400')
-           }
-           else {
-               postMessage("An Error Occured");
-               //alert('something else other than 200 was returned')
-           }
+    xmlhttp.onreadystatechange = function () {
+        if (xmlhttp.readyState == 4) {
+            if (xmlhttp.status == 200) {
+                //document.getElementById("myDiv").innerHTML = xmlhttp.responseText;
+                postMessage(xmlhttp.responseText);
+            }
+            /*else if(xmlhttp.status == 400) {
+            postMessage("error 400");
+            //alert('There was an error 400')
+            }*/
+            else {
+
+                return false;
+                //postMessage("An Error Occured");
+
+                //alert('something else other than 200 was returned')
+            }
         }
     }
 
     xmlhttp.open("GET", "../../../Episode/EPV3/workers.php?q=np", true);
     xmlhttp.send();
-    setTimeout("get_playing()",5000);
+    setTimeout("get_playing()",3000);
     /*var switch_s = $.ajax({
         url: "EPV3/Switch.php?q=V2",
         cache: false

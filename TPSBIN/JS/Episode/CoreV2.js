@@ -17,12 +17,54 @@
              $("#current_song").html("Request failed: " + textStatus);
          });
      }
+
+     function update_playback(target) {
+
+     }
      
      function process_foobar(np_data){
-          var html_info="<div id='notice' class=''>";
-          html_info += "<span class='ui-state ui-state-highlight'>";
-          html_info += "";
-          html_info += "</span></div>";
+         fb2k_data = JSON.parse(np_data);
+         var volume_percentage = eval(100 + (fb2k_data.volume / 35 * 100));
+         var playback_percentage = eval(100 - (fb2k_data.playback_time / fb2k_data.length *100));
+          var html_info="<div id='notice' class='ui-state-highlight' style='width:1350px;'>" +
+            "<form action='p2insert.php' method='post'>" +
+            "<div class=\"grid\">" +
+            "<div class='col-1-8'><img src=\"../images/foobar2000.png\" width=\"50px;\" alt=\"foobar2000\" title=\"" +
+            fb2k_data.version +
+            "\"/></div>" +
+            "<div class='col-1-8'><p>Volume</p><progress value=\"" +
+            volume_percentage +
+            "\" max=\"100\" id=\"volume\">"+volume_percentage +"&perc;</progress><span style=\"float:left\">Playback:</span>";
+            if(fb2k_data.status=="playing"){
+                html_info += "<span style=\"float:left\" title=\"Playing...\"class='ui-icon ui-icon-play'></span>";
+            }
+            else if(fb2k_data.status=="paused"){
+                html_info += "<span style=\"float:left\" title=\"Paused...\" class='ui-icon ui-icon-pause'></span>";
+            }
+            else if(fb2k_data.status=="stopped"){
+                html_info += "<span style=\"float:left\" title=\"Stopped...\" class='ui-icon ui-icon-stop'></span>";
+            }
+            else{
+                html_info += "<span style=\"float:left\" class='ui-icon ui-icon-alert'></span><span style=\"float:left\">error:"+fb2k_data.status+"</span>";
+            }
+            html_info += "<progress value=\"" +
+            playback_percentage +
+            "\" max=\"100\" id=\"volume\">"+playback_percentage +"&perc;</progress>"+
+            /*"<p>Status:</p>"+
+            fb2k_data.status +*/
+            "</div>" +
+            "<div class='col-1-8'><p>Title</p><input type='text' readonly name='title' id='title003' value='" + fb2k_data.title + "' /></div>" +
+            "<div class='col-1-8'><p>Artist</p><input type='text' readonly name='title' id='artist003' value='";
+          if (fb2k_data.track_artist != undefined) {
+              html_info += fb2k_data.artist;
+          }
+          else {
+              html_info += fb2k_data.album_artist;
+          }
+            html_info += "' /></div>" +
+            "<div class='col-1-8'><p>Album</p><input type='text' readonly name='title' id='album003' value='" + fb2k_data.artist + "' /></div>" +
+            "</span></div></div></form>";
+
           $("#info_player").html(html_info);
      }
      
@@ -67,6 +109,7 @@
                 //$("#info_player").html(event.data);
                 //var np_data = JSON.parse(event);
                 process_foobar(event.data);
+                $("#info_player").append(event.data);
             };
         } else {
             // Sorry! No Web Worker support..

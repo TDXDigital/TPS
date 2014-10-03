@@ -12,6 +12,7 @@
         public $artist = "";
         public $album_artist = "";
         public $track_artist = "";
+        public $album = "";
         public $playback_time = "";
         public $length = "";
         public $path = "";
@@ -273,7 +274,10 @@
             }
 	        
         }
-        static public function get_now_playing_foobar($server="172.22.10.185"){
+        static public function get_now_playing_foobar($server=""){
+            //148 = b1
+            //185 = techdesk
+
             // does not output result of query to screen, only to database
             /*
             EXPECTS FOOBAR OUTPUT FROM:
@@ -305,50 +309,57 @@
             //$mute=FALSE;
             $file='\\\\'.$server.'\Now_Playing\\Now_Playing.txt';
             // read Now Playing file from remote server
-            $playing = file_get_contents($file);
-            //fopen($file,'r');
-            
-            
-            if($ROOT=='V2'){
-                $BASE="./EPV3";
+            if(!file_exists($file)){
+                return FALSE;
+                break;
             }
             else{
-                $BASE = ".";
-            }
-
-            $vars = array();
-            $vars=explode("::",$playing);
-            $j = new playing();
-            if(isset($vars[0])){
-                if($vars[0]=="playing"||$vars[0]=="paused"||$vars[0]=="stopped"){
-                    $j->status=$vars[0];
-                    $j->volume=$vars[1];
-                    $j->title=$vars[2];
-                    $j->artist=$vars[3];
-                    $j->album_artist=$vars[4];
-                    $j->track_artist=$vars[5];
-                    $j->playback_time=$vars[6];
-                    $j->length=$vars[7];
-                    $j->path=$vars[8];
-                    $j->version=$vars[9];
-                }
-                /*elseif($vars[0]=="paused"){
-                }
-                elseif($vars[0]=="stopped"){
-                }*/
-                elseif($vars[0]=="not running"){
-                    $j->status="closed";
-                    $j->version=$var[1];
+                $playing = file_get_contents($file);
+                //fopen($file,'r');
+                //$playing = addslashes($playing);
+            
+                if($ROOT=='V2'){
+                    $BASE="./EPV3";
                 }
                 else{
-                    $j->status="error";
-                    $j->path=$playing;
+                    $BASE = ".";
                 }
+
+                $vars = array();
+                $vars=explode("::",$playing);
+                $j = new playing();
+                if(isset($vars[0])){
+                    if($vars[0]=="playing"||$vars[0]=="paused"||$vars[0]=="stopped"){
+                        $j->status=$vars[0];
+                        $j->volume=$vars[1];
+                        $j->title=$vars[2];
+                        $j->artist=$vars[3];
+                        $j->album_artist=$vars[4];
+                        $j->track_artist=$vars[5];
+                        $j->album=$vars[6];
+                        $j->playback_time=$vars[7];
+                        $j->length=$vars[8];
+                        $j->path=$vars[9];
+                        $j->version=$vars[10];
+                    }
+                    /*elseif($vars[0]=="paused"){
+                    }
+                    elseif($vars[0]=="stopped"){
+                    }*/
+                    elseif($vars[0]=="not running"){
+                        $j->status="closed";
+                        $j->version=$var[1];
+                    }
+                    else{
+                        $j->status="error";
+                        $j->path=$playing;
+                    }
             
-            echo json_encode($j);
-            //$JSON=
-            //json_encode($vars);
-            //return 
+                echo json_encode($j);
+                //$JSON=
+                //json_encode($vars);
+                //return 
+                }
             }
 
         }
