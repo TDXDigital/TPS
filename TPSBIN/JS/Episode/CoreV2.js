@@ -53,8 +53,8 @@
             /*"<p>Status:</p>"+
             fb2k_data.status +*/
             "</div>" +
-            "<div class='col-1-8'><p>Title</p><input type='text' readonly name='title' id='title003' value='" + fb2k_data.title + "' /></div>" +
-            "<div class='col-1-8'><p>Artist</p><input type='text' readonly name='title' id='artist003' value='";
+            "<div class='col-1-8'><p>Title</p><input type='text' readonly name='title_read' id='title003' value='" + fb2k_data.title + "' /></div>" +
+            "<div class='col-1-8'><p>Artist</p><input type='text' readonly name='artist_read' id='artist003' value='";
           if (fb2k_data.track_artist != undefined) {
               html_info += fb2k_data.artist;
           }
