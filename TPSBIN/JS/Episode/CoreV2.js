@@ -62,7 +62,7 @@
               html_info += fb2k_data.album_artist;
           }
             html_info += "' /></div>" +
-            "<div class='col-1-8'><p>Album</p><input type='text' readonly name='title' id='album003' value='" + fb2k_data.artist + "' /></div>" +
+            "<div class='col-1-8'><p>Album</p><input type='text' readonly name='album_read' id='album003' value='" + fb2k_data.artist + "' /></div>" +
             "</span></div></div></form>";
 
           $("#info_player").html(html_info);
