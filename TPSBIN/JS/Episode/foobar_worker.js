@@ -20,13 +20,13 @@ function get_playing() {
                 //document.getElementById("myDiv").innerHTML = xmlhttp.responseText;
                 postMessage(xmlhttp.responseText);
             }
-            /*else if(xmlhttp.status == 400) {
-            postMessage("error 400");
+            else if(xmlhttp.status == 404) {
+            postMessage("error 404");
             //alert('There was an error 400')
-            }*/
+            }
             else {
-
-                return false;
+                postMessage("error");
+                //return false;
                 //postMessage("An Error Occured");
 
                 //alert('something else other than 200 was returned')
@@ -36,7 +36,7 @@ function get_playing() {
 
     xmlhttp.open("GET", "../../../Episode/EPV3/workers.php?q=np", true);
     xmlhttp.send();
-    setTimeout("get_playing()",3000);
+    setTimeout("get_playing()",1000);
     /*var switch_s = $.ajax({
         url: "EPV3/Switch.php?q=V2",
         cache: false

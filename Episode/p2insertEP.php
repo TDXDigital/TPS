@@ -335,6 +335,19 @@ else{
 		$RECPSA = mysql_num_rows($resultPROMO);
 		$RECPSA += mysql_num_rows($resultPSA);
         
+
+        /*[TODO] update function to include system check (JSON)*/
+        $Foobar_Enabled_Query = "SELECT hardwareid from hardware where `device_code`='Foobar2000' and `ipv4_address`='".$_SERVER['REMOTE_ADDR']."' and `in_service`='1';";
+        $Foobar_array = mysql_query($Foobar_Enabled_Query);
+        if(mysql_num_rows($Foobar_array)>0){
+            $Foobar_Enabled=TRUE;
+        }
+        else{
+            $Foobar_Enabled=FALSE;
+        }
+        $RDS_Enabled=TRUE;
+        $Switch_Enabled=TRUE;
+
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -382,10 +395,12 @@ else{
          $("#end_time").change(UpdateFinalize);
 
          // set displays
-         Display_RDS();
-         Display_Switch();
-         Foobar2000();
-
+        <?php
+            //workers
+            if($RDS_Enabled){ print("Display_RDS();"); };
+            if($Switch_Enabled){ print("Display_Switch();"); };
+            if($Foobar_Enabled){ print("Foobar2000();"); };
+         ?>
          // Load Emergency Information
          GetEAS('EAS', '../');
          setInterval(function () {
@@ -1176,7 +1191,7 @@ if(false){
                            ?>
                        </th>
                        <th>
-                           <input name="sub" type="submit" value="Insert" onclick="formSubmit()"/>
+                           <input name="sub" id="sub_ann" type="submit" value="Insert" onclick="formsubmit()"/>
                            </form>
                        </th>
                        <th colspan="100%">
@@ -1290,7 +1305,7 @@ if(false){
                            ?>
                        </th>
                        <th>
-                           <input name="sub" type="submit" value="Insert" onclick="formSubmit()"/>
+                           <input name="sub" type="submit" value="Insert" onclick="formsubmit()"/>
                            </form>
                        </th>
                        <th colspan="100%">
@@ -1482,7 +1497,7 @@ if(false){
                            </datalist>
                        </th>
                        <th>
-                           <input name="sub" type="submit" value="Insert" onclick="formSubmit()"/>
+                           <input name="sub" type="submit" value="Insert" onclick="formsubmit()"/>
                            </form>
                        </th>
               </tr>

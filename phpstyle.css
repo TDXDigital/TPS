@@ -236,7 +236,6 @@ color:#CCCCCC;
 .grid {
   background-color:#fafafa;
   margin: 0 0 $pad 0;
-  
   &:after {
     /* Or @extend clearfix */
     content: "";
@@ -248,7 +247,9 @@ color:#CCCCCC;
 [class*='col-'] {
     background-color: inherit;
     background: inherit;
+    height: 61px;
 	float: left;
+    vertical-align: bottom;
   padding-right: $pad;
   .grid &:last-of-type {
   	padding-right: 0;
@@ -266,6 +267,9 @@ color:#CCCCCC;
 .col-1-4 {
 	width: 25%;
 }
+.col-1-6 {
+	width: 16.66%;
+}
 .col-1-8 {
 	width: 12.5%;
 }
@@ -273,10 +277,14 @@ color:#CCCCCC;
 	width: 10%;
 }
 .col-1-12 {
-	width: 8%;
+	width: 8.33%;
+}
+.col-1-25 {
+	width: 4%;
 }
 .col-fill {
-    width: fill-available;
+    /*width: fill-available;*/
+    width: 100%;
 }
 
 .module {

@@ -17,6 +17,7 @@
         public $length = "";
         public $path = "";
         public $version = "";
+        public $composer = "";
     }
 
     class TPS_Cron{
@@ -310,8 +311,9 @@
             $file='\\\\'.$server.'\Now_Playing\\Now_Playing.txt';
             // read Now Playing file from remote server
             if(!file_exists($file)){
-                return FALSE;
-                break;
+                header('HTTP/1.1 404 File Not Found');
+                header('Content-Type: application/json; charset=UTF-8');
+                die(json_encode(array('status' => 'error', 'code' => 1337)));
             }
             else{
                 $playing = file_get_contents($file);
@@ -337,10 +339,11 @@
                         $j->album_artist=$vars[4];
                         $j->track_artist=$vars[5];
                         $j->album=$vars[6];
-                        $j->playback_time=$vars[7];
-                        $j->length=$vars[8];
-                        $j->path=$vars[9];
-                        $j->version=$vars[10];
+                        $j->composer=$vars[7];
+                        $j->playback_time=$vars[8];
+                        $j->length=$vars[9];
+                        $j->path=$vars[10];
+                        $j->version=$vars[11];
                     }
                     /*elseif($vars[0]=="paused"){
                     }
