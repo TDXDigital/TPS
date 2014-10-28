@@ -5,6 +5,7 @@
         sec_session_start();
     }
     $arg1=filter_input(INPUT_GET,'q',FILTER_SANITIZE_STRING);
+    $max=filter_input(INPUT_GET,'e',FILTER_SANITIZE_STRING);
     
     $PAGES=[['wel','Welcome','?q=wel'],['lic','EULA','?q=lic'],['db','Database','?q=db'],['auth','Auth','?q=auth'],['settings','Settings','?q=settings'],['review','Review','?q=review'],['done','Complete','?q=done']];
     $chained= TRUE;
