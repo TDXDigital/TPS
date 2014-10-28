@@ -3,7 +3,7 @@
     
     // check for installation
     if(!defined('DBHOST')){
-        $filename="Setup/";
+        $filename="TPSBIN/XML/DBSETTINGS.xml";
         if(file_exists($filename)){
             header('location: Setup/');
         }
