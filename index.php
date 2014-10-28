@@ -1,5 +1,27 @@
 <?php
     include "TPSBIN/functions.php";
+    
+    // check for installation
+    if(!defined('DBHOST')){
+        $filename="Setup/";
+        if(file_exists($filename)){
+            header('location: Setup/');
+        }
+        else{
+            goto start;
+        }
+    }
+    else{
+        //go to install script if exists, otherise display error
+        if(false){
+            
+        }
+        else{
+            echo "Installation has been completed or this copy of TPS may be corrupt. please check installation folder.";
+        }
+    }
+    
+    start:
     if (!isset($_SESSION)) {
         sec_session_start();
     }

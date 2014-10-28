@@ -4,11 +4,15 @@
         // PRINT OUT LOGIN
         echo "<a href='login'>login</a>";
     }
-    $base = $_SESSION['BASE_REF'];
+    if($SETUP){
+        goto SETVAR_SETUP;
+    }
+    $base = $_SESSION['BASE_REF']?:"../";
     $logo = $_SESSION['m_logo']?: $_SESSION['logo'];
     $dbname= $_SESSION['DBNAME']; // NEEDS COMPANY HEAD TO ALLOW SELECTING MULTIPLE CALLSIGNS (This is not right)
     $access=$_SESSION['access'];
     $opened_db=FALSE;
+    
     if(!$mysqli){
         $opened_db=TRUE;
         require_once "functions.php";
@@ -33,7 +37,23 @@
         //error_log($permissions[0]);
     }
     else{
-        die('<a href=\'login\'>login</a>');
+        if(!$SETUP){
+            die('<a href=\'login\'>login</a>');
+        }
+        else{
+            SETVAR_SETUP:
+            // Genreate Blank Permissions for setup (display menu with no opt.)
+            $permissions = ['Station_Settings_View'=>0,'Station_Settings_Edit'=>0,
+                            'Member_View'=>0,'Member_Edit'=>0,'Member_Create'=>0,
+                            'Program_View'=>0,'Program_Edit'=>0,'Program_Create'=>0,
+                            'Genre_View'=>0,'Genre_Edit'=>0,'Genre_Create'=>0,
+                            'Playsheet_View'=>0,'Playsheet_Create'=>0,'Playsheet_Edit'=>0,
+                            'Advert_View'=>0,'Advert_Edit'=>0,'Advert_Create'=>0,
+                            'Audit_View'=>0];
+            $base="../";
+            $opened_db=FALSE;
+            $logo="Setup/opensource_logo.png";
+        }
     }
 
     if($opened_db===TRUE){
@@ -54,6 +74,8 @@
         array(0,"</button>"),
     )*/
     ?>
+
+    PRINTMENU:
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -69,7 +91,7 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
               <!-- User access to Dashboard is required. can not remove permission-->
-            <li><a <?php echo "href=\"".$base; ?>/">Dashboard</a></li>
+            <li><a <?php echo "href=\"".$base."\"" ?> >Dashboard</a></li>
             <?php   
                 // determine permission for menu
                 $station_permission=max($permissions['Station_Settings_View'],$permissions['Station_Settings_Edit']);

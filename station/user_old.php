@@ -1,5 +1,7 @@
 <?php
-      session_start();
+if (!isset($_SESSION)) {
+    sec_session_start();
+}
 
 function getBrowser()
      {
