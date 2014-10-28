@@ -28,7 +28,7 @@ This software is designed to suit the needs of campus and community based radio 
 
 # Operations
 1. Installation
---1. Requirements
+--# Requirements
 2. Setting up a station
 3. Genres
 4. DJs and Programs
