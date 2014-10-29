@@ -8,16 +8,19 @@
             header('location: Setup/');
         }
         else{
-            goto start;
+            header('location: Security/login.html');
         }
     }
     else{
         //go to install script if exists, otherise display error
+        if(isset($_SESSION)){
+            goto start;
+        }
         if(false){
-            
+            echo "Installation has been completed or this copy of TPS may be corrupt. please check installation folder.";
         }
         else{
-            echo "Installation has been completed or this copy of TPS may be corrupt. please check installation folder.";
+            goto start;
         }
     }
     
