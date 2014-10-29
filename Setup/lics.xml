@@ -7,10 +7,19 @@ and open the template in the editor.
 
 
 <root>
-    <licence>
+    <license>
         <Segment>TPS Broadcast</Segment>
-        <file>../LICENCE</file>
+        <file>../LICENSE</file>
         <required>TRUE</required>
-    </licence>
-    
+    </license>
+    <license>
+        <Segment>BARCODEGEN</Segment>
+        <file>../barcodegen/README_1D.txt</file>
+        <required>TRUE</required>
+    </license>
+    <license>
+        <Segment>HTML Barcode OpenSource (GNU GPLv3)</Segment>
+        <file>../TPSBIN/Barcode/LICENSE</file>
+        <required>TRUE</required>
+    </license>
 </root>

@@ -12,15 +12,14 @@
         }
     }
     else{
-        //go to install script if exists, otherise display error
+        // setup exists
         if(isset($_SESSION)){
+            // session exists, proceed as normal
             goto start;
-        }
-        if(false){
-            echo "Installation has been completed or this copy of TPS may be corrupt. please check installation folder.";
         }
         else{
-            goto start;
+            //unknown error.
+            echo "Installation has been completed or this copy of TPS may be corrupt. please check installation folder.";
         }
     }
     

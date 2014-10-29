@@ -17,14 +17,21 @@
     </div>";
     }
 ?>
-<form action='?q=lic' method="GET">
-    <input type='hidden' name='e' value='lic'/>
+<form action='setup.vars.php' method="POST">
+    <input type='hidden' name='e' value='<?php
+        if($_SESSION['max_page']>1){
+            echo $PAGES[$_SESSION['max_page'][0]];
+        }
+        else{
+            echo 'lic';
+        }
+    ?>'/>
     <input type='hidden' name='q' value='lic'/>
 <div class="panel panel-primary">
     <div class="panel-heading">Welcome to TPS Broadcast!</div>
     <div class="panel-body">
-        <p>This suite is designed for, and 
-            developed by Campus Community Radio Station 
+        <p>This suite is designed for and 
+            developed by Canadian Campus Community Radio Station 
             <a href="http://www.ckxu.com/" target="CKXU">CKXU-FM</a><br>
             During this installation you will need:
         </p>

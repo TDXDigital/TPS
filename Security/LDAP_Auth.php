@@ -1,36 +1,37 @@
 <?php
-    if(!isset($DEBUG)){
-        $DEBUG = "";
-    }
+    
 function LDAP_AUTH($user, $password, $xml_server) {
+    $DEBUG="";
     if((string)$xml_server->ACTIVE == '0'){
         $DEBUG .= "<p>ERROR: Selected server has been disabled by an administrator</p>";
         die("<p>Click <a href='$ORIGIN'>Here</a> to return to login");
     }
     $DEBUG .= "<br/>";
     // Active Directory server
-    $ldap_host = (string)$xml_server->LDP_SERVER;//"ldap://picard.local.ckxu.com/";
+    $ldap_host = (string)$xml_server->LDP_SERVER;
 
     // LDAP Port
-    $ldap_port = (string)$xml_server->LDP_PORT;//636;
+    $ldap_port = (string)$xml_server->LDP_PORT;
 
     // Active Directory DN
-    $ldap_dn = (string)$xml_server->LDP_BASE_DN;//"CN=Users,DC=local,DC=ckxu,DC=com";
+    $ldap_dn = (string)$xml_server->LDP_BASE_DN;
 
     // LOGO
-    $logo = (string)$xml_server->LOGO_PATH;// images/Ckxu_logo_PNG.png
+    $logo = (string)$xml_server->LOGO_PATH;
 
-    // LOGO
-    $m_logo = (string)$xml_server->MENU_LOGO_PATH;// images/Ckxu_logo_PNG.png
+    // Menu LOGO (Small)
+    $m_logo = (string)$xml_server->MENU_LOGO_PATH;
 
+    //Authorization Settings
+    //
     // Active Directory user group
-    $ldap_user_group = "WebUsers";
+    $ldap_user_group = "WebUsers"; //$xml_server->ldap_user; ?? or from DB
 
     // Active Directory manager group
-    $ldap_manager_group = "WebAdmins";
+    $ldap_manager_group = "WebAdmins"; //$xml_server->ldap_user; ?? or from DB
 
     // Domain, for purposes of constructing $user
-    $ldap_usr_dom = (string)$xml_server->LDP_DOMAIN;//"CKXU-FM";
+    $ldap_usr_dom = (string)$xml_server->LDP_DOMAIN;
 
     // connect to active directory
     $DEBUG .= "<span>SERVER: $ldap_host<br/></span>";

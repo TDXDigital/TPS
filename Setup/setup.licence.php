@@ -17,19 +17,38 @@
     </div>";
     }
 ?>
-<form action='?q=db' method="GET" name="lic">
-    <input type='hidden' name='e' value='db'/>
+<form action='setup.vars.php' method="POST" name="lic">
+    <input type='hidden' name='e' value='<?php
+        if($_SESSION['max_page']>2){
+            echo $PAGES[$_SESSION['max_page'][0]]."-SESSION";
+        }
+        else{
+            echo 'db';
+        }
+    ?>'/>
     <input type='hidden' name='q' value='db'/>
 <div class="panel panel-primary">
     <div class="panel-heading">Please read the following licenses required for this software.</div>
     <div class="panel-body">
         <p>
             <?php
-            $lic = file_get_contents('../LICENSE');
-            echo nl2br($lic);
+            // get licences
+            $lic_xml = simplexml_load_file("lics.xml");
+            $n = 0;
+            foreach( $lic_xml->license as $license_file){
+                if($n>0){
+                    echo "<h3>".$license_file->Segment."</h3>";
+                }
+                $file = $license_file->file;
+                $lic = file_get_contents($file);
+                echo nl2br($lic);
+                $n++;
+                echo "<br><hr>";
+            }
+            
             ?>
         </p>
-        <input type="checkbox" required name='eula'/><span>I have read, understand, and agree to be bound by these licenses</span><br>
+        <input id="eula" type="checkbox" required name='eula'/><label for="eula"> I have read, and agree to the license(s) terms</label><br><br>
         <input type="submit" value="Accept"/>
         </form>
 <button onclick="close(); return false;" value='Decline'>Decline</button>

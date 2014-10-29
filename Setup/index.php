@@ -66,9 +66,6 @@
     <link href="../js/bootstrap/css/dashboard.css" rel="stylesheet">
     <!--<link href="js/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">-->
 
-    <!-- Just for debugging purposes. Don't actually copy this line! -->
-    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -83,8 +80,8 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-              <?php 
-                
+            <?php 
+                $_SESSION['PAGES']=$PAGES;
                 foreach ($PAGES as $node){
                     print ("<li ");
                     if($PAGE===$node[0]){
@@ -99,7 +96,7 @@
                         print "'><a href=\"".$node[2]."\" >".$node[1]."</a></li>";
                     }
                 }
-                      ?>
+            ?>
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" id="content_head">

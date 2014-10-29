@@ -1,12 +1,14 @@
 <?php
    include("../TPSBIN/functions.php");
-include("LDAP_Auth.php");
-include("DB_Auth.php");
-// Establish Session
-sec_session_start();
+
+// Establish Session if does not exist (should not exist)
+if(!isset($_SESSION)){
+   sec_session_start();
+   $DEBUG = FALSE;
+}
 
 // SET BASE REF
-$_SESSION['BASE_REF']="/TPS";
+$_SESSION['BASE_REF']="";// should load from XML
 
 // LOAD SERVERS
 $dbxml = simplexml_load_file("../TPSBIN/XML/DBSETTINGS.xml");
@@ -75,10 +77,11 @@ $dbxml = simplexml_load_file("../TPSBIN/XML/DBSETTINGS.xml");
 <?php
 
 // using ldap bind [Get Credentials]
-$postuser  = $_POST['name'];// ldap rdn or dn
-$postpass = $_POST['pass']; // associated password
-$db_ID = $_POST['SRVID']; // Entity ID
-$dest = $_GET['d'] = '../';
+
+$postuser = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
+$postpass = filter_input(INPUT_POST, 'pass', FILTER_SANITIZE_STRING);
+$db_ID = filter_input(INPUT_POST, 'SRVID', FILTER_SANITIZE_STRING);
+$dest = $_GET['d']?:'../';
 $DEBUG = "";
 if(isset($_POST['return'])){
     $des = $_POST['return'];
@@ -97,7 +100,8 @@ if((string)$convars->ID==$db_ID){
     $DEBUG .= "MATCH</br>";
 	// SET Connection HOST
     if((string)$convars->AUTH == strtoupper("LDAP")){
-        //$_SESSION['DBHOST'] = (string)$convars->IPV4;
+        // Load Auth Module LDAP
+        include("LDAP_Auth.php");
         if(LDAP_AUTH($postuser, $postpass, $convars)){
             if($des==0){
                 header("Location: $dest");
@@ -105,18 +109,15 @@ if((string)$convars->ID==$db_ID){
             else{
                 header("Location: $ORIGIN");
             }
-	        //echo "200";
         }
         else{
-	        //echo "<h3>Login Failed</h3><span><br/>You do not have DNS authenticated access<br/></span>";
-	        //header("location: http://ckxuradio.su.uleth.ca/index.php/digital-program-logs?args=LoginFailedCode1");
-	        //header("Location: $ORIGIN&auth=Access Denied Invalid Credentials");
-	        //echo "Login Failed";
             echo "<div class=\"container\" style=\"margin-top: 30px;\"><div class=\"page-header\">LDAP Login Failed</div><p>Click <a href='$ORIGIN'>HERE</a> to return to login and try again</p></div>";
         }
     }
     else if((string)$convars->AUTH == strtoupper("MYSQL_DB")){
     	if(DB_AUTH($postuser, $postpass, $convars)){
+            // Load Auth Module DB
+            //include("DB_Auth.php");
     		if($des==0){
     			header("Location: $dest");
     		}
