@@ -38,7 +38,14 @@
                         <label for="callsign"><span class="glyphicon glyphicon-flash"></span> Callsign (4 characters)</label>
                     </span>
                       <input name="callsign" type="text" class="form-control" id="callsign" 
-                             maxlength="4" required placeholder="Letters and Numbers only" pattern="[A-Za-z0-9]"/>
+                             maxlength="4" required placeholder="Letters and Numbers only" pattern="[A-Za-z0-9]"
+                    <?php
+                        if(isset($_SESSION['callsign']) && is_string($_SESSION['callsign'])){
+                            echo $_SESSION['callsign'];
+                        }
+                        else{
+                        }
+                    ?>/>
                   </div><!-- /input-group -->
                 </div><!-- /.col-lg-6 -->
                 <div class="col-lg-6">
