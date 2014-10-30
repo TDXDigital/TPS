@@ -17,6 +17,9 @@ else{
         case "db":
             include_once("setup.database.php");
         break;
+        case "settings":
+            include_once("setup.settings.php");
+        break;
         case "auth":
             include_once("setup.auth.php");
         break;

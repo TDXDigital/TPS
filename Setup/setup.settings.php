@@ -17,50 +17,59 @@
     </div>";
     }
 ?>
-<form action='setup.vars.php' method="POST" name="auth">
+<form action='setup.vars.php' method="POST" name="settings">
     <input type='hidden' name='e' value='<?php
         if(isset($_SESSION['max_page']) && is_numeric($_SESSION['max_page'])){
             echo $PAGES[$_SESSION['max_page']][0];
         }
         else{
-            echo 'settings';
+            echo 'rev';
         }
     ?>'/>
-    <input type='hidden' name='q' value='settings'/>
+    <input type='hidden' name='q' value='rev'/>
 <div class="panel panel-primary">
-    <div class="panel-heading">Authentication Settings</div>
+    <div class="panel-heading">Corporate Settings</div>
     <div class="panel-body">
         <fieldset>
             <div class="row">
                 <div class="col-lg-6">
                   <div class="input-group">
                     <span class="input-group-addon">
-                        <input id="LDAP_type" type="radio" name="at" value="LDAP"<?php
-                            if(isset($_SESSION['authtype'])&&$_SESSION['authtype']==='LDAP'){
-                                echo " checked ";
-                            }
-                            elseif(!isset($_SESSION['authtype'])){
-                                echo " checked ";
-                            }
-                        ?>/>
+                        <label for="callsign"><span class="glyphicon glyphicon-flash"></span> Callsign (4 characters)</label>
                     </span>
-                    <label  class="form-control" for="LDAP_type">LDAP / LDAP+SSL</label>
+                      <input name="callsign" type="text" class="form-control" id="callsign" 
+                             maxlength="4" required placeholder="Letters and Numbers only" pattern="[A-Za-z0-9]"/>
                   </div><!-- /input-group -->
                 </div><!-- /.col-lg-6 -->
                 <div class="col-lg-6">
                   <div class="input-group">
                     <span class="input-group-addon">
-                      <input id="SECL_type" type="radio" name="at" value="SECL"<?php
-                            if(isset($_SESSION['authtype'])&&$_SESSION['authtype']==="SECL"){
-                                echo " checked ";
-                            }
-                        ?>/>
+                        <label for="brand"><span class="glyphicon glyphicon-tint"></span> Name / Brand</label>
                     </span>
-                    <label  class="form-control" for="SECL_type">Database Secure Authentication</label>
+                      <input name="brand" type="text" class="form-control" id="brand" maxlength="20" required/>
                   </div><!-- /input-group -->
                 </div><!-- /.col-lg-6 -->
               </div><!-- /.row -->
-              
+              <br>
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="input-group">
+                    <span class="input-group-addon">
+                        <label for="website"><span class="glyphicon glyphicon-globe"></span> Website</label>
+                    </span>
+                      <input name="website" type="url" class="form-control" id="website" 
+                              placeholder="must include http:// or https://"/>
+                  </div><!-- /input-group -->
+                </div><!-- /.col-lg-6 -->
+                <div class="col-lg-6">
+                  <div class="input-group">
+                    <span class="input-group-addon">
+                        <label for="brand"><span class="glyphicon glyphicon-tint"></span> Name / Brand</label>
+                    </span>
+                      <input name="brand"  class="form-control" id="brand" maxlength="20" required/>
+                  </div><!-- /input-group -->
+                </div><!-- /.col-lg-6 -->
+              </div><!-- /.row -->
               <br>
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -157,7 +166,7 @@
             </div>
               <div class="input-group">
                 <label for="admail" class="input-group-addon">Admin Email</label>
-                <input id="admail" class="form-control" type="email" name="admail" <?php
+                <input id="admail" class="form-control" type="text" name="admail" <?php
                        if(isset($_SESSION['admin_email'])&&!is_null($_SESSION['admin_email'])){
                            echo "value=\"".$_SESSION['admin_email']."\" ";
                        }

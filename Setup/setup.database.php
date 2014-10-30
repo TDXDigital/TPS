@@ -77,8 +77,8 @@
             </div>
             <br>
             <div class="input-group">
-                <label for="user" class="input-group-addon">Database User</label>
-                <input id="user" class="form-control" type="text" name="r" 
+                <label for="dbuser" class="input-group-addon">Database User</label>
+                <input id="dbuser" class="form-control" type="text" name="r" 
                        required <?php
                        if(isset($_SESSION['user'])&&!is_null($_SESSION['user'])){
                            echo "value=\"".$_SESSION['user']."\" ";
@@ -100,8 +100,8 @@
             
         </fieldset>
         <br>
-        <input type="submit" value="Test" disabled/>
-        <input type="submit" value="Next"/>
+        <input class="btn btn-default" type="submit" value="Test" disabled/>
+        <input class="btn btn-default" type="submit" value="Next &raquo;"/>
         </form>
     </div>
 </div>

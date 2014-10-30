@@ -43,7 +43,7 @@
         <p>
             Let's Begin!
         </p>
-        <input type="submit" value="Next"/>
+        <input class="btn btn-default" type="submit" value="Next &raquo;"/>
     </div>
 </div>
 </form>

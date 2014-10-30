@@ -48,19 +48,26 @@
             
             ?>
         </p>
-        <input id="eula" type="checkbox" required name='eula' <?php
-        if(isset($_SESSION['EULA'])){
-            switch ($_SESSION['EULA']) {
-                case 'on':
-                    print " checked disabled ";
-                    break;
+        <div class="input-group">
+            <span class="input-group-addon">
+                <input id="eula" type="checkbox" required name='eula' <?php
+                    if(isset($_SESSION['EULA'])){
+                        switch ($_SESSION['EULA']) {
+                            case 'on':
+                                print " checked disabled ";
+                                break;
 
-                default:
-                    break;
-            }
-        }
-        ?>/><label for="eula"> I have read, and agree to the license(s) terms</label><br><br>
-        <input type="submit" value="Next"/>
+                            default:
+                                break;
+                        }
+                    }
+                ?>/>
+            </span>
+            <label class="form-control" for="eula"> I have read, and agree to the license(s) terms</label>
+      </div><!-- /input-group -->
+        
+        <br><br>
+        <input class="btn btn-default" type="submit" value="Next &raquo;"/>
         </form>
     </div>
 </div>

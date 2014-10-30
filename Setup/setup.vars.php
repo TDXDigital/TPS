@@ -1,6 +1,6 @@
 <?php
 
-$DEBUG=TRUE;
+$DEBUG=FALSE;
 
 include "../TPSBIN/functions.php";
 if(is_session_started()===FALSE) { session_start(); }
@@ -40,6 +40,8 @@ $password = \filter_input(INPUT_POST, 'd',  \FILTER_SANITIZE_STRING);
 
 
 // Auth
+/* @var $auid type */
+$auid = \filter_input(INPUT_POST, 'uid', \FILTER_SANITIZE_STRING);
 /* @var $sysuser type */
 $sysuser = \filter_input(INPUT_POST, 'su', \FILTER_SANITIZE_STRING);
 /* @var $authtype type */
@@ -52,6 +54,10 @@ $LDAP_server = \filter_input(INPUT_POST, 'lds',\FILTER_SANITIZE_STRING);
 $LDAP_DN = \filter_input(INPUT_POST, 'dn',\FILTER_SANITIZE_STRING);
 /* @var $LDAP_domain type */
 $LDAP_domain = \filter_input(INPUT_POST, 'domn',\FILTER_SANITIZE_STRING);
+/* @var $LDAP_bind_u type */
+$LDAP_bind_u = \filter_input(INPUT_POST, 'bndu',\FILTER_SANITIZE_STRING);
+/* @var $LDAP_bind_p type */
+$LDAP_bind_p = \filter_input(INPUT_POST, 'bndp',\FILTER_SANITIZE_STRING);
 
 /*
  * Process Page related values
@@ -119,6 +125,23 @@ if(!is_null($username)&&!is_null($password)){
     $_SESSION['database']=$database;
     $_SESSION['user']=$username;
     $_SESSION['password']=$password;
+}
+
+/*
+ * Set Authentication Values
+ */
+if(!is_null($authtype)){
+    echo "<br>Setting Auth:".$authtype;
+    $_SESSION['authtype']=$authtype;
+    if($authtype==="LDAP"){
+        $_SESSION['ldap_port']=$LDAP_port;
+        $_SESSION['ldap_server']=$LDAP_server;
+        $_SESSION['ldap_dn']=$LDAP_DN;
+        $_SESSION['ldap_domn']=$LDAP_domain;
+        echo "<br><br>LDAP_Port:".$LDAP_port."<br>LDAP_Server:".$LDAP_server."<br>DN:".$LDAP_DN.
+            "<br>Domain:".$LDAP_domain;
+        
+    }
 }
 
 /*

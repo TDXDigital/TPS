@@ -7,7 +7,7 @@
     $arg1=filter_input(INPUT_GET,'q',FILTER_SANITIZE_STRING);
     $max=filter_input(INPUT_GET,'e',FILTER_SANITIZE_STRING);
     
-    $PAGES=[['wel','Welcome','?q=wel'],['lic','EULA','?q=lic'],['db','Database','?q=db'],['auth','Auth','?q=auth'],['settings','Settings','?q=settings'],['review','Review','?q=review'],['done','Complete','?q=done']];
+    $PAGES=[['wel','Welcome','?q=wel'],['lic','EULA','?q=lic'],['db','Database','?q=db'],['auth','Auth','?q=auth'],['settings','Settings','?q=settings'],['review','Review','?q=review'],['install','Install','?q=install'],['done','Complete','?q=done']];
     $chained= TRUE;
     
     
@@ -112,6 +112,8 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="../js/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/JavaScript" src="../TPSBIN/JS/sha512.js"></script> 
+    <script type="text/JavaScript" src="../TPSBIN/JS/forms.js"></script> 
     <!--<script src="../../assets/js/docs.min.js"></script>-->
   
 
