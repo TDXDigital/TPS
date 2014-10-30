@@ -64,8 +64,10 @@ $LDAP_bind_p = \filter_input(INPUT_POST, 'bndp',\FILTER_SANITIZE_STRING);
 $callsign = \filter_input(INPUT_POST, 'callsign', \FILTER_SANITIZE_STRING);
 /* @var $brand type */
 $brand = \filter_input(INPUT_POST, 'brand', \FILTER_SANITIZE_STRING);
-/* @var $ type */
+/* @var $website type */
 $website = \filter_input(INPUT_POST, 'website', \FILTER_SANITIZE_STRING);
+/* @var $designation type */
+$designation = \filter_input(INPUT_POST, 'designation', \FILTER_SANITIZE_STRING);
 
 
 /*
