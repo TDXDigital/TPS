@@ -2,7 +2,7 @@
 USE `$DBNAME`;
 -- MySQL dump 10.13  Distrib 5.6.13, for Win32 (x86)
 --
--- Host: 127.0.0.1    Database: %DBNAME
+-- Host: 127.0.0.1    Database: $DBNAME
 -- ------------------------------------------------------
 -- Server version	5.6.14
 
