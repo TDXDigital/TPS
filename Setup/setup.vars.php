@@ -1,6 +1,6 @@
 <?php
 
-$DEBUG=TRUE;
+$DEBUG=FALSE;
 
 include "../TPSBIN/functions.php";
 if(is_session_started()===FALSE) { session_start(); }
@@ -24,16 +24,23 @@ class setup {
 
 $PAGES = $_SESSION['PAGES'];
 
-$max_page_usr =  \filter_input(INPUT_POST, 'e',FILTER_SANITIZE_STRING);
-$current_page = \filter_input(INPUT_POST, 'q',FILTER_SANITIZE_STRING);
-$eula_accepted = \filter_input(INPUT_POST, 'eula',FILTER_SANITIZE_STRING);
-$database = \filter_input(INPUT_POST, 'db',FILTER_SANITIZE_STRING);
-$host = \filter_input(INPUT_POST,'host',FILTER_SANITIZE_STRING);
-$port = \filter_input(INPUT_POST, 'port',FILTER_SANITIZE_NUMBER_INT);
-$username = \filter_input(INPUT_POST, 'r',FILTER_SANITIZE_STRING);
+/* @var $max_page_usr type */
+$max_page_usr =  \filter_input(INPUT_POST, 'e',\FILTER_SANITIZE_STRING);
+/* @var $current_page type */
+$current_page = \filter_input(INPUT_POST, 'q',\FILTER_SANITIZE_STRING);
+/* @var $eula_accepted type */
+$eula_accepted = \filter_input(INPUT_POST, 'eula',\FILTER_SANITIZE_STRING);
+/* @var $database type */
+$database = \filter_input(INPUT_POST, 'db',\FILTER_SANITIZE_STRING);
+/* @var $host type */
+$host = \filter_input(INPUT_POST,'host',\FILTER_SANITIZE_STRING);
+/* @var $port type */
+$port = \filter_input(INPUT_POST, 'port',\FILTER_SANITIZE_NUMBER_INT);
+/* @var $username type */
+$username = \filter_input(INPUT_POST, 'r',\FILTER_SANITIZE_STRING);
+/* @var $password type */
 $password = \filter_input(INPUT_POST, 'd',  \FILTER_SANITIZE_STRING);
 
-$page_max=0;
 $pagevars=[];
 foreach($PAGES as $node){
     $pagevars[]=$node[0];
@@ -61,6 +68,25 @@ else{
     echo "<br>".$_SESSION['max_page']." --- ".$page_max;
 }
 
+if(isset($_SESSION['EULA_ACCEPTED'])&&isset($_SESSION['EULA'])){
+    //EULA is good.
+}
+else{
+    if(isset($eula_accepted)&&$eula_accepted!=null){
+        //$_SESSION['EULA_ACCEPTED']=date('Y-m-d');
+        $_SESSION['EULA']=1;
+        echo "SET EULA FLAG";
+    }
+    elseif($page_max>2){
+        header('location:?q=lic&m='.  urlencode("You must accept the licence to procede with installation"));
+    }
+    else{
+        echo "EULA Already Accepted??";
+        
+    }
+}
+//$_SESSION['EULA']=$eula_accepted;
+
 
 echo "<br>".$page_max;
 
@@ -81,7 +107,7 @@ foreach($_POST as $variable_name => $variable_val){
 if($DEBUG){
 echo "<a href=\"./?q=".$_POST['q']."\">NEXT</a>";
 echo "<br><br>MPU:".$max_page_usr."<br>MP:".$page_max."<br>CP:".$current_page.
-        "<br>EULA:".$eula_accepted."<br>DB:".$database."UN:".$username.
+        "<br>EULA:".$eula_accepted.":".$_SESSION['EULA']."<br>DB:".$database."<br>UN:".$username.
         "<br>PW:".$password;
 }
 else{

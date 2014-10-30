@@ -19,8 +19,8 @@
 ?>
 <form action='setup.vars.php' method="POST" name="lic">
     <input type='hidden' name='e' value='<?php
-        if($_SESSION['max_page']>2){
-            echo $PAGES[$_SESSION['max_page'][0]]."-SESSION";
+        if(isset($_SESSION['max_page']) && is_numeric($_SESSION['max_page'])){
+            echo $PAGES[$_SESSION['max_page']][0];
         }
         else{
             echo 'db';
@@ -48,10 +48,20 @@
             
             ?>
         </p>
-        <input id="eula" type="checkbox" required name='eula'/><label for="eula"> I have read, and agree to the license(s) terms</label><br><br>
-        <input type="submit" value="Accept"/>
+        <input id="eula" type="checkbox" required name='eula' <?php
+        if(isset($_SESSION['EULA'])){
+            switch ($_SESSION['EULA']) {
+                case 'on':
+                    print " checked disabled ";
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        ?>/><label for="eula"> I have read, and agree to the license(s) terms</label><br><br>
+        <input type="submit" value="Next"/>
         </form>
-<button onclick="close(); return false;" value='Decline'>Decline</button>
     </div>
 </div>
 </form>
