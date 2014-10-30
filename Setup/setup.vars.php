@@ -59,6 +59,15 @@ $LDAP_bind_u = \filter_input(INPUT_POST, 'bndu',\FILTER_SANITIZE_STRING);
 /* @var $LDAP_bind_p type */
 $LDAP_bind_p = \filter_input(INPUT_POST, 'bndp',\FILTER_SANITIZE_STRING);
 
+// Settings
+/* @var $callsign type */
+$callsign = \filter_input(INPUT_POST, 'callsign', \FILTER_SANITIZE_STRING);
+/* @var $brand type */
+$brand = \filter_input(INPUT_POST, 'brand', \FILTER_SANITIZE_STRING);
+/* @var $ type */
+$website = \filter_input(INPUT_POST, 'website', \FILTER_SANITIZE_STRING);
+
+
 /*
  * Process Page related values
  */
