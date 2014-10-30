@@ -9,7 +9,7 @@
 <?php
     $message = filter_input(INPUT_GET, 'm' , FILTER_SANITIZE_STRING);
     if(isset($message)){
-        echo "<div class=\"panel panel-success\">
+        echo "<div class=\"panel panel-fail\">
     <div class=\"panel-heading\">Message Information</div>
         <div class=\"panel-body\">
             <span>$message</span>
