@@ -19,8 +19,8 @@
 ?>
 <form action='setup.vars.php' method="POST">
     <input type='hidden' name='e' value='<?php
-        if($_SESSION['max_page']>1){
-            echo $PAGES[$_SESSION['max_page'][0]];
+        if(isset($_SESSION['max_page']) && is_numeric($_SESSION['max_page'])){
+            echo $PAGES[$_SESSION['max_page']][0];
         }
         else{
             echo 'lic';

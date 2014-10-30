@@ -27,7 +27,8 @@
             $e1=FALSE;
         }
         $enabled[$entity[0]]=$e1;
-        if($entity[0]===$PAGE){
+        if(($entity[0]===$PAGE && !($i < $_SESSION['max_page'])) 
+                || ($i>=$_SESSION['max_page'])){
             $chain_break=TRUE;
         }
         $i++;
