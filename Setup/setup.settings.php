@@ -23,10 +23,10 @@
             echo $PAGES[$_SESSION['max_page']][0];
         }
         else{
-            echo 'rev';
+            echo 'review';
         }
     ?>'/>
-    <input type='hidden' name='q' value='rev'/>
+    <input type='hidden' name='q' value='review'/>
 <div class="panel panel-primary">
     <div class="panel-heading">Corporate Settings</div>
     <div class="panel-body">

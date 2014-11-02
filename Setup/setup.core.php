@@ -23,7 +23,7 @@ else{
         case "auth":
             include_once("setup.auth.php");
         break;
-        case "rev":
+        case "review":
             include_once("setup.review.php");
         break;
         case "install":

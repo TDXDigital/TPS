@@ -23,29 +23,30 @@
             echo $PAGES[$_SESSION['max_page']][0];
         }
         else{
-            echo 'install';
+            echo 'inst';
         }
     ?>'/>
-    <input type='hidden' name='q' value='install'/>
+    <input type='hidden' name='q' value='inst'/>
 <div class="panel panel-primary">
     <div class="panel-heading">Corporate Settings</div>
     <div class="panel-body">
         <fieldset>
             <div class="row">
                 <div class="col-lg-6">
-                  Press Next to begin installation
-                  
-                  <?php
-                  echo "<br>callsign:".$_SESSION['callsign'];
-                  
-                  ?>
+                    <strong>Please Wait while your system is installed.</strong>
+                    <div class="alert alert-warning" role="alert"><span class="glyphicon glyphicon-warning-sign"></span> IMPORTANT: DO NOT REFRESH YOUR BROWSER</div>
+                  <br>
+                    <div class="progress">
+                        <div id="install_progress_bar" class="progress-bar progress-bar-striped active"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                            <span id="progress_status">Starting Installation</span><span class="dots">...</span>
+                        </div>
+                    </div>
                 </div><!-- /.col-lg-3 -->
               </div>
         </fieldset>
         <br>
-        <input class="btn btn-default" type="submit" value="Next &raquo;"/>
+        <input class="btn btn-default" type="submit" value="Next &raquo;" disabled/>
         </form>
     </div>
 </div>
-</form>
-    
+<script src="install.js" type="text/javascript"></script>

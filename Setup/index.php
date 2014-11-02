@@ -61,6 +61,7 @@
     <meta name="description" content="Setup for TPS">
     <meta name="author" content="James Oliver">
     <link rel="shortcut icon" href="../favicon.ico">
+    <script src="../js/jquery/js/jquery-2.1.1.min.js"></script>
 
     <title>TPS Setup</title>
 
@@ -115,7 +116,7 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    
     <script src="../js/bootstrap/js/bootstrap.min.js"></script>
     <script src="../js/bootstrap/js/bootstrap-select.js"></script>
     <script type="text/JavaScript" src="../TPSBIN/JS/sha512.js"></script> 
