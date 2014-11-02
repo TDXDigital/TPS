@@ -49,7 +49,7 @@ else{
         }
     }
     $sql = \file_get_contents("setup.createdb.sql");
-    $sql = preg_replace("/[\\n\\r]+/", " ", $sql);
+    //$sql = preg_replace("/[\\n\\r]+/", " ", $sql);
     $DB_NAME=$_SESSION['database'];
     $sql = preg_replace("/[?]+/", $DB_NAME, $sql);
     
@@ -69,13 +69,14 @@ else{
     $error_check=false;
     foreach($SQL_Statements as $EXEC){
         if(!empty($EXEC)){
+            $EXEC.=";";
             if (!($mysqli->query($EXEC))) {
                 $return=["status"=>"Error","Result"=>"Query failed: (" . $mysqli->errno . ") " . $mysqli->error];
                 $error_check=TRUE;
                 echo "ERROR:" . $EXEC ."<br><br>".$mysqli->error."<br><br>";
             }
             else{
-                //echo $EXEC . "<br><br>";
+                echo $EXEC . "<br><br>";
             }
             
         }

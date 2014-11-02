@@ -17,16 +17,16 @@
     </div>";
     }
 ?>
-<form action='setup.vars.php' method="POST" name="rev">
+<form action='setup.vars.php' method="POST" name="install">
     <input type='hidden' name='e' value='<?php
         if(isset($_SESSION['max_page']) && is_numeric($_SESSION['max_page'])){
             echo $PAGES[$_SESSION['max_page']][0];
         }
         else{
-            echo 'inst';
+            echo 'install';
         }
     ?>'/>
-    <input type='hidden' name='q' value='inst'/>
+    <input type='hidden' name='q' value='install'/>
 <div class="panel panel-primary">
     <div class="panel-heading">Corporate Settings</div>
     <div class="panel-body">
@@ -35,6 +35,7 @@
                 <div class="col-lg-6">
                     <strong>Please Wait while your system is installed.</strong>
                     <div class="alert alert-warning" role="alert"><span class="glyphicon glyphicon-warning-sign"></span> IMPORTANT: DO NOT REFRESH YOUR BROWSER</div>
+                    <div id="complete" class="alert alert-success" role="alert"><span class="glyphicon glyphicon-check"></span></div>
                   <br>
                     <div class="progress">
                         <div id="install_progress_bar" class="progress-bar progress-bar-striped active"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
@@ -42,7 +43,7 @@
                         </div>
                     </div>
                 </div><!-- /.col-lg-3 -->
-                <input class="btn btn-default" type="submit" value="Begin Installation" onclick="install_db();"/>
+                <input class="btn btn-default" type="submit" value="Begin Installation" onclick="install_db(); return false"/>
               </div>
         </fieldset>
         <br>

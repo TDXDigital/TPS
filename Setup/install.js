@@ -45,9 +45,10 @@ function install_db(){
                 alert("Access Denied");
             }
         },
-        succeess: function( msg ){
+        succeess: function( data ){
             //$( "#results" ).append( msg );
-            alert(msg);
+            //alert(msg);
+            $("#completed").html(data.status);
         }
     });
 }
@@ -55,4 +56,5 @@ function install_db(){
 jQuery(document).ready(function(){
     prep_install();
     var dots_run = setInterval(update_dots,750);
+    install_db();
 });
