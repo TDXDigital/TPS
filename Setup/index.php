@@ -62,6 +62,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="../js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../js/bootstrap/css/bootstrap-select.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="../js/bootstrap/css/dashboard.css" rel="stylesheet">
@@ -112,6 +113,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="../js/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap/js/bootstrap-select.js"></script>
     <script type="text/JavaScript" src="../TPSBIN/JS/sha512.js"></script> 
     <script type="text/JavaScript" src="../TPSBIN/JS/forms.js"></script> 
     <!--<script src="../../assets/js/docs.min.js"></script>-->
