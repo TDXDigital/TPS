@@ -64,6 +64,14 @@ $LDAP_bind_p = \filter_input(INPUT_POST, 'bndp',\FILTER_SANITIZE_STRING);
 $callsign = \filter_input(INPUT_POST, 'callsign', \FILTER_SANITIZE_STRING);
 /* @var $brand type */
 $brand = \filter_input(INPUT_POST, 'brand', \FILTER_SANITIZE_STRING);
+/* @var $frequency type */
+$frequency = \filter_input(INPUT_POST, 'frequency', \FILTER_SANITIZE_STRING);
+/* @var $req_phone type */
+$req_phone = \filter_input(INPUT_POST, 'req_ph', \FILTER_SANITIZE_STRING);
+/* @var $mrg_phone type */
+$mgr_phone = \filter_input(INPUT_POST, 'mgr_ph', \FILTER_SANITIZE_STRING);
+/* @var $pd_phone type */
+$pd_phone = \filter_input(INPUT_POST, 'pd_ph', \FILTER_SANITIZE_STRING);
 /* @var $website type */
 $website = \filter_input(INPUT_POST, 'website', \FILTER_SANITIZE_STRING);
 /* @var $designation type */
@@ -153,6 +161,21 @@ if(!is_null($authtype)){
             "<br>Domain:".$LDAP_domain;
         
     }
+}
+
+/*
+ * Set Settings Variables
+ */
+if(!is_null($callsign)){
+    echo "<br>Setting Settings:".$callsign;
+    $_SESSION['callsign']=$callsign;
+    $_SESSION['pd_phone']=$pd_phone;
+    $_SESSION['mgr_phone']=$mgr_phone;
+    $_SESSION['req_phone']=$req_phone;
+    $_SESSION['website']=$website;
+    $_SESSION['brand']=$brand;
+    $_SESSION['frequency']=$frequency;
+    $_SESSION['designation']=$designation;
 }
 
 /*

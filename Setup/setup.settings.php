@@ -72,7 +72,7 @@
                     <span class="input-group-addon">
                         <label for="phone"><span class="glyphicon glyphicon-earphone"></span> Main Phone</label>
                     </span>
-                      <input name="req_ph" type="tel" class="form-control" id="phone" required pattern="[0-9 ]{5,12}"/>
+                      <input name="req_ph" type="tel" class="form-control" id="phone" required pattern="[0-9 xX\-\(\)]{5,12}" placeholder="(123) 456-7890"/>
                   </div><!-- /input-group -->
                 </div><!-- /.col-lg-3 -->
                 <div class="col-lg-3">
@@ -80,7 +80,7 @@
                     <span class="input-group-addon">
                         <label for="mgr_ph"><span class="glyphicon glyphicon-phone-alt"></span> Manager Phone</label>
                     </span>
-                      <input name="mgr_ph" type="tel" class="form-control" id="mgr-ph" required pattern="[0-9 ]{5,12}"/>
+                      <input name="mgr_ph" type="tel" class="form-control" id="mgr-ph" required pattern="[0-9 xX\-\(\)]{5,12}" placeholder="(123) 456-7890"/>
                   </div><!-- /input-group -->
                 </div><!-- /.col-lg-3 -->
                 <div class="col-lg-3">
@@ -88,7 +88,7 @@
                     <span class="input-group-addon">
                         <label for="pd_ph"><span class="glyphicon glyphicon-phone"></span> PD Phone</label>
                     </span>
-                      <input name="pd_ph" type="tel" class="form-control" id="pd_ph" required pattern="[0-9 ]{5,12}"/>
+                      <input name="pd_ph" type="tel" class="form-control" id="pd_ph" required pattern="[0-9 xX\-\(\)]{5,12}" placeholder="(123) 456-7890"/>
                   </div><!-- /input-group -->
                 </div><!-- /.col-lg-3 -->
               </div><!-- /.row -->

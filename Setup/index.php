@@ -18,7 +18,11 @@
         $PAGE = "wel";
     }
     $enabled=[];
+    if(!isset($_SESSION['max_page'])){
+        $_SESSION['max_page']=0;
+    }
     
+
     $chain_break=FALSE;
     $i=0;
     foreach ($PAGES as $entity){
