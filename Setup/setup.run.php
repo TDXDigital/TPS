@@ -42,6 +42,7 @@
                         </div>
                     </div>
                 </div><!-- /.col-lg-3 -->
+                <input class="btn btn-default" type="submit" value="Begin Installation" onclick="install_db();"/>
               </div>
         </fieldset>
         <br>

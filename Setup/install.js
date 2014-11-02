@@ -33,6 +33,25 @@ function prep_install(){
     
 }
 
+function install_db(){
+    $.ajax({
+        url:"setup.createdb.php",
+        dataType:"json",
+        statusCode: {
+            404: function() {
+              alert( "Server Not Found" );
+            },
+            403: function() {
+                alert("Access Denied");
+            }
+        },
+        succeess: function( msg ){
+            //$( "#results" ).append( msg );
+            alert(msg);
+        }
+    });
+}
+
 jQuery(document).ready(function(){
     prep_install();
     var dots_run = setInterval(update_dots,750);

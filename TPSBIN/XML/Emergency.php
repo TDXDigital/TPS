@@ -1,7 +1,11 @@
 <?php
     
-    /*include "../functions.php";
-    sec_session_start();*/
+    include "../functions.php";
+    if(!isset($_SESSION)){
+        sec_session_start();
+    }
+    
+    
     //sec_session_start();
     header("application/JSON");
 $data = "http://www.emergencyalert.alberta.ca/aeapublic/feed.atom";
