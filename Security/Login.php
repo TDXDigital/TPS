@@ -101,12 +101,16 @@ if((string)$convars->ID==$db_ID){
 	// SET Connection HOST
     if($convars->RESOLVE==="URL"){
         define("HOST",$convars->URL);
+        $_SESSION['HOST']=$convars->URL;
     }
     else{
         define("HOST",$convars->IPV4);
+        $_SESSION['HOST']=$convars->IPV4;
     }
     define("PORT",$convars->PORT);
+    $_SESSION['DBPORT']$convars->PORT;
     define("DBNAME",$convars->DATABASE);
+    $_SESSION['DBNAME']=$convars->DATABASE;
     
     if((string)$convars->AUTH == strtoupper("LDAP")){
         // Load Auth Module LDAP
