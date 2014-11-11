@@ -53,6 +53,26 @@ function install_db(){
     });
 }
 
+function install_xml(){
+    $.ajax({
+        url:"setup.createxml.php",
+        dataType:"json",
+        statusCode: {
+            404: function() {
+              alert( "Server Not Found" );
+            },
+            403: function() {
+                alert("Access Denied");
+            }
+        },
+        succeess: function( data ){
+            //$( "#results" ).append( msg );
+            //alert(msg);
+            $("#completed").html(data.status);
+        }
+    });
+}
+
 jQuery(document).ready(function(){
     prep_install();
     var dots_run = setInterval(update_dots,750);

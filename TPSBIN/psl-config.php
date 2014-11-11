@@ -3,11 +3,14 @@
  * These are the database login details
  * http://www.wikihow.com/Create-a-Secure-Login-Script-in-PHP-and-MySQL
  */  
+
+if(isset($_SESSION['']))
 define("HOST", "172.22.10.10");     // The host you want to connect to.
 define("USER", "program");    // The database username. 
 define("PASSWORD", "pirateradio");    // The database password. 
 define("DATABASE", "ckxu");    // The database name.
- 
+
+
 define("CAN_REGISTER", "any");
 define("DEFAULT_ROLE", "member");
  

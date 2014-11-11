@@ -17,16 +17,16 @@
     </div>";
     }
 ?>
-<form action='setup.vars.php' method="POST" name="install">
+<form action='setup.vars.php' method="POST" name="complete">
     <input type='hidden' name='e' value='<?php
         if(isset($_SESSION['max_page']) && is_numeric($_SESSION['max_page'])){
             echo $PAGES[$_SESSION['max_page']][0];
         }
         else{
-            echo 'install';
+            echo 'complete';
         }
     ?>'/>
-    <input type='hidden' name='q' value='install'/>
+    <input type='hidden' name='q' value='complete'/>
 <div class="panel panel-primary">
     <div class="panel-heading">Corporate Settings</div>
     <div class="panel-body">
@@ -44,6 +44,7 @@
                     </div>
                 </div><!-- /.col-lg-3 -->
                 <input class="btn btn-default" type="submit" value="Begin Installation" onclick="install_db(); return false"/>
+                <input class="btn btn-default" type="submit" value="Create Auth Login" onclick="install_xml(); return false"/>
               </div>
         </fieldset>
         <br>

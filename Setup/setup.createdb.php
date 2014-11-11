@@ -13,9 +13,10 @@ include_once "../TPSBIN/functions.php";
         sec_session_start();
     }
 
-    define(HOST,$_SESSION['host']);
-    define(PASSWORD,$_SESSION['password']);
-    define(USER,$_SESSION['user']);
+    define("HOST",$_SESSION['host']);
+    define("PASSWORD",$_SESSION['password']);
+    define("USER",$_SESSION['user']);
+    
     
     /*
      * Connect to DB, Do not define DATABASE
@@ -70,13 +71,13 @@ else{
     foreach($SQL_Statements as $EXEC){
         if(!empty($EXEC)){
             $EXEC.=";";
-            if (!($mysqli->query($EXEC))) {
+            if (($mysqli->query($EXEC))!=TRUE) {
                 $return=["status"=>"Error","Result"=>"Query failed: (" . $mysqli->errno . ") " . $mysqli->error];
                 $error_check=TRUE;
                 echo "ERROR:" . $EXEC ."<br><br>".$mysqli->error."<br><br>";
             }
             else{
-                echo $EXEC . "<br><br>";
+                //echo $EXEC . "<br><br>";
             }
             
         }
@@ -84,7 +85,7 @@ else{
     if($error_check===false){
         $return=["status"=>"Complete","Result"=>"Complete"];
     }
-    $mysqli->commit();
+    //$mysqli->commit();
     /*
     if (!($stmt = $mysqli->prepare($sql))) {
         $return=["status"=>"Error","Result"=>"Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error];
