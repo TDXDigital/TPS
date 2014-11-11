@@ -99,6 +99,15 @@ $DEBUG .= "]: ";
 if((string)$convars->ID==$db_ID){
     $DEBUG .= "MATCH</br>";
 	// SET Connection HOST
+    if($convars->RESOLVE==="URL"){
+        define("HOST",$convars->URL);
+    }
+    else{
+        define("HOST",$convars->IPV4);
+    }
+    define("PORT",$convars->PORT);
+    define("DBNAME",$convars->DATABASE);
+    
     if((string)$convars->AUTH == strtoupper("LDAP")){
         // Load Auth Module LDAP
         include("LDAP_Auth.php");

@@ -1,6 +1,30 @@
 <?php
-include_once '../TPSBIN/register.inc.php';
 include_once '../TPSBIN/functions.php';
+
+if(!constant("HOST")){
+    $dbxml = simplexml_load_file("../TPSBIN/XML/DBSETTINGS.xml");
+    $SECL_TARGET = filter_input(INPUT_POST, 'D', FILTER_SANITIZE_STRING);
+    if($SECL_TARGET==""){
+        $SECL_TARGET=$dbxml->SERVER->ID;
+    }
+    else{
+        
+    }
+    echo "DD:".$SECL_TARGET. ":DD";
+    foreach( $dbxml->SERVER as $CONVAR_SECL):
+        if((string)$CONVAR_SECL->ID==$SECL_TARGET){
+            echo "MATCH";
+            define("DBID", $CONVAR_SECL->ID);     // The host you want to connect to.
+            define("HOST", $CONVAR_SECL->HOST);     // The host you want to connect to.
+            define("USER", easy_decrypt(\ENCRYPTION_KEY, $CONVAR_SECL->USER));    // The database username. 
+            define("PASSWORD", easy_decrypt(\ENCRYPTION_KEY, $CONVAR_SECL->PASSWORD));    // The database password. 
+            define("DATABASE", $CONVAR_SECL->DATABASE);    // The database name.
+        }
+        echo "-DD:".$SECL_TARGET. ":DD:".$CONVAR_SECL->ID;
+    endforeach;
+}
+
+include_once '../TPSBIN/register.inc.php';
 ?>
 <!DOCTYPE html>
 <html>
