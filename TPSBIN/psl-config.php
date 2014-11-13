@@ -1,6 +1,6 @@
 <?php
 
-include_once '../TPSBIN/functions.php';
+include_once 'functions.php';
 if(!isset($_SESSION)){
     sec_session_start();
 }

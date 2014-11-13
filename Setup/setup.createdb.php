@@ -81,6 +81,15 @@ else{
             }
             
         }
+        
+    }
+    $functions = \file_get_contents("setup.functions.sql");
+    //$functions = preg_replace("/[\\n\\r]+/", ' ' , $functions);
+    $functions = preg_replace("/[?]+/", $DB_NAME, $functions);
+    if($mysqli->query($functions)!=TRUE){
+        $return=["status"=>"Error","Result"=>"Query failed: (" . $mysqli->errno . ") " . $mysqli->error];
+        $error_check=TRUE;
+        echo "<br>".$functions."<br>";
     }
     if($error_check===false){
         $return=["status"=>"Complete","Result"=>"Complete"];

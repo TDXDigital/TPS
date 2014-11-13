@@ -1,7 +1,10 @@
 USE `?` ;
 
 DELIMITER $$
-USE `?`$$
+
+DROP FUNCTION IF EXISTS `levenshtein` $$
+DROP FUNCTION IF EXISTS `levenshtein_ratio` $$
+
 CREATE DEFINER=`root`@`localhost` FUNCTION `levenshtein`( s1 VARCHAR(255), s2 VARCHAR(255) ) RETURNS int(11)
     DETERMINISTIC
 BEGIN 
@@ -41,10 +44,6 @@ BEGIN
     RETURN c; 
   END$$
 
-DELIMITER ;
-
-DELIMITER $$
-USE `?`$$
 CREATE DEFINER=`root`@`localhost` FUNCTION `levenshtein_ratio`( s1 VARCHAR(255), s2 VARCHAR(255) ) RETURNS int(11)
     DETERMINISTIC
 BEGIN 
@@ -58,17 +57,7 @@ BEGIN
     RETURN ROUND((1 - LEVENSHTEIN(s1, s2) / max_len) * 100); 
   END$$
 
-DELIMITER ;
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-USE `?`;
-
-DELIMITER $$
-USE `?`$$
 CREATE
-DEFINER=`root`@`localhost`
 TRIGGER `?`.`switchstatus_BINS`
 BEFORE INSERT ON `?`.`switchstatus`
 FOR EACH ROW

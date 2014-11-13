@@ -26,6 +26,7 @@ if (login_check($mysqli) == true) {
     <head>
         <title>Secure Login: Log In</title>
         <link rel="stylesheet" href="../../phpstyle.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
         <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"/>
         <script type="text/JavaScript" src="../../TPSBIN/JS/sha512.js"></script> 
@@ -107,4 +108,17 @@ if (login_check($mysqli) == true) {
         </form>
     </div>
     </body>
+    <script type="text/javascript">
+        $.ajax({
+            dataType: "json",
+            url: "../listservers.php",
+            data: data,
+            success: function(data){
+                var server_ids = [];
+                $.each( data ,function(index,value){
+                    server_ids.push("<option value='"+value.server+"'>"+value.name+"</option>");
+                });
+            }
+          });
+        </script>
 </html>

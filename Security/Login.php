@@ -81,7 +81,8 @@ $dbxml = simplexml_load_file("../TPSBIN/XML/DBSETTINGS.xml");
 $postuser = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
 $postpass = filter_input(INPUT_POST, 'pass', FILTER_SANITIZE_STRING);
 $db_ID = filter_input(INPUT_POST, 'SRVID', FILTER_SANITIZE_STRING);
-$dest = $_GET['d']?:'../';
+$DEST = filter_input(INPUT_POST, 'D', FILTER_SANITIZE_STRING);
+//$dest = $_GET['d']?:'../';
 $DEBUG = "";
 if(isset($_POST['return'])){
     $des = $_POST['return'];
@@ -128,10 +129,13 @@ if((string)$convars->ID==$db_ID){
             // Load Auth Module DB
             //include("DB_Auth.php");
     		if($des==0){
-    			header("Location: $dest");
+    			//header("Location: $dest");
+                    header("Location: SecureLogin/Login.php");
+                    
     		}
     		else{
     			header("Location: $ORIGIN");
+                        //header("Location: SecureLogin/Login.php");
     		}
     	}
     	else{

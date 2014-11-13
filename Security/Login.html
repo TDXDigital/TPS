@@ -1,9 +1,14 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../phpstyle.css" />
+<!--<link rel="stylesheet" type="text/css" href="../phpstyle.css" />-->
 <title>DPL Administration</title>
-<link href="../js/jquery/css/ui-lightness/jquery-ui-1.10.0.custom.min.css" type="text/css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../phpstyle.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"/>
+    <script type="text/JavaScript" src="../TPSBIN/JS/sha512.js"></script> 
+    <script type="text/JavaScript" src="../TPSBIN/JS/forms.js"></script> 
     <script src="../TPSBIN/JS/GLOBAL/Utilities.js"></script>
     <style>
         .Fill{
@@ -26,15 +31,31 @@
 		        <input name="pass" placeholder="Password" required title="Password" class="Fill ui-corner-all" type="password"/>
                 <label for="srvr">Select Server: </label>
                 <select name="SRVID" id="srvr">
-                    <option value="CKXU001" selected>Picard</option>
+                    <!--<option value="CKXU001" selected>Picard</option>
                     <option value="CKXU002" >Riker</option>
                     <option value="CKXU003" >Development</option>
-                    <option value="SECL001" >Secure Development Login</option>
+                    <option value="SECL001" >Secure Development Login</option>-->
                 </select>
 		        <input type="submit" value="Login" class="Fill ui-corner-all"/>
             </fieldset>
 		  <br/><br/><br /> 
 		</form></div>
 	</div>
+    <script type="text/javascript">
+        $.ajax({
+            dataType: "json",
+            url: "listservers.php",
+            success: function(data){
+                
+                console.log(data);
+                var server_ids = [];
+                $.each( data ,function( index,value){
+                    server_ids.push("<option value='"+value.server[0]+"'>"+value.NAME[0]+"</option>");
+                });
+                $('#srvr').append(server_ids);
+            }
+          });
+        </script>
 </body>
+
 </html>
