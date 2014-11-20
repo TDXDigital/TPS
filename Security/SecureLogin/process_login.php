@@ -1,4 +1,6 @@
 <?php
+//
+//constant('HOST')=$_SESSION['DBHOST'];
 include_once '../../TPSBIN/db_connect.php';
 include_once '../../TPSBIN/functions.php';
  
@@ -13,7 +15,7 @@ if (isset($_POST['email'], $_POST['p'])) {
         header('Location: ../../masterpage.php');
     } else {
         // Login failed 
-        header('Location: ../Login.html?error=1');
+        header('Location: Login.php?error=Invalid Login');
     }
 } else {
     // The correct POST variables were not sent to this page. 
