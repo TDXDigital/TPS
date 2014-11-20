@@ -109,7 +109,7 @@ if((string)$convars->ID==$db_ID){
         $_SESSION['HOST']=$convars->IPV4;
     }
     define("PORT",$convars->PORT);
-    $_SESSION['DBPORT']$convars->PORT;
+    $_SESSION['DBPORT']=$convars->PORT;
     define("DBNAME",$convars->DATABASE);
     $_SESSION['DBNAME']=$convars->DATABASE;
     
