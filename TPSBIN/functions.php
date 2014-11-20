@@ -29,7 +29,7 @@ function easy_crypt($ekey,$value){
                     md5($ekey),
                     $value,
                     MCRYPT_MODE_CBC,
-                    md5(md5($key))
+                    md5(md5($ekey))
                     )
             );
     return $encrypted;
@@ -42,7 +42,7 @@ function easy_decrypt($ekey,$encr_string){
                     md5($ekey),
                     base64_decode($encr_string),
                     MCRYPT_MODE_CBC,
-                    md5(md5($key))),
+                    md5(md5($ekey))),
             "\0");
     return $decrypted;
 }

@@ -119,9 +119,11 @@ if((string)$convars->ID==$db_ID){
         if(LDAP_AUTH($postuser, $postpass, $convars)){
             if($des==0){
                 header("Location: $dest");
+                echo "<br><br>login complete";
             }
             else{
                 header("Location: $ORIGIN");
+                echo "<br><br>login failed";
             }
         }
         else{

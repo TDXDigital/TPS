@@ -58,10 +58,11 @@ function LDAP_AUTH($user, $password, $xml_server) {
     }
 
     // Bind Account
-    $bindUser = $user;//"admin";
+    $bindUser = $user;//easy_decrypt(ENCRYPTION_KEY,$xml_server->USER);//"admin";
+    $DEBUG .= "<br>".$bindUser."<br>";
 
     // Bind Password
-    $bindpassword = $password;//"K1w1679";
+    $bindpassword = $password;//easy_decrypt(ENCRYPTION_KEY,$xml_server->PASSWORD);//"K1w1679";
 
     // verify user and password
     $DEBUG .= "<span>Attempting LDAP bind with $ldap_usr_dom\\$bindUser<br/></span>";
@@ -91,18 +92,18 @@ function LDAP_AUTH($user, $password, $xml_server) {
             if ($access != 0) {
                 // establish session variables
                 if($access == 1){
-            	    $_SESSION['usr'] = easy_decrypt(ENCRYPTION_KEY,$convars->USER);//"program";
-                    define("USER",easy_decrypt(ENCRYPTION_KEY,$convars->USER));
-                    $_SESSION['rpw'] = easy_decrypt(ENCRYPTION_KEY,$convars->PASSWORD);//"pirateradio";
-                    define("PASSWORD",easy_decrypt(ENCRYPTION_KEY,$convars->PASSWORD));
+            	    $_SESSION['usr'] = easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER);//"program";
+                    define("USER",easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER));
+                    $_SESSION['rpw'] = easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->PASSWORD);//"pirateradio";
+                    define("PASSWORD",easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->PASSWORD));
                     $_SESSION['access'] = $access;
                     //$_SESSION['name'] = "UNDEFINED USER";
                 }
                 else if($access == 2){
-                    $_SESSION['usr'] = easy_decrypt(ENCRYPTION_KEY,$convars->USER);//"program";
-                    define("USER",easy_decrypt(ENCRYPTION_KEY,$convars->USER));
-                    $_SESSION['rpw'] = easy_decrypt(ENCRYPTION_KEY,$convars->PASSWORD);//"pirateradio";
-                    define("PASSWORD",easy_decrypt(ENCRYPTION_KEY,$convars->PASSWORD));
+                    $_SESSION['usr'] = easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER);//"program";
+                    define("USER",easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER));
+                    $_SESSION['rpw'] = easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->PASSWORD);//"pirateradio";
+                    define("PASSWORD",easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->PASSWORD));
                     $_SESSION['access'] = $access;
                     //$_SESSION['name'] = "UNDEFINED ADMIN";
                 }

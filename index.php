@@ -2,7 +2,7 @@
     include "TPSBIN/functions.php";
     
     // check for installation
-    if(!defined('DBHOST')){
+    if(!defined(constant('HOST'))){
         $filename="TPSBIN/XML/DBSETTINGS.xml";
         if(!file_exists($filename)){
             header('location: Setup/');
