@@ -119,9 +119,10 @@ function LDAP_AUTH($user, $password, $xml_server) {
                 $_SESSION['SRVPOST'] = (string)$xml_server->ID;//addslashes($_POST['SID']);
                 $_SESSION['logo']=$logo;
                 $_SESSION['m_logo']=$m_logo;
-			    $_SESSION['account'] = $user;
-			    $_SESSION['AutoComLimit'] = 8;
-			    $_SESSION['AutoComEnable'] = TRUE;
+                $_SESSION['account'] = $user;
+                $_SESSION['AutoComLimit'] = 8;
+                $_SESSION['AutoComEnable'] = TRUE;
+                echo $DEBUG;
                 return true;
             } else {
                 // user has no rights

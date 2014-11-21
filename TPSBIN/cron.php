@@ -331,7 +331,7 @@
                 $vars=explode("::",$playing);
                 $j = new playing();
                 if(isset($vars[0])){
-                    if($vars[0]=="playing"||$vars[0]=="paused"||$vars[0]=="stopped"){
+                    if($vars[0]=="playing"||$vars[0]=="paused"){
                         $j->status=$vars[0];
                         $j->volume=$vars[1];
                         $j->title=$vars[2];
@@ -346,9 +346,12 @@
                         $j->version=$vars[11];
                     }
                     /*elseif($vars[0]=="paused"){
-                    }
-                    elseif($vars[0]=="stopped"){
                     }*/
+                    elseif($vars[0]=="stopped"){
+                        $j->status=$vars[0];
+                        $j->volume=$vars[1];
+                        $j->title=$vars[2];
+                    }
                     elseif($vars[0]=="not running"){
                         $j->status="closed";
                         $j->version=$var[1];
