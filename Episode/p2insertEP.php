@@ -842,7 +842,7 @@ if(false){
 						while($PdAds=mysql_fetch_array($READS)){
 							if($PdAds['Limit'] == NULL || $PdAds['Playcount'] < $PdAds['Limit']){
 								// Check BlockLimit (BLIM)
-								$CHECKBLIM = "SELECT count(song.songid) FROM adrotation,song WHERE adrotation.AdId='".$PdAds['AdId']."' AND song.title='".$PdAds['AdName']."' and song.date='".$EPINFO['date']."' and song.time BETWEEN '".$PdAds['startTime']."' AND '".$PdAds['endTime']."' ";
+								$CHECKBLIM = "SELECT count(song.songid) FROM adrotation,song WHERE adrotation.AdId='".$PdAds['AdId']."' AND song.title='".addslashes($PdAds['AdName'])."' and song.date='".$EPINFO['date']."' and song.time BETWEEN '".$PdAds['startTime']."' AND '".$PdAds['endTime']."' ";
 								$BL_lim_R = mysql_query($CHECKBLIM);
 								$BL_lim = mysql_fetch_array($BL_lim_R);
 								if(mysql_error()){
@@ -853,7 +853,7 @@ if(false){
 									$REQAD .= "<option value='".$PdAds['AdId']."'>".$PdAds['AdName']."</option>";
 									array_push($RQADSIDS,$PdAds['AdId']);
                                     array_push($ADIDS,$PdAds['AdId']);
-                                    $SQL_PL_AD = "INSERT INTO promptlog (EpNum,AdNum) VALUES (".$EPINFO['EpNum'].",".$PdAds['AdId'].")";
+                                    $SQL_PL_AD = "INSERT INTO promptlog (EpNum,AdNum) VALUES (".addslashes($EPINFO['EpNum']).",".addslashes($PdAds['AdId']).")";
                                     if(!mysql_query($SQL_PL_AD)){
                                         echo "<!-- ERROR: " . mysql_error() . "-->";
                                         error_log("TPS Error; Line 951: Could not perform SQL Query - ".mysql_error());

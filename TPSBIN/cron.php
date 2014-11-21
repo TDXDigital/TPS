@@ -114,6 +114,8 @@
             if (!$fp) {
                 echo "$errstr ($errno)<br />\n";
             } else {
+            	// Write command to stream, get response and analyse.
+            	// Get Switcher Status
                 $out = "*0SL";
                 fwrite($fp, $out);
                 stream_set_timeout($fp,2,0);
@@ -122,14 +124,15 @@
                   $res[0][0] = str_replace(' ', '', $res[0][0]);
                   $res[0][1] = str_replace(' ', '', $res[0][1]);
                 $info[0] = stream_get_meta_data($fp);
+                // Get Silence Sensor Status
                 $out = "*0SS";
                 fwrite($fp, $out);
                 stream_set_timeout($fp,2,0);
-                  $temp1=fread($fp, 8192);
-                  //$temp2=rtrim($temp1," \n");
-                  $temp2[]=explode("\n",$temp1);
-                  $res[1] = str_replace(' ', '', $temp2[0]);
-                  //array_push($res,fread($fp,8192));
+	          $temp1=fread($fp, 8192);
+	          //$temp2=rtrim($temp1," \n");
+	          $temp2[]=explode("\n",$temp1);
+	          $res[1] = str_replace(' ', '', $temp2[0]);
+	          //array_push($res,fread($fp,8192));
                 $info[1] = stream_get_meta_data($fp);
                 fclose($fp);
     
@@ -182,19 +185,31 @@
                     //}
                 }
                 // silence Sensors
-                if(strcasecmp($srr['SS'],$res[1])==0){
-                    $silence=$srr['SS'];
+                if(defined($srr['SS'])){
+                	if(strcasecmp($srr['SS'],$res[1])==0){
+	                    $silence=$srr['SS'];
+	                }
+	                else{
+	                    $MISMATCH=TRUE;
+	                    if($DEBUG){
+	                        $output .= "<br><div class='ui-state ui-state-error'><span>ERROR (SS)</span><br>QR: ".$res[1]."<br>DB: ".$srr['SS']."</span></div>";
+	                    }
+	                    //if($res[1]!=""){
+	                        $silence=$res[1];
+	                    //}
+	
+	                }
                 }
                 else{
-                    $MISMATCH=TRUE;
+                	$MISMATCH=TRUE;
                     if($DEBUG){
                         $output .= "<br><div class='ui-state ui-state-error'><span>ERROR (SS)</span><br>QR: ".$res[1]."<br>DB: ".$srr['SS']."</span></div>";
                     }
                     //if($res[1]!=""){
                         $silence=$res[1];
                     //}
-
                 }
+                
                 //$time=$srr['timestamp'];
                 //$output.="<br><span>$time<span>";
             }
@@ -331,7 +346,7 @@
                 $vars=explode("::",$playing);
                 $j = new playing();
                 if(isset($vars[0])){
-                    if($vars[0]=="playing"||$vars[0]=="paused"){
+                    if($vars[0]=="playing"||$vars[0]=="paused"||$vars[0]=="stopped"){
                         $j->status=$vars[0];
                         $j->volume=$vars[1];
                         $j->title=$vars[2];
@@ -346,12 +361,9 @@
                         $j->version=$vars[11];
                     }
                     /*elseif($vars[0]=="paused"){
-                    }*/
-                    elseif($vars[0]=="stopped"){
-                        $j->status=$vars[0];
-                        $j->volume=$vars[1];
-                        $j->title=$vars[2];
                     }
+                    elseif($vars[0]=="stopped"){
+                    }*/
                     elseif($vars[0]=="not running"){
                         $j->status="closed";
                         $j->version=$var[1];
