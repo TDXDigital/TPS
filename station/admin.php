@@ -13,7 +13,7 @@
     <meta name="author" content="">
     <link rel="shortcut icon" href="favicon.ico">
 
-    <title>Dashboard Template for Bootstrap</title>
+    <title>Administrator Panel</title>
 
     <!-- Bootstrap core CSS -->
     <link href="js/bootstrap/css/bootstrap.min.css" rel="stylesheet">

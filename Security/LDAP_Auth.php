@@ -1,5 +1,8 @@
 <?php
     
+if(!isset($_SESSION)){
+    session_start();
+}
 function LDAP_AUTH($user, $password, $xml_server) {
     $DEBUG="";
     if((string)$xml_server->ACTIVE == '0'){
@@ -88,10 +91,11 @@ function LDAP_AUTH($user, $password, $xml_server) {
                 if (strpos($grps, $ldap_user_group)) { $access = 1; };
 			
             }
-
+            echo "BASE QUERY: ".(string)$xml_server->USER."; ".easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER)." [$access] ";
             if ($access != 0) {
                 // establish session variables
                 if($access == 1){
+                    echo "<br>SETTING ACCESS LEVEL 1: ".(string)$xml_server->USER."; ".easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER)."<br>";
             	    $_SESSION['usr'] = easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER);//"program";
                     define("USER",easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER));
                     $_SESSION['rpw'] = easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->PASSWORD);//"pirateradio";
@@ -100,14 +104,15 @@ function LDAP_AUTH($user, $password, $xml_server) {
                     //$_SESSION['name'] = "UNDEFINED USER";
                 }
                 else if($access == 2){
-                    $_SESSION['usr'] = easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER);//"program";
-                    define("USER",easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER));
-                    $_SESSION['rpw'] = easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->PASSWORD);//"pirateradio";
-                    define("PASSWORD",easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->PASSWORD));
+                    echo "<br>SETTING ACCESS LEVEL 2: ".(string)$xml_server->USER."; ".easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER)."<br>";
+                    $_SESSION['usr'] = (string)easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER);//"program";
+                    define("USER",(string)easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER));
+                    $_SESSION['rpw'] = (string)easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->PASSWORD);//"pirateradio";
+                    define("PASSWORD",(string)easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->PASSWORD));
                     $_SESSION['access'] = $access;
                     //$_SESSION['name'] = "UNDEFINED ADMIN";
                 }
-                $_SESSION['fname'] = "LDAP Authenticated User";//$nameLDAP;
+                $_SESSION['fname'] = $nameLDAP;//"LDAP Authenticated User";
                 $_SESSION['DBNAME'] = (string)$xml_server->DATABASE;//"CKXU";
                 if((string)$xml_server->RESOLVE == 'URL'){
                     $_SESSION['DBHOST'] = (string)$xml_server->URL;
@@ -115,6 +120,10 @@ function LDAP_AUTH($user, $password, $xml_server) {
                 else{
                     $_SESSION['DBHOST'] = (string)$xml_server->IPV4;
                 }
+                define("HOST",(string)$_SESSION['DBHOST']);
+                echo "SET HOST = " . constant('HOST');
+                define('DBNAME',(string)$_SESSION['DBNAME']);
+                echo "SET DBNAME = " . constant('DBNAME');
                 //$_SESSION['DBHOST'] = "172.22.100.25";
                 $_SESSION['SRVPOST'] = (string)$xml_server->ID;//addslashes($_POST['SID']);
                 $_SESSION['logo']=$logo;

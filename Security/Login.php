@@ -4,11 +4,16 @@
 // Establish Session if does not exist (should not exist)
 if(!isset($_SESSION)){
    sec_session_start();
-   $DEBUG = FALSE;
+   $DEBUG = TRUE;
 }
 
 // SET BASE REF
-$_SESSION['BASE_REF']="";// should load from XML
+//$_SESSION['BASE_REF']=$_SERVER['PATH_INFO'];// should load from XML
+
+$_SESSION['BASE_REF'] = substr(dirname($_SERVER['PHP_SELF']),0,-9);// should load from XML
+
+echo "BASE: ".$_SESSION['BASE_REF']." :End Base<br>";;
+
 
 // LOAD SERVERS
 $dbxml = simplexml_load_file("../TPSBIN/XML/DBSETTINGS.xml");
@@ -43,7 +48,7 @@ $dbxml = simplexml_load_file("../TPSBIN/XML/DBSETTINGS.xml");
         
     </head>
     <body role="document" style="">
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <!--<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -71,9 +76,9 @@ $dbxml = simplexml_load_file("../TPSBIN/XML/DBSETTINGS.xml");
               </ul>
             </li>
           </ul>
-        </div><!--/.nav-collapse -->
+        </div>
       </div>
-    </div>
+    </div>-->
 <?php
 
 // using ldap bind [Get Credentials]
@@ -81,8 +86,12 @@ $dbxml = simplexml_load_file("../TPSBIN/XML/DBSETTINGS.xml");
 $postuser = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
 $postpass = filter_input(INPUT_POST, 'pass', FILTER_SANITIZE_STRING);
 $db_ID = filter_input(INPUT_POST, 'SRVID', FILTER_SANITIZE_STRING);
-$DEST = filter_input(INPUT_POST, 'D', FILTER_SANITIZE_STRING);
+$dest = filter_input(INPUT_POST, 'D', FILTER_SANITIZE_STRING);
 //$dest = $_GET['d']?:'../';
+if($dest===""||$dest==NULL)
+{
+    $dest="../";
+}
 $DEBUG = "";
 if(isset($_POST['return'])){
     $des = $_POST['return'];
@@ -100,7 +109,7 @@ $DEBUG .= "]: ";
 if((string)$convars->ID==$db_ID){
     $DEBUG .= "MATCH</br>";
 	// SET Connection HOST
-    if($convars->RESOLVE==="URL"){
+    /*if($convars->RESOLVE==="URL"){
         define("HOST",$convars->URL);
         $_SESSION['HOST']=$convars->URL;
     }
@@ -112,14 +121,14 @@ if((string)$convars->ID==$db_ID){
     $_SESSION['DBPORT']=$convars->PORT;
     define("DBNAME",$convars->DATABASE);
     $_SESSION['DBNAME']=$convars->DATABASE;
-    
+    */
     if((string)$convars->AUTH == strtoupper("LDAP")){
-        // Load Auth Module LDAP
+        echo "Load Auth Module LDAP";
         include("LDAP_Auth.php");
         if(LDAP_AUTH($postuser, $postpass, $convars)){
             if($des==0){
                 header("Location: $dest");
-                echo "<br><br>login complete";
+                echo "<br><br>login complete <a href=$dest>Next</a><br>";
             }
             else{
                 header("Location: $ORIGIN");
@@ -131,11 +140,13 @@ if((string)$convars->ID==$db_ID){
         }
     }
     else if((string)$convars->AUTH == strtoupper("MYSQL_DB")){
+        echo "Load Module DB Auth";
     	if(DB_AUTH($postuser, $postpass, $convars)){
             // Load Auth Module DB
             //include("DB_Auth.php");
     		if($des==0){
     			//header("Location: $dest");
+                    
                     header("Location: SecureLogin/Login.php");
                     
     		}
@@ -156,7 +167,7 @@ if((string)$convars->ID==$db_ID){
         echo "<br>Please contact your system administrator for further details<br>";
         echo "</p>Click <a href='$ORIGIN'>HERE</a> to return to login and try again";
     }
-	//$_SESSION['SRVPOST']=$db_ID;
+	$_SESSION['SRVPOST']=$db_ID;
 }
 else{
     $DEBUG .= " MISS</br>";
@@ -164,11 +175,13 @@ else{
 endforeach;
 
 $DEBUG .= "<br/><br/>FAILED TO RESOLVE HOST. CHECK THAT SRVID IS BEING PASSED;<br/>RECEIVED:".$db_ID;
+echo $DEBUG;
 ?>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <!--<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js\"></script>-->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <!--<script src=\"js/bootstrap/js/bootstrap.min.js\"></script>-->
+    
     </body>
 </html>
 

@@ -1,14 +1,15 @@
 <?php
     include "TPSBIN/functions.php";
-    
+    session_start();
+    //echo "load index<br>";
     // check for installation
-    if(!defined(constant('HOST'))){
+    if(!defined('HOST')&&!isset($_SESSION['DBHOST'])){
         $filename="TPSBIN/XML/DBSETTINGS.xml";
         if(!file_exists($filename)){
             header('location: Setup/');
         }
         else{
-            header('location: Security/login.html');
+            header('location: Security/login.html?e=syserr_nchost&v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
         }
     }
     else{

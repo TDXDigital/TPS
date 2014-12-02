@@ -2,12 +2,12 @@
     // THIS FILE SHOULD BE INCLUDED WITHIN A PAGET THAT HAS ALREADY RUN sec_session_start!
     if(!isset($_SESSION)){
         // PRINT OUT LOGIN
-        echo "<a href='login'>login</a>";
+        echo "Error 401:Unauthorized<br> Please <a href='logout.php'>login</a>";
     }
-    if($SETUP){
+    if($SETUP==TRUE){
         goto SETVAR_SETUP;
     }
-    $base = $_SESSION['BASE_REF']?:"../";
+    $base = $_SESSION['BASE_REF']?:"";
     $logo = $_SESSION['m_logo']?: $_SESSION['logo'];
     $dbname= $_SESSION['DBNAME']; // NEEDS COMPANY HEAD TO ALLOW SELECTING MULTIPLE CALLSIGNS (This is not right)
     $access=$_SESSION['access'];
@@ -38,7 +38,7 @@
     }
     else{
         if(!$SETUP){
-            die('<a href=\'login\'>login</a>');
+            die('Error 401<br><a href=\'logout.php\'>Authentication Error, please login</a><br><br><sub>GURU: FAILED DB LINK</sub>');
         }
         else{
             SETVAR_SETUP:

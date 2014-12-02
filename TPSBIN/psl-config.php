@@ -10,7 +10,7 @@ if(!isset($_SESSION)){
  * http://www.wikihow.com/Create-a-Secure-Login-Script-in-PHP-and-MySQL
  */  
 
-if(!constant("HOST") &&  isset($_SESSION['DBHOST'])){
+if(defined("HOST") || isset($_SESSION['DBHOST'])){
 define("HOST", $_SESSION['DBHOST']);     // The host you want to connect to.
 define("USER", $_SESSION['usr']);    // The database username. 
 define("PASSWORD", $_SESSION['rpw']);    // The database password. 
