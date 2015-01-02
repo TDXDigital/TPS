@@ -1,7 +1,7 @@
 <?php
 include_once '../TPSBIN/functions.php';
 
-if(!constant("HOST")){
+if(!defined("HOST")||!defined("DATABASE")||!defined("USER")||!defined("PASSWORD")){
     $dbxml = simplexml_load_file("../TPSBIN/XML/DBSETTINGS.xml");
     $SECL_TARGET = filter_input(INPUT_POST, 'D', FILTER_SANITIZE_STRING);
     if($SECL_TARGET==""){
@@ -10,17 +10,25 @@ if(!constant("HOST")){
     else{
         
     }
-    echo "DD:".$SECL_TARGET. ":DD";
+    echo "DT:".$SECL_TARGET. ":DT</br>";
     foreach( $dbxml->SERVER as $CONVAR_SECL):
         if((string)$CONVAR_SECL->ID==$SECL_TARGET){
             echo "MATCH";
-            define("DBID", $CONVAR_SECL->ID);     // The host you want to connect to.
-            define("HOST", $CONVAR_SECL->HOST);     // The host you want to connect to.
-            define("USER", easy_decrypt(\ENCRYPTION_KEY, $CONVAR_SECL->USER));    // The database username. 
-            define("PASSWORD", easy_decrypt(\ENCRYPTION_KEY, $CONVAR_SECL->PASSWORD));    // The database password. 
-            define("DATABASE", $CONVAR_SECL->DATABASE);    // The database name.
+            define("DBID", (string)$CONVAR_SECL->ID);     // The host you want to connect to.
+            echo "ID:" . (string)$CONVAR_SECL->ID . "</br>";
+            define("HOST", (string)$CONVAR_SECL->IPV4);     // The host you want to connect to.
+            define("DATABASE", (string)$CONVAR_SECL->DATABASE);     // The host you want to connect to.
+            echo "HOST:" . (string)$CONVAR_SECL->IPV4 . "</br>";
+            echo "KEY:" .ENCRYPTION_KEY."</br>";
+            define("USER", easy_decrypt(\ENCRYPTION_KEY, (string)$CONVAR_SECL->USER));    // The database username. 
+            echo "USER:".easy_decrypt(ENCRYPTION_KEY, $CONVAR_SECL->USER)."</br>";
+            define("PASSWORD", easy_decrypt(\ENCRYPTION_KEY, (string)$CONVAR_SECL->PASSWORD));    // The database password.             define("DATABASE", $CONVAR_SECL->DATABASE);    // The database name.
+            echo "PASSWD:".easy_decrypt(ENCRYPTION_KEY, $CONVAR_SECL->PASSWORD)."</br>";
         }
-        echo "-DD:".$SECL_TARGET. ":DD:".$CONVAR_SECL->ID;
+        else{
+            echo "NM:".$SECL_TARGET. ":NM:".$CONVAR_SECL->ID."</br>";
+        }
+        //var_dump($CONVAR_SECL);
     endforeach;
 }
 

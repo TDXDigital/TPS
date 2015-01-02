@@ -28,9 +28,9 @@ if (login_check($mysqli) == true) {
         <link rel="stylesheet" href="../../phpstyle.css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
-        <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"/>
-        <script type="text/JavaScript" src="../../TPSBIN/JS/sha512.js"></script> 
-        <script type="text/JavaScript" src="../../TPSBIN/JS/forms.js"></script> 
+        <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+        <script type="text/javaScript" src="../../TPSBIN/JS/sha512.js"></script> 
+        <script type="text/javaScript" src="../../TPSBIN/JS/forms.js"></script> 
     </head>
     <body>
         <form action="process_login.php" method="post" name="login_form">  
@@ -79,13 +79,11 @@ if (login_check($mysqli) == true) {
                                     <!-- Button -->
 
                                     <div class="col-sm-12 controls">
-                                        <button id="btn-login" onclick="formhash(this.form, this.form.password);" class="btn btn-success" value="Login">Login</button>
+                                        <!--<button id="btn-login" onclick="formhash(this.form, this.form.password);" class="btn btn-success" value="Login">Login</button>-->
+                                        <input type="button" id="btn-login" onclick="formhash(this.form, this.form.password);" value="Login" class="btn btn-success"/>
                                       <!--<a id="btn-fblogin" href="#" class="btn btn-primary">Login with Facebook</a>-->
-
                                     </div>
                                 </div>
-
-
                                 <div class="form-group">
                                     <div class="col-md-12 control">
                                         <div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
