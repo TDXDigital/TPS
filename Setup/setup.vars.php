@@ -91,21 +91,29 @@ $page_max = array_search($max_page_usr, $pagevars);
 
 if(!isset($_SESSION['max_page'])){
     $_SESSION['max_page']=0;
-    echo "<br>Set Session max";
+    if($DEBUG){
+        echo "<br>Set Session max";
+    }
 }
 elseif($_SESSION['max_page']<$page_max){
     $_SESSION['max_page']=$page_max;
 }
 else{
-    echo "<br>Session Exists";
+    if($DEBUG){
+        echo "<br>Session Exists";
+    }
     //echo $_SESSION['max_page'];
 }
 if($_SESSION['max_page']>$page_max){
     $_SESSION['max_page']=$page_max;
-    echo "<br>set max_page to:".$page_max;
+    if($DEBUG){
+        echo "<br>set max_page to:".$page_max;
+    }
 }
 else{
-    echo "<br>PAGE S:".$_SESSION['max_page']." --- R:".$page_max;
+    if($DEBUG){
+        echo "<br>PAGE S:".$_SESSION['max_page']." --- R:".$page_max;
+    }
 }
 
 
@@ -155,15 +163,19 @@ if(!is_null($username)&&!is_null($password)){
  * Set Authentication Values
  */
 if(!is_null($authtype)){
-    echo "<br>Setting Auth:".$authtype;
+    if($DEBUG){
+        echo "<br>Setting Auth:".$authtype;
+    }
     $_SESSION['authtype']=$authtype;
     if($authtype==="LDAP"){
         $_SESSION['ldap_port']=$LDAP_port;
         $_SESSION['ldap_server']=$LDAP_server;
         $_SESSION['ldap_dn']=$LDAP_DN;
         $_SESSION['ldap_domn']=$LDAP_domain;
-        echo "<br><br>LDAP_Port:".$LDAP_port."<br>LDAP_Server:".$LDAP_server."<br>DN:".$LDAP_DN.
+        if($DEBUG){
+            echo "<br><br>LDAP_Port:".$LDAP_port."<br>LDAP_Server:".$LDAP_server."<br>DN:".$LDAP_DN.
             "<br>Domain:".$LDAP_domain;
+        }
         
     }
 }
@@ -172,7 +184,9 @@ if(!is_null($authtype)){
  * Set Settings Variables
  */
 if(!is_null($callsign)){
-    echo "<br>Setting Settings:".$callsign;
+    if($DEBUG){
+        echo "<br>Setting Settings:".$callsign;
+    }
     $_SESSION['callsign']=$callsign;
     $_SESSION['pd_phone']=$pd_phone;
     $_SESSION['mgr_phone']=$mgr_phone;
