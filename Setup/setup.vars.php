@@ -122,13 +122,18 @@ else{*/
     if(isset($eula_accepted)&&$eula_accepted!=null){
         //$_SESSION['EULA_ACCEPTED']=date('Y-m-d');
         $_SESSION['EULA']=1;
-        echo "SET EULA FLAG";
+        if($DEBUG){
+            echo "SET EULA FLAG";
+        }
     }
     elseif($page_max>2 && !isset($_SESSION['EULA'])){
         header('location:?q=lic&m='.urlencode("You must accept the licence to procede with installation"));
     }
     else{
-        echo "EULA Already Accepted";
+        if($DEBUG)
+        {
+            echo "EULA Already Accepted";
+        }
         
     }
 //}
