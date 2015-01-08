@@ -2,8 +2,13 @@
 
 //
 //constant('HOST')=$_SESSION['DBHOST'];
+// set connection paramaters
 include_once 'db_auth_connect.php';
+
+// establish connection
 include_once '../../TPSBIN/db_connect.php';
+
+// support functions
 include_once '../../TPSBIN/functions.php';
 
 //need to set DB Values before this page.
