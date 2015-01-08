@@ -4,7 +4,7 @@
 // Establish Session if does not exist (should not exist)
 if(!isset($_SESSION)){
    sec_session_start();
-   $DEBUG = TRUE;
+   $DEBUG = FALSE;
 }
 
 // SET BASE REF
