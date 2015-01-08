@@ -33,7 +33,7 @@ if (login_check($mysqli) == true) {
         <script type="text/javaScript" src="../../TPSBIN/JS/forms.js"></script> 
     </head>
     <body>
-        <form action="process_login.php" method="post" name="login_form">  
+        <form action="process_login.php" method="post" name="login_form" id="form_input">  
         <div class="container">    
         <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
             <div class="panel panel-info" >
@@ -80,7 +80,7 @@ if (login_check($mysqli) == true) {
 
                                     <div class="col-sm-12 controls">
                                         <!--<button id="btn-login" onclick="formhash(this.form, this.form.password);" class="btn btn-success" value="Login">Login</button>-->
-                                        <input type="button" id="btn-login" onclick="formhash(this.form, this.form.password);" value="Login" class="btn btn-success"/>
+                                        <input type="button" id="btn-login" onclick="formhash(x, x.password);" value="Login" class="btn btn-success"/>
                                       <!--<a id="btn-fblogin" href="#" class="btn btn-primary">Login with Facebook</a>-->
                                     </div>
                                 </div>
@@ -107,10 +107,10 @@ if (login_check($mysqli) == true) {
     </div>
     </body>
     <script type="text/javascript">
+        var x = document.getElementById("form_input");
         $.ajax({
             dataType: "json",
             url: "../listservers.php",
-            data: data,
             success: function(data){
                 var server_ids = [];
                 $.each( data ,function(index,value){
