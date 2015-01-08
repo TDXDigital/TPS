@@ -2,6 +2,7 @@
 
 //
 //constant('HOST')=$_SESSION['DBHOST'];
+include_once 'db_auth_connect.php';
 include_once '../../TPSBIN/db_connect.php';
 include_once '../../TPSBIN/functions.php';
 
