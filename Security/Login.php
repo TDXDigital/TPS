@@ -147,7 +147,7 @@ if((string)$convars->ID==$db_ID){
     		if($des==0){
     			//header("Location: $dest");
                     
-                    header("Location: SecureLogin/Login.php");
+                    header("Location: SecureLogin/Login.php?q=".$convars->ID);
                     
     		}
     		else{
