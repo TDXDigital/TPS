@@ -6,13 +6,16 @@ if(!isset($_SESSION)){
    sec_session_start();
    $DEBUG = FALSE;
 }
+$DEBUG_STR = ""
 
 // SET BASE REF
 //$_SESSION['BASE_REF']=$_SERVER['PATH_INFO'];// should load from XML
 
 $_SESSION['BASE_REF'] = substr(dirname($_SERVER['PHP_SELF']),0,-9);// should load from XML
-
-echo "BASE: ".$_SESSION['BASE_REF']." :End Base<br>";;
+if($DEBUG)
+{
+	echo "BASE: ".$_SESSION['BASE_REF']." :End Base<br>";;
+}
 
 
 // LOAD SERVERS
@@ -92,7 +95,6 @@ if($dest===""||$dest==NULL)
 {
     $dest="../";
 }
-$DEBUG = "";
 if(isset($_POST['return'])){
     $des = $_POST['return'];
 }
@@ -104,10 +106,10 @@ $_SESSION['LOGIN_SRC'] = $_SERVER['HTTP_REFERER'];
 
 //DETERMINE AUTH TYPE
 foreach( $dbxml->SERVER as $convars):
-$DEBUG .= "Checking Entry [".(string)$convars->ID;
-$DEBUG .= "]: ";
+$DEBUG_STR .= "Checking Entry [".(string)$convars->ID;
+$DEBUG_STR .= "]: ";
 if((string)$convars->ID==$db_ID){
-    $DEBUG .= "MATCH</br>";
+    $DEBUG_STR .= "MATCH</br>";
 	// SET Connection HOST
     /*if($convars->RESOLVE==="URL"){
         define("HOST",$convars->URL);
@@ -128,19 +130,19 @@ if((string)$convars->ID==$db_ID){
         if(LDAP_AUTH($postuser, $postpass, $convars)){
             if($des==0){
                 header("Location: $dest");
-                echo "<br><br>login complete <a href=$dest>Next</a><br>";
+                $DEBUG_STR .= "<br><br>login complete <a href=$dest>Next</a><br>";
             }
             else{
                 header("Location: $ORIGIN");
-                echo "<br><br>login failed";
+                $DEBUG_STR .= "<br><br>login failed";
             }
         }
         else{
-            echo "<div class=\"container\" style=\"margin-top: 30px;\"><div class=\"page-header\">LDAP Login Failed</div><p>Click <a href='$ORIGIN'>HERE</a> to return to login and try again</p></div>";
+            $DEBUG_STR .= "<div class=\"container\" style=\"margin-top: 30px;\"><div class=\"page-header\">LDAP Login Failed</div><p>Click <a href='$ORIGIN'>HERE</a> to return to login and try again</p></div>";
         }
     }
     else if((string)$convars->AUTH == strtoupper("MYSQL_DB")){
-        echo "Load Module DB Auth";
+        $DEBUG_STR .= "Load Module DB Auth";
     	if(DB_AUTH($postuser, $postpass, $convars)){
             // Load Auth Module DB
             //include("DB_Auth.php");
@@ -156,7 +158,7 @@ if((string)$convars->ID==$db_ID){
     		}
     	}
     	else{
-    		echo "<hr/><br/><h2>MYSQL Login Failed</h2><br/>Click <a href='$ORIGIN'>HERE</a> to return to login and try again";
+    		$DEBUG_STR .= "<hr/><br/><h2>MYSQL Login Failed</h2><br/>Click <a href='$ORIGIN'>HERE</a> to return to login and try again";
     	}
     }
     else if((string)$convars->AUTH == strtoupper("SECL")){
@@ -170,12 +172,15 @@ if((string)$convars->ID==$db_ID){
 	$_SESSION['SRVPOST']=$db_ID;
 }
 else{
-    $DEBUG .= " MISS</br>";
+    $DEBUG_STR .= " MISS</br>";
 }
 endforeach;
 
-$DEBUG .= "<br/><br/>FAILED TO RESOLVE HOST. CHECK THAT SRVID IS BEING PASSED;<br/>RECEIVED:".$db_ID;
-echo $DEBUG;
+$DEBUG_STR .= "<br/><br/>FAILED TO RESOLVE HOST. CHECK THAT SRVID IS BEING PASSED;<br/>RECEIVED:".$db_ID;
+if($DEGUG){
+	echo $DEBUG_STR;
+}
+
 ?>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <!--<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js\"></script>-->
@@ -184,4 +189,3 @@ echo $DEBUG;
     
     </body>
 </html>
-
