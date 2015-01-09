@@ -91,7 +91,7 @@ else{
 	     $br = strtolower($_SERVER['HTTP_USER_AGENT']); // what browser they use.
 	    //echo $br;
 	
-	    if(preg_match("opera", $br)) {
+	    /*if(preg_match("opera", $br)) {
 	    	//echo 'Browser Supported';
 	   	//    header("location: originalhomepage.php");
 	    	echo "<!-- This browser has been verified to contain FULL SUPPORT for this page -->";
@@ -114,10 +114,6 @@ else{
 			$ACCnew = TRUE;
 			$ACCold = FALSE;
 		}
-		 // following block access revoked at Program Directors Request
-            /*else if(preg_match("chrome", $br)) {
-              echo "<!-- This browser has been verified to contain PARTIAL SUPPORT for this page -->";
-            }*/
             else if(getBrowser()=="Mozilla") {
               echo "<!-- This browser has been verified to contain PARTIAL SUPPORT for this page -->";
 				$ACCnew = TRUE;
@@ -126,7 +122,7 @@ else{
             else {
               // header('Location: /browserUnsupported.php');
               //  header("location: alteredhomepage.php");
-            }
+            }*/
         ?></table>
 	<table border="0" style="background-color:white; width: 1000px;">
         <tr><td colspan="100%"><?php
