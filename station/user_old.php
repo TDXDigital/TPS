@@ -89,8 +89,13 @@ else{
 	?>
 	</p></td></tr>
 	<?php
+	
+	// Don't Assume browser does not support display
+	$ACCnew = FALSE;
+	$ACCold = TRUE;
+	
 	     //echo $_SERVER['HTTP_USER_AGENT'] . "\n\n";
-	     $br = strtolower($_SERVER['HTTP_USER_AGENT']); // what browser they use.
+	//     $br = strtolower($_SERVER['HTTP_USER_AGENT']); // what browser they use.
 	    //echo $br;
 	
 	    /*if(preg_match("opera", $br)) {
