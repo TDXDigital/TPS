@@ -13,31 +13,31 @@ function getBrowser()
          $u_agent = $_SERVER['HTTP_USER_AGENT'];
 		 $broswer = get_browser(null, true);
          $ub = '';
-         if(preg_match('/MSIE/i',$u_agent))
+         if(preg_match('MSIE',$u_agent))
          {
              $ub = "Internet Explorer";
          }
-         else if(preg_match('/Mozilla/i',$u_agent))
+         else if(preg_match('Mozilla',$u_agent))
          {
              $ub = "Mozilla";
          }
-         else if(preg_match('/Safari/i',$u_agent))
+         else if(preg_match('Safari',$u_agent))
          {
              $ub = "Apple Safari";
          }
-         else if(preg_match('/Chrome/i',$u_agent))
+         else if(preg_match('Chrome',$u_agent))
          {
              $ub = "Google Chrome";
          }
-         else if(preg_match('/Flock/i',$u_agent))
+         else if(preg_match('Flock',$u_agent))
           {
              $ub = "Flock";
          }
-         else if(preg_match('/Opera/i',$u_agent))
+         else if(preg_match('Opera',$u_agent))
          {
              $ub = "Opera";
          }
-         else if(preg_match('/Netscape/i',$u_agent))
+         else if(preg_match('Netscape',$u_agent))
          {
              $ub = "Netscape";
          }
