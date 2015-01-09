@@ -1,12 +1,14 @@
 <?php
 
+if (!isset($_SESSION)) {
+    sec_session_start();
+}
+
 // needed for constants and decrypt
 include_once "TPSBIN/functions.php";
 include_once "TPSBIN/db_connect.php";
 
-if (!isset($_SESSION)) {
-    sec_session_start();
-}
+
 /*
 function getBrowser()
      {
