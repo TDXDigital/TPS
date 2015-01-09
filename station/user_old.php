@@ -2,12 +2,12 @@
 
 // needed for constants and decrypt
 include_once "TPSBIN/functions.php";
-include_once "db_connect.php";
+include_once "TPSBIN/db_connect.php";
 
 if (!isset($_SESSION)) {
     sec_session_start();
 }
-
+/*
 function getBrowser()
      {
          $u_agent = $_SERVER['HTTP_USER_AGENT'];
@@ -46,7 +46,7 @@ function getBrowser()
 		 }
          return $ub;
      }
-
+*/
 /*$con = mysql_connect(constant("HOST"),constant("USER"),constant("PASSWORD"),constant("DATABASE"));
 if (!$con){
 	echo "Error 401: Access Denied<br>Please Verify you are logged in.<br><br><a href='../logout.php'>Login Here</a><br>Details:";
@@ -92,11 +92,11 @@ else{
 	    //echo $br;
 	
 	    if(preg_match("opera", $br)) {
-	      //echo 'Browser Supported';
-	    //    header("location: originalhomepage.php");
-	    echo "<!-- This browser has been verified to contain FULL SUPPORT for this page -->";
+	    	//echo 'Browser Supported';
+	   	//    header("location: originalhomepage.php");
+	    	echo "<!-- This browser has been verified to contain FULL SUPPORT for this page -->";
 	    	$ACCnew = FALSE;
-				$ACCold = TRUE;
+		$ACCold = TRUE;
 	    }
 		else if (preg_match("chrome", $br)) {
 			$ACCnew = FALSE;
