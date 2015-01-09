@@ -44,15 +44,15 @@
     }
 
     else{
-        if($_SESSION['access']==2){
+        //if($_SESSION['access']==2){
             include_once "station/admin.php";
             //header("location: masterpage.php");
-        }
-        else{
+        //}
+        //else{
             //include_once "station/user.php";
             //include_once "djhome.php";
-            include_once "station/user_old.php";
+        //    include_once "station/user_old.php";
             //header("djhome.php");
-        }
+        //}
     }
 ?>
