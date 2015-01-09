@@ -48,7 +48,7 @@ function getBrowser()
 
 $con = mysql_connect(constant("HOST"),constant("USER"),constant("PASSWORD"),constant("DATABASE"));
 if (!$con){
-	echo "Error 401: Access Denied<br>Please Verify you are logged in.<br><br><a href='../logout.php'>Login Here</a><br>Details:"
+	echo "Error 401: Access Denied<br>Please Verify you are logged in.<br><br><a href='../logout.php'>Login Here</a><br>Details:";
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
 	}
 else if($con){
