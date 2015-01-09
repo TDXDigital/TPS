@@ -6,7 +6,7 @@ if(!isset($_SESSION)){
    sec_session_start();
    $DEBUG = FALSE;
 }
-$DEBUG_STR = ""
+$DEBUG_STR = "";
 
 // SET BASE REF
 //$_SESSION['BASE_REF']=$_SERVER['PATH_INFO'];// should load from XML
@@ -14,7 +14,7 @@ $DEBUG_STR = ""
 $_SESSION['BASE_REF'] = substr(dirname($_SERVER['PHP_SELF']),0,-9);// should load from XML
 if($DEBUG)
 {
-	echo "BASE: ".$_SESSION['BASE_REF']." :End Base<br>";;
+	echo "BASE: ".$_SESSION['BASE_REF']." :End Base<br>";
 }
 
 
