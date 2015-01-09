@@ -1,8 +1,8 @@
 <?php
 
 // needed for constants and decrypt
-include_once "../TPSBIN/functions.php";
-include_once "../db_connect.php";
+include_once "TPSBIN/functions.php";
+include_once "db_connect.php";
 
 if (!isset($_SESSION)) {
     sec_session_start();
@@ -87,35 +87,35 @@ else{
 	?>
 	</p></td></tr>
 	<?php
-             //echo $_SERVER['HTTP_USER_AGENT'] . "\n\n";
-             $br = strtolower($_SERVER['HTTP_USER_AGENT']); // what browser they use.
-            //echo $br;
-
-            if(ereg("opera", $br)) {
-              //echo 'Browser Supported';
-            //    header("location: originalhomepage.php");
-            echo "<!-- This browser has been verified to contain FULL SUPPORT for this page -->";
-            	$ACCnew = FALSE;
+	     //echo $_SERVER['HTTP_USER_AGENT'] . "\n\n";
+	     $br = strtolower($_SERVER['HTTP_USER_AGENT']); // what browser they use.
+	    //echo $br;
+	
+	    if(preg_match("opera", $br)) {
+	      //echo 'Browser Supported';
+	    //    header("location: originalhomepage.php");
+	    echo "<!-- This browser has been verified to contain FULL SUPPORT for this page -->";
+	    	$ACCnew = FALSE;
 				$ACCold = TRUE;
-            }
-			else if (ereg("chrome", $br)) {
-				$ACCnew = FALSE;
-				$ACCold = TRUE;
-			}
-			else if (getBrowser()=="Mozilla"){//ereg("Mozilla", $br)){
-				$ACCnew = FALSE;
-				$ACCold = TRUE;
-			}
-			else if (ereg("Apple Safari", $br)){
-				$ACCnew = TRUE;
-				$ACCold = FALSE;
-			}
-			else if (getBrowser()=="Internet Explorer"){
-				$ACCnew = TRUE;
-				$ACCold = FALSE;
-			}
-			 // following block access revoked at Program Directors Request
-            /*else if(ereg("chrome", $br)) {
+	    }
+		else if (preg_match("chrome", $br)) {
+			$ACCnew = FALSE;
+			$ACCold = TRUE;
+		}
+		else if (getBrowser()=="Mozilla"){//preg_match("Mozilla", $br)){
+			$ACCnew = FALSE;
+			$ACCold = TRUE;
+		}
+		else if (preg_match("Apple Safari", $br)){
+			$ACCnew = TRUE;
+			$ACCold = FALSE;
+		}
+		else if (getBrowser()=="Internet Explorer"){
+			$ACCnew = TRUE;
+			$ACCold = FALSE;
+		}
+		 // following block access revoked at Program Directors Request
+            /*else if(preg_match("chrome", $br)) {
               echo "<!-- This browser has been verified to contain PARTIAL SUPPORT for this page -->";
             }*/
             else if(getBrowser()=="Mozilla") {
