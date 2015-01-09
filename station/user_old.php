@@ -1,4 +1,8 @@
 <?php
+
+// needed for constants and decrypt
+include_once "../TPSBIN/functions.php";
+
 if (!isset($_SESSION)) {
     sec_session_start();
 }
@@ -42,9 +46,9 @@ function getBrowser()
          return $ub;
      }
 
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
+$con = mysql_connect(constant("HOST"),constant("USER"),constant("PASSWORD"),constant("DATABASE"));
 if (!$con){
-	echo 'Uh oh!';
+	echo "Error 401: Access Denied<br>Please Verify you are logged in.<br><br><a href='../logout.php'>Login Here</a><br>Details:"
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
 	}
 else if($con){
