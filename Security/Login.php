@@ -21,8 +21,7 @@ if($DEBUG)
 // LOAD SERVERS
 $dbxml = simplexml_load_file("../TPSBIN/XML/DBSETTINGS.xml");
 
-?>
-<!DOCTYPE HTML>
+$FAIL = '<!DOCTYPE HTML>
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -43,7 +42,7 @@ $dbxml = simplexml_load_file("../TPSBIN/XML/DBSETTINGS.xml");
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!-- WARNING: Respond.js doesn\'t work if you view the page via file:// -->
         <!--[if lt IE 9]>
           <script src=\"https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js\"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
@@ -81,8 +80,7 @@ $dbxml = simplexml_load_file("../TPSBIN/XML/DBSETTINGS.xml");
           </ul>
         </div>
       </div>
-    </div>-->
-<?php
+    </div>-->';
 
 // using ldap bind [Get Credentials]
 
@@ -178,6 +176,7 @@ endforeach;
 
 $DEBUG_STR .= "<br/><br/>FAILED TO RESOLVE HOST. CHECK THAT SRVID IS BEING PASSED;<br/>RECEIVED:".$db_ID;
 if($DEGUG){
+	echo $FAIL;
 	echo $DEBUG_STR;
 }
 
