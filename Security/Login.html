@@ -25,18 +25,18 @@
 	<div style="text-align: center; width: 500px; margin: auto;" id="content">
 		<div><img src="../DEV/DevImg.png" alt="Dev Login"/></div>
 		<div style="margin: auto;"><form name="login" method="post" action="Login.php">
-            <div id="Error" class="ui-state-error ui-corner-all hidden-div"></div>
+            <div id="Error" class="alert alert-warning hidden-div"></div>
             <fieldset>
-		        <input name="name" placeholder="Username" required title="Username" type="text" class="Fill ui-corner-all"/><br/>
-		        <input name="pass" placeholder="Password" required title="Password" class="Fill ui-corner-all" type="password"/>
+		        <input name="name" id="field1" placeholder="Username" readonly required title="Username" type="text" class="Fill ui-corner-all"/><br/>
+		        <input name="pass" id="field2" placeholder="Password" readonly required title="Password" class="Fill ui-corner-all" type="password"/>
                 <label for="srvr">Select Server: </label>
-                <select name="SRVID" id="srvr" onchange="check_auth_type()" onclick="check_auth_type(); return false;">
+                <select name="SRVID" id="srvr" onchange="check_auth_type()">
                     <!--<option value="CKXU001" selected>Picard</option>
                     <option value="CKXU002" >Riker</option>
                     <option value="CKXU003" >Development</option>
                     <option value="SECL001" >Secure Development Login</option>-->
                 </select>
-		        <input type="submit" value="Login" class="Fill ui-corner-all"/>
+		        <input type="submit" id="sub1" value="Login" disabled class="Fill ui-corner-all"/>
             </fieldset>
 		  <br/><br/><br /> 
 		</form></div>
@@ -47,19 +47,37 @@
             SRV_ID = $("#srvr").find(":selected").val();
             //alert(SRV_ID);
             $.ajax({
-                type: "POST",
+                method: "POST",
                 datatype:"json",
                 data: {'id':SRV_ID},
                 url: "checkauthtype.php",
-                success: function(index1,value1){
-                    if(value1.AUTH==="SECL"){
-                        $("[name=name]").disabled();
-                        $("[name=pass]").disabled();
-                    }
-                    else{
-                        alert(value1.AUTH);
-                        alert(value1);
-                    }
+                success: function(datar){
+                        $.each(datar,function(index,value){
+                            if(value.AUTH[0]==="SECL"){
+                                $("#field1").val("SECL Auth Type");
+                                $("#field1").prop("disabled","disabled");
+                                $("#field2").prop("disabled","disabled");
+                                $("#field2").val("***");
+                                $("#field2").prop("readonly",true);
+                                $("#sub1").removeAttr('disabled');
+                                $("#Error").html("Please click Login to go to your login page")
+                                $("#Error").removeClass("hidden-div");
+                            }
+                            else{
+                                $("Error").html();
+                                $("#Error").addClass("hidden-div");
+                                $("#field1").val("");
+                                $("#field1").prop("readonly",false);
+                                $("#field1").removeAttr("disabled");
+                                $("#field2").removeAttr("disabled");
+                                $("#field2").val("");
+                                $("#field2").prop("readonly",false);
+                                $("#sub1").removeAttr('disabled');
+                            }
+                            //alert(value.AUTH[0]);
+                        })
+                        
+                    //}
                 }
             });
         }
@@ -70,7 +88,7 @@
                 url: "listservers.php",
                 success: function(data){
                     $('#srvr').html("");
-                    console.log(data);
+                    //console.log(data);
                     var server_ids = [];
                     $.each( data ,function( index,value){
                         server_ids.push("<option value='"+value.server[0]+"'>"+value.NAME[0]+"</option>");
@@ -78,10 +96,17 @@
                     $('#srvr').append(server_ids);
                 }
             });
+            //check_auth_type();
         }
         
         $(document).ready(function(){
+            //var dfd = $.Deferred();
+            //dfd
+            //        .done(load_servers())
+            //        .done(check_auth_type());
+            
             load_servers();
+            window.setTimeout(check_auth_type,500);
         });
         </script>
 </body>

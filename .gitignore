@@ -25,3 +25,5 @@
 /TPSBIN/XML/DBSETTINGS.xml
 images/sampledata/parks/animals/Thumbs.db
 images/sampledata/parks/landscape/Thumbs.db
+/Security/php_errors.log
+/php_errors.log

@@ -14,14 +14,21 @@ $dbxml = simplexml_load_file("../TPSBIN/XML/DBSETTINGS.xml");
 if(!empty($dbxml))
 {
     foreach( $dbxml->SERVER as $convar):
-        if($convar->ID===$CHECK){
+        if($convar->ID==$CHECK){
             $result[]=["AUTH"=>$convar->AUTH,"LOGO"=>$convar->LOGOPATH];
             //$result[]=["server"=>$convar->ID,"NAME"=>$convar->NAME,"LOGO"=>$convar->LOGOPATH];
         }
     endforeach;
+    if(sizeof($result,COUNT_RECURSIVE)<1){
+        $result[]=["AUTH"=>"NOT_FOUND","LOGO"=>"NOT_FOUND"];
+    }
     header('Content-Type: application/json');
+    //console.log($result);
     echo json_encode($result);
 }
 else{
     //error (should send to setup before this is needed)
+    $result[]=["AUTH"=>"ERROR","LOGO"=>"ERROR"];
+    echo json_encode($result);
+    echo "ERROR: Empty request";
 }

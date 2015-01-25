@@ -7,6 +7,9 @@ if(!isset($_SESSION)){
     $DEBUG = FALSE;
     $logged = 'out';
 }
+elseif(!defined("HOST")){
+    $logged = 'out';
+}
 else{
     $logged = 'in';
 }
@@ -38,7 +41,7 @@ if (login_check($mysqli) == true) {
         <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
             <div class="panel panel-info" >
                     <div class="panel-heading">
-                        <div class="panel-title">Sign In</div>
+                        <div class="panel-title">Sign In - <span id="database_name">checking...</span></div>
                         <!--<div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="#">Forgot password?</a></div>-->
                     </div>     
 
@@ -108,7 +111,7 @@ if (login_check($mysqli) == true) {
     </body>
     <script type="text/javascript">
         var x = document.getElementById("form_input");
-        $.ajax({
+        /*$.ajax({
             dataType: "json",
             url: "../listservers.php",
             success: function(data){
@@ -117,6 +120,17 @@ if (login_check($mysqli) == true) {
                     server_ids.push("<option value='"+value.server+"'>"+value.name+"</option>");
                 });
             }
-          });
+          });*/
+        $.ajax({
+            type:"GET",
+            dataType: "json",
+            url: "../dbname.php",
+            data:{"id":"<?php echo filter_input(INPUT_GET, "q", FILTER_SANITIZE_STRING); ?>"},
+            success: function(data){
+                //alert(data[0].NAME);
+                //server_ids.push(data[0].NAME);
+                $("#database_name").html(data[0].NAME);
+            }
+        });
         </script>
 </html>
