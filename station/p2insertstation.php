@@ -12,7 +12,7 @@ include_once "../TPSBIN/db_connect.php";
 //mysql_select_db("CKXU") or die(mysql_error());
 //echo "database selected";
 if($_POST[callsign]!="" && $_POST[name]!=""){
-  $sql = "insert into STATION (callsign,stationname,Designation,frequency,website,address,boothphone,directorphone) values ( '$_POST[callsign]' , '$_POST[name]' , '$_POST[designation]' , '$_POST[frequency]' , '$_POST[website]' , '$_POST[address]' , '$_POST[boothph]' , '$_POST[direcphone]' )";
+  $sql = "insert into `station` (callsign,stationname,Designation,frequency,website,address,boothphone,directorphone) values ( '$_POST[callsign]' , '$_POST[name]' , '$_POST[designation]' , '$_POST[frequency]' , '$_POST[website]' , '$_POST[address]' , '$_POST[boothph]' , '$_POST[direcphone]' )";
   if($mysqli->query($sql))
   {
     echo "<h3>Station added</h3>";
