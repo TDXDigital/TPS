@@ -89,7 +89,7 @@ if (login_check($mysqli) == true) {
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <div class="col-md-12 control">
+                                <div class="col-md-3 control">
                                         <div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
                                         <input type="hidden" name="ID" value="<?php
                                             echo filter_input(INPUT_GET,"q");
@@ -97,6 +97,10 @@ if (login_check($mysqli) == true) {
                                         <select class="form-control" id="servers">
                                             <option value="null">Server List</option>
                                         </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9 control">
+                                        <div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
                                             If you don't have a login, please <a href="../register.php">register</a>.<br>
                                             If you are done, please <a href="../../TPSBIN/sec_logout.php">log out</a>.<br>
                                             You are currently logged <?php echo $logged ?>.
