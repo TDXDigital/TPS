@@ -19,7 +19,7 @@ if($_POST[callsign]!="" && $_POST[name]!=""){
   }
   else
   {
-    $err = $mysqli->error();
+    $err = $mysqli->errno();
     if($err == 1062)
     {
       echo "<p>Station name " . $_POST[callsign] . " already exists</p>";
