@@ -26,7 +26,7 @@ define("ENCRYPTION_KEY", "!@#$%^&*");
                       define("HOST",$server->IPV4);
                   }
               }
-              define("HOST",  constant('HOST') );
+              //define("HOST",  constant('HOST') );
               define("USER",easy_decrypt(ENCRYPTION_KEY,(string)$server->USER));
               define("PASSWORD",easy_decrypt(ENCRYPTION_KEY,(string)$server->PASSWORD));
               define("DATABASE",(string)$server->DATABASE);
