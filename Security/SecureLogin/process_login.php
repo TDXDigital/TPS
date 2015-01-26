@@ -30,7 +30,7 @@ if (isset($_POST['email'], $_POST['p'])) {
  
     if (login($email, $password, $mysqli) == true) {
         // Login success 
-        //header('Location: ../../');
+        header('Location: ../../');
     } else {
         // Login failed 
         // Destroy Session
@@ -38,7 +38,7 @@ if (isset($_POST['email'], $_POST['p'])) {
         //runkit_constant_remove("HOST");
         //runkit_constant_remove("USER");
         //runkit_constant_remove("PASSWORD");
-        //header('Location: Login.php?error=Invalid Login');
+        header('Location: Login.php?error=Invalid Login');
         echo $email." ".$password;
     }
 } else {
