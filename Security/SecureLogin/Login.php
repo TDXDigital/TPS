@@ -1,10 +1,11 @@
 <?php
 //include_once '../../TPSBIN/db_connect.php';
 include_once '../../TPSBIN/functions.php';
- 
+
+$DEBUG = TRUE; 
+
 if(!isset($_SESSION)){
     sec_session_start();
-    $DEBUG = FALSE;
     $logged = 'out';
 }
 elseif(!defined("HOST")){
