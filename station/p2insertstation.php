@@ -27,7 +27,7 @@ if($_POST[callsign]!="" && $_POST[name]!=""){
     else
     {
       echo $err;
-      echo mysqli->error;
+      echo $mysqli->error;
       echo $sql;
     }
   }
