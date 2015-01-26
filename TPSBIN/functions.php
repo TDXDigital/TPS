@@ -3,6 +3,40 @@
 define("ENCRYPTION_KEY", "!@#$%^&*");
 
 /**
+ * Sets connection parameters for SECL logn (DB)
+ */
+ function set_db_params($dbxml){
+      $assigned=false;
+      foreach ($dbxml->SERVER as $server){
+          if((string)$server->ID === $var){
+              if($server->RESOLVE === "URL")
+              {
+                define("HOST",$server->URL);
+              }
+              elseif($server->RESOLVE === "IPV4")
+              {
+                define("HOST",$server->IPV4);
+              }
+              else
+              {
+                  if($server->URL!=""){
+                      define("HOST",$server->URL);  
+                  }
+                  else{
+                      define("HOST",$server->IPV4);
+                  }
+              }
+              define("HOST",  constant('HOST') );
+              define("USER",easy_decrypt(ENCRYPTION_KEY,(string)$server->USER));
+              define("PASSWORD",easy_decrypt(ENCRYPTION_KEY,(string)$server->PASSWORD));
+              define("DATABASE",(string)$server->DATABASE);
+              $assigned=true;
+          }
+      }
+    return $assigned;
+}
+
+/**
  * Returns an encrypted & utf8-encoded
  */
 function encrypt($pure_string, $encryption_key) {
