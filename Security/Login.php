@@ -1,6 +1,6 @@
 <?php
    include("../TPSBIN/functions.php");
-
+$DEBUG=FALSE;
    if(isset($_GET)){
        $DEBUG=TRUE;
    }
