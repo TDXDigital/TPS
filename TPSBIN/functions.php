@@ -5,10 +5,10 @@ define("ENCRYPTION_KEY", "!@#$%^&*");
 /**
  * Sets connection parameters for SECL logn (DB)
  */
- function set_db_params($dbxml){
+ function set_db_params($dbxml,$target){
       $assigned=false;
       foreach ($dbxml->SERVER as $server){
-          if((string)$server->ID === $var){
+          if((string)$server->ID === $target){
               if($server->RESOLVE === "URL")
               {
                 define("HOST",$server->URL);
