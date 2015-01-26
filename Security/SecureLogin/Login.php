@@ -55,7 +55,7 @@ if (login_check($mysqli) == true) {
                             ?>
                         </div>
                             
-                        <form id="loginform" class="form-horizontal" role="form">
+                        <!--<form id="loginform" class="form-horizontal" role="form">-->
                                     
                             <div style="margin-bottom: 25px" class="input-group">
                                         <span class="input-group-addon">@</span>
@@ -99,7 +99,7 @@ if (login_check($mysqli) == true) {
                                         </div>
                                     </div>
                                 </div>    
-                            </form>     
+                            <!--</form>     -->
 
 
 

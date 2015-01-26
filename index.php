@@ -33,19 +33,19 @@
     }*/
     if(isset($_GET['old'])){
         if($_SESSION['access']==2){
-            include_once "station/admin_old.php";
+            //include_once "station/admin_old.php";
             //header("location: masterpage.php");
         }
         else{
             //include_once "djhome.php";
-            include_once "station/user_old.php";
+            //include_once "station/user_old.php";
             //header("djhome.php");
         }
     }
 
     else{
         //if($_SESSION['access']==2){
-            include_once "station/admin.php";
+            //include_once "station/admin.php";
             //header("location: masterpage.php");
         //}
         //else{

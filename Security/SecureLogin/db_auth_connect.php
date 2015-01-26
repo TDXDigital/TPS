@@ -24,10 +24,10 @@ include_once '../../TPSBIN/functions.php';
                   define("HOST",$server->IPV4);
               }
           }
-          define("DBHOST",  constant('HOST') );
+          define("HOST",  constant('HOST') );
           define("USER",easy_decrypt(ENCRYPTION_KEY,(string)$server->USER));
           define("PASSWORD",easy_decrypt(ENCRYPTION_KEY,(string)$server->PASSWORD));
-          define('DBNAME',(string)$server->DATABASE);
+          define("DATABASE",(string)$server->DATABASE);
       }
   }
 ?>
