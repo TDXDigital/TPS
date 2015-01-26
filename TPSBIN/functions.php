@@ -189,6 +189,10 @@ function login($email, $password, $mysqli) {
             return false;
         }
     }
+    else{
+     // failed to connect
+     return false;
+    }
 }
 
 function login_check($mysqli) {
