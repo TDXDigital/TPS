@@ -91,7 +91,7 @@ if (login_check($mysqli) == true) {
                                 <div class="form-group" >
                                     <div class="col-md-9 control">
                                         <div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
-                                            If you don't have a login, please <a href="../register.php">register</a>.<br>
+                                            If you don't have a login, please <a href="../Register.php">register</a>.<br>
                                             If you are done, please <a href="../../TPSBIN/sec_logout.php">log out</a>.<br>
                                             You are currently logged <?php echo $logged ?>.
                                             <!--<a href="#" onClick="$('#loginbox').hide(); $('#signupbox').show()">
