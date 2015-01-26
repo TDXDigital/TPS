@@ -1,7 +1,7 @@
 <?php
       session_start();
 
-$con = mysql_connect(constant['HOST'],constant['USER'],constant['PASSWORD'],constant('DATABASE'));
+$con = mysql_connect(constant('HOST'),constant('USER'),constant('PASSWORD'),constant('DATABASE'));
 /*if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
