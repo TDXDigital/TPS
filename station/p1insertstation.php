@@ -1,8 +1,8 @@
 <?php
       session_start();
 
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
-if (!$con){
+$con = mysql_connect(constant['HOST'],constant['USER'],constant['PASSWORD'],constant('DATABASE'));
+/*if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
 	}
@@ -13,7 +13,7 @@ else if($con){
 }
 else{
 	echo 'ERROR!';
-}
+}*/
 ?>
 
 <head>
@@ -49,8 +49,6 @@ else{
 
 	<hr />
         <!--<a href="logout.php" align='center' >Logout</a>--> <a href="../masterpage.php">Return</a><br/><p>
-        <img src="../images/mysqls.png" alt="MySQL Powered"> Stream Server status: <span id="cc_stream_info_server"></span></p>
-<script language="javascript" type="text/javascript" src="http://cent4.serverhostingcenter.com/system/streaminfo.js"></script>
-<script language="javascript" type="text/javascript" src="http://cent4.serverhostingcenter.com/js.php/zuomcwvv/streaminfo/rnd0"></script>
+        <img src="../images/mysqls.png" alt="MySQL Powered"></span></p>
 </body>
 </html>
