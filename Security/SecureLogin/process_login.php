@@ -12,8 +12,13 @@ include_once '../../TPSBIN/functions.php';
 sec_session_start(); // Our custom secure way of starting a PHP session.
 
 $var = filter_input(INPUT_POST, 'ID', FILTER_SANITIZE_STRING);
+$dbxml = simplexml_load_file("../../TPSBIN/XML/DBSETTINGS.xml");
 
-include_once 'db_auth_connect.php';
+if(!set_db_params($dbxml,$var)){
+ die("Could not set Database Parameters, Invalid or missing target");
+}
+
+//include_once 'db_auth_connect.php';
 
 
 // establish connection
