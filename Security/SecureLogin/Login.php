@@ -54,7 +54,7 @@ if (login_check($mysqli) == true) {
                             }
                             ?>
                         </div>
-                            
+                            <!-- TODO MUST PASS ID to auth-->
                         <!--<form id="loginform" class="form-horizontal" role="form">-->
                                     
                             <div style="margin-bottom: 25px" class="input-group">

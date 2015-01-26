@@ -1,7 +1,7 @@
 <?php
 
 include_once '../../TPSBIN/functions.php';
-  $var = filter_input(INPUT_POST, 'ID', FILTER_SANITIZE_STRING);
+  //convert to function with var being passed to it.
   
   $dbxml = simplexml_load_file("../../TPSBIN/XML/DBSETTINGS.xml");
   

@@ -11,6 +11,8 @@ include_once '../../TPSBIN/functions.php';
  
 sec_session_start(); // Our custom secure way of starting a PHP session.
 
+$var = filter_input(INPUT_POST, 'ID', FILTER_SANITIZE_STRING);
+
 include_once 'db_auth_connect.php';
 
 
