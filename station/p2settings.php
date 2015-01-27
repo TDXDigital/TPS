@@ -2,7 +2,7 @@
     session_start();
 	$UPDATE = FALSE;
 
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
+$con = mysql_connect(constant("HOST"),constant("USER"),constant("PASSWORD"),constant("DATABASE"));
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
@@ -10,8 +10,8 @@ if (!$con){
 	username=' . $_SESSION["usr"]);
 }
 else if($con){
-	if(strtoupper($_SESSION['usr'])!='PROGRAM'){
-			die('ERROR PROHIBITED ACCESS');
+	if(strtoupper($_SESSION['access'])<2){
+			die(http_response_code(401));
 	}
 	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../login.php');}
 		if(isset($_POST['name'])){
