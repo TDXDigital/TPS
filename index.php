@@ -1,6 +1,7 @@
 <?php
     include "TPSBIN/functions.php";
     session_start();
+    
     //echo "load index<br>";
     // check for installation
     if(!defined('HOST')&&!isset($_SESSION['DBHOST'])){
@@ -31,28 +32,44 @@
     /*else{
         header('location: Security/login.html');
     }*/
-    if(isset($_GET['old'])){
-        if($_SESSION['access']==2){
-            include_once "station/admin_old.php";
-            //header("location: masterpage.php");
+    $mysqlnd = function_exists('mysqli_fetch_all');
+    
+    if ($mysqlnd) {
+        if(isset($_GET['old'])){
+            if($_SESSION['access']==2){
+                include_once "station/admin_old.php";
+                //header("location: masterpage.php");
+            }
+            else{
+                //include_once "djhome.php";
+                include_once "station/user_old.php";
+                //header("djhome.php");
+            }
         }
+    
         else{
-            //include_once "djhome.php";
-            include_once "station/user_old.php";
-            //header("djhome.php");
+            if($_SESSION['access']==2){
+                include_once "station/admin.php";
+                //header("location: masterpage.php");
+            }
+            else{
+                //include_once "station/user.php";
+                //include_once "djhome.php";
+                include_once "station/user_old.php";
+                //header("djhome.php");
+            }
         }
     }
-
     else{
+        echo "<span>Your server does not support mysqlnd, please enable this feature for full operations.</span>"
         if($_SESSION['access']==2){
-            include_once "station/admin.php";
-            //header("location: masterpage.php");
-        }
-        else{
-            //include_once "station/user.php";
-            //include_once "djhome.php";
-            include_once "station/user_old.php";
-            //header("djhome.php");
-        }
+                include_once "station/admin_old.php";
+                //header("location: masterpage.php");
+            }
+            else{
+                //include_once "djhome.php";
+                include_once "station/user_old.php";
+                //header("djhome.php");
+            }
     }
 ?>
