@@ -86,10 +86,10 @@ else if($con){*/
 			}
 		}
 		$UPDATE = TRUE;
-    }
-else{
-	echo 'ERROR!';
-}
+    /*}
+//else{
+//	echo 'ERROR!';
+}*/
 
 ?>
 
