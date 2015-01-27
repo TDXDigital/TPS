@@ -1,86 +1,87 @@
 <?php
-    session_start();
+    //session_start();
 	$UPDATE = FALSE;
-
-$con = mysql_connect(constant("HOST"),constant("USER"),constant("PASSWORD"),constant("DATABASE"));
-if (!$con){
+	include_once "../TPSBIN/functions.php";
+	include_once "../TPSBIN/db_connect.php";
+//$con = mysql_connect(constant("HOST"),constant("USER"),constant("PASSWORD"),constant("DATABASE"));
+/*if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
 
 	username=' . $_SESSION["usr"]);
 }
-else if($con){
+else if($con){*/
 	if(strtoupper($_SESSION['access'])<2){
 			die(http_response_code(401));
 	}
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../login.php');}
+	//if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../login.php');}
 		if(isset($_POST['name'])){
-			if(!mysql_query("Update station SET stationname='".addslashes($_POST['name'])."' where callsign='".addslashes($_POST['call'])."' ")){
-				echo "NAME ERROR: " . mysql_error() . "</br>";
+			if(!$mysqli->query("Update station SET stationname='".addslashes($_POST['name'])."' where callsign='".addslashes($_POST['call'])."' ")){
+				echo "NAME ERROR: " . $mysqli->error . "</br>";
 			}
 		}
 		if(isset($_POST['desi'])){
-			if(!mysql_query("Update station SET Designation='".addslashes($_POST['desi'])."' where callsign='".addslashes($_POST['call'])."' ")){
+			if(!$mysqli->query("Update station SET Designation='".addslashes($_POST['desi'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo "DESIGNAION ERROR: " . mysql_error() . "</br>";
 			}
 		}
 		if(isset($_POST['freq'])){
-			if(!mysql_query("Update station SET frequency='".addslashes($_POST['freq'])."' where callsign='".addslashes($_POST['call'])."' ")){
+			if(!$mysqli->query("Update station SET frequency='".addslashes($_POST['freq'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo "FREQUENCY ERROR: " . mysql_error() . "</br>";
 			}
 		}
 		if(isset($_POST['dirp'])){
-			if(!mysql_query("Update station SET directorphone='".addslashes($_POST['dirp'])."' where callsign='".addslashes($_POST['call'])."' ")){
+			if(!$mysqli->query("Update station SET directorphone='".addslashes($_POST['dirp'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo "DIR-PHONE ERROR: " . mysql_error() . "</br>";
 			}
 		}
 		if(isset($_POST['oarp'])){
-			if(!mysql_query("Update station SET boothphone='".addslashes($_POST['oarp'])."' where callsign='".addslashes($_POST['call'])."' ")){
+			if(!$mysqli->query("Update station SET boothphone='".addslashes($_POST['oarp'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo "BOOTH-PHONE ERROR: " . mysql_error() . "</br>";
 			}
 		}
 		if(isset($_POST['webs'])){
-			if(!mysql_query("Update station SET website='".addslashes($_POST['webs'])."' where callsign='".addslashes($_POST['call'])."' ")){
+			if(!$mysqli->query("Update station SET website='".addslashes($_POST['webs'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo "WEB URL ERROR: " . mysql_error() . "</br>";
 			}
 		}
 		if(isset($_POST['addr'])){
-			if(!mysql_query("Update station SET address='".addslashes($_POST['addr'])."' where callsign='".addslashes($_POST['call'])."' ")){
+			if(!$mysqli->query("Update station SET address='".addslashes($_POST['addr'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo "ADDRESS ERROR: " . mysql_error() . " [Update station SET address='".addslashes($_POST['addr'])."' where callsign='".addslashes($_POST['call'])."' ]</br>";
 			}
 		}
 		if(isset($_POST['GPPL'])){
-			if(!mysql_query("Update station SET ST_PLLG='".addslashes($_POST['GPPL'])."' where callsign='".addslashes($_POST['call'])."' ")){
+			if(!$mysqli->query("Update station SET ST_PLLG='".addslashes($_POST['GPPL'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo mysql_error();
 			}
 		}
 		if(isset($_POST['DefaultSort'])){
-			if(!mysql_query("Update station SET ST_DefaultSort='".addslashes($_POST['DefaultSort'])."' where callsign='".addslashes($_POST['call'])."' ")){
+			if(!$mysqli->query("Update station SET ST_DefaultSort='".addslashes($_POST['DefaultSort'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo mysql_error();
 			}
 		}
 		if(isset($_POST['DisCon'])){
-			if(!mysql_query("Update station SET ST_DispCount='".addslashes($_POST['DisCon'])."' where callsign='".addslashes($_POST['call'])."' ")){
+			if(!$mysqli->query("Update station SET ST_DispCount='".addslashes($_POST['DisCon'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo mysql_error();
 			}
 		}
 		if(isset($_POST['WarnColor'])){
-			if(!mysql_query("Update station SET ST_ColorFail='".addslashes($_POST['WarnColor'])."' where callsign='".addslashes($_POST['call'])."' ")){
+			if(!$mysqli->query("Update station SET ST_ColorFail='".addslashes($_POST['WarnColor'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo mysql_error();
 			}
 		}
 		if(isset($_POST['PassColor'])){
-			if(!mysql_query("Update station SET ST_ColorPass='".addslashes($_POST['PassColor'])."' where callsign='".addslashes($_POST['call'])."' ")){
+			if(!$mysqli->query("Update station SET ST_ColorPass='".addslashes($_POST['PassColor'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo mysql_error();
 			}
 		}
 		if(isset($_POST['NoteColor'])){
-			if(!mysql_query("Update station SET ST_ColorNote='".addslashes($_POST['NoteColor'])."' where callsign='".addslashes($_POST['call'])."' ")){
+			if(!$mysqli->query("Update station SET ST_ColorNote='".addslashes($_POST['NoteColor'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo mysql_error();
 			}
 		}
 		if(isset($_POST['MGRP'])){
-			if(!mysql_query("Update station SET managerphone='".addslashes($_POST['MGRP'])."' where callsign='".addslashes($_POST['call'])."' ")){
+			if(!$mysqli->query("Update station SET managerphone='".addslashes($_POST['MGRP'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo mysql_error();
 			}
 		}
@@ -113,7 +114,7 @@ else{
 		<table border="0" class="tablecss">
 			<?php
 				$SQL = "SELECT * FROM station where callsign=\"".addslashes($_POST['call'])."\" ";
-				$ST = mysql_fetch_array(mysql_query($SQL));	
+				$ST = mysql_fetch_array($mysqli->query($SQL));	
 				
 				//SIX COLS
 				if($UPDATE==TRUE){
