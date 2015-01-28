@@ -99,7 +99,7 @@ else if($con){
                            else
                            {
                              echo '<tr ><td colspan="1" style="background-color:red;"' . mysql_errno() . '</td>';
-                             echo '<td colspan="100%" style="background-color:red; color:white;">The DJ could not be added to the server, please check your values</td></tr>';
+                             echo '<td colspan="100%" style="background-color:red; color:white;">The DJ could not be added to the server, please check your values<br>Error:'.mysql_error().'</td></tr>';
                            }
                          }
                       }
