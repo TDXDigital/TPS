@@ -96,7 +96,7 @@ else if($con){
                              echo 'no';
                            }
                            echo '</td></tr>';
-                           if($mysql->query("insert into DJ (djname, alias, active, years ) values ('" . addslashes($_POST['name']) . "', '" . addslashes($ALIAS) . "', '" . $ACTIVE . "', '" . addslashes($YEAR) . "' )"))
+                           if($mysqli->query("insert into DJ (djname, alias, active, years ) values ('" . addslashes($_POST['name']) . "', '" . addslashes($ALIAS) . "', '" . $ACTIVE . "', '" . addslashes($YEAR) . "' )"))
                            {
                              echo '<tr ><td colspan="100%" style="background-color:lightgreen;">DJ Added to database succesfully!</td></tr>';
                            }
