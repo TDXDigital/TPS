@@ -14,7 +14,7 @@
         }
         else{
             //header('location: Security/login.html?e=syserr_nchost&v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
-            header('location: logout.php&v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
+            header('location: logout.php?v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
         }
     }
     else{
