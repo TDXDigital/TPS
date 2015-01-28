@@ -1,5 +1,6 @@
 <?php
     include_once "TPSBIN/functions.php";
+    include_once 'CONFIG.php';
       sec_session_start();
 
 function getBrowser()
@@ -254,7 +255,7 @@ header('location: djhome.php');
              </td>
              <td colspan="2"></td>
              <td style="text-align:right;">
-        <span>Version 0.5.04  </span><img src="images/mysqls.png" alt="MySQL Powered"> 
+        <span>Version <?php print($VERSION." - ".$BUILD_DATE); ?> </span><img src="images/mysqls.png" alt="MySQL Powered"> 
         </td></tr>
         </table>
         </table>

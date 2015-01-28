@@ -1,7 +1,6 @@
 <?php
-date_default_timezone_set("UTC");
-
-$legacy = TRUE;
+include_once "../CONFIG.php";
+date_default_timezone_set($timezone);
 
 //echo constant("HOST");
 if(!defined("HOST") || !defined("USER") || !defined("PASSWORD") || !defined("DATABASE")){
