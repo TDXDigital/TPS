@@ -1,16 +1,20 @@
 <?php
+
+    $cerl = error_reporting();
+    error_reporting(0);
     include "TPSBIN/functions.php";
-    session_start();
+    sec_session_start();
     
     //echo "load index<br>";
     // check for installation
-    if(!defined('HOST')&&!isset($_SESSION['DBHOST'])){
+    if(!defined('HOST')||!isset($_SESSION['DBHOST'])){
         $filename="TPSBIN/XML/DBSETTINGS.xml";
         if(!file_exists($filename)){
             header('location: Setup/');
         }
         else{
-            header('location: Security/login.html?e=syserr_nchost&v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
+            //header('location: Security/login.html?e=syserr_nchost&v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
+            header('location: logout.php&v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
         }
     }
     else{
@@ -26,6 +30,7 @@
     }
     
     start:
+    error_reporting($cerl);
     if (!isset($_SESSION)) {
         sec_session_start();
     }

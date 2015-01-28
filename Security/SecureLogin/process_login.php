@@ -29,7 +29,7 @@ if (isset($_POST['email'], $_POST['p'])) {
     $password = $_POST['p'];//filter_input(INPUT_POST, 'p');// The hashed password.
  
     if (login($email, $password, $mysqli) == true) {
-        // Login success 
+        // Login success         
         header('Location: ../../');
     } else {
         // Login failed 
