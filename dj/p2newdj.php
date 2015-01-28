@@ -13,12 +13,12 @@ include_once '../TPSBIN/db_connect.php';
 <html>
 <body>
       <div class="topbar">
-          Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
+          Welcome, <?php echo(strtoupper($_SESSION['account'])); ?>
            </div>
 
       <table border="0" align="center" width="1000">
       <tr>
-           <td align="center"><img src="<?php print($_SESSION['basedir'].$_SESSION['logo']); ?>" alt="ckxu"/></td>
+           <td align="center"><img src="<?php print($_SESSION['BASEREF'].$_SESSION['logo']); ?>" alt="logo"/></td>
       </tr>
       <tr style="background-color:white;">
       <td>
