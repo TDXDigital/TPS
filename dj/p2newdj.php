@@ -102,8 +102,8 @@ else if($con){
                            }
                            else
                            {
-                             echo '<tr ><td colspan="1" style="background-color:red;"' . $mysqli->error. '</td>';
-                             echo '<td colspan="100%" style="background-color:red; color:white;">The DJ could not be added to the server, please check your values<br>Error:'.mysql_error().'</td></tr>';
+                             echo '<tr ><td colspan="1" style="background-color:red;">Error</td>';
+                             echo '<td colspan="100%" style="background-color:red; color:white;">The DJ could not be added to the server, please check your values<br>Error:'.$mysqli->error.'</td></tr>';
                            }
                          }
                       }
