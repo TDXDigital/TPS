@@ -66,7 +66,7 @@
         }
     }
     else{
-        echo "<span>Your server does not support mysqlnd, please enable this feature for full operations.</span>";
+        echo "<span>Your server does not support mysqlnd, please enable this feature for full operations.</span>"
         if($_SESSION['access']==2){
                 include_once "station/admin_old.php";
                 //header("location: masterpage.php");
