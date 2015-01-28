@@ -96,13 +96,13 @@ else if($con){
                              echo 'no';
                            }
                            echo '</td></tr>';
-                           if($mysqli->query("insert into DJ (djname, alias, active, years ) values ('" . addslashes($_POST['name']) . "', '" . addslashes($ALIAS) . "', '" . $ACTIVE . "', '" . addslashes($YEAR) . "' )"))
+                           if($mysqli->query("insert into `dj` (djname, alias, active, years ) values ('" . addslashes($_POST['name']) . "', '" . addslashes($ALIAS) . "', '" . $ACTIVE . "', '" . addslashes($YEAR) . "' )"))
                            {
                              echo '<tr ><td colspan="100%" style="background-color:lightgreen;">DJ Added to database succesfully!</td></tr>';
                            }
                            else
                            {
-                             echo '<tr ><td colspan="1" style="background-color:red;">Error</td>';
+                             echo '<tr ><td colspan="1" style="background-color:red;">Error '.$mysqli->errno.'</td>';
                              echo '<td colspan="100%" style="background-color:red; color:white;">The DJ could not be added to the server, please check your values<br>Error:'.$mysqli->error.'</td></tr>';
                            }
                          }
