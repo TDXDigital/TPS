@@ -1,4 +1,8 @@
-<?php session_start();
+<?php
+
+include_once '../TPSBIN/functions.php';
+include_once '../TPSBIN/db_connect.php';
+session_start();
  $DEBUG = TRUE;
  ?>
 <!DOCTYPE HTML>
@@ -20,7 +24,7 @@
       <td>
 <?php
 
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
+/*$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
@@ -30,7 +34,7 @@ else if($con){
          // end PHP Header
          if($DEBUG){
              echo "<p>DBNAME: ".$_SESSION['DBNAME']."<br/>DBHOST:".$_SESSION['DBHOST']."</p>";
-         }
+         }*/
         ?>
         <table align="left" border="0" height="100">
         <tr><td colspan="100%">
@@ -92,18 +96,18 @@ else if($con){
                              echo 'no';
                            }
                            echo '</td></tr>';
-                           if(mysql_query("insert into DJ (djname, alias, active, years ) values ('" . addslashes($_POST['name']) . "', '" . addslashes($ALIAS) . "', '" . $ACTIVE . "', '" . addslashes($YEAR) . "' )"))
+                           if($mysql->query("insert into DJ (djname, alias, active, years ) values ('" . addslashes($_POST['name']) . "', '" . addslashes($ALIAS) . "', '" . $ACTIVE . "', '" . addslashes($YEAR) . "' )"))
                            {
                              echo '<tr ><td colspan="100%" style="background-color:lightgreen;">DJ Added to database succesfully!</td></tr>';
                            }
                            else
                            {
-                             echo '<tr ><td colspan="1" style="background-color:red;"' . mysql_errno() . '</td>';
+                             echo '<tr ><td colspan="1" style="background-color:red;"' . $mysqli->error. '</td>';
                              echo '<td colspan="100%" style="background-color:red; color:white;">The DJ could not be added to the server, please check your values<br>Error:'.mysql_error().'</td></tr>';
                            }
                          }
                       }
-
+			$mysqli->close();
                  ?>
         </tr>
         <tr><td colspan="100%"><hr /></td></tr>
@@ -124,20 +128,6 @@ else if($con){
 		<td><img src="../images/mysqls.png" alt="MySQL" align="right"></td>
         </tr>
         </table>
-
-        <?php
-
-}
-else{
-	echo 'ERROR!';
-}
-
-?>
-
-
-		</table>
-		
-<script language="javascript" type="text/javascript" src="http://cent4.serverhostingcenter.com/system/streaminfo.js"></script>
-<script language="javascript" type="text/javascript" src="http://cent4.serverhostingcenter.com/js.php/zuomcwvv/streaminfo/rnd0"></script>
+	</table>
 </body>
 </html>
