@@ -12,11 +12,13 @@
         // Replaced code with function of cron script
     }
     elseif(strtolower($_GET['q'])=='np'){
+        // disabled due to performance lag
+        
         // generate cron
-        $switch_query = new TPS_Cron();
+        //$foo_query = new TPS_Cron();
 
         // execute query with mute off
-        $switch_query->get_now_playing_foobar();
+        //$foo_query->get_now_playing_foobar();
 
         // Replaced code with function of cron script
     }
