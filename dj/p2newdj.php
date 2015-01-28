@@ -1,8 +1,8 @@
 <?php
 
 include_once '../TPSBIN/functions.php';
+sec_session_start();
 include_once '../TPSBIN/db_connect.php';
-session_start();
  $DEBUG = TRUE;
  ?>
 <!DOCTYPE HTML>
