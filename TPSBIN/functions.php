@@ -100,7 +100,7 @@ include_once 'psl-config.php';
 // As functions.php is not included
 function sec_session_start() {
 session_start();
-
+/*
     $session_name = 'sec_session_id';   // Set a custom session name
     $secure = SECURE;
     // This stops JavaScript being able to access the session id.
@@ -120,7 +120,7 @@ session_start();
     // Sets the session name to the one set above.
     session_name($session_name);
     session_start();            // Start the PHP session 
-    session_regenerate_id();    // regenerated the session, delete the old one. 
+    session_regenerate_id();    // regenerated the session, delete the old one. */
 }
 
 function login($email, $password, $mysqli) {
@@ -165,10 +165,10 @@ function login($email, $password, $mysqli) {
                     $_SESSION['login_string'] = hash('sha512', 
                               $password . $user_browser);
                     $_SESSION['account'] = $username;
-                    $_SESSION['DBHOST'] = constant("HOST");
-                    $_SESSION['usr'] = constant("USER");
-                    $_SESSION['rpw'] = constant("PASSWORD");
-                    $_SESSION['DBNAME'] = constant("DATABASE");
+                    $_SESSION['DBHOST'] = HOST;
+                    $_SESSION['usr'] = USER;
+                    $_SESSION['rpw'] = PASSWORD;
+                    $_SESSION['DBNAME'] = DATABASE;
                     $_SESSION['fname'] = $user_id;
                     $_SESSION['access'] = $access;
                     $_SESSION['logo'] = 'images/Ckxu_logo_2.png';
