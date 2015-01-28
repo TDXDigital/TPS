@@ -18,7 +18,7 @@ include_once '../TPSBIN/db_connect.php';
 
       <table border="0" align="center" width="1000">
       <tr>
-           <td align="center"><img src="../images/Ckxu_logo_PNG.png" alt="ckxu"/></td>
+           <td align="center"><img src="<?php print($_SESSION['basedir'].$_SESSION['logo']) ?>" alt="ckxu"/></td>
       </tr>
       <tr style="background-color:white;">
       <td>
