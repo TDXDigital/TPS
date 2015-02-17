@@ -166,24 +166,24 @@ else if($con){
 	}
 	
 	//$ICC = 0;
-	$EDIC = $_POST['edit'];
-	$SNID = $_POST['SNID'];
-	$CATS = $_POST['category'];
-	$PLAY = $_POST['Playlist'];
-	$SPOK = $_POST['Spoken'];
-	$TIME = $_POST['times'];
-	$TITL = $_POST['titles'];
-	$ARTI = $_POST['artists'];
-	$ALBU = $_POST['albums'];
-	$COMP = $_POST['composers'];
-	$CANC = $_POST['cc'];
-	$HITZ = $_POST['hit'];
-	$INST = $_POST['ins'];
-    $FINI = $_POST['complete'];
-    $TYPE = $_POST['type'];
-	$LANG = $_POST['language'];
-	$NOTE = $_POST['note'];
-	$REMO = $_POST['remove'];
+	$EDIC = filter_input(INPUT_POST,'edit',FILTER_SANITIZE_NUMBER_INT);//$_POST['edit'];
+	$SNID = filter_input(INPUT_POST,'SNID',FILTER_SANITIZE_NUMBER_INT);//$_POST['SNID'];
+	$CATS = filter_input(INPUT_POST,'category',FILTER_SANITIZE_STRING);//$_POST['category'];
+	$PLAY = filter_input(INPUT_POST,'Playlist',FILTER_SANITIZE_STRING);//$_POST['Playlist'];
+	$SPOK = filter_input(INPUT_POST,'Spoken',FILTER_SANITIZE_NUMBER_FLOAT);//$_POST['Spoken'];
+	$TIME = filter_input(INPUT_POST,'times',FILTER_SANITIZE_STRIPPED);//$_POST['times'];
+	$TITL = filter_input(INPUT_POST,'titles',FILTER_SANITIZE_STRING);//$_POST['titles'];
+	$ARTI = filter_input(INPUT_POST,'artists',FILTER_SANITIZE_STRING);//$_POST['artists'];
+	$ALBU = filter_input(INPUT_POST,'albums',FILTER_SANITIZE_STRING);//$_POST['albums'];
+	$COMP = filter_input(INPUT_POST,'composers',FILTER_SANITIZE_STRING);//$_POST['composers'];
+	$CANC = filter_input(INPUT_POST,'cc',FILTER_SANITIZE_NUMBER_INT);//$_POST['cc'];
+	$HITZ = filter_input(INPUT_POST,'hit',FILTER_SANITIZE_NUMBER_INT);//$_POST['hit'];
+	$INST = filter_input(INPUT_POST,'ins',FILTER_SANITIZE_NUMBER_INT);//$_POST['ins'];
+        $FINI = filter_input(INPUT_POST,'complete',FILTER_SANITIZE_NUMBER_INT);//$_POST['complete'];
+        $TYPE = filter_input(INPUT_POST,'type',FILTER_SANITIZE_STRING);//$_POST['type'];
+	$LANG = filter_input(INPUT_POST,'languages',FILTER_SANITIZE_STRING);//$_POST['language'];
+	$NOTE = filter_input(INPUT_POST,'note',FILTER_SANITIZE_STRING);//$_POST['note'];
+	$REMO = filter_input(INPUT_POST,'remove',FILTER_SANITIZE_NUMBER_INT);//$_POST['remove'];
 	 
 	$END = count($EDIC);
 	for ($i=0; $i < $END; $i++){
@@ -401,7 +401,7 @@ else{
 				<span> Show Classification: <?php
 					echo $vars['genre'];
 				?></span>
-			</td><td style=" min-width='225px'">
+			</td><td style=" min-width:'225px'">
 				<?php
 				$getgen = "select * from genre where genreid='" . $vars['genre'] . "' ";
 				$reqar = mysql_query($getgen);
@@ -928,28 +928,36 @@ else{
 			}
 			echo "/></td>";
 			echo "<td><input disabled onChange=\"SetEdit('EDI".$CONT."')\" type=\"checkbox\" name=\"complete[]\" value='".$SONGS['songid']."' ";
-			if( $SONGS['complete'] == "1"){
-				echo " checked ";
-			}
+			if(isset($SONGS['complete'])){
+                            if( $SONGS['complete'] == "1"){
+                                    echo " checked ";
+                            }
+                        }
 			echo "/></td> ";
 			echo "<td>"; // Put Type Here
 	        echo "<select disabled name=type[] onChange=\"SetEdit('EDI".$CONT."')\">";
             echo "\n<option ";
-            if($SONGS['type']=="B"){
-                echo " selected ";
+            if(isset($SONGS['type'])){
+                if($SONGS['type']=="B"){
+                    echo " selected ";
+                }
+
+                echo " value='Background'>BG</option>";
+                echo "\n<option ";
+                if($SONGS['type']=="F" || !isset($SONGS['type'])){
+                    echo " selected ";
+                }
+                echo "value='FG'>FG</option>";
+                echo "\n<option ";
+                if($SONGS['type']=="T"){
+                    echo " selected ";
+                }
+                echo "value='theme'>THM</option>";
+                echo "\n</select>";
             }
-            echo " value='Background'>BG</option>";
-            echo "\n<option ";
-            if($SONGS['type']=="F" || !isset($SONGS['type'])){
-                echo " selected ";
+            else{
+                echo " selected value='NA'>--</option></select> ";
             }
-            echo "value='FG'>FG</option>";
-            echo "\n<option ";
-            if($SONGS['type']=="T"){
-                echo " selected ";
-            }
-            echo "value='theme'>THM</option>";
-            echo "\n</select>";
 			echo "</td>";
 			$LANS = mysql_fetch_array(mysql_query("SELECT languageid from language where songid=\"" . $SONGS['songid'] . "\" "));
 			echo "<td><input onchange=\"SetEdit('EDI".$CONT."')\" onclick=\"SetEdit('EDI".$CONT."')\" type=\"text\" name=\"language[]\" value=\"". $LANS['languageid'] . "\" size=\"10\" maxlength=\"40\" /></td>";
