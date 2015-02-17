@@ -1,9 +1,6 @@
 <?php
 
 define("ENCRYPTION_KEY", "!@#$%^&*");
-include_once '../CONFIG.php';
-date_default_timezone_set($timezone);
-
 
 /**
  * Sets connection parameters for SECL logn (DB)

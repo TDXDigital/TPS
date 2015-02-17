@@ -7,7 +7,6 @@ if (!isset($_SESSION)) {
 // needed for constants and decrypt
 include_once "TPSBIN/functions.php";
 include_once "TPSBIN/db_connect.php";
-include_once 'CONFIG.php';
 
 
 /*
@@ -217,7 +216,7 @@ else{
              </td>
              <td colspan=""></td>
              <td style="text-align:right;">
-             	<span>Version <?php print($VERSION." - ".$BUILD_DATE); ?> </span>
+             	<span>Version 0.3.205 </span>
         <img src="images/mysqls.png" alt="MySQL Powered"> 
         </td></tr>
         </table>
