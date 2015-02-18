@@ -339,7 +339,8 @@
             // read Now Playing file from remote server
             
             //$file=remove_utf8_bom($file_orig);
-            $file = preg_replace('/\x{FEFF}/u', '', $file_orig);
+            //$file = preg_replace('/\x{FEFF}/u', '', $file_orig);
+            $file = preg_replace('/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u','', $file_orig); // Strip Unicode Header
             if(!file_exists($file)){
                 header('HTTP/1.1 404 File Not Found');
                 header('Content-Type: application/json; charset=UTF-8');
