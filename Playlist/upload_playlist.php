@@ -1,4 +1,6 @@
+
 <?php
+
 // THIS IS A BIG SCRIPT...
 //ini_set('MAX_EXECUTION_TIME',9000); // Yes I know 2.5 Hrs, it can take a long time...
 set_time_limit(9000);
@@ -54,10 +56,10 @@ $result[2]=0;
 $result[3]=0;
 
 $pl_select = $mysqli->prepare("SELECT * FROM playlist where SmallCode=? and (Expire is NULL or Expire > date(NOW));");
-
+/*
 if(){
   
-}
+}*/
 
 
 
@@ -103,8 +105,11 @@ if($initiate>$terminate){
 elseif($terminate>$highestRow){
     $terminate=$highestRow;
 }
-for ($row = $initiate; $row <= $terminate; $row++){ //50; $row++){//
-    //  Read a row of data into an array
+
+$c=0; // if loop runs too long end it
+for ($row = $initiate; $row <= $terminate || $c>1000 ; $row++){ //50; $row++){//
+    $c++;
+//  Read a row of data into an array
     $rowData = $sheet->rangeToArray('A' . $row . ':' . $highestColumn . $row,
                                     NULL,
                                     TRUE,
@@ -206,4 +211,4 @@ $_SESSION['TOTAL']=$result[0];
 $_SESSION['COMPLETE']=$result[3];
 $_SESSION['FILE_UPLOAD']=$_FILES["file"]["tmp_name"];
 header("location: summary.php");
-?>
+

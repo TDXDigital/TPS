@@ -1,5 +1,6 @@
 <?php
 
+error_reporting(0);
 define("ENCRYPTION_KEY", "!@#$%^&*");
 include_once '../CONFIG.php';
 date_default_timezone_set($timezone);

@@ -328,56 +328,7 @@ else{
 </head>
 <html>
 <body>
-	<script type="text/javascript">
-     function SetRem(chk, ID, ROW, COUNT) {
-         if (chk == true) {
-             document.getElementById(ID).style.background = 'red';
-         }
-         else {
-             //alert('UNCHECK')
-             if (COUNT % 2) {
-                 document.getElementById(ID).style.background = '#DAFFFF'; //'#F9F9AA';
-             }
-             else {
-                 document.getElementById(ID).style.background = 'white';
-             }
-         }
-     }
-
-     function SetEdit(Row) {
-         //alert(Row);
-         //document.forms['general'].Row.checked="true";
-         document.getElementById(Row).checked = "true";
-     }
-     function HideHardware() {
-         $("#HDW_title_open").hide();
-         $("#hdw_prompt").show();
-         $("#hdw").hide();
-     }
-
-     function ShowHardware() {
-         $("#hdw").show();
-         $("#HDW_title_open").show();
-         $("#hdw_prompt").hide();
-     }
-
-     function SetNote(ELID, EDI) {
-         //var VAL = document.getElementById(ELID).value;
-         //alert(document.getElementById(ELID).value)
-         document.getElementById(EDI).checked = "true";
-         var NOTE = prompt("Notes for individual song (90 char Max)", document.getElementById(ELID).value);
-         if (NOTE != null) {
-             document.getElementById(ELID).value = NOTE;
-         }
-     }
-     $(document).ready(function () {
-         // Load Emergency Information
-         GetEAS('EAS', '../../');
-         setInterval(function () {
-            GetEAS('EAS', '../../');
-         }, 15000);
-     });
-	</script>
+	
 	<div class="topbar">
            USER: <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
@@ -1010,6 +961,55 @@ else{
 			</tr>
 		</table>
 	</div>
+    <script type="text/javascript">
+     function SetRem(chk, ID, ROW, COUNT) {
+         if (chk == true) {
+             document.getElementById(ID).style.background = 'red';
+         }
+         else {
+             //alert('UNCHECK')
+             if (COUNT % 2) {
+                 document.getElementById(ID).style.background = '#DAFFFF'; //'#F9F9AA';
+             }
+             else {
+                 document.getElementById(ID).style.background = 'white';
+             }
+         }
+     }
 
+     function SetEdit(Row) {
+         //alert(Row);
+         //document.forms['general'].Row.checked="true";
+         document.getElementById(Row).checked = "true";
+     }
+     function HideHardware() {
+         $("#HDW_title_open").hide();
+         $("#hdw_prompt").show();
+         $("#hdw").hide();
+     }
+
+     function ShowHardware() {
+         $("#hdw").show();
+         $("#HDW_title_open").show();
+         $("#hdw_prompt").hide();
+     }
+
+     function SetNote(ELID, EDI) {
+         //var VAL = document.getElementById(ELID).value;
+         //alert(document.getElementById(ELID).value)
+         document.getElementById(EDI).checked = "true";
+         var NOTE = prompt("Notes for individual song (90 char Max)", document.getElementById(ELID).value);
+         if (NOTE != null) {
+             document.getElementById(ELID).value = NOTE;
+         }
+     }
+     $(document).ready(function () {
+         // Load Emergency Information
+         GetEAS('EAS', '../../');
+         setInterval(function () {
+            GetEAS('EAS', '../../');
+         }, 15000);
+     });
+	</script>
 </body>
 </html>

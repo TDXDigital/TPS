@@ -1,5 +1,9 @@
 <?php
-    session_start();
+    include_once '../TPSBIN/functions.php';
+    include_once '../TPSBIN/db_connect.php';
+
+/*
+session_start();
 
 $con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
 if (!$con){
@@ -10,8 +14,8 @@ if (!$con){
 }
 else if($con){
 	if(!mysql_select_db("CKXU")){header('Location: ../login.php');} 
+*/
 ?>
-
 <!DOCTYPE HTML>
 <head>
 	<title>Playlist</title>
@@ -22,9 +26,30 @@ else if($con){
     
 </head>
 <html>
-<body onload="loadinit()">
+<body onload="load()">
 	<script>
-	function loadinit(){
+        var q=1,l=250;
+        
+        function update_qty(){
+            var e = document.getElementById("qty");
+            l = e.options[e.selectedIndex].text;
+            load();
+        }
+        
+        function loadnext(){
+            if(q>0){
+                q++
+            }
+            load();
+        }
+        function loadlast(){
+            if(q>0){
+                q--
+            }
+            load();
+        }
+        
+	function load(){
 		if(window.XMLHttpRequest)
 			{// code for IE7+, Firefox, Chrome, Opera, Safari (www.w3Schools.com Source)
 				xmlhttp=new XMLHttpRequest();
@@ -42,10 +67,11 @@ else if($con){
    						document.getElementsByName("listCon")[0].innerHTML="loading...";
    					}
    				}
-   			xmlhttp.open("GET","AJAX/GetContent.php",true);
+   			xmlhttp.open("GET","AJAX/GetContent.php?p="+q+"&s="+l,true);
    			xmlhttp.send();
-			
+		document.getElementById("page").innerHTML="Page: "+q+"  | ";	
 		}
+                
 	function CheckPlaylist(num){
 		if(window.XMLHttpRequest)
 			{// code for IE7+, Firefox, Chrome, Opera, Safari (www.w3Schools.com Source)
@@ -137,14 +163,14 @@ else if($con){
 			</select></td>
 			<td><select name="label" style="width:99%;">
                 <?php
-                    $conres = mysql_query("SELECT * FROM recordlabel order by Size, Name");
-                    if(mysql_errno()){
+                    $conres = $mysqli->query("SELECT * FROM recordlabel order by Size, Name");
+                    if($mysql->errno){
                         echo "<option>".mysql_error()."</option>";
                     }
-                    while($row = mysql_fetch_array($conres)){
+                    while($row = mysqli_fetch_array($conres)){
                         $ID = $row['LabelNumber'];
                         $Name = $row['Name'];
-                        echo "<option value='$ID' >$Name</option>";
+                        echo "<option value='$ID' >".stripslashes($Name)."</option>";
                     }
                 ?>
                 <!--
@@ -165,18 +191,21 @@ else if($con){
 	</div>
 	<div id="top">
 		<h3>Edit</h3>
+                <span><button value="NEXT" onclick="loadlast()"><< Previous</button>
+                    <span id="page"></span>Display <select id="qty" onchange="update_qty()"><option value="100">100</option><option value="250" selected="selected">250</option><option value="500">500</option><option value="1000">1000</option></select>
+                    <button value="NEXT" onclick="loadnext()">Next >></button></span>
 	</div>
 	<div id="content" name="listCon">
 		<span>Error, Could not initiate AJAX</span><progress max="100"></progress>
 	</div>
 	
 <?php
-
+/*
 }
 else{
 	echo 'ERROR!';
 }
-mysql_close($con);
+mysql_close($con);*/
 ?>
 </body>
 </html>

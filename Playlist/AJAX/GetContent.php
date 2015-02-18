@@ -1,5 +1,8 @@
 <?php
 
+include_once '../../TPSBIN/functions.php';
+include_once '../../TPSBIN/db_connect.php';
+/*
 session_start();
 
 //if($_SESSION['usr']=='user')
@@ -16,22 +19,26 @@ else if($con){
 }
 else{
 	echo 'ERROR!';
-}
+}*/
 	//$query = "Select * from playlist where ";
-    $query = "SELECT * FROM library LEFT JOIN playlist ON library.playlistid=playlist.PlaylistId LEFT JOIN recordlabel ON library.labelid=recordlabel.LabelNumber limit 100;";
+    $size = filter_input(INPUT_GET,'s', FILTER_SANITIZE_NUMBER_INT) ?: 100;
+    $page= filter_input(INPUT_GET,'p',FILTER_SANITIZE_NUMBER_INT) ?: 0;
+    $start = $size*$page;
+    $query = "SELECT * FROM library LEFT JOIN playlist ON library.playlistid=playlist.PlaylistId LEFT JOIN recordlabel ON library.labelid=recordlabel.LabelNumber limit ".$start.",".$size.";";
 	if($from = $_GET['f']){
 		if($limit = $_GET['l']){
 			$query .= " limit " . $from . "," . $limit;
 		}
 	}
-    $array_playlist = mysql_query($query);
+    //$array_playlist = mysql_query($query);
+        $array_playlist = $mysqli->query($query);
 	$i = 0;
 	echo "<form action=\"submitPlaylist.php\" method=\"post\" accept-charset=\"utf-8\">
 	<table>";
 	echo "<tr>
-				<th width=\"10%\">Playlist #</th><th width=\"25%\">Artist</th><th width=\"25%\">Album</th><th width=\"10%\">CanCon</th><th width=\"10%\">Label Size</th><th width=\"15%\">Genre</th><th width=\"5%\">Delete</th>
+				<th width=\"10%\">Playlist #</th><th width=\"25%\">Artist</th><th width=\"25%\">Album</th><th width=\"10%\">CanCon</th><th width=\"10%\">Label Size</th><th width=\"15%\">Year</th><th width=\"5%\">Delete</th>
 			</tr>";
-	while($row = mysql_fetch_array($array_playlist)){
+	while($row = mysqli_fetch_array($array_playlist)){
 		//if($i%2){
 			echo "<tr" . $row['number'] . ">";
 		/*}

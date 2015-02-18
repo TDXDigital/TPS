@@ -1,5 +1,5 @@
 <?php
-    
+    error_reporting(0);
     include_once "functions.php";
     if(!isset($_SESSION)){
         sec_session_start();
@@ -30,10 +30,12 @@
         private $grade_force_spoken=NULL;
         private $connected=FALSE;
         //public $mysqli=NULL;
+        
 
         function __construct($username=NULL,$password=NULL,$database=NULL,$host=NULL,$port=3306){
             try
             {
+                error_reporting(NONE);
                 // check if values given
                 //if (is_null($host) || is_null($database) || is_null($username) || is_null($password)) throw new Exception("Please specify the host, database, username and password!");
                 //echo "initialized";
@@ -241,7 +243,7 @@
 	            }
                 $title = "Broadcast Silence Sensor";
 	            //$silence = $srr['SS'];
-	            $SS1 = substr($silence,-1);
+	            $SS1 = substr((string)$silence[0],-1);
 	            if($SS1 == "0"){
 		            $output .= "<td><img src=\"$BASE/Images/LIGHTS/AmberOff.png\" title=\"$title\" alt=\"0\"/></td>";
 	            }

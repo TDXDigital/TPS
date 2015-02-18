@@ -172,9 +172,9 @@
               <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Reports and Management<b class=\"caret\"></b></a>
               <ul class=\"dropdown-menu\">
                 <li class=\"dropdown-header\">Programming</li>
-                <li><a href=\"$base/Reports/Stats.php?w=12\">12 Week Statistics</a></li>
-                <li><a href=\"$base/Episode/EPV3/Audit.php\">Programming Audit</a></li>
-                <li><a href=\"$base/station/Audit/\">Reporting Audits</a></li>
+                <li><a href=\"$base/station/Audit/\">Audit Maintenance</a></li>
+                <li><a href=\"$base/Episode/EPV3/Audit.php\">Perform Audit</a></li>
+                <li><a href=\"$base/Reports/Stats.php?w=12\">Programming Statistics</a></li>
                 <li class=\"divider\"></li>
                 <li class=\"dropdown-header\">Music Department</li>
                 <li><a href=\"$base/Reports/MissingLogRep.php\">Missing Logs</a></li>

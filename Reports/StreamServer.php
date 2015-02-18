@@ -28,7 +28,7 @@ $timeout = "1"; // Number of seconds before connecton times out - a higher value
 // Note: dont include http://
 // Main server: The song title will be taken from this server
 
-$ip[1] = "172.22.10.94"; 
+$ip[1] = "172.22.10.13"; 
 $port[1] = "8000";
 
 /* Relays: Below you can enter more relays / restreams / channels / competitors or anything else */
