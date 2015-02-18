@@ -1,8 +1,17 @@
 <?php
-    error_reporting(0);
+    error_reporting(E_ERROR);
     include_once "functions.php";
     if(!isset($_SESSION)){
         sec_session_start();
+    }
+    
+    //Remove UTF8 Bom
+
+    function remove_utf8_bom($text)
+    {
+        $bom = pack('H*','EFBBBF');
+        $text = preg_replace("/^$bom/", '', $text);
+        return $text;
     }
 
     class playing{
@@ -292,6 +301,7 @@
             }
 	        
         }
+        
         static public function get_now_playing_foobar($server=""){
             //148 = b1
             //185 = techdesk
@@ -325,8 +335,11 @@
 	        $ROOT = addslashes($_GET['q']);
             //$server = "ckxu3400lg.local.ckxu.com";
             //$mute=FALSE;
-            $file='\\\\'.$server.'\Now_Playing\\Now_Playing.txt';
+            $file_orig='\\\\'.$server.'\Now_Playing\\Now_Playing.txt';
             // read Now Playing file from remote server
+            
+            //$file=remove_utf8_bom($file_orig);
+            $file = preg_replace('/\x{FEFF}/u', '', $file_orig);
             if(!file_exists($file)){
                 header('HTTP/1.1 404 File Not Found');
                 header('Content-Type: application/json; charset=UTF-8');

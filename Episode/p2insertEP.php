@@ -1793,7 +1793,7 @@ if(false){
                 $Equipment = mysql_fetch_array(mysql_query($QUERY_HWD));
 
                 echo "<tr style=\"background-color:#FFD633;\"><td colspan='2'>ADMINISTRATOR ACCESS</td><td colspan='2'>EPISODE: ".$EPINFO['EpNum']."</td><td colspan='1'>Prompt Records: ".$PROMPTS['Result']."</td>
-                <td><a href='javascript:void(0)'>Hardware Count: ".$Equipment['hardware']."</a></td>
+                <td><a href='javascript:void(0)'>Hardware Count: ".$Equipment['hardware']."</a><button onclick='Foobar2000()'>StartFoobarWorker</button><button onclick='Foobar2000_stop()'>StopFoobarWorker</button></td>
                 </tr>";
             }
         ?>
