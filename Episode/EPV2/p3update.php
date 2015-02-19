@@ -171,14 +171,14 @@ else if($con){
 	$CATS = filter_input(INPUT_POST,'category',FILTER_SANITIZE_STRING);//$_POST['category'];
 	$PLAY = filter_input(INPUT_POST,'Playlist',FILTER_SANITIZE_STRING);//$_POST['Playlist'];
 	$SPOK = filter_input(INPUT_POST,'Spoken',FILTER_SANITIZE_NUMBER_FLOAT);//$_POST['Spoken'];
-	$TIME = filter_input(INPUT_POST,'times',FILTER_SANITIZE_STRIPPED);//$_POST['times'];
+	$TIME = filter_input(INPUT_POST,'times',FILTER_SANITIZE_STRING);//$_POST['times'];
 	$TITL = filter_input(INPUT_POST,'titles',FILTER_SANITIZE_STRING);//$_POST['titles'];
 	$ARTI = filter_input(INPUT_POST,'artists',FILTER_SANITIZE_STRING);//$_POST['artists'];
 	$ALBU = filter_input(INPUT_POST,'albums',FILTER_SANITIZE_STRING);//$_POST['albums'];
 	$COMP = filter_input(INPUT_POST,'composers',FILTER_SANITIZE_STRING);//$_POST['composers'];
-	$CANC = filter_input(INPUT_POST,'cc',FILTER_SANITIZE_NUMBER_INT);//$_POST['cc'];
+	$CANC = filter_input(INPUT_POST,'cc');//$_POST['cc'];
 	$HITZ = filter_input(INPUT_POST,'hit',FILTER_SANITIZE_NUMBER_INT);//$_POST['hit'];
-	$INST = filter_input(INPUT_POST,'ins',FILTER_SANITIZE_NUMBER_INT);//$_POST['ins'];
+	$INST = filter_input(INPUT_POST,'ins');//$_POST['ins'];
         $FINI = filter_input(INPUT_POST,'complete',FILTER_SANITIZE_NUMBER_INT);//$_POST['complete'];
         $TYPE = filter_input(INPUT_POST,'type',FILTER_SANITIZE_STRING);//$_POST['type'];
 	$LANG = filter_input(INPUT_POST,'languages',FILTER_SANITIZE_STRING);//$_POST['language'];
