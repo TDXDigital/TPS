@@ -166,24 +166,24 @@ else if($con){
 	}
 	
 	//$ICC = 0;
-	$EDIC = filter_input(INPUT_POST,'edit',FILTER_SANITIZE_NUMBER_INT);//$_POST['edit'];
-	$SNID = filter_input(INPUT_POST,'SNID',FILTER_SANITIZE_NUMBER_INT);//$_POST['SNID'];
-	$CATS = filter_input(INPUT_POST,'category',FILTER_SANITIZE_STRING);//$_POST['category'];
-	$PLAY = filter_input(INPUT_POST,'Playlist',FILTER_SANITIZE_STRING);//$_POST['Playlist'];
-	$SPOK = filter_input(INPUT_POST,'Spoken',FILTER_SANITIZE_NUMBER_FLOAT);//$_POST['Spoken'];
+	$EDIC = $_POST['edit'];//filter_input(INPUT_POST,'edit',FILTER_SANITIZE_NUMBER_INT);//
+	$SNID = $_POST['SNID'];//filter_input(INPUT_POST,'SNID',FILTER_SANITIZE_NUMBER_INT);//
+	$CATS = $_POST['category'];//filter_input(INPUT_POST,'category',FILTER_SANITIZE_STRING);//
+	$PLAY = $_POST['Playlist'];//filter_input(INPUT_POST,'Playlist',FILTER_SANITIZE_STRING);//
+	$SPOK = $_POST['Spoken'];//filter_input(INPUT_POST,'Spoken',FILTER_SANITIZE_NUMBER_FLOAT);//
 	$TIME = $_POST['times'];//filter_input(INPUT_POST,'times',FILTER_SANITIZE_STRIPPED);//
-	$TITL = filter_input(INPUT_POST,'titles',FILTER_SANITIZE_STRING);//$_POST['titles'];
-	$ARTI = filter_input(INPUT_POST,'artists',FILTER_SANITIZE_STRING);//$_POST['artists'];
-	$ALBU = filter_input(INPUT_POST,'albums',FILTER_SANITIZE_STRING);//$_POST['albums'];
-	$COMP = filter_input(INPUT_POST,'composers',FILTER_SANITIZE_STRING);//$_POST['composers'];
+	$TITL = $_POST['titles'];//filter_input(INPUT_POST,'titles',FILTER_SANITIZE_STRING);//
+	$ARTI = $_POST['artists'];//filter_input(INPUT_POST,'artists',FILTER_SANITIZE_STRING);//
+	$ALBU = $_POST['albums'];//filter_input(INPUT_POST,'albums',FILTER_SANITIZE_STRING);//
+	$COMP = $_POST['composers'];//filter_input(INPUT_POST,'composers',FILTER_SANITIZE_STRING);//
 	$CANC = $_POST['cc'];//filter_input(INPUT_POST,'cc',FILTER_SANITIZE_NUMBER_INT);//
-	$HITZ = filter_input(INPUT_POST,'hit',FILTER_SANITIZE_NUMBER_INT);//$_POST['hit'];
+	$HITZ = $_POST['hit'];//filter_input(INPUT_POST,'hit',FILTER_SANITIZE_NUMBER_INT);//
 	$INST = $_POST['ins'];//filter_input(INPUT_POST,'ins',FILTER_SANITIZE_NUMBER_INT);//
-        $FINI = filter_input(INPUT_POST,'complete',FILTER_SANITIZE_NUMBER_INT);//$_POST['complete'];
-        $TYPE = filter_input(INPUT_POST,'type',FILTER_SANITIZE_STRING);//$_POST['type'];
-	$LANG = filter_input(INPUT_POST,'languages',FILTER_SANITIZE_STRING);//$_POST['language'];
-	$NOTE = filter_input(INPUT_POST,'note',FILTER_SANITIZE_STRING);//$_POST['note'];
-	$REMO = filter_input(INPUT_POST,'remove',FILTER_SANITIZE_NUMBER_INT);//$_POST['remove'];
+        $FINI = $_POST['complete'];//filter_input(INPUT_POST,'complete',FILTER_SANITIZE_NUMBER_INT);//
+        $TYPE = $_POST['type'];//filter_input(INPUT_POST,'type',FILTER_SANITIZE_STRING);//
+	$LANG = $_POST['language'];//filter_input(INPUT_POST,'languages',FILTER_SANITIZE_STRING);//
+	$NOTE = $_POST['note'];//filter_input(INPUT_POST,'note',FILTER_SANITIZE_STRING);//
+	$REMO = $_POST['remove'];//filter_input(INPUT_POST,'remove',FILTER_SANITIZE_NUMBER_INT);//
 	 
 	$END = count($EDIC);
 	for ($i=0; $i < $END; $i++){
