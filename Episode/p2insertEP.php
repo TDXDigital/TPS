@@ -61,7 +61,7 @@ else{
         $ADINS=FALSE;
         
 		$SETTINGS = mysql_fetch_array(mysql_query("SELECT * FROM station WHERE callsign='".$CALLSHOW."' "));
-		
+		date_default_timezone_set($SETTINGS['timezone']);
 		
 		//echo $_POST['title'];
         if(mysql_numrows($RESEPSEL)=="0"){
