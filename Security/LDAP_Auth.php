@@ -131,6 +131,7 @@ function LDAP_AUTH($user, $password, $xml_server) {
                 $_SESSION['account'] = $user;
                 $_SESSION['AutoComLimit'] = 8;
                 $_SESSION['AutoComEnable'] = TRUE;
+                $_SESSION['TimeZone']='UTC'; // this is just the default to be updated after login
                 echo $DEBUG;
                 return true;
             } else {

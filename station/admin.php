@@ -4,6 +4,7 @@
     if(!isset($_SESSION)){
         sec_session_start();
     }
+    error_reporting(E_ERROR);
 ?>
 <html lang="en"><head>
     <meta charset="utf-8">
@@ -81,7 +82,7 @@
                   dataTable.addColumn({ type: 'date', id: 'End' });
                   dataTable.addRows([
                   <?php
-                      date_default_timezone_set('GMT-0700');
+                      date_default_timezone_set('America/Edmonton');
                       /*if($mysqli->connect_error()){
                           break;
                       }

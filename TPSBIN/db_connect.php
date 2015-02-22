@@ -1,5 +1,11 @@
 <?php
-include_once "../CONFIG.php";
+if(session_status()===PHP_SESSION_NONE){
+    session_start();
+}
+error_reporting(E_ERROR);
+//include_once $_SESSION['basedir']."CONFIG.php";
+
+$timezone = $_SESSION['TimeZone'];
 date_default_timezone_set($timezone);
 
 //echo constant("HOST");
