@@ -1,6 +1,7 @@
 <?php
 //"select * from adverts left join song on (adverts.AdName = song.title and song.category='51' and song.date between '2012-08-24' and '2012-08-31')"
     session_start();
+    error_reporting(E_ERROR);
 
 $con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
 if (!$con){

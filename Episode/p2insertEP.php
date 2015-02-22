@@ -370,10 +370,10 @@ else{
     <!--<script>
         <?php          
         if($Foobar_Enabled){
-            echo "<p>FB2K Disabled (".$_SERVER['HTTP_REFERER'].")</p>";
+            //echo "<p>FB2K Disabled (".$_SERVER['HTTP_REFERER'].")</p>";
         }
         else{
-            echo "<p>FB2K ENABLED (".$_SERVER['HTTP_REFERER'].")</p>";
+            //echo "<p>FB2K ENABLED (".$_SERVER['HTTP_REFERER'].")</p>";
         }
             if(!isset($_SESSION['hardware_prompt'])){
                 $_SESSION['hardware_prompt']="TRUE";
