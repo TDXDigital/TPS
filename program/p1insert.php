@@ -65,7 +65,7 @@ else if($con){*/
         }
 		
 		$GENRE = "SELECT * from GENRE order by genreid asc";
-		$GENRES = $mysql->query($GENRE);
+		$GENRES = $mysqli->query($GENRE);
 		$genop = "";//<OPTION VALUE=\"NULL\">Select Genre</option>";
 		while ($genrerow=mysqli_fetch_assoc($GENRES)) {
             $GENid=$genrerow["genreid"];
