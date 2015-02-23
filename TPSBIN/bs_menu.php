@@ -28,11 +28,16 @@
         $stmt->execute();
         //
 
-        $perm_arr=$stmt->get_result();
-        $permissions=$perm_arr->fetch_array();
-        //$stmt->bind_result($permissions[]);// not optimal
+        /*$perm_arr=$stmt->get_result(); //required mysqlnd
         
-        //$stmt->fetch();
+        $permissions=$perm_arr->fetch_array();*/
+        
+        //
+        $stmt->bind_result($permissions[]);// not optimal
+        //$perm_arr = array();
+        //$stmt->bind_result($perm_arr);
+        $stmt->fetch();
+        
         $stmt->close();
         //error_log($permissions[0]);
     }
