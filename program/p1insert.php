@@ -36,7 +36,7 @@ else if($con){*/
         $callresult = $mysqli->query($callsql);
 
         $calloptions="";//<OPTION VALUE=0>Choose</option>";
-        while ($row=mysqli_fetch_assoc($callresult)) {
+        while ($row=mysqli_fetch_array($callresult,MYSQLI_ASSOC)) {
             $name=$row["stationname"];
             $callsign=$row["callsign"];
             $calloptions.="<OPTION VALUE=\"$callsign\">".$name."</option>";
@@ -47,7 +47,7 @@ else if($con){*/
         $djresult=$mysqli->query($djsql);
 
         $djoptions="";//<OPTION VALUE=0>Choose</option>";
-        while ($djrow=mysqli_fetch_assoc($djresult)) {
+        while ($djrow=mysqli_fetch_array($djresult,MYSQLI_ASSOC)) {
             $Alias=$djrow["Alias"];
             $name=$djrow["djname"];
             $djoptions.="<OPTION VALUE=\"$Alias\">".$name."</option>";
@@ -58,7 +58,7 @@ else if($con){*/
 	$coresult=$mysqli->query($djsql);
 	
         $cooptions="//<OPTION VALUE=0>None</option>";
-        while ($corow=mysqli_fetch_assoc($djresult)) {
+        while ($corow=mysqli_fetch_array($djresult,MYSQLI_ASSOC)) {
             $Alias=$corow["Alias"];
             $name=$corow["djname"];
             $cooptions.="<OPTION VALUE=\"$Alias\">".$name."</option>";
@@ -67,7 +67,7 @@ else if($con){*/
 		$GENRE = "SELECT * from GENRE order by genreid asc";
 		$GENRES = $mysqli->query($GENRE);
 		$genop = "";//<OPTION VALUE=\"NULL\">Select Genre</option>";
-		while ($genrerow=mysqli_fetch_assoc($GENRES)) {
+		while ($genrerow=mysqli_fetch_array($GENRES,MYSQLI_ASSOC)) {
             $GENid=$genrerow["genreid"];
             $genop.="<OPTION VALUE=\"" . $GENid . "\">". $GENid ."</option>";
         }
