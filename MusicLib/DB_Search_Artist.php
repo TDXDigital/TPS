@@ -2,7 +2,7 @@
 session_start();
 $json_arr=array();
 $artist = addslashes($_GET['term']);
-$type = addslashes($_GET['type']);
+$type = addslashes(filter_input(INPUT_POST, 'type',FILTER_SANITIZE_STRING));//addslashes($_GET['type']);
 //$title = $_GET['T'];
 $link = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']) or die("Connection Error");
 //if($type=="A"){

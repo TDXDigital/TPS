@@ -48,6 +48,7 @@
                             'Program_View'=>0,'Program_Edit'=>0,'Program_Create'=>0,
                             'Genre_View'=>0,'Genre_Edit'=>0,'Genre_Create'=>0,
                             'Playsheet_View'=>0,'Playsheet_Create'=>0,'Playsheet_Edit'=>0,
+                            'Library_View'=>1,'Library_Create'=>1,'Library_Edit'=>0,
                             'Advert_View'=>0,'Advert_Edit'=>0,'Advert_Create'=>0,
                             'Audit_View'=>0];
             $base="../";
@@ -101,6 +102,7 @@
                 //$permissions_permission=max($permissions['Program_View'],$permissions['Program_Edit'],$permissions['Program_Create']); // RODO: Store in DB
                 $playsheet_permission=max($permissions['Playsheet_View'],$permissions['Playsheet_Create'],$permissions['Playsheet_Edit']);
                 $advertising_permission=max($permissions['Advert_View'],$permissions['Advert_Edit'],$permissions['Advert_Create']);
+                $library_permission=max($permissions['Library_View'],$permissions['Library_Edit'],$permissions['Library_Create']);
                 //$automation_permission=max($permissions['Audit_View'],$permissions['Audit_Edit'],$permissions['Audit_Create']); // TODO: Store in DB
                 $audit_permission=$permissions['Audit_View'];//max($permissions['Audit_View']);
                 if($station_permission>0){
@@ -180,7 +182,8 @@
                 <li><a href=\"$base/Reports/MissingLogRep.php\">Missing Logs</a></li>
                 <li><a href=\"$base/Reports/PlaylistRep.php\">Charts</a></li>
                 <li><a href=\"$base/Reports/p1SongSearch.php\">Records Search</a></li>
-                <li><a href=\"$base/Playlist/bulkupdate.php\">Library Update</a></li>
+                <li><a href=\"$base/Playlist/\">Library Management</a></li>
+                <li><a href=\"$base/Playlist/bulkupdate.php\">Library Bulk Update</a></li>
                 <li><a href=\"$base/Playlist/p1playlistmgr.php\">Playlist Management</a></li>
                 <li class=\"divider\"></li>
                 <li class=\"dropdown-header\">Remote Access and Control</li>

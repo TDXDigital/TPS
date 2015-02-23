@@ -22,11 +22,23 @@
     <div class="panel-heading">Basic Information</div>
     <div class="panel-body">
         <fieldset>
-            <div class="input-group">
-                <label class="input-group-addon" for="artist">Artist<span style="color:red">*</span></label>
-                <input name="artist" id="art_field" type="text" list="artists" placeholder="Start typing artist name to retrieve list" autocomplete="on" class="form-control" autofocus="autofocus">
+            <div id="art-group" class="input-group">
+                <label class="input-group-addon" for="art_field">Artist<span style="color:red">*</span></label>
+                <input name="artist" id="art_field" type="text" required list="artists" placeholder="Start typing artist name to retrieve list" autocomplete="on" class="form-control" autofocus="autofocus" onkeyup="catch_enter(event);" tabindex="1">
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button">Go!</button>
+                    <button class="btn btn-default" type="button" onclick="get_albums();return true;">Go!</button>
+                </span>
+            </div>
+            <div id="table_display"></div>
+            <br>
+            <div id="alb_group" class="input-group">
+                <label class="input-group-addon" for="alb_field">Album<span style="color:red">*</span></label>
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" tabindex="3" onclick="self_titled()">Self Titled</button>
+                </span>
+                <input name="artist" id="alb_field" type="text" required list="artists" placeholder="Start typing artist name to retrieve list" autocomplete="on" class="form-control" autofocus="autofocus" tabindex="2">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" onclick="get_albums();return true;">Go!</button>
                 </span>
             </div>
         </fieldset>
@@ -76,11 +88,60 @@
 </div>
 </form>
 <datalist id="artists"></datalist>
-<script type="text/javascript">
-    $(document).ready({
-        
-    })
     
+
+<style>
+  .ui-autocomplete-loading {
+    background: white url("../images/GIF/ajax-loader3.gif") right center no-repeat;
+  }
+</style>
+  
+<!--<script type="text/javascript" src="../js/jquery/js/jquery-2.1.1.min.js"></script>-->
+
+
+<script type="text/javascript">
+    $(function(){
+        $('#art_field').autocomplete({
+            //source: "../MusicLib/DB_Search_Artist.php",
+            source: "AJAX/playlist.get_artist.php",
+            minLength: 2
+        });
+        document.querySelector('form').onkeypress = checkEnter;
+        //$("#art_field").keyup(catch_enter());
+    });
+    
+    function self_titled(){
+        $("#alb_field").val($("#art_field").val());
+    }
+    
+    function catch_enter (event){
+        if(event.keyCode === 13){
+            get_albums();
+            return true;
+        }
+    }
+    
+    function get_albums(){
+        if($("#art_field").val()===""){
+           $("#art_group").addClass(" has-error ");
+           $("#table_display").html("<div class=\"alert alert-warning\" role=\"alert\">Empty Artist Field</div>");
+           return;
+        }
+        var input = {'term':$("#art_field").val()};
+        $.ajax({
+            url: "AJAX/playlist.get_album_table.php",
+            data: input,
+            type: "GET"
+        }).done(function(html_returned){
+            $("#table_display").html(html_returned);
+        });
+    }
+    
+    function checkEnter(e){
+        e = e || event;
+        var txtArea = /textarea/i.test((e.target || e.srcElement).tagName);
+        return txtArea || (e.keyCode || e.which || e.charCode || 0) !== 13;
+    }
     //var query = {"val":$.("#art_field").val()};
     /*
     $.ajax{

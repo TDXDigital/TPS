@@ -20,6 +20,12 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="<?php echo $_SESSION['BASE_REF'];?>/favicon.ico">
+    
+    <!-- Scripts in subpage might need these functions. need to be loaded and ready-->
+    <script src="<?php echo $_SESSION['BASE_REF'];?>/js/jquery/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="<?php echo $_SESSION['BASE_REF'];?>/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="<?php echo $_SESSION['BASE_REF'];?>/js/jquery/css/ui-lightness/jquery-ui-1.10.0.custom.min.css"/>
+    <script src="<?php echo $_SESSION['BASE_REF'];?>/js/bootstrap/js/bootstrap.min.js"></script>
 
     <title>Traffic Management</title>
 
@@ -77,8 +83,7 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="<?php echo $_SESSION['BASE_REF'];?>/js/jquery/js/jquery-2.1.1.min.js"></script>
-    <script src="<?php echo $_SESSION['BASE_REF'];?>/js/bootstrap/js/bootstrap.min.js"></script>
+    
     <!--<script src="../../assets/js/docs.min.js"></script>-->
   
 
