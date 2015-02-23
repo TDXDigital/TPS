@@ -1,4 +1,9 @@
-<?php session_start(); ?>
+<?php session_start();
+
+include_once "../TPSBIN/functions.php";
+include_once "../TPSBIN/db_connect.php";
+
+?>
 <head>
 <link rel="stylesheet" type="text/css" href="../phpstyle.css" />
 <title>DPL Administration</title>
@@ -17,45 +22,52 @@
       <td>
 <?php
 
+/*
 $con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
 	}
-else if($con){
-        if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /user/login');} // or die("<h1>Error ".mysql_errno() ."</h1><br />check access (privileges) to the SQL server db CKXU for this user <br /><br /><hr />Error details:<br />" .mysql_error() . "<br /><br /><a href=login.php>Return</a>");
+else if($con){*/
+        //if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /user/login');} // or die("<h1>Error ".mysql_errno() ."</h1><br />check access (privileges) to the SQL server db CKXU for this user <br /><br /><hr />Error details:<br />" .mysql_error() . "<br /><br /><a href=login.php>Return</a>");
         $callsql="SELECT callsign, stationname from STATION order by callsign";
-        $callresult=mysql_query($callsql,$con);
+        
+        //$callresult=mysql_query($callsql,$con);
+        $callresult = $mysqli->query($callsql);
 
         $calloptions="";//<OPTION VALUE=0>Choose</option>";
-        while ($row=mysql_fetch_array($callresult)) {
+        while ($row=mysqli_fetch_assoc($callresult)) {
             $name=$row["stationname"];
             $callsign=$row["callsign"];
             $calloptions.="<OPTION VALUE=\"$callsign\">".$name."</option>";
         }
 
         $djsql="SELECT * from DJ order by djname";
-        $djresult=mysql_query($djsql,$con);
+        //$djresult=mysql_query($djsql,$con);
+        $djresult=$mysqli->query($djsql);
 
         $djoptions="";//<OPTION VALUE=0>Choose</option>";
-        while ($djrow=mysql_fetch_array($djresult)) {
+        while ($djrow=mysqli_fetch_assoc($djresult)) {
             $Alias=$djrow["Alias"];
             $name=$djrow["djname"];
             $djoptions.="<OPTION VALUE=\"$Alias\">".$name."</option>";
         }
 		
-		$coresult=mysql_query($djsql,$con);
+		
+	//$coresult=mysql_query($djsql,$con);
+	$coresult=$mysqli->query($djsql);
+	
         $cooptions="//<OPTION VALUE=0>None</option>";
-        while ($corow=mysql_fetch_array($djresult)) {
+        while ($corow=mysqli_fetch_assoc($djresult)) {
             $Alias=$corow["Alias"];
             $name=$corow["djname"];
             $cooptions.="<OPTION VALUE=\"$Alias\">".$name."</option>";
         }
 		
 		$GENRE = "SELECT * from GENRE order by genreid asc";
-		$GENRES = mysql_query($GENRE);
+		$GENRES = $mysql->query($GENRE);
 		$genop = "";//<OPTION VALUE=\"NULL\">Select Genre</option>";
-		while ($genrerow=mysql_fetch_array($GENRES)) {
+		while ($genrerow=mysqli_fetch_assoc($GENRES)) {
             $GENid=$genrerow["genreid"];
             $genop.="<OPTION VALUE=\"" . $GENid . "\">". $GENid ."</option>";
         }
