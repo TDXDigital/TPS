@@ -126,12 +126,12 @@ else if($con){*/
         
 
         <?php
-
+/*
 }
 else{
 	echo 'ERROR!';
 }
-
+*/
 echo '<tr height="20"><td colspan="7" style="text-align:bottom;"><hr/></td></tr>';
 
 ?>
