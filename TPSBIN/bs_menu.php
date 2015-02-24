@@ -28,12 +28,12 @@
         $stmt->execute();
         //
 
-        /*$perm_arr=$stmt->get_result(); //required mysqlnd
+        $perm_arr=$stmt->get_result(); //required mysqlnd
         
-        $permissions=$perm_arr->fetch_array();*/
+        $permissions=$perm_arr->fetch_array();
         
         //
-        $stmt->bind_result($permissions[]);// not optimal
+        //$stmt->bind_result($permissions[]);// not optimal
         //$perm_arr = array();
         //$stmt->bind_result($perm_arr);
         $stmt->fetch();

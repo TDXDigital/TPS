@@ -85,7 +85,7 @@ else if($con){
 					<select required class="chosen-select" title="Show Name" name="program" id="shownamebox" onchange="getCallsign(this.form.program.value)">
 					<?php
 					//<input name="name" type="text" size="25%"/>
-					$program = "select * from program where active='1' order by programname";
+					$program = "select programname from program where active='1' order by programname";
         			$prog=mysql_query($program,$con);
 			        $options="<OPTION VALUE=0>Select Your Show [REQUIRED]</option>";
 			        while ($row=mysql_fetch_array($prog)) {

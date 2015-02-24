@@ -1,7 +1,9 @@
 <?php
-    error_reporting(E_ERROR);
+    //error_reporting(E_ERROR);
     include_once "../TPSBIN/functions.php";
       sec_session_start();
+
+      //session_start();
       $ADIDS = array();
       $ADOPT = "";
       $END_TIME_VAL="00:00:00";
@@ -49,13 +51,17 @@ else{
         //array_push($warning,"<strong><br/>Notice: No valid audio source is to air. pleae check switch or warning settings<br/><br/></strong>");
     }
 	// END Switch Check
-	
-        $SHOWQ = "select callsign from program where programname='" . addslashes($_POST['program']) . "' ";
+	//$pgm_name = filter_input(INPUT_POST, 'program', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $pgm_name = $_POST['program'];
+        
+        $SHOWQ = "select callsign from program where programname='" . $pgm_name . "' ";
         $SHOWQU = mysql_query($SHOWQ,$con);
         $CALLROWS = mysql_fetch_array($SHOWQU);
         $CALLSHOW = $CALLROWS["callsign"];
+        
+        //$CALLSHOW = filter_input(INPUT_POST, 'callsign', FILTER_SANITIZE_STRING);
 
-        $INSEPSEL = "select * from episode LEFT JOIN program on program.programname=episode.programname where episode.callsign='" . addslashes($CALLSHOW) . "' and episode.programname='" . addslashes($_POST['program']) . "' and episode.date='" . addslashes($_POST['user_date']) . "' and episode.starttime='" . addslashes($_POST['user_time']) . "' order by episode.date";
+        $INSEPSEL = "select * from episode LEFT JOIN program on program.programname=episode.programname where episode.callsign='" . addslashes($CALLSHOW) . "' and episode.programname='" . $pgm_name . "' and episode.date='" . addslashes($_POST['user_date']) . "' and episode.starttime='" . addslashes($_POST['user_time']) . "' order by episode.date";
         $RESEPSEL=mysql_query($INSEPSEL,$con);
         $EPINFO=mysql_fetch_array($RESEPSEL);
         $ADINS=FALSE;
@@ -66,22 +72,24 @@ else{
 		//echo $_POST['title'];
         if(mysql_numrows($RESEPSEL)=="0"){
         	if($_POST['brType']>0){
-        		$inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description, IP_Created) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '$DESCRIPTION','".$_SERVER['REMOTE_ADDR']."' )";
+        		$inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description, IP_Created) values ( '" . addslashes($CALLSHOW) . "', '" . $pgm_name . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '$DESCRIPTION','".$_SERVER['REMOTE_ADDR']."' )";
         	}
 		  else if(!isset($_POST['enprerec']))
           {
-            $inep = "insert into episode (callsign, programname, date, starttime, description, IP_Created) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '$DESCRIPTION','".$_SERVER['REMOTE_ADDR']."' )";
+            $inep = "insert into episode (callsign, programname, date, starttime, description, IP_Created) values ( '" . addslashes($CALLSHOW) . "', '" . $pgm_name . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '$DESCRIPTION','".$_SERVER['REMOTE_ADDR']."' )";
             
           }
           else
           {
-            $inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description, IP_Created) values ( '" . addslashes($CALLSHOW) . "', '" . addslashes($_POST['program']) . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '$DESCRIPTION','".$_SERVER['REMOTE_ADDR']."' )";
+            $inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description, IP_Created) values ( '" . addslashes($CALLSHOW) . "', '" . $pgm_name . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '$DESCRIPTION','".$_SERVER['REMOTE_ADDR']."' )";
           }
             if(!mysql_query($inep,$con))
             {
               echo 'SQL Error<br />';
               echo mysql_error() . "<br/>";
-			  die($inep . "<br/>");
+              //console.log("ERROR MYSQL: ".mysql_error());
+                //die($inep . "<br/>");
+                echo "<br>$inep<br>";
             }
 		$RESEPSEL=mysql_query($INSEPSEL,$con);
 		$EPINFO=mysql_fetch_array($RESEPSEL);
@@ -107,7 +115,7 @@ else{
               //dynamic SQL CREATION
               
               $indyns = "insert into SONG (callsign, programname, date, starttime";
-              $BUFFS = "'" . addslashes($CALLSHOW) . "' , '" . addslashes($_POST['program']) . "' , '" . addslashes($_POST['user_date']) . "' , '" . addslashes($_POST['user_time']) . "'";
+              $BUFFS = "'" . addslashes($CALLSHOW) . "' , '" . $pgm_name . "' , '" . addslashes($_POST['user_date']) . "' , '" . addslashes($_POST['user_time']) . "'";
               if (isset($_POST['instrumental'])){
                 $indyns.=", instrumental";
                 $BUFFS.=", '1' ";
@@ -160,7 +168,7 @@ else{
               		if(isset($_POST['AdNum'])){
               								
 							// UPDATE Playcount
-							$SPupSQL = "select SponsId from program where programname='" . addslashes($_POST['program']) . "' and callsign='" . addslashes($CALLSHOW) . "' and SponsId is not null";
+							$SPupSQL = "select SponsId from program where programname='" . $pgm_name . "' and callsign='" . addslashes($CALLSHOW) . "' and SponsId is not null";
 							if(!$SPup = mysql_query($SPupSQL)){
 								array_push($error, mysql_errno() . "</td><td>" . mysql_error()); 
 							}
@@ -248,7 +256,7 @@ else{
 						else{
 							$LANGIN = $QRR['Language'];
 						}
-                          $langDef = "insert into language values ('" . addslashes($CALLSHOW) . "', '". addslashes($_POST['program']) ."', '" . addslashes($_POST['user_date']) . "', '". addslashes($_POST['user_time']) . "', '" . addslashes($LASTLINK) . "', '" . $LANGIN . "')";
+                          $langDef = "insert into language values ('" . addslashes($CALLSHOW) . "', '". $pgm_name ."', '" . addslashes($_POST['user_date']) . "', '". addslashes($_POST['user_time']) . "', '" . addslashes($LASTLINK) . "', '" . $LANGIN . "')";
                           if(!mysql_query($langDef,$con))
                           {
                               echo 'SQL Error, Language Insertion<br />';
@@ -273,14 +281,14 @@ else{
         // This information is needed by either method 
         // Using updated code
         
-		$SQLProg = "SELECT Genre.*, Program.length from Genre, Program where Program.programname=\"" . addslashes($_POST['program']) . "\" and program.callsign=\"" . addslashes($CALLSHOW) . "\" and Program.genre=Genre.genreid";
+		$SQLProg = "SELECT Genre.*, Program.length from Genre, Program where Program.programname=\"" . $pgm_name . "\" and program.callsign=\"" . addslashes($CALLSHOW) . "\" and Program.genre=Genre.genreid";
 		if(!($result = mysql_query($SQLProg))){
 			echo "Program Error 001 " . mysql_error();
 		}
 		if(!($Requirements = mysql_fetch_array($result))){
 			echo "Program Error 002 " . mysql_error();
 		}
-		$SQL2PR = "SELECT * from Program where programname=\"" . addslashes($_POST['program']) . "\" and callsign=\"" . addslashes($CALLSHOW) . "\" ";
+		$SQL2PR = "SELECT * from Program where programname=\"" . $pgm_name . "\" and callsign=\"" . addslashes($CALLSHOW) . "\" ";
 		if(!($result2 = mysql_query($SQL2PR))){
 			echo "Program Error 003 " . mysql_error();
 		}
@@ -310,12 +318,12 @@ else{
 		}
 		
 		// COUNT CANCON
-		$SQLCOUNTCC = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . addslashes($_POST['program']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and cancon='1' ";
+		$SQLCOUNTCC = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and cancon='1' ";
 		$resultCC = mysql_query($SQLCOUNTCC);
 		$RECCC = mysql_num_rows($resultCC);
 		
 		// COUNT PLAYLIST
-		$SQLCOUNTPL = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . addslashes($_POST['program']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and playlistnumber IS NOT NULL ";
+		$SQLCOUNTPL = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and playlistnumber IS NOT NULL ";
 		if($SETTINGS['ST_PLLG']=='1'){
 			$SQLCOUNTPL .="group by playlistnumber";	
 		}
@@ -323,14 +331,14 @@ else{
 		$RECPL = mysql_num_rows($resultPL);
 		
 		//COUNT ADS
-		$SQLCOUNT51 = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . addslashes($_POST['program']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category='51' and AdViolationFlag is null";
+		$SQLCOUNT51 = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category='51' and AdViolationFlag is null";
 		$result51 = mysql_query($SQLCOUNT51);
 		$REC51 = mysql_num_rows($result51);
 		
 		//COUNT PSA
-		$SQLCOUNTPROMO = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . addslashes($_POST['program']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category='45'";
-		$SQLCOUNTPSA = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . addslashes($_POST['program']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category like '1%' and (title like '%PSA%' or Artist like 'Station PSA')";
-		//$SQLCOUNTPSA = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . addslashes($_POST['program']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category like '1%' and title like '%Promo%' ";
+		$SQLCOUNTPROMO = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category='45'";
+		$SQLCOUNTPSA = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category like '1%' and (title like '%PSA%' or Artist like 'Station PSA')";
+		//$SQLCOUNTPSA = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category like '1%' and title like '%Promo%' ";
 		$resultPSA = mysql_query($SQLCOUNTPSA);
 		$resultPROMO = mysql_query($SQLCOUNTPROMO);
 		$RECPSA = mysql_num_rows($resultPROMO);
@@ -1528,9 +1536,9 @@ if(false){
                       <th style="width:250px;">Composer</th><th style="width:20px;">CC</th><th width="20px">Hit</th><th width="20px">Ins</th><th width="200px">Language</th></tr></thead>
                <tbody class="striped"><tr> <!-- Row for displaying already entered data -->
                    <?php
-                   	$ORDERque = "select displayorder from program where callsign='" . addslashes($CALLSHOW) . "' and programname='" . addslashes($_POST['program']) . "' ";
+                   	$ORDERque = "select displayorder from program where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' ";
 					$ORDER = mysql_fetch_array(mysql_query($ORDERque));
-                    $query = "select * from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . addslashes($_POST['program']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' order by time " . $ORDER['displayorder'] .", songid " . $ORDER['displayorder'];
+                    $query = "select * from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' order by time " . $ORDER['displayorder'] .", songid " . $ORDER['displayorder'];
                     $listed=mysql_query($query,$con);
                      if(mysql_num_rows($listed)=="0"){
                        echo "<tr><td colspan=\"100%\" style=\"background-color:".$SETTINGS['ST_ColorFail'].";\">No Songs Recorded Yet</td></tr>";
@@ -1618,7 +1626,7 @@ if(false){
                                        echo "<span class=\"ui-icon ui-icon-notice\"></span>";
                                    }
                            }
-                           $songlang = mysql_query("select languageid from LANGUAGE where callsign='" . addslashes($CALLSHOW) . "' and programname='" . addslashes($_POST['program']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and songid='". addslashes($list['songid']) ."'");
+                           $songlang = mysql_query("select languageid from LANGUAGE where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and songid='". addslashes($list['songid']) ."'");
                            $rowlang = mysql_fetch_array($songlang);
                            echo "</td><td>";
                                 echo $rowlang['languageid'];
@@ -1674,7 +1682,7 @@ if(false){
                              echo "\"" . $EPINFO['totalspokentime'] . "\" readonly=\"true\"";
                            }
                            else{
-                           	$SUMAR = "select sum(Spoken) from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . addslashes($_POST['program']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' order by time desc";
+                           	$SUMAR = "select sum(Spoken) from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' order by time desc";
 							   if($spokensum = mysql_fetch_array(mysql_query($SUMAR))){
 							   	if($spokensum['sum(Spoken)'] > 0){
                            			echo " \"".$spokensum['sum(Spoken)'] . "\" readonly=\"true\"";
