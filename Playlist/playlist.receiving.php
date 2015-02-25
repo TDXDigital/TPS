@@ -21,9 +21,11 @@
 <div class="panel panel-primary">
     <div class="panel-heading">Basic Information</div>
     <div class="panel-body">
+        
         <fieldset>
             <div id="art-group" class="input-group">
                 <label class="input-group-addon" for="art_field">Artist<span style="color:red">*</span></label>
+                <!-- TODO: Remove 'THE' from the beginning of queries if given -->
                 <input name="artist" id="art_field" type="text" required list="artists" placeholder="Start typing artist name to retrieve list" autocomplete="on" class="form-control" autofocus="autofocus" onkeyup="catch_enter(event);" tabindex="1">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button" onclick="get_albums();return true;">Go!</button>
@@ -43,8 +45,50 @@
             </div>
         </fieldset>
     </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+                <div id="gen_group" class="input-group">
+                    <label class="input-group-addon" for="gen_field">Genre</label>
+                    <select id="genre" name="genre" tabindex="4">
+                        <option value="null">None</option>
+                        <?PHP
+                        
+                        $genres = array(
+                            "A"=>"Alternative",
+                            "AR"=>"AltRock",
+                            "BL-R"=>"Blues Rock",
+                            "DA"=>"Dance",
+                            "EL"=>"Electronica",
+                            "FO-R"=>"Folk Rock",
+                            "HH"=>"HipHop",
+                            "HR"=>"Hard Rock",
+                            "JZ-R"=>"JazzRock",
+                            "ML"=>"Metal",
+                            "P"=>"Pop",
+                            "PR"=>"Punk Rock",
+                            "21"=>"CRTC 21 General",
+                            "22"=>"CRTC 22 General",
+                            "23"=>"CRTC 23 General",
+                            "24"=>"CRTC 24 General",
+                            "31"=>"CRTC 31 General",
+                            "32"=>"CRTC 32 General",
+                            "33"=>"CRTC 33 General",
+                            "34"=>"CRTC 34 General"
+                            );
+                        
+                        foreach($genres as $key => $value ){
+                            print "<option value='".$key."'>".$value."</option>";
+                                    
+                        }
+                        ?>
+                    </select><br>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<!--
+
 <div class="panel panel-info">
     <div class="panel-heading">Traffic Information</div>
     <div class="panel-body">
@@ -52,13 +96,7 @@
             <label for="ad_name">Advertisement Name<span style="color:red">*</span></label>
             <input type="text" id="ad_name" name="name" required/><br>
             <label for="ad_category">CRTC Category<span style="color:red">*</span></label>
-            <select id="ad_category" name="category">
-                <option value="51" selected>Commercial (51)</option>
-                <option value="52">Sponsor Identification (52)</option>
-                <option value="53">Sponsored Promotion (53)</option>
-                <option value="12">PSA (12)</option>
-                <option value="45">Show Promo (45)</option>
-            </select><br>
+            
             <label for="ad_length">Length (minutes)<span style="color:red">*</span></label>
             <input type="number" id="ad_length" name="length" step="1" required/><br>
             <label for="ad_language">Language</label>
@@ -82,7 +120,6 @@
         </fieldset>
     </div>
 </div>
--->
 <div class="well">
     <input type="submit">
 </div>

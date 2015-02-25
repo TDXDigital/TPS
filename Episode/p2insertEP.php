@@ -396,6 +396,30 @@ else{
     </script>-->
 	<script src="../js/jquery-blockui.js"></script>
 	<script type="text/javascript">
+            
+        // $.xhrPool and $.ajaxSetup are the solution
+        $.xhrPool = [];
+        $.xhrPool.abortAll = function() {
+            $(this).each(function(idx, jqXHR) {
+                jqXHR.abort();
+            });
+            $.xhrPool = [];
+            Stop_Switch_Worker();
+            Foobar2000_Stop();
+        };
+
+        $.ajaxSetup({
+            beforeSend: function(jqXHR) {
+                $.xhrPool.push(jqXHR);
+            },
+            complete: function(jqXHR) {
+                var index = $.xhrPool.indexOf(jqXHR);
+                if (index > -1) {
+                    $.xhrPool.splice(index, 1);
+                }
+            }
+        });
+        
      $(document).ready(function () {
          $('#artin').autocomplete({
              source: "../MusicLib/DB_Search_Artist.php",

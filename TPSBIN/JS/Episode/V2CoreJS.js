@@ -359,7 +359,7 @@ function load(){
         }
      }
 
-    function Stop_Switch_Workjer(){
+    function Stop_Switch_Worker(){
         switch_worker.terminate();
         switch_worker=undefined;
     }
