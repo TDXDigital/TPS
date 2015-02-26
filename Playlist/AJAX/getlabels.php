@@ -15,4 +15,3 @@ while ($result->fetch()) {
     $output[] = $name;
 }
 echo json_encode($output);
-?>
