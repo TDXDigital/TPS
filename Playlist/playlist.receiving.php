@@ -47,13 +47,11 @@
     </div>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-2">
                 <div id="gen_group" class="input-group">
-                    <label class="input-group-addon" for="gen_field">Genre</label>
-                    <select id="genre" name="genre" tabindex="4">
-                        <option value="null">None</option>
+                    <select id="genre" name="genre" class="chosen-select" tabindex="4" data-placeholder="Album Genre" style="min-width: 150px;">
+                        <option value="null"></option>
                         <?PHP
-                        
                         $genres = array(
                             "A"=>"Alternative",
                             "AR"=>"AltRock",
@@ -82,12 +80,35 @@
                                     
                         }
                         ?>
-                    </select><br>
+                    </select>
+                    <br>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div id="ind_group" class="input-group">
+                    <label for="indate" class="input-group-addon">Date In</label>
+                    <input id="indate" type="text" class="form-control" value="<?php print(date("Y-m-d"));?>" name="indate" tabindex="5"/>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div id="ind_group" class="input-group">
+                    <label for="label" class="input-group-addon">Label</label>
+                    <input id="label" type="text" class="form-control" onkeyup="update_labels()" list="labels" name="indate" tabindex="6" placeholder="Labels"/>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div id="bndcmp" class="input-group">
+                    
                 </div>
             </div>
         </div>
     </div>
 </div>
+    <datalist id="labels">
+        
+    </datalist>
 
 <div class="panel panel-info">
     <div class="panel-heading">Traffic Information</div>
@@ -144,6 +165,9 @@
             minLength: 2
         });
         document.querySelector('form').onkeypress = checkEnter;
+        $.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
+        $( "#indate" ).datepicker();
+        update_labels()
         //$("#art_field").keyup(catch_enter());
     });
     
@@ -178,6 +202,50 @@
         e = e || event;
         var txtArea = /textarea/i.test((e.target || e.srcElement).tagName);
         return txtArea || (e.keyCode || e.which || e.charCode || 0) !== 13;
+    }
+    
+    function update_labels(){
+        // Get the <datalist> and <input> elements.
+        var dataList = document.getElementById('labels');
+        var input = document.getElementById('label');
+        
+        // Create a new XMLHttpRequest.
+        var request = new XMLHttpRequest();
+
+        // Handle state changes for the request.
+        request.onreadystatechange = function(response) {
+            if (request.readyState === 4) {
+                if (request.status === 200) {
+                // Parse the JSON
+                var jsonOptions = JSON.parse(request.responseText);
+                
+
+                // Loop over the JSON array.
+                jsonOptions.forEach(function(item) {
+                    // Create a new <option> element.
+                    var option = document.createElement('option');
+                    // Set the value using the item in the JSON array.
+                    option.value = item;
+                    // Add the <option> element to the <datalist>.
+                    dataList.appendChild(option);
+                });
+
+                // Update the placeholder text.
+                input.placeholder = "Lables";
+                } else {
+                    // An error occured :(
+                    input.placeholder = "no response";
+                }
+            }
+        };
+        dataList.innerHTML="";
+        // Update the placeholder text.
+        input.placeholder = "Loading labels...";
+            
+        
+        // Set up and make the request.
+        request.open('GET', 'AJAX/getlabels.php?term='+input.value, true);
+        request.send();
     }
     //var query = {"val":$.("#art_field").val()};
     /*
