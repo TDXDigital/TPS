@@ -30,7 +30,17 @@
         $stmt->bind_param("si",$dbname,$access);
         //query
         $stmt->execute();
-        //
+        
+        //bind result
+        
+        // fetch result
+        
+        // assign into var?
+        $permissions = array_fill_keys(
+            array(
+                'Station_Settings_View'
+                ),null);
+        
 
         $perm_arr=$stmt->get_result(); //required mysqlnd
         
