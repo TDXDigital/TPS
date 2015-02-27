@@ -96,12 +96,29 @@
                     <input id="label" type="text" class="form-control" list="labels" name="indate" tabindex="6" placeholder="Labels"/>
                 </div>
             </div>
+            <div class="col-md-3">
+                <div id="format" class="input-group">
+                    <label for="label" class="input-group-addon">Format</label>
+                    <select class="form-control" name="format" tabindex="7">
+                        <option>CD</option>
+                        <option>Cassette</option>
+                        <option>7"</option>
+                        <option>12"</option>
+                        <option>Digital</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+            </div>
         </div>
         <div class="row">
-            <div class="col-md-3">
-                <div id="bndcmp" class="input-group">
-                    
-                </div>
+            <div class="col-md-2">
+                <input type="checkbox" data-label-prepend="Various Artists" class="style3" name="print" value="1" tabindex="8">
+            </div>
+            <div class="col-md-2">
+                <input type="checkbox" data-label-prepend="Accepted" class="style3" name="accept" checked="checked" value="1" tabindex="9">
+            </div>
+            <div class="col-md-2">
+                <input type="checkbox" data-label-prepend="Print" class="style3" name="print" checked="checked" value="1" tabindex="8">
             </div>
         </div>
     </div>
@@ -114,46 +131,45 @@
     <div class="panel-body">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <div id="web_group" class="input-group">
-                        <label for="website" class="input-group-addon"><span class="glyphicon glyphicon-globe"></span></label>
-                        <input id="website" type="url" class="form-control" name="website" placeholder="www.bandwebsite.com"/>
+                        <label for="website" class="input-group-addon" title="Band Website"><span class="glyphicon glyphicon-globe"></span></label>
+                        <input id="website" type="url" class="form-control" name="website" tabindex="10" placeholder="www.bandwebsite.com"/>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <div id="bnc_group" class="input-group">
-                        <label for="bandcamp" class="input-group-addon"><span class="glyphicon glyphicon-equalizer"></span></label>
-                        <input id="website" type="url" class="form-control" name="website" placeholder="bandcamp.com/band"/>
+                        <label for="bandcamp" class="input-group-addon" title="BandCamp URL"><span class="glyphicon glyphicon-tent"></span></label>
+                        <input id="bandcamp" type="url" class="form-control" name="bandcamp" tabindex="11" placeholder="Bandcamp.com"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div id="bnc_group" class="input-group">
+                        <label for="fb" class="input-group-addon" title="FaceBook URL"><span class="glyphicon glyphicon-user"></span></label>
+                        <input id="fb" type="url" class="form-control" name="facebook"tabindex="12" placeholder="Facebook.com"/>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div id="bnc_group" class="input-group">
+                        <label for="tw" class="input-group-addon" title="Twitter URL"><span class="glyphicon glyphicon-bell"></span></label>
+                        <input id="tw" type="url" class="form-control" name="website" tabindex="13" placeholder="Twitter.com"/>
                     </div>
                 </div>
             </div>
         </div>
-            <label for="ad_category">CRTC Category<span style="color:red">*</span></label>
-            
-            <label for="ad_length">Length (minutes)<span style="color:red">*</span></label>
-            <input type="number" id="ad_length" name="length" step="1" required/><br>
-            <label for="ad_language">Language</label>
-            <input type="text" value="English" name="language" required>
-            <br>
-            <label for="ad_start">Start Date<span style="color:red">*</span></label>
-            <input type="date" name="start" value="<?php echo date("Y-m-d");?>" required/><br>
-            <label for="ad_end">End Date</label>
-            <input type="date" name="end" value="<?php echo date("Y-m-d",strtotime("+1 year"));?>"/>
-            <br><br>
-            <label for="ad_friend">Friend Program</label>
-            <input type="checkbox" id="ad_friend" name="friend" checked/><br>
-            <label for="ad_rate">Invoicing Rate</label>
-            <select id="ad_rate" name="rate">
-                <option value="default">Default</option>
-                <option value="None">None</option>
-            </select>
-            <br><br>
-            <label for="ad_file">File (mp3, wav, flac)</label>
-            <input type="file" id="ad_file" name="file" disabled/>
     </div>
 </div>
 <div class="well">
-    <input class="btn btn-default btn-lg btn-block" type="submit">
+    <div class="container-fluid">
+        <div class="col-md-8">
+            <input class="btn btn-primary btn-lg btn-block" type="submit" tabindex="12">
+        </div>
+        <div class="col-md-4">
+            <input class="btn btn-default btn-lg btn-block" disabled="disabled" type="button" value="Print Labels" tabindex="13">
+        </div>
+    </div>
 </div>
 </form>
 <datalist id="artists"></datalist>
@@ -184,6 +200,23 @@
         $( "#indate" ).datepicker();
         //update_labels()
         //$("#art_field").keyup(catch_enter());
+        $('input[type="checkbox"].style1').checkbox({
+            buttonStyleChecked: 'btn-success',
+            checkedClass: 'icon-check',
+            uncheckedClass: 'icon-check-empty'
+        });
+        $('input[type="checkbox"].style2').checkbox({
+            buttonStyle: 'btn-base',
+            buttonStyleChecked: 'btn-success',
+            checkedClass: 'icon-check',
+            uncheckedClass: 'icon-check-empty'
+        });
+        $('input[type="checkbox"].style3').checkbox({
+            buttonStyle: 'btn-danger',
+                buttonStyleChecked: 'btn-success',
+            checkedClass: 'icon-check',
+            uncheckedClass: 'icon-check-empty'
+        });
     });
     
     function self_titled(){

@@ -52,7 +52,7 @@ else{
     }
 	// END Switch Check
 	//$pgm_name = filter_input(INPUT_POST, 'program', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $pgm_name = $_POST['program'];
+        $pgm_name = addslashes($_POST['program']);
         
         $SHOWQ = "select callsign from program where programname='" . $pgm_name . "' ";
         $SHOWQU = mysql_query($SHOWQ,$con);
@@ -1667,6 +1667,11 @@ if(false){
         </tr>
         <tfoot>
         <form id="Complete" name="Complete" method="POST" action="p3insertEP.php">
+        <?php
+        // workaround
+        
+        $clean_program = stripslashes(filter_input(INPUT_POST, "program"));
+        ?>
         <tr>
         <td colspan="12" height="10">
         <hr />
@@ -1749,7 +1754,7 @@ if(false){
         </td>
         <td colspan="1">
         <input type="text" hidden name="callsign" value=<?php echo "\"" . $CALLSHOW . "\"" ?> />
-        <input type="text" hidden name="program" value=<?php echo "\"" . $_POST['program'] . "\"" ?> />
+        <input type="text" hidden name="program" value=<?php echo "\"" . $pgm_name . "\"" ?> />
         <input type="text" hidden name="user_date" value=<?php echo "\"" . $_POST['user_date'] . "\"" ?> />
         <input type="text" hidden name="user_time" value=<?php echo "\"" . $_POST['user_time'] . "\"" ?> />
         <button type='button' id='confirm_final'>Finalize Episode</button>
@@ -1777,7 +1782,7 @@ if(false){
 			}
                   echo "<td colspan=\"1\">
                   <input type=\"text\" hidden=\"true\" name=\"callsign\" value=\"" . $CALLSHOW . "\" />
-                  <input type=\"text\" hidden=\"true\" name=\"program\" value=\"" . $_POST['program'] . "\"/>
+                  <input type=\"text\" hidden=\"true\" name=\"program\" value=\"" . $pgm_name . "\"/>
                   <input type=\"text\" hidden=\"true\" name=\"user_date\" value=\"" . $_POST['user_date'] . "\"/>
                   <input type=\"text\" hidden=\"true\" name=\"user_time\" value=\"" . $_POST['user_time'] . "\"/>
                   <input type=\"submit\" value=\"Exit\" /></form>
@@ -1786,18 +1791,19 @@ if(false){
         ?>
         <td colspan="1">
         <!--<form name="exit" action="/Episode/p3update.php" method="POST">-->
+        
         <form name="edit" action="EPV2/p3update.php" method="POST">
-        <input type="hidden" name="callsign" value=<?php echo "\"" . $CALLSHOW . "\"" ?> />
-        <input type="hidden" name="program" value=<?php echo "\"" . $_POST['program'] . "\"" ?> />
-        <input type="hidden" name="user_date" value=<?php echo "\"" . $_POST['user_date'] . "\"" ?> />
-        <input type="hidden" name="user_time" value=<?php echo "\"" . $_POST['user_time'] . "\"" ?> />
+            <input type="hidden" name="callsign" value=<?php echo "\"" . addcslashes($CALLSHOW,'"') . "\"" ?> />
+            <input type="hidden" name="program" value=<?php echo "\"" . addcslashes($clean_program,'"') . "\"" ?> />
+            <input type="hidden" name="user_date" value=<?php echo "\"" . addcslashes($_POST['user_date'],'"') . "\"" ?> />
+            <input type="hidden" name="user_time" value=<?php echo "\"" . addcslashes($_POST['user_time'],'"') . "\"" ?> />
         <input type="submit" value="Edit" />
         </form>
         </td>
         <td colspan="1">
         <form name="refresh" action="p2insertEP.php" method="POST">
         <input type="hidden" name="callsign" value=<?php echo "\"" . $CALLSHOW . "\"" ?> />
-        <input type="hidden" name="program" value=<?php echo "\"" . $_POST['program'] . "\"" ?> />
+        <input type="hidden" name="program" value=<?php echo "\"" . $pgm_name . "\"" ?> />
         <input type="hidden" name="user_date" value=<?php echo "\"" . $_POST['user_date'] . "\"" ?> />
         <input type="hidden" name="user_time" value=<?php echo "\"" . $_POST['user_time'] . "\"" ?> />
         <input type="submit" value="Refresh" />

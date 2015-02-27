@@ -187,7 +187,7 @@
                 <li><a href=\"$base/Reports/MissingLogRep.php\">Missing Logs</a></li>
                 <li><a href=\"$base/Reports/PlaylistRep.php\">Charts</a></li>
                 <li><a href=\"$base/Reports/p1SongSearch.php\">Records Search</a></li>
-                <li><a href=\"$base/Playlist/\">Library Management</a></li>
+                <li><a href=\"$base/Playlist/?q=new\">Library Management</a></li>
                 <li><a href=\"$base/Playlist/bulkupdate.php\">Library Bulk Update</a></li>
                 <li><a href=\"$base/Playlist/p1playlistmgr.php\">Playlist Management</a></li>
                 <li class=\"divider\"></li>
