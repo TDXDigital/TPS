@@ -36,9 +36,9 @@
             <div id="alb_group" class="input-group">
                 <label class="input-group-addon" for="alb_field">Album<span style="color:red">*</span></label>
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" tabindex="3" onclick="self_titled()">Self Titled</button>
+                    <button class="btn btn-default" type="button" tabindex="2" onclick="self_titled()">Self Titled</button>
                 </span>
-                <input name="artist" id="alb_field" type="text" required list="artists" placeholder="Start typing artist name to retrieve list" autocomplete="on" class="form-control" autofocus="autofocus" tabindex="2">
+                <input name="artist" id="alb_field" type="text" required list="artists" placeholder="Start typing artist name to retrieve list" autocomplete="on" class="form-control" tabindex="3">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button" onclick="get_albums();return true;">Go!</button>
                 </span>
@@ -93,7 +93,7 @@
             <div class="col-md-3">
                 <div id="ind_group" class="input-group">
                     <label for="label" class="input-group-addon">Label</label>
-                    <input id="label" type="text" class="form-control" onkeyup="update_labels()" list="labels" name="indate" tabindex="6" placeholder="Labels"/>
+                    <input id="label" type="text" class="form-control" list="labels" name="indate" tabindex="6" placeholder="Labels"/>
                 </div>
             </div>
         </div>
@@ -109,13 +109,25 @@
     <datalist id="labels">
         
     </datalist>
-
 <div class="panel panel-info">
-    <div class="panel-heading">Traffic Information</div>
+    <div class="panel-heading">Additional Information</div>
     <div class="panel-body">
-        <fieldset>
-            <label for="ad_name">Advertisement Name<span style="color:red">*</span></label>
-            <input type="text" id="ad_name" name="name" required/><br>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3">
+                    <div id="web_group" class="input-group">
+                        <label for="website" class="input-group-addon"><span class="glyphicon glyphicon-globe"></span></label>
+                        <input id="website" type="url" class="form-control" name="website" placeholder="www.bandwebsite.com"/>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div id="bnc_group" class="input-group">
+                        <label for="bandcamp" class="input-group-addon"><span class="glyphicon glyphicon-equalizer"></span></label>
+                        <input id="website" type="url" class="form-control" name="website" placeholder="bandcamp.com/band"/>
+                    </div>
+                </div>
+            </div>
+        </div>
             <label for="ad_category">CRTC Category<span style="color:red">*</span></label>
             
             <label for="ad_length">Length (minutes)<span style="color:red">*</span></label>
@@ -138,11 +150,10 @@
             <br><br>
             <label for="ad_file">File (mp3, wav, flac)</label>
             <input type="file" id="ad_file" name="file" disabled/>
-        </fieldset>
     </div>
 </div>
 <div class="well">
-    <input type="submit">
+    <input class="btn btn-default btn-lg btn-block" type="submit">
 </div>
 </form>
 <datalist id="artists"></datalist>
@@ -164,10 +175,14 @@
             source: "AJAX/playlist.get_artist.php",
             minLength: 2
         });
+        $('#label').autocomplete({
+            //source: "../MusicLib/DB_Search_Artist.php",
+            source: "AJAX/getlabels.php"
+        });
         document.querySelector('form').onkeypress = checkEnter;
         $.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
         $( "#indate" ).datepicker();
-        update_labels()
+        //update_labels()
         //$("#art_field").keyup(catch_enter());
     });
     
