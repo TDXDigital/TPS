@@ -5,6 +5,16 @@
     if(isset($_GET['m'])){
         $message=urldecode($_GET['m']);
     }
+    if(isset($_GET['e'])){
+        $error = filter_input(INPUT_GET, 'e', FILTER_SANITIZE_NUMBER_INT);
+        
+        if($error==="1062"){
+            $error_name = "Duplicate entry";
+            $error_message = "You cannot insert the same album, artist, and format"
+                    . "more than once per day<br>if you really need to record"
+                    . "this entry please change the recieving day";
+        }
+    }
 ?>
 <h3 class="sub-header">Induction</h3>
 <?php
@@ -13,6 +23,14 @@
     <div class=\"panel-heading\">Message Information</div>
         <div class=\"panel-body\">
             <span>$message</span>
+        </div>
+    </div>";
+    }
+    if(isset($error)){
+        echo "<div class=\"panel panel-danger\">
+    <div class=\"panel-heading\">Error $error: $error_name</div>
+        <div class=\"panel-body\">
+            <span>$error_message</span>
         </div>
     </div>";
     }
@@ -38,7 +56,7 @@
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button" tabindex="2" onclick="self_titled()">Self Titled</button>
                 </span>
-                <input name="artist" id="alb_field" type="text" required list="artists" placeholder="Start typing artist name to retrieve list" autocomplete="on" class="form-control" tabindex="3">
+                <input name="album" id="alb_field" type="text" required placeholder="Start typing album name to retrieve list" autocomplete="on" class="form-control" tabindex="3">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button" onclick="get_albums();return true;">Go!</button>
                 </span>
@@ -93,7 +111,7 @@
             <div class="col-md-3">
                 <div id="ind_group" class="input-group">
                     <label for="label" class="input-group-addon">Label</label>
-                    <input id="label" type="text" class="form-control" list="labels" name="indate" tabindex="6" placeholder="Labels"/>
+                    <input id="label" type="text" class="form-control" list="labels" name="label" tabindex="6" placeholder="Labels"/>
                 </div>
             </div>
             <div class="col-md-3">
@@ -118,7 +136,7 @@
                 <input type="checkbox" data-label-prepend="Accepted" class="style3" name="accept" checked="checked" value="1" tabindex="9">
             </div>
             <div class="col-md-2">
-                <input type="checkbox" data-label-prepend="Print" class="style3" name="print" checked="checked" value="1" tabindex="8">
+                <input type="checkbox" data-label-prepend="Print" class="style3" name="print" checked="checked" value="1" tabindex="10">
             </div>
         </div>
     </div>
@@ -134,13 +152,13 @@
                 <div class="col-md-6">
                     <div id="web_group" class="input-group">
                         <label for="website" class="input-group-addon" title="Band Website"><span class="glyphicon glyphicon-globe"></span></label>
-                        <input id="website" type="url" class="form-control" name="website" tabindex="10" placeholder="www.bandwebsite.com"/>
+                        <input id="website" type="url" class="form-control" name="website" tabindex="13" placeholder="www.bandwebsite.com"/>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div id="bnc_group" class="input-group">
                         <label for="bandcamp" class="input-group-addon" title="BandCamp URL"><span class="glyphicon glyphicon-tent"></span></label>
-                        <input id="bandcamp" type="url" class="form-control" name="bandcamp" tabindex="11" placeholder="Bandcamp.com"/>
+                        <input id="bandcamp" type="url" class="form-control" name="bandcamp" tabindex="14" placeholder="Bandcamp.com"/>
                     </div>
                 </div>
             </div>
@@ -148,13 +166,13 @@
                 <div class="col-md-6">
                     <div id="bnc_group" class="input-group">
                         <label for="fb" class="input-group-addon" title="FaceBook URL"><span class="glyphicon glyphicon-user"></span></label>
-                        <input id="fb" type="url" class="form-control" name="facebook"tabindex="12" placeholder="Facebook.com"/>
+                        <input id="fb" type="url" class="form-control" name="facebook"tabindex="15" placeholder="Facebook.com"/>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div id="bnc_group" class="input-group">
                         <label for="tw" class="input-group-addon" title="Twitter URL"><span class="glyphicon glyphicon-bell"></span></label>
-                        <input id="tw" type="url" class="form-control" name="website" tabindex="13" placeholder="Twitter.com"/>
+                        <input id="tw" type="url" class="form-control" name="website" tabindex="16" placeholder="Twitter.com"/>
                     </div>
                 </div>
             </div>
@@ -164,10 +182,10 @@
 <div class="well">
     <div class="container-fluid">
         <div class="col-md-8">
-            <input class="btn btn-primary btn-lg btn-block" type="submit" tabindex="12">
+            <input class="btn btn-primary btn-lg btn-block" type="submit" tabindex="17">
         </div>
         <div class="col-md-4">
-            <input class="btn btn-default btn-lg btn-block" disabled="disabled" type="button" value="Print Labels" tabindex="13">
+            <input class="btn btn-default btn-lg btn-block" disabled="disabled" type="button" value="Print Labels" tabindex="18">
         </div>
     </div>
 </div>
