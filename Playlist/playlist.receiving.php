@@ -152,13 +152,13 @@
                 <div class="col-md-6">
                     <div id="web_group" class="input-group">
                         <label for="website" class="input-group-addon" title="Band Website"><span class="glyphicon glyphicon-globe"></span></label>
-                        <input id="website" type="url" class="form-control" name="website" tabindex="13" placeholder="www.bandwebsite.com"/>
+                        <input id="website" type="url" class="form-control" disabled="disabled" name="website" tabindex="13" placeholder="www.bandwebsite.com"/>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div id="bnc_group" class="input-group">
                         <label for="bandcamp" class="input-group-addon" title="BandCamp URL"><span class="glyphicon glyphicon-tent"></span></label>
-                        <input id="bandcamp" type="url" class="form-control" name="bandcamp" tabindex="14" placeholder="Bandcamp.com"/>
+                        <input id="bandcamp" type="url" class="form-control"  disabled="disabled" name="bandcamp" tabindex="14" placeholder="Bandcamp.com"/>
                     </div>
                 </div>
             </div>
@@ -166,13 +166,13 @@
                 <div class="col-md-6">
                     <div id="bnc_group" class="input-group">
                         <label for="fb" class="input-group-addon" title="FaceBook URL"><span class="glyphicon glyphicon-user"></span></label>
-                        <input id="fb" type="url" class="form-control" name="facebook"tabindex="15" placeholder="Facebook.com"/>
+                        <input id="fb" type="url" class="form-control" disabled="disabled"  name="facebook"tabindex="15" placeholder="Facebook.com"/>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div id="bnc_group" class="input-group">
                         <label for="tw" class="input-group-addon" title="Twitter URL"><span class="glyphicon glyphicon-bell"></span></label>
-                        <input id="tw" type="url" class="form-control" name="website" tabindex="16" placeholder="Twitter.com"/>
+                        <input id="tw" type="url" class="form-control" disabled="disabled"  name="website" tabindex="16" placeholder="Twitter.com"/>
                     </div>
                 </div>
             </div>

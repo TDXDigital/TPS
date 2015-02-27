@@ -24,7 +24,10 @@ $labelNum = NULL;
 // Get label number if exists
 $stmt1 = $mysqli->prepare("SELECT labelNumber FROM recordlabel where Name=? limit 1");
 $stmt1->bind_param("s",$label);
-$stmt1->execute();
+if(!$stmt1->execute()){
+    $stmt1->close();
+    header("location: ../Playlist/?q=new&e=".$mysqli->errno."&s=1");
+}
 $stmt1->bind_result($labelNum);
 $stmt1->fetch();
 $stmt1->close();
@@ -34,7 +37,8 @@ if(is_null($labelNum)){
     $stmt2 = $mysqli->prepare("INSERT INTO recordlabel(Name,size) VALUES (?,?)");
     $stmt2->bind_param("si",$label,$label_size);
     if(!$stmt2->execute()){
-        header("location: ../Playlist/?q=new&e=".$mysqli->errno);
+        $stmt2->close();
+        header("location: ../Playlist/?q=new&e=".$mysqli->errno."&s=2");
         //echo "ERROR: " .    $mysqli->error;
     }
     else{
@@ -50,14 +54,26 @@ else{
 if($genre=="null"){
     $genre=NULL;
 }
+if(is_null($labelNum)||$labelNul=="null"){
+    header("location: ../Playlist/?q=new&e=9999&s=3");
+}
 
 $stmt3 = $mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,format,genre,status,labelid,Locale)
     VALUES (?,?,?,?,?,?,?,?,?)");
 $stmt3->bind_param("sssissiis",$datein,$artist,$album,$variousartists,$format,$genre,$status,$labelNum,$locale);
 if(!$stmt3->execute()){
-    header("location: ../Playlist/?q=new&e=".$mysqli->errno);
+    $stmt3->close();
+    header("location: ../Playlist/?q=new&e=".$mysqli->errno."&s=3&m=".$mysqli->error);
     //echo "ERROR #".$mysqli->errno . "  " .    $mysqli->error;
 }
 else{
-    header("location: ../Playlist/?q=new&m=$artist's%20new%20album$20entered");
+    $id_last = $stmt3->insert_id;
+    $stmt3->close();
+    if(strtolower(substr($artist,-1))!='s'){
+        $s = "s";
+    }
+    else{
+        $s="";
+    }
+    header("location: ../Playlist/?q=new&m=$artist'$s%20new%20album%20entered ($id_last)");
 }
