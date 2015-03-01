@@ -75,5 +75,8 @@ else{
     else{
         $s="";
     }
+    if($print==1){
+        $_SESSION['PRINTID'][]=$id_last;
+    }
     header("location: ../Playlist/?q=new&m=$artist'$s%20new%20album%20entered ($id_last)");
 }

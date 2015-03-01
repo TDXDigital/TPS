@@ -43,6 +43,9 @@
         <fieldset>
             <div id="art-group" class="input-group">
                 <label class="input-group-addon" for="art_field">Artist<span style="color:red">*</span></label>
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" onclick="SetVariousArtists()">VA Comp</button>
+                </span>
                 <!-- TODO: Remove 'THE' from the beginning of queries if given -->
                 <input name="artist" id="art_field" type="text" required list="artists" placeholder="Start typing artist name to retrieve list" autocomplete="on" class="form-control" autofocus="autofocus" onkeyup="catch_enter(event);" tabindex="1">
                 <span class="input-group-btn">
@@ -111,7 +114,7 @@
             <div class="col-md-3">
                 <div id="ind_group" class="input-group">
                     <label for="label" class="input-group-addon">Label</label>
-                    <input id="label" type="text" class="form-control" list="labels" name="label" tabindex="6" placeholder="Labels"/>
+                    <input id="label" type="text" class="form-control" required="required" list="labels" name="label" tabindex="6" placeholder="Label"/>
                 </div>
             </div>
             <div class="col-md-3">
@@ -185,7 +188,11 @@
             <input class="btn btn-primary btn-lg btn-block" type="submit" tabindex="17">
         </div>
         <div class="col-md-4">
-            <input class="btn btn-default btn-lg btn-block" disabled="disabled" type="button" value="Print Labels" tabindex="18">
+            <input id="print_btn" class="btn btn-default btn-lg btn-block" onclick="window.open('printtest.php', '_blank');" <?php
+            if(!isset($_SESSION['PRINTID'])){
+            echo "disabled=\"disabled\" ";
+            }
+            ?> type="button" value="Print Labels" tabindex="18">
         </div>
     </div>
 </div>
@@ -213,6 +220,7 @@
             //source: "../MusicLib/DB_Search_Artist.php",
             source: "AJAX/getlabels.php"
         });
+        
         document.querySelector('form').onkeypress = checkEnter;
         $.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
         $( "#indate" ).datepicker();
@@ -241,10 +249,17 @@
         $("#alb_field").val($("#art_field").val());
     }
     
+    function SetVariousArtists(){
+        
+    }
+    
     function catch_enter (event){
         if(event.keyCode === 13){
             get_albums();
             return true;
+        }
+        else{
+            return false;
         }
     }
     
@@ -324,3 +339,9 @@
         
     })*/
 </script>
+
+<?php
+foreach($_SESSION['PRINTID']as$value){
+    echo $value. "<br>";
+}
+?>

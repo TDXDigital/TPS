@@ -19,9 +19,21 @@ if (!$testGD){ echo "GD not even installed."; exit; }
   $height   = 50;   // barcode height in 1D ; module size in 2D
   $width    = 2;    // barcode height in 1D ; not use in 2D
   $angle    = 0;   // rotation in degrees : nb : non horizontable barcode might not be usable because of pixelisation
+  if(!isset($_GET['type'])){
+      $type     = "code39";//'code128';  
+  }
+  else{
+      $type     = $_GET['type']? : "code39";//'code128';
+  }
   
-  $code     = $_GET['bcd']; // barcode, of course ;)
-  $type     = $_GET['type'];//'code128';
+  if(!isset($_GET['bcd'])){
+      $code = "1234567890";
+  }
+  else{
+      $code     = $_GET['bcd']; // barcode, of course ;)
+  }
+  //$code     = $_GET['bcd']; // barcode, of course ;)
+  //$type     = $_GET['type']? : "code39";//'code128';
   
   // -------------------------------------------------- //
   //                    USEFUL
