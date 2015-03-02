@@ -39,7 +39,7 @@
     }*/
     $mysqlnd = function_exists('mysqli_fetch_all');
     
-    if ($mysqlnd) {
+    //if ($mysqlnd) {
         if(isset($_GET['old'])){
             if($_SESSION['access']==2){
                 include_once "station/admin_old.php";
@@ -64,7 +64,7 @@
                 //header("djhome.php");
             }
         }
-    }
+    /*}
     else{
         echo "<span>Your server does not support mysqlnd, please enable this feature for full operations.</span>";
         if($_SESSION['access']==2){
@@ -76,5 +76,5 @@
                 include_once "station/user_old.php";
                 //header("djhome.php");
             }
-    }
+    }*/
 ?>
