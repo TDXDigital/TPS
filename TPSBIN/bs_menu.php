@@ -21,8 +21,7 @@
     // CONNECT TO DB
 
     // QUERY "Permissions
-    if($stmt = $mysqli->prepare("SELECT Staton_Settings_View,Station_Settings_Edit, "
-        ."Member_View,Member_Edit,Member_Create,Program_View,Program_Edit,Program_Create,"
+    if($stmt = $mysqli->prepare("Member_View,Member_Edit,Member_Create,Program_View,Program_Edit,Program_Create,"
         ."Genre_View,Genre_Edit,Genre_Create, Playlist_View,Playlist_Edit,Playlist_Create,"
         ."Library_View,Library_Edit,Library_Create,Advert_View,Advert,Edit,Advert_Create,"
         ."Audit_View FROM permissions WHERE callsign=? and access=?")){
