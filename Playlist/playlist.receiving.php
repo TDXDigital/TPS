@@ -188,7 +188,7 @@
             <input class="btn btn-primary btn-lg btn-block" type="submit" tabindex="17">
         </div>
         <div class="col-md-4">
-            <input id="print_btn" class="btn btn-default btn-lg btn-block" onclick="window.open('printtest.php', '_blank');" <?php
+            <input id="print_btn" class="btn btn-default btn-lg btn-block" onclick="window.open('printtest.php', '  printwindow');" <?php
             if(!isset($_SESSION['PRINTID'])){
             echo "disabled=\"disabled\" ";
             }
@@ -339,9 +339,13 @@
         
     })*/
 </script>
-
-<?php
-foreach($_SESSION['PRINTID']as$value){
-    echo $value. "<br>";
-}
-?>
+<div class="panel panel-info">
+    <div class="panel-heading">Entries to be print (dev only)</div>
+    <div class="panel-body">
+    <?php
+    foreach($_SESSION['PRINTID']as$value){
+        echo $value. " ";
+    }
+    ?>
+    </div>
+</div>
