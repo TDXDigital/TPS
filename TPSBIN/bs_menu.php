@@ -30,10 +30,10 @@
         //query
         $stmt->execute();
         
+        $permissions['Station_Settings_View']=>1;
+        $permissions['Station_Settings_Edit']=>1;
         //bind result
         $stmt->bind_result(
-            $permissions['Station_Settings_View'],
-            $permissions['Station_Settings_Edit'],
             $permissions['Member_View'],
             $permissions['Member_Edit'],
             $permissions['Member_Create'],
