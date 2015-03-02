@@ -32,25 +32,46 @@
         $stmt->execute();
         
         //bind result
+        $stmt->bind_result(
+            $permissions['Station_Settings_View'],
+            $permissions['Station_Settings_Edit'],
+            $permissions['Member_View'],
+            $permissions['Member_Edit'],
+            $permissions['Member_Create'],
+            $permissions['Program_View'],
+            $permissions['Program_Edit'],
+            $permissions['Program_Create'],
+            $permissions['Genre_View'],
+            $permissions['Genre_Edit'],
+            $permissions['Genre_Create'],
+            $permissions['Playlist_View'],
+            $permissions['Playlist_Edit'],
+            $permissions['Playlist_Create'],
+            $permissions['Library_View'],
+            $permissions['Library_Edit'],
+            $permissions['Library_Create'],
+            $permissions['Advert_View'],
+            $permissions['Advert_Edit'],
+            $permissions['Advert_Create'],
+            $permissions['Audit_View']
+            );
+        //$stmt->bind_result($Station_View,$Station_Edit,$Member_View)
         
         // fetch result
+        $stmt->fetch();
         
         // assign into var?
-        $permissions = array_fill_keys(
-            array(
-                'Station_Settings_View'
-                ),null);
-        
 
-        $perm_arr=$stmt->get_result(); //required mysqlnd
+
+        //$perm_arr=$stmt->get_result(); //required mysqlnd
         
-        $permissions=$perm_arr->fetch_array();
+        //$permissions=$perm_arr->fetch_array();
         
         //
         //$stmt->bind_result($permissions[]);// not optimal
         //$perm_arr = array();
         //$stmt->bind_result($perm_arr);
-        $stmt->fetch();
+        //$stmt->fetch();
         
         $stmt->close();
         //error_log($permissions[0]);
