@@ -22,7 +22,7 @@
 
     // QUERY "Permissions
     if($stmt = $mysqli->prepare("SELECT Member_View,Member_Edit,Member_Create,Program_View,Program_Edit,Program_Create,"
-        ."Genre_View,Genre_Edit,Genre_Create, Playlist_View,Playlist_Edit,Playlist_Create,"
+        ."Genre_View,Genre_Edit,Genre_Create, Playsheet_View,Playsheet_Edit,Playsheet_Create,"
         ."Library_View,Library_Edit,Library_Create,Advert_View,Advert,Edit,Advert_Create,"
         ."Audit_View FROM permissions WHERE callsign=? and access=?")){
         // Bind DBNAME and access
@@ -43,9 +43,9 @@
             $permissions['Genre_View'],
             $permissions['Genre_Edit'],
             $permissions['Genre_Create'],
-            $permissions['Playlist_View'],
-            $permissions['Playlist_Edit'],
-            $permissions['Playlist_Create'],
+            $permissions['Playsheet_View'],
+            $permissions['Playsheet_Edit'],
+            $permissions['Playsheet_Create'],
             $permissions['Library_View'],
             $permissions['Library_Edit'],
             $permissions['Library_Create'],
