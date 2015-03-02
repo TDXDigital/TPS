@@ -29,7 +29,7 @@
         $stmt->bind_param("si",$dbname,$access);
         //query
         $stmt->execute();
-        
+        $permissions=[];
         $permissions['Station_Settings_View']=1;
         $permissions['Station_Settings_Edit']=1;
         //bind result
