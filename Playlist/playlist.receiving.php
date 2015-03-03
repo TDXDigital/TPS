@@ -250,7 +250,7 @@
     }
     
     function SetVariousArtists(){
-        
+        $("#art_field").value("Various Artists")
     }
     
     function catch_enter (event){

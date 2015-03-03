@@ -21,7 +21,7 @@
     // CONNECT TO DB
 
     // QUERY "Permissions
-    if($stmt = $mysqli->prepare("SELECT Member_View,Member_Edit,Member_Create,Program_View,Program_Edit,Program_Create,"
+    if($stmt = $mysqli->prepare("SELECT Station_Settings_View, Station_Settings_Edit, Member_View,Member_Edit,Member_Create,Program_View,Program_Edit,Program_Create,"
         ."Genre_View,Genre_Edit,Genre_Create, Playsheet_View,Playsheet_Edit,Playsheet_Create,"
         ."Library_View,Library_Edit,Library_Create,Advert_View,Advert_Edit,Advert_Create,"
         ."Audit_View FROM permissions WHERE callsign=? and access=?")){
@@ -30,10 +30,10 @@
         //query
         $stmt->execute();
         $permissions=[];
-        $permissions['Station_Settings_View']=1;
-        $permissions['Station_Settings_Edit']=1;
         //bind result
         $stmt->bind_result(
+            $permissions['Station_Settings_View'],
+            $permissions['Station_Settings_Edit'],
             $permissions['Member_View'],
             $permissions['Member_Edit'],
             $permissions['Member_Create'],
