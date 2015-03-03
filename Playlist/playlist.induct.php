@@ -19,6 +19,12 @@ $accepted = filter_input(INPUT_POST, "accepted")? :0;
 $variousartists = filter_input(INPUT_POST, "va")? :0;
 $label_size = filter_input(INPUT_POST, "Label_Size")? : 1;
 $locale = filter_input(INPUT_POST, "locale")? :"international";
+if($locale=="International"){
+    $CanCon=0;
+}
+else{
+    $CanCon=1;
+}
 $labelNum = NULL;
 
 // Get label number if exists
@@ -58,9 +64,16 @@ if(is_null($labelNum)||$labelNul=="null"){
     header("location: ../Playlist/?q=new&e=9999&s=3");
 }
 
-$stmt3 = $mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,format,genre,status,labelid,Locale)
-    VALUES (?,?,?,?,?,?,?,?,?)");
-$stmt3->bind_param("sssissiis",$datein,$artist,$album,$variousartists,$format,$genre,$status,$labelNum,$locale);
+if(!$stmt3 = $mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,format,genre,status,labelid,Locale,CanCon)
+    VALUES (?,?,?,?,?,?,?,?,?,?)")){
+    $stmt3->close();
+    header("location: ../Playlist/?q=new&e=".$mysqli->errno."&s=3&m=".$mysqli->error);
+}
+if(!$stmt3->bind_param("sssissiisi",$datein,$artist,$album,$variousartists,$format,$genre,$status,$labelNum,$locale,$CanCon)){
+    $stmt3->close();    
+    header("location: ../Playlist/?q=new&e=".$mysqli->errno."&s=3&m=".$mysqli->error);
+}
+
 if(!$stmt3->execute()){
     $stmt3->close();
     header("location: ../Playlist/?q=new&e=".$mysqli->errno."&s=3&m=".$mysqli->error);
@@ -69,6 +82,30 @@ if(!$stmt3->execute()){
 else{
     $id_last = $stmt3->insert_id;
     $stmt3->close();
+    if($stmt4=$mysqli->prepare("INSERT INTO band_websites(ID,URL,Service) VALUES (?,?,?)")){
+        $stmt4->bind_param("iss",$id_last,$url,$service);
+        $services=[
+            "twitter"=>filter_input(INPUT_POST, 'twitter',FILTER_SANITIZE_URL),
+            "facebook"=>filter_input(INPUT_POST, 'facebook',FILTER_SANITIZE_URL),
+            "bandcamp"=>filter_input(INPUT_POST, 'bandcamp',FILTER_SANITIZE_URL),
+            "website"=>filter_input(INPUT_POST, 'website',FILTER_SANITIZE_URL)
+        ];
+        foreach($services as $key=>$value){
+            $url=$value;
+            $service=$key;
+            if($value!=""&&!is_null($value)){
+                /*if(!$stmt4->execute())
+                {
+                    $webresult .= $mysqli->error;
+                }*/
+                $stmt4->execute();
+            }
+        }
+    }
+    /*else{
+        $webresult .= $mysqli->error;
+    }*/
+    
     if(strtolower(substr($artist,-1))!='s'){
         $s = "s";
     }

@@ -107,8 +107,13 @@
             </div>
             <div class="col-md-3">
                 <div id="ind_group" class="input-group">
-                    <label for="indate" class="input-group-addon">Date In</label>
-                    <input id="indate" type="text" class="form-control" value="<?php print(date("Y-m-d"));?>" name="indate" tabindex="5"/>
+                    <label for="label" class="input-group-addon">Format</label>
+                    <select class="form-control" name="locale" tabindex="7">
+                        <option value="International">International</option>
+                        <option value="Country">Country</option>
+                        <option value="Provincial">Provincial</option>
+                        <option value="Local">Local</option>
+                    </select>
                 </div>
             </div>
             <div class="col-md-3">
@@ -135,11 +140,17 @@
             <div class="col-md-2">
                 <input type="checkbox" data-label-prepend="Various Artists" class="style3" name="print" value="1" tabindex="8">
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <input type="checkbox" data-label-prepend="Accepted" class="style3" name="accept" checked="checked" value="1" tabindex="9">
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <input type="checkbox" data-label-prepend="Print" class="style3" name="print" checked="checked" value="1" tabindex="10">
+            </div>
+            <div class="col-md-3">
+                <div id="ind_group" class="input-group">
+                    <label for="indate" class="input-group-addon">Date In</label>
+                    <input id="indate" type="text" class="form-control" value="<?php print(date("Y-m-d"));?>" name="indate" tabindex="5"/>
+                </div>
             </div>
         </div>
     </div>
@@ -155,13 +166,13 @@
                 <div class="col-md-6">
                     <div id="web_group" class="input-group">
                         <label for="website" class="input-group-addon" title="Band Website"><span class="glyphicon glyphicon-globe"></span></label>
-                        <input id="website" type="url" class="form-control" disabled="disabled" name="website" tabindex="13" placeholder="www.bandwebsite.com"/>
+                        <input id="website" type="url" class="form-control" name="website" tabindex="13" placeholder="www.bandwebsite.com"/>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div id="bnc_group" class="input-group">
                         <label for="bandcamp" class="input-group-addon" title="BandCamp URL"><span class="glyphicon glyphicon-tent"></span></label>
-                        <input id="bandcamp" type="url" class="form-control"  disabled="disabled" name="bandcamp" tabindex="14" placeholder="Bandcamp.com"/>
+                        <input id="bandcamp" type="url" class="form-control"  name="bandcamp" tabindex="14" placeholder="Bandcamp.com"/>
                     </div>
                 </div>
             </div>
@@ -169,13 +180,13 @@
                 <div class="col-md-6">
                     <div id="bnc_group" class="input-group">
                         <label for="fb" class="input-group-addon" title="FaceBook URL"><span class="glyphicon glyphicon-user"></span></label>
-                        <input id="fb" type="url" class="form-control" disabled="disabled"  name="facebook"tabindex="15" placeholder="Facebook.com"/>
+                        <input id="fb" type="url" class="form-control" name="facebook"tabindex="15" placeholder="Facebook.com"/>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div id="bnc_group" class="input-group">
                         <label for="tw" class="input-group-addon" title="Twitter URL"><span class="glyphicon glyphicon-bell"></span></label>
-                        <input id="tw" type="url" class="form-control" disabled="disabled"  name="website" tabindex="16" placeholder="Twitter.com"/>
+                        <input id="tw" type="url" class="form-control" name="website" tabindex="16" placeholder="Twitter.com"/>
                     </div>
                 </div>
             </div>

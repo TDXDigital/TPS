@@ -24,9 +24,9 @@
     if($stmt = $mysqli->prepare("SELECT Station_Settings_View, Station_Settings_Edit, Member_View,Member_Edit,Member_Create,Program_View,Program_Edit,Program_Create,"
         ."Genre_View,Genre_Edit,Genre_Create, Playsheet_View,Playsheet_Edit,Playsheet_Create,"
         ."Library_View,Library_Edit,Library_Create,Advert_View,Advert_Edit,Advert_Create,"
-        ."Audit_View FROM permissions WHERE callsign=? and access=?")){
+        ."Audit_View FROM permissions WHERE  access=?")){
         // Bind DBNAME and access
-        $stmt->bind_param("si",$dbname,$access);
+        $stmt->bind_param("i",$access);
         //query
         $stmt->execute();
         $permissions=[];
