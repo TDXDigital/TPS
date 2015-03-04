@@ -149,7 +149,7 @@
             <div class="col-md-3">
                 <div id="ind_group" class="input-group">
                     <label for="indate" class="input-group-addon">Date In</label>
-                    <input id="indate" type="text" class="form-control" value="<?php print(date("Y-m-d"));?>" name="indate" tabindex="5"/>
+                    <input id="indate" type="text" class="form-control" value="<?php print(date("Y-m-d"));?>" name="indate" tabindex="11"/>
                 </div>
             </div>
         </div>
