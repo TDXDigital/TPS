@@ -108,7 +108,7 @@
             <div class="col-md-3">
                 <div id="ind_group" class="input-group">
                     <label for="label" class="input-group-addon">Format</label>
-                    <select class="form-control" name="locale" tabindex="7">
+                    <select class="form-control" name="locale" tabindex="5">
                         <option value="International">International</option>
                         <option value="Country">Country</option>
                         <option value="Provincial">Provincial</option>
