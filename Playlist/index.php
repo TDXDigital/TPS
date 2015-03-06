@@ -31,7 +31,7 @@
     <script src="<?php echo $_SESSION['BASE_REF'];?>/js/chosen.jquery.min.js"></script>
     <script src="<?php echo $_SESSION['BASE_REF'];?>/js/bootstrap/checkbox/js/bootstrap-checkbox.js "></script>
 
-    <title>Traffic Management</title>
+    <title>Playlist/Library Management</title>
 
     <!-- Bootstrap core CSS -->
     <link href="<?php echo $_SESSION['BASE_REF'];?>/js/bootstrap/css/bootstrap.min.css" rel="stylesheet">

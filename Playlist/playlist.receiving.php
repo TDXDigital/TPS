@@ -14,6 +14,11 @@
                     . "more than once per day<br>if you really need to record"
                     . "this entry please change the recieving day";
         }
+        if($error==="0"){
+            $error_name="General Error";
+            $error_message = "A Unknown Error Occured: ".$message;
+            unset($message);
+        }
     }
 ?>
 <h3 class="sub-header">Induction</h3>
@@ -37,14 +42,29 @@
 ?>
 <form action="playlist.induct.php" method="post">
 <div class="panel panel-primary">
-    <div class="panel-heading">Basic Information</div>
+    <div class="panel-heading"><span>Basic Information</span>
+        <input type="hidden" id="method_hidden" value="any" />
+        <span class="pull-right">Search&nbsp;
+        <div class="btn-group pull-right" data-toggle="buttons">
+            <label class="btn btn-primary active btn-xs">
+                <input type="radio" name="method" id="option1" onchange="javascript: $('#method_hidden').val('any');" value="any" autocomplete="off"> Contains
+            </label>
+            <label class="btn btn-primary btn-xs">
+              <input type="radio" name="method" id="option2" onchange="javascript: $('#method_hidden').val('begins');" value="begins" autocomplete="off"> Starts
+            </label>
+            <label class="btn btn-primary btn-xs">
+              <input type="radio" name="method" id="option3" onchange="javascript: $('#method_hidden').val('exact');" value="exact" autocomplete="off"> Exact
+            </label>
+        </div>
+        </span>
+    </div>
     <div class="panel-body">
         
         <fieldset>
             <div id="art-group" class="input-group">
                 <label class="input-group-addon" for="art_field">Artist<span style="color:red">*</span></label>
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" onclick="SetVariousArtists()">VA Comp</button>
+                    <button class="btn btn-default" type="button" onclick="javascript: SetVariousArtists();">VA Comp</button>
                 </span>
                 <!-- TODO: Remove 'THE' from the beginning of queries if given -->
                 <input name="artist" id="art_field" type="text" required list="artists" placeholder="Start typing artist name to retrieve list" autocomplete="on" class="form-control" autofocus="autofocus" onkeyup="catch_enter(event);" tabindex="1">
@@ -138,7 +158,7 @@
         </div>
         <div class="row">
             <div class="col-md-2">
-                <input type="checkbox" data-label-prepend="Various Artists" class="style3" name="print" value="1" tabindex="8">
+                <input type="checkbox" id="va_checkbox" data-label-prepend="Various Artists" class="style3" name="print" value="1" tabindex="8">
             </div>
             <div class="col-md-3">
                 <input type="checkbox" data-label-prepend="Accepted" class="style3" name="accept" checked="checked" value="1" tabindex="9">
@@ -221,11 +241,28 @@
 
 
 <script type="text/javascript">
-    $(function(){
-        $('#art_field').autocomplete({
+    function UpdateAutoArtist(method,id){
+        method = typeof method !== 'undefined' ? method : "any";
+        id = typeof id !== 'undefined' ? id : "art_field";
+        
+        $('#'+id).autocomplete({
             //source: "../MusicLib/DB_Search_Artist.php",
-            source: "AJAX/playlist.get_artist.php",
+            source: "AJAX/playlist.get_artist.php?type=artist&method="+method,
             minLength: 2
+        });
+    }
+    
+    function ChangeAutoComplete(id,option){
+        $('#method_hidden').val(option);
+        $("#"+id).autocomplete("destroy");
+        UpdateAutoArtist(option,id);
+    }
+    
+    $(function(){
+        UpdateAutoArtist();
+        $('input:radio[name=method]:checked').change(function(){
+            $("#art_field").autocomplete("destroy");
+            UpdateAutoArtist();
         });
         $('#label').autocomplete({
             //source: "../MusicLib/DB_Search_Artist.php",
@@ -261,7 +298,8 @@
     }
     
     function SetVariousArtists(){
-        $("#art_field").value("Various Artists")
+        $("#art_field").val("Various Artists");
+        $("#va_checkbox label").eq(0).button('toggle');  //.prop("checked",true);
     }
     
     function catch_enter (event){
