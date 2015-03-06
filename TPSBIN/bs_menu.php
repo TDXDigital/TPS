@@ -30,12 +30,16 @@
         ."Library_View,Library_Edit,Library_Create,Advert_View,Advert_Edit,Advert_Create,"
         ."Audit_View FROM permissions WHERE  access=?")){
         // Bind DBNAME and access
-        $stmt->bind_param("i",$access);
+        if(!$stmt->bind_param("i",$access)){
+            die("BP:".$mysqli->error);
+        }
         //query
-        $stmt->execute();
+        if(!$stmt->execute()){
+            die("EX".$mysqli->error);
+        }
         $permissions=[];
         //bind result
-        $stmt->bind_result(
+        if(!$stmt->bind_result(
             $permissions['Station_Settings_View'],
             $permissions['Station_Settings_Edit'],
             $permissions['Member_View'],
@@ -57,11 +61,15 @@
             $permissions['Advert_Edit'],
             $permissions['Advert_Create'],
             $permissions['Audit_View']
-            );
+            )){
+                die("BR:".$mysqli->error);
+            }
         //$stmt->bind_result($Station_View,$Station_Edit,$Member_View)
         
         // fetch result
-        $stmt->fetch();
+        if(!$stmt->fetch()){
+            die("F:".$mysqli->error);
+        }
         
         // assign into var?
 
@@ -91,7 +99,7 @@
                             'Program_View'=>0,'Program_Edit'=>0,'Program_Create'=>0,
                             'Genre_View'=>0,'Genre_Edit'=>0,'Genre_Create'=>0,
                             'Playsheet_View'=>0,'Playsheet_Create'=>0,'Playsheet_Edit'=>0,
-                            'Library_View'=>1,'Library_Create'=>1,'Library_Edit'=>0,
+                            'Library_View'=>1,'Library_Create'=>1,'Library_Edit'=>1,
                             'Advert_View'=>0,'Advert_Edit'=>0,'Advert_Create'=>0,
                             'Audit_View'=>0];
             $base="../";
