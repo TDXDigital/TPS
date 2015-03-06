@@ -8,21 +8,50 @@
  */
 session_start();
 $json_arr=array();
-$artist = addslashes(filter_input(INPUT_GET,'term',FILTER_SANITIZE_STRING));
-$type = addslashes(filter_input(INPUT_POST, 'type',FILTER_SANITIZE_STRING));//addslashes($_GET['type']);
+$value = addslashes(filter_input(INPUT_GET,'term',FILTER_SANITIZE_STRING))? :".*";
+$type = addslashes(filter_input(INPUT_GET, 'type',FILTER_SANITIZE_STRING))? :"artist";
+$search_method = addslashes(filter_input(INPUT_GET, 'method',FILTER_SANITIZE_STRING))?:"";
+
+if($search_method==='any'){
+    $method="REGEXP '$value'";
+}
+else if ($search_method==='begins'){
+    $method="LIKE CONCAT('$value','%')";
+}
+else if ($search_method==='ends'){
+    $method="LIKE CONCAT('%','$value')";
+}
+else if ($search_method==='exact'){
+    $method="='$value'";
+}
+else{
+    $method="REGEXP '$value'";
+}
+
+$table = "";
+if($type==='artist'){
+    $table='artist';
+}
+else if($type==='album'){
+    $table='album';
+}
+else{
+    $table='artist';
+}
 
 include_once '../../TPSBIN/functions.php';
 include_once '../../TPSBIN/db_connect.php';
 
-$query_artist = "SELECT artist, album FROM library where artist REGEXP '$artist' group by soundex(artist) order by soundex(artist) asc LIMIT 10";
+$query = "SELECT $table FROM library where $table $method or refcode='$value' "
+        . "group by soundex($table) order by soundex($table) asc LIMIT 10";
 
-$result=$mysqli->query($query_artist);
+$result=$mysqli->query($query);
 if($mysqli->error){
-    die($mysqli->error);
+    die($mysqli->error."<br>".$query);
 }
-while($row = $result->fetch_array(MYSQLI_ASSOC)){
+while($row = $result->fetch_array()){
     //echo $row['artist'] ."<br/>";
-    array_push($json_arr,$row['artist']);
+    array_push($json_arr,$row[0]);
 }
 /*foreach (mysqli_fetch_array($result) as $row){
     echo $row['artist']."<br/>";

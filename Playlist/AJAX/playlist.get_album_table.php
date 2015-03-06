@@ -14,7 +14,7 @@ $type = addslashes(filter_input(INPUT_POST, 'type',FILTER_SANITIZE_STRING));//ad
 include_once '../../TPSBIN/functions.php';
 include_once '../../TPSBIN/db_connect.php';
 
-$query_artist = "SELECT RefCode, datein, artist, album, genre, status, recordlabel.Name as label_name FROM library LEFT JOIN recordlabel on library.labelid=recordlabel.LabelNumber where artist REGEXP '$artist' order by soundex(artist) asc limit 50;";
+$query_artist = "SELECT RefCode, datein, artist, album, genre, status, recordlabel.Name as label_name FROM library LEFT JOIN recordlabel on library.labelid=recordlabel.LabelNumber where artist REGEXP '$artist' or refcode='$artist' order by soundex(artist) asc limit 50;";
 
 $result=$mysqli->query($query_artist);
 if($mysqli->error){
@@ -25,7 +25,10 @@ $i=1;
 while($row = $result->fetch_array(MYSQLI_ASSOC)){
     //echo $row['artist'] ."<br/>";
     //array_push($json_arr,$row['artist']);
-    echo"<tr><td>".$row['RefCode']."</td><td>".$row['datein']."</td><td>".$row['artist']."</td><td>".$row['album']."</td><td>".$row['genre']."</td><td>".$row['label_name']."</td><td>".$row['status']."</td></tr>
+    echo"<tr><td>".$row['RefCode']."<br><button type=\"button\" onclick='edit(".$row['RefCode'].")' class=\"btn btn-default btn-xs\">
+  <span class=\"glyphicon glyphicon-pencil\" aria-hidden=\"true\"></span> Edit
+</button>
+</td><td>".$row['datein']."</td><td>".$row['artist']."</td><td>".$row['album']."</td><td>".$row['genre']."</td><td>".$row['label_name']."</td><td>".$row['status']."</td></tr>
         ";
     $i++;
 }
