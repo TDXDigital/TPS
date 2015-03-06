@@ -68,7 +68,7 @@
         
         // fetch result
         if(!$stmt->fetch()){
-            die("F:".$mysqli->error);
+            die("F:".$stmt->error);
         }
         
         // assign into var?
