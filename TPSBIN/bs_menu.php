@@ -6,8 +6,10 @@
         // PRINT OUT LOGIN
         echo "Error 401:Unauthorized<br> Please <a href='logout.php'>login</a>";
     }
-    if($SETUP==TRUE){
-        goto SETVAR_SETUP;
+    if(isset($SETUP)){
+        if($SETUP==TRUE){
+            goto SETVAR_SETUP;
+        }
     }
     $base = $_SESSION['BASE_REF']?:"";
     $logo = $_SESSION['m_logo']?: $_SESSION['logo'];
@@ -136,7 +138,7 @@
             <li><a <?php echo "href=\"".$base."\"" ?> >Dashboard</a></li>
             <?php   
                 // determine permission for menu
-                $station_permission=max($permissions[0]['Station_Settings_View'],$permissions[0]['Station_Settings_Edit']);
+                $station_permission=max($permissions['Station_Settings_View'],$permissions['Station_Settings_Edit']);
                 $members_permission=max($permissions['Member_View'],$permissions['Member_Edit'],$permissions['Member_Create']);
                 $program_permission=max($permissions['Program_View'],$permissions['Program_Edit'],$permissions['Program_Create']);
                 $genre_permission=max($permissions['Genre_View'],$permissions['Genre_Edit'],$permissions['Genre_Create']);
