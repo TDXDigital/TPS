@@ -12,7 +12,12 @@
         }
     }
     $base = $_SESSION['BASE_REF']?:"";
-    $logo = $_SESSION['m_logo']?: $_SESSION['logo'];
+    if(isset($_SESSION['m_logo'])){
+        $logo = $_SESSION['m_logo'];
+    }
+    else{
+        $logo = $_SESSION['logo'];
+    }
     $dbname= $_SESSION['DBNAME']; // NEEDS COMPANY HEAD TO ALLOW SELECTING MULTIPLE CALLSIGNS (This is not right)
     $access=$_SESSION['access'];
     $opened_db=FALSE;
@@ -138,7 +143,7 @@
             <span class="icon-bar"></span>
           </button>
             <!--Completed Mini Menu-->
-          <a class="navbar-brand" href="<?php echo $base."\"><img src=\"$base\\$logo";?>" style="height: 20px;" title="logo"/>TPS Broadcast</a>
+            <a class="navbar-brand" href="<?php echo $base."/\"><img src=\"$base\\$logo";?>" style="height: 20px;" title="logo"/><span>TPS Broadcast</span></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">

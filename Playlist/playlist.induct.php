@@ -82,7 +82,7 @@ if(!$stmt3->execute()){
 else{
     $id_last = $stmt3->insert_id;
     $stmt3->close();
-    if($stmt4=$mysqli->prepare("INSERT INTO band_websites(ID,URL,Service) VALUES (?,?,?)")){
+    if($stmt4=$mysqli->prepare("INSERT INTO band_websites (ID,URL,Service) VALUES (?,?,?)")){
         $stmt4->bind_param("iss",$id_last,$url,$service);
         $services=[
             "twitter"=>filter_input(INPUT_POST, 'twitter',FILTER_SANITIZE_URL),

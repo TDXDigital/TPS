@@ -131,7 +131,7 @@
                     <select class="form-control" name="locale" tabindex="5">
                         <option value="International">International</option>
                         <option value="Country">Country</option>
-                        <option value="Provincial">Provincial</option>
+                        <option value="Province">Province</option>
                         <option value="Local">Local</option>
                     </select>
                 </div>
@@ -206,7 +206,7 @@
                 <div class="col-md-6">
                     <div id="bnc_group" class="input-group">
                         <label for="tw" class="input-group-addon" title="Twitter URL"><span class="glyphicon glyphicon-bell"></span></label>
-                        <input id="tw" type="url" class="form-control" name="website" tabindex="16" placeholder="Twitter.com"/>
+                        <input id="tw" type="url" class="form-control" name="twitter" tabindex="16" placeholder="Twitter.com"/>
                     </div>
                 </div>
             </div>
