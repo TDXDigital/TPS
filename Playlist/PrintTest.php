@@ -1,7 +1,9 @@
 <!doctype html>
 <?php
+    error_reporting(E_ALL);
     include_once '../TPSBIN/functions.php';
     include_once '../TPSBIN/db_connect.php';
+    //include_once 'barcode/barcode.php';
 ?>
 <html lang="en">
 <head>
@@ -29,13 +31,14 @@
             $stmt->execute();
             $stmt->bind_result($artist,$album,$format,$genre,$CanCon,$locale);
             $stmt->fetch();
-            $padded=str_pad((int)$BCD, 10, "0", STR_PAD_LEFT);
+            $padded=str_pad($BCD, 11, "0", STR_PAD_LEFT);
+            
             //echo "<img src='barcode/createBarcode.php?bcd=$BCD'/>";
-            echo "<div class=\"label\"><span class=\"barcode\"><img src='barcode/createBarcode.php?bcd=*$padded*' alt='$padded'/></span>";
+            echo "<div class=\"label\"><span ><img style='float:left; margin:0px;' src='./barcode/barcode.php?bcd=$padded' alt='$padded'/>";
             if($CanCon==1){
-                echo "<img src='./maple.gif' alt='CC'/>";
+                echo "<img style='float: left; margin: 0px;' src='./maple.gif' alt='CC'/>";
             }
-            echo "<br><strong>$artist</strong><br><i>$album</i><span style='text-align:right'>$genre</span></div>";
+            echo "</span><br style='clear: both'><strong style='float: left'>$artist</strong><br><i style='float:left'>$album</i><span style='float:right;'>$genre</span><br style='clear: both'/></div>";
         }
     }
     else{
