@@ -7,8 +7,13 @@
     $switch_query = new TPS_Cron();
 
     // execute query with mute off
-    $switch_query->update_switch(FALSE,"ckxu3400lg.local.ckxu.com");
-
+    if(FALSE){
+    	/*
+    	 * system should detect if switch is enabled from a DB ssettings
+    	 */
+    	$switch_query->update_switch(FALSE,"ckxu3400lg.local.ckxu.com");
+    	
+    }
     // Replaced code with function of cron script
 
 ?>
