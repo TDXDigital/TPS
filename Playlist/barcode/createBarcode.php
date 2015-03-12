@@ -14,9 +14,9 @@ if (!$testGD){ echo "GD not even installed."; exit; }
   
   $fontSize = 8;   // GD1 in px ; GD2 in point
   $marge    = 5;   // between barcode and hri in pixel
-  $x        = 100;  // barcode center
-  $y        = 15;  // barcode center
-  $height   = 20;   // barcode height in 1D ; module size in 2D
+  $x        = 300;  // barcode center
+  $y        = 10;  // barcode center
+  $height   = 10;   // barcode height in 1D ; module size in 2D
   $width    = 2;    // barcode height in 1D ; not use in 2D
   $angle    = 0;   // rotation in degrees : nb : non horizontable barcode might not be usable because of pixelisation
   if(!isset($_GET['type'])){
@@ -47,12 +47,12 @@ if (!$testGD){ echo "GD not even installed."; exit; }
   // -------------------------------------------------- //
   //            ALLOCATE GD RESSOURCE
   // -------------------------------------------------- //
-  $im     = imagecreatetruecolor(200, 30);
+  $im     = imagecreatetruecolor(600, 30);
   $black  = ImageColorAllocate($im,0x00,0x00,0x00);
   $white  = ImageColorAllocate($im,0xff,0xff,0xff);
   $red    = ImageColorAllocate($im,0xff,0x00,0x00);
   $blue   = ImageColorAllocate($im,0x00,0x00,0xff);
-  imagefilledrectangle($im, 0, 0, 200, 30, $white);
+  imagefilledrectangle($im, 0, 0, 600, 30, $white);
   
   // -------------------------------------------------- //
   //                      BARCODE
