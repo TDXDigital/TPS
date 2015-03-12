@@ -31,7 +31,7 @@
             $stmt->fetch();
             $padded=str_pad((int)$BCD, 10, "0", STR_PAD_LEFT);
             //echo "<img src='barcode/createBarcode.php?bcd=$BCD'/>";
-            echo "<div class=\"label\"><span class=\"barcode\"><img src='barcode/createBarcode.php?bcd=$padded' alt='$padded'/></span>";
+            echo "<div class=\"label\"><span class=\"barcode\"><img src='barcode/createBarcode.php?bcd=*$padded*' alt='$padded'/></span>";
             if($CanCon==1){
                 echo "<img src='./maple.gif' alt='CC'/>";
             }
