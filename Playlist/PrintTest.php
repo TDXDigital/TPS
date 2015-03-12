@@ -35,8 +35,14 @@
             
             //echo "<img src='barcode/createBarcode.php?bcd=$BCD'/>";
             echo "<div class=\"label\"><span ><img style='float:left; margin:0px;' src='./barcode/barcode.php?bcd=$padded' alt='$padded'/>";
-            if($CanCon==1){
+            if($locale=="Country"){
                 echo "<img style='float: left; margin: 0px;' src='./maple.gif' alt='CC'/>";
+            }
+            else if ($locale=="Province"){
+                echo "<img style='float: right; margin: 0px;' width='25px' src='./ab_ttm.png' alt='PRO'/>";
+            }
+            else if ($locale=="Local"){
+                echo "<img style='float: right; margin: 0px;' width='25px' src='./pointer.png' alt='PRO'/>";
             }
             echo "</span><br style='clear: both'><strong style='float: left'>$artist</strong><br><i style='float:left'>$album</i><span style='float:right;'>$genre</span><br style='clear: both'/></div>";
         }
