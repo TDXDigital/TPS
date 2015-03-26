@@ -8,7 +8,7 @@
     $switch_query = new TPS_Cron();
 
     // execute query with mute off
-    if(FALSE){
+    if($switch_enabled){
     	/*
     	 * system should detect if switch is enabled from a DB ssettings
     	 */

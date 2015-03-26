@@ -11,4 +11,5 @@ $DbVersion = "0.9.0";
 $BUILD_DATE = "<sup>2015-03-02</sup>"; // ALWAYS CONFORM TO ISO8601 (YYYY-MM-DD)
 $legacy = TRUE; // Support for legacy
 $timezone = "UTC";
+$switch_enabled = TRUE;
 $switch = "logger.local.ckxu.com";
