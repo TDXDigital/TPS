@@ -129,7 +129,7 @@
             	// Get Switcher Status
                 $out = "*0SL";
                 fwrite($fp, $out);
-                stream_set_timeout($fp,2,0);
+                stream_set_timeout($fp,0,750);
                   $temp = fread($fp, 8192);
                   $res[] = explode("\n",$temp);
                   $res[0][0] = str_replace(' ', '', $res[0][0]);
