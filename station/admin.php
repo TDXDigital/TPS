@@ -5,6 +5,7 @@
         sec_session_start();
     }
     error_reporting(E_ERROR);
+    
 ?>
 <html lang="en"><head>
     <meta charset="utf-8">
@@ -223,7 +224,7 @@
             </div>-->
           </div>
 
-          <h2 class="sub-header">Section title</h2>
+          <!--<h2 class="sub-header">Section title</h2>
           <div class="table-responsive">
             <table class="table table-striped">
               <thead>
@@ -350,7 +351,7 @@
                 </tr>
               </tbody>
             </table>
-          </div>
+          </div>-->
         </div>
       </div>
     </div>

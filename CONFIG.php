@@ -8,6 +8,8 @@
 
 $VERSION = "0.5.3-int1"; // version number (please match git tag)
 $DbVersion = "0.9.0";
+$codeBuild = 1;
+$dbBuild = 1;
 $BUILD_DATE = "<sup>2015-03-02</sup>"; // ALWAYS CONFORM TO ISO8601 (YYYY-MM-DD)
 $legacy = TRUE; // Support for legacy
 $timezone = "UTC";
