@@ -1,6 +1,10 @@
 <?php
-include_once "../CONFIG.php";
-date_default_timezone_set($timezone);
+
+//require_once 'functions.php';
+//init_TPS();
+//include_once "../CONFIG.php";
+//absolute_include('CONFIG.php');
+//date_default_timezone_set($timezone);
 
 //echo constant("HOST");
 if(!defined("HOST") || !defined("USER") || !defined("PASSWORD") || !defined("DATABASE")){

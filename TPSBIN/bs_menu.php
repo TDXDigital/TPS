@@ -4,11 +4,21 @@
         // PRINT OUT LOGIN
         echo "Error 401:Unauthorized<br> Please <a href='logout.php'>login</a>";
     }
-    if($SETUP==TRUE){
-        goto SETVAR_SETUP;
+    if(isset($SETUP)){
+        if($SETUP==TRUE){
+            goto SETVAR_SETUP;
+        }
     }
     $base = $_SESSION['BASE_REF']?:"";
-    $logo = $_SESSION['m_logo']?: $_SESSION['logo'];
+    if(isset($_SESSION['m_logo'])){
+        $logo = $_SESSION['m_logo'];
+    }
+    else if(isset($_SESSION['logo'])){
+        $logo = $_SESSION['logo'];
+    }
+    else{
+        $logo = "images/logo.jpg";
+    }
     $dbname= $_SESSION['DBNAME']; // NEEDS COMPANY HEAD TO ALLOW SELECTING MULTIPLE CALLSIGNS (This is not right)
     $access=$_SESSION['access'];
     $opened_db=FALSE;
@@ -22,8 +32,16 @@
 
     // QUERY "Permissions
     if($stmt = $mysqli->prepare("SELECT * FROM permissions WHERE callsign=? and access=?")){
-        // Bind DBNAME and access
-        $stmt->bind_param("si",$dbname,$access);
+        
+        
+        // Bind DBNAME and access // NEEDS TO BIND ON CALLSIGN
+        if(isset($_SESSION['CALLSIGN'])){
+            $x_call = $_SESSION['CALLSIGN'];//filter_input(INPUT_SESSION,"CALLSIGN");
+            $stmt->bind_param("si",$x_call,$access);
+        }
+        else{
+            $stmt->bind_param("si",$dbname,$access);
+        }
         //query
         $stmt->execute();
         //
@@ -73,9 +91,8 @@
         array(0,"<span class=\"icon-bar\"></span>"),
         array(0,"</button>"),
     )*/
-    ?>
-
     PRINTMENU:
+    ?>
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -103,6 +120,11 @@
                 $advertising_permission=max($permissions['Advert_View'],$permissions['Advert_Edit'],$permissions['Advert_Create']);
                 //$automation_permission=max($permissions['Audit_View'],$permissions['Audit_Edit'],$permissions['Audit_Create']); // TODO: Store in DB
                 $audit_permission=$permissions['Audit_View'];//max($permissions['Audit_View']);
+                if(max($station_permission,$members_permission,$program_permission,$genre_permission,$playsheet_permission,$advertising_permission,$audit_permission)==0){
+                    echo "<li><div class='alert alert-danger'>"
+                    . "<span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\">"
+                            . "</span><span> No permissions available  [ $dbname , $access ]</span></div></li>";
+                }
                 if($station_permission>0){
                     print("<li><a href=\"$base/station/settings.php?old\">Station Settings</a></li>");
                 }

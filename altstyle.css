@@ -474,7 +474,7 @@ html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
 .bar {
 	display: grid;
 	grid-columns: 200px 15px 1fr 15px 100px;
-	grid-rows: (auto 15px)[2] auto;
+	//grid-rows: (auto 15px)[2] auto;
 }
 
 .barheader, .barfooter {

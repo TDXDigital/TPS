@@ -81,7 +81,7 @@
                   dataTable.addColumn({ type: 'date', id: 'End' });
                   dataTable.addRows([
                   <?php
-                      date_default_timezone_set('GMT-0700');
+                      //date_default_timezone_set('GMT-0700');
                       /*if($mysqli->connect_error()){
                           break;
                       }

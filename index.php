@@ -3,6 +3,7 @@
     $cerl = error_reporting();
     error_reporting(0);
     include "TPSBIN/functions.php";
+    absolute_include("CONFIG.php", $_SERVER['PHP_SELF']);
     sec_session_start();
     
     //echo "load index<br>";
@@ -14,7 +15,7 @@
         }
         else{
             //header('location: Security/login.html?e=syserr_nchost&v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
-            header('location: logout.php&v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
+            header('location: logout.php?v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
         }
     }
     else{
