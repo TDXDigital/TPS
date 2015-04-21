@@ -96,7 +96,7 @@
         //error_log($permissions[0]);
     }
     else{
-        if(!$SETUP){
+        if(!isset($SETUP)){
             die('Error 401<br><a href=\'logout.php\'>Authentication Error, please login</a><br><br><sub>GURU: FAILED DB LINK:'.$mysqli->error.'</sub>');
         }
         else{

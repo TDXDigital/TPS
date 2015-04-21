@@ -30,6 +30,13 @@ include_once 'psl-config.php';   // As functions.php is not included
 if(!$mysqli = new mysqli(constant("HOST"), constant("USER"), constant("PASSWORD"), constant("DATABASE"))){
     //header('location: /Security/login.php?e=database%20access%20denied');
     session_destroy();
-    header('location: /Security/login.php?e=database%20access%20denied');
+    die($mysqli->connect_error." <a href='/Security/login.php?e=database%20access%20denied'>please login again</a>");
+    //header('location: /Security/login.php?e=database%20access%20denied');
 }
-?>
+if($mysqli->connect_error)
+{   
+    error_log("FATAL ERROR: ".$mysqli->connect_error); // LOG PHP
+    error_log("FATAL ERROR: ".$mysqli->connect_error, 4); // LOG SAPI
+    die("FATAL ERROR [<span style='color:red'>".$mysqli->connect_error . "</span>]</br><br/>DATABASE CONNECTION FAILED;<br><br>THIS ERROR HAS BEEN REPORTED<br><br>please <a href='logout.php'>logout</a> and try again");
+}
+

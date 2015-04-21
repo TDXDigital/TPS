@@ -1,0 +1,8 @@
+[21-Apr-2015 04:36:28 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in C:\Users\James\Documents\TPS_GIT\Episode\EPV3\Reports.php on line 76
+[21-Apr-2015 04:36:38 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in C:\Users\James\Documents\TPS_GIT\Episode\EPV3\Reports.php on line 76
+[21-Apr-2015 04:36:47 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in C:\Users\James\Documents\TPS_GIT\Episode\EPV3\Reports.php on line 76
+[21-Apr-2015 04:36:52 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in C:\Users\James\Documents\TPS_GIT\Episode\EPV3\Reports.php on line 76
+[21-Apr-2015 04:36:58 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in C:\Users\James\Documents\TPS_GIT\Episode\EPV3\Reports.php on line 76
+[21-Apr-2015 04:37:05 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in C:\Users\James\Documents\TPS_GIT\Episode\EPV3\Reports.php on line 76
+[21-Apr-2015 04:37:17 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in C:\Users\James\Documents\TPS_GIT\Episode\EPV3\Reports.php on line 76
+[21-Apr-2015 04:37:48 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\Users\James\Documents\TPS_GIT\Episode\EPV3\Reports.php on line 263
