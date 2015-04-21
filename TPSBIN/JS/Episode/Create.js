@@ -1,5 +1,18 @@
 // FILE SPECIFIC TO P1INSERTEP.PHP
 
+function getTime(){
+    var value = {'s':$("#callbox option:selected").val()}
+    $.ajax({
+        cache: false,
+        data: value,
+        url: "AJAX/UpdateTime.php"
+    }).done(function(data){
+        var obj_result = $.parseJSON(data);
+        $("#airdate").val(obj_result.time_date);
+        $("#airtime").val(obj_result.time_hour);
+    })
+}
+
 function urlencodephp (str) {
 	// http://kevin.vanzonneveld.net
 	// +   original by: Philip Peterson
@@ -73,11 +86,17 @@ function getCallsign(value_name){
 	   				document.getElementById("s4").style="";
 	   				document.getElementById("s5").style="";
 	   				document.getElementById("s6").style="";
-	   				document.getElementById("s3").style="background-color:#CCFFFF";
+                                        $("#s1").css("background-color","");
+                                        $("#s3").css("background-color","#CCFFFF");
+                                        $("#s5").css("background-color","#CCFFFF");
+                                        $("#s6").css("background-color","#CCFFFF");
+                                        $("#s7").css("background-color","#CCFFFF");
 	   				//setTimeout(1000);
 	   				document.getElementById("s3").style="";
-	   				document.getElementById("s5").style="background-color:#CCFFFF";
-	   				document.getElementById("s6").style="background-color:#CCFFFF";
+	   				document.getElementById("s5").style=" background-color:#CCFFFF ";
+	   				document.getElementById("s6").style=" background-color:#CCFFFF ";
+                                        
+                                        getTime();
 	   						
 	   			}
 	   			/*else{
@@ -179,5 +198,5 @@ function () {
             $('#airdate').datepicker(); // for individual date boxes
         })
     }
-    $(".chosen-select").chosen();
+    $(".chosen-select").chosen({disable_search_threshold: 10});
 });

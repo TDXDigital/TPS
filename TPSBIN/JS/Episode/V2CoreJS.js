@@ -311,15 +311,16 @@ function load(){
             "</div>" +
             "<div class='col-1-6'><p>Title</p><input type='text' style=\"width: 95%\" readonly placeholder=\"  Not Provided\" name='title_foobar' id='title003' value='" + fb2k_data.title + "' /></div>" +
             "<div class='col-1-6'><p>Artist</p><input type='text' style=\"width: 95%\" readonly placeholder=\"  Not Provided\" name='artist_foobar' id='artist003' value='";
-          if (fb2k_data.track_artist != undefined && fb2k_data.track_artist!='?') {
+          if (fb2k_data.track_artist !== undefined && fb2k_data.track_artist!=='?') {
               html_info += fb2k_data.artist;
           }
           else {
               html_info += fb2k_data.album_artist;
           }
+          var composer = fb2k_data.composer ? '?' : "";
             html_info += "' /></div>" +
             "<div class='col-1-6'><p>Album</p><input type='text' style=\"width: 95%\" readonly placeholder=\"  Not Provided\" name='album_foobar' id='album003' value='" + fb2k_data.album + "' /></div>" +
-            "<div class='col-1-6'><p>Composer</p><input type='text' style=\"width: 95%\" readonly placeholder=\"  Not Provided\" name='composer_foobar' id='composer003' value='" + fb2k_data.composer + "' /></div>" +
+            "<div class='col-1-6'><p>Composer</p><input type='text' style=\"width: 95%\" readonly placeholder=\"  Not Provided\" name='composer_foobar' id='composer003' value='" + composer + "' /></div>" +
             "<div class='col-1-6' style=\"vertical-align: bottom;\"><button id=\"transfer_foobar_button\" onclick=\"transfer_foobar_data(); return false;\">Transfer Information</button></div>" +
             "</span></div></div></form>";
 
@@ -358,7 +359,7 @@ function load(){
         }
      }
 
-    function Stop_Switch_Workjer(){
+    function Stop_Switch_Worker(){
         switch_worker.terminate();
         switch_worker=undefined;
     }

@@ -1,5 +1,6 @@
 <?php
 
+error_reporting(0);
 define("ENCRYPTION_KEY", "!@#$%^&*");
 
 /*
@@ -393,4 +394,51 @@ function esc_url($url) {
         return $url;
     }
 }
-?>
+
+function CheckUpdateStatus($current,$db, $r_type){
+    /*
+     * Gets status of current installation
+     */
+    // get current settings
+    $base = $_SESSION['BASE_REF']?:"";
+    require $base.'/CONFIG.php';
+    
+    // Prepare Data
+    if(is_string($current)){
+        $current = intval($current);
+    }
+    if(is_string($db)){
+        $db = intval($db);
+    }
+    $result_type = strtoupper($r_type);
+    unset($r_type);
+    $result = [];
+    
+    // perform checks
+    if($current === $dbBuild){
+        $result += ["database"=>True];
+    }
+    else{
+        $result += ["database"=>False];
+    }
+    
+    if($current === $codeBuild){
+        $result += ["code"=>True];
+    }
+    else{
+        $result += ["code"=>False];
+    }
+    
+    $patches = [];
+    
+    $result += ["patches"=>$patches];
+    
+    // return result is specified format
+    if($result_type==="JSON"){
+        return json_encode($result);
+    }
+    else{
+        return $result;
+    }
+}
+

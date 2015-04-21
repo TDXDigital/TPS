@@ -30,6 +30,7 @@ if (isset($_POST['email'], $_POST['p'])) {
     $password = $_POST['p'];//filter_input(INPUT_POST, 'p');// The hashed password.
  
     if (login($email, $password, $mysqli) == true) {
+        $_SESSION['TimeZone']='UTC';
         // Login success         
         header('Location: ../../');
     } else {
@@ -39,7 +40,7 @@ if (isset($_POST['email'], $_POST['p'])) {
         //runkit_constant_remove("HOST");
         //runkit_constant_remove("USER");
         //runkit_constant_remove("PASSWORD");
-        header('Location: Login.php?error=Invalid Login&q=$var');
+        header("Location: Login.php?error=Invalid Login&q=$var");
         //echo $email." ".$password;
     }
 } else {

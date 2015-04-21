@@ -40,7 +40,10 @@
     }*/
     $mysqlnd = function_exists('mysqli_fetch_all');
     
-    if ($mysqlnd) {
+    if ($mysqlnd||isset($_GET['strongarm'])) {
+        if(!isset($_SESSION["BASE_REF"])){
+            $_SESSION['BASE_REF'] = $_SERVER['REQUEST_URI'];
+        }
         if(isset($_GET['old'])){
             if($_SESSION['access']==2){
                 include_once "station/admin_old.php";

@@ -4,6 +4,8 @@
     if(!isset($_SESSION)){
         sec_session_start();
     }
+    error_reporting(E_ERROR);
+    
 ?>
 <html lang="en"><head>
     <meta charset="utf-8">
@@ -61,7 +63,7 @@
           <h1 class="page-header">Administration Dashboard</h1>
             <!--<h3 class="sub-header">New Admin Interface</h3>-->
               <p>Welcome to the new administration interface! please take a moment to become comfortable with the updated theme, please note that most options have been relocated to the top right menus.</p>
-              <p>Statistics and Reports will be presented in this section in future releases and has been loaded with excample information as placeholders</p>
+              <p>Statistics and Reports will be presented in this section in future releases and has been loaded with example information as placeholders</p>
               <div class="alert alert-danger">If you need to force the system to use the old style dashboard enter "?old" after /TPS in the address bar or <a href='?old'>click here</a> ie."/TPS/?old" </div>
           <div class="row placeholders">
               <h2 class="sub-header">2 Day Live Schedule</h2>
@@ -222,7 +224,7 @@
             </div>-->
           </div>
 
-          <h2 class="sub-header">Section title</h2>
+          <!--<h2 class="sub-header">Section title</h2>
           <div class="table-responsive">
             <table class="table table-striped">
               <thead>
@@ -349,7 +351,7 @@
                 </tr>
               </tbody>
             </table>
-          </div>
+          </div>-->
         </div>
       </div>
     </div>

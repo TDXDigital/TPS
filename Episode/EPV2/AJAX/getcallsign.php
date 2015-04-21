@@ -2,6 +2,7 @@
 
 session_start();
 
+error_reporting(E_ERROR);
 //if($_SESSION['usr']=='user')
 //{
   //header('location: login.php');
@@ -19,18 +20,19 @@ else{
 }
     //Get Callsign Associated with Programname
     //Retrieve from URL the showname
-    $n = urldecode($_GET["n"]);
+    $n = filter_input(INPUT_GET,'n'); //urldecode($_GET["n"]);
 	
 	$getSQL = "select callsign from program where programname='" . $n ."' and active='1' order by callsign asc";
 	$result = mysql_query($getSQL);
 	
 	if(mysql_num_rows($result)==0){
-		$getSQL = "select callsign from station order by callsign asc";
-	$result = mysql_query($getSQL);
+		$getSQL = "select callsign,timezone from station order by callsign asc";
+            $result = mysql_query($getSQL);
+            date_default_timezone_set($result['timezone']);
+            $_SESSION('TimeZone');
 	}
 	while($row = mysql_fetch_array($result)){
 		echo "<option value=\"".$row['callsign']."\">".$row['callsign']."</option>";
 	}
 	
 	mysql_close($con);
-?>

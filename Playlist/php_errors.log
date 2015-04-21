@@ -1,0 +1,45 @@
+[10-Apr-2015 03:49:43 UTC] PHP Notice:  Undefined index: PRINTID in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 03:49:43 UTC] PHP Warning:  Invalid argument supplied for foreach() in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 03:51:47 UTC] PHP Warning:  include_once(/classSecurity.php): failed to open stream: No such file or directory in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 9
+[10-Apr-2015 03:51:47 UTC] PHP Warning:  include_once(): Failed opening '/classSecurity.php' for inclusion (include_path='.;C:\php\pear') in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 9
+[10-Apr-2015 03:51:47 UTC] PHP Fatal error:  Class 'Security' not found in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 10
+[10-Apr-2015 03:52:19 UTC] PHP Warning:  include_once(./classSecurity.php): failed to open stream: No such file or directory in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 9
+[10-Apr-2015 03:52:19 UTC] PHP Warning:  include_once(): Failed opening './classSecurity.php' for inclusion (include_path='.;C:\php\pear') in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 9
+[10-Apr-2015 03:52:19 UTC] PHP Fatal error:  Class 'Security' not found in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 10
+[10-Apr-2015 03:52:27 UTC] PHP Warning:  include_once(./classSecurity.php): failed to open stream: No such file or directory in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 9
+[10-Apr-2015 03:52:27 UTC] PHP Warning:  include_once(): Failed opening './classSecurity.php' for inclusion (include_path='.;C:\php\pear') in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 9
+[10-Apr-2015 03:52:27 UTC] PHP Fatal error:  Class 'Security' not found in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 10
+[10-Apr-2015 03:52:36 UTC] PHP Notice:  Undefined index: PRINTID in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 03:52:36 UTC] PHP Warning:  Invalid argument supplied for foreach() in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 03:53:28 UTC] PHP Notice:  Undefined index: PRINTID in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 03:53:28 UTC] PHP Warning:  Invalid argument supplied for foreach() in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 03:53:30 UTC] PHP Notice:  Undefined index: PRINTID in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 03:53:30 UTC] PHP Warning:  Invalid argument supplied for foreach() in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 03:59:08 UTC] PHP Notice:  Undefined index: PRINTID in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 03:59:08 UTC] PHP Warning:  Invalid argument supplied for foreach() in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 03:59:34 UTC] PHP Warning:  include_once(classSecurity.php): failed to open stream: No such file or directory in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 9
+[10-Apr-2015 03:59:34 UTC] PHP Warning:  include_once(): Failed opening 'classSecurity.php' for inclusion (include_path='.;C:\php\pear') in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 9
+[10-Apr-2015 03:59:34 UTC] PHP Fatal error:  Class 'Security' not found in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 10
+[10-Apr-2015 03:59:44 UTC] PHP Warning:  include_once(/classSecurity.php): failed to open stream: No such file or directory in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 9
+[10-Apr-2015 03:59:44 UTC] PHP Warning:  include_once(): Failed opening '/classSecurity.php' for inclusion (include_path='.;C:\php\pear') in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 9
+[10-Apr-2015 03:59:44 UTC] PHP Fatal error:  Class 'Security' not found in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 10
+[10-Apr-2015 04:00:35 UTC] PHP Warning:  include_once(/classSecurity.php): failed to open stream: No such file or directory in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 9
+[10-Apr-2015 04:00:35 UTC] PHP Warning:  include_once(): Failed opening '/classSecurity.php' for inclusion (include_path='.;C:\php\pear') in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 9
+[10-Apr-2015 04:00:35 UTC] PHP Notice:  Undefined variable: timezone in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 13
+[10-Apr-2015 04:00:35 UTC] PHP Notice:  date_default_timezone_set(): Timezone ID '' is invalid in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 13
+[10-Apr-2015 04:00:35 UTC] PHP Notice:  Undefined index: PRINTID in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 04:00:35 UTC] PHP Warning:  Invalid argument supplied for foreach() in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 04:02:21 UTC] PHP Notice:  Undefined index: PRINTID in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 04:02:21 UTC] PHP Warning:  Invalid argument supplied for foreach() in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 04:02:29 UTC] PHP Notice:  Undefined index: BASEDIR in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 8
+[10-Apr-2015 04:02:29 UTC] PHP Warning:  include_once(/classSecurity.php): failed to open stream: No such file or directory in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 9
+[10-Apr-2015 04:02:29 UTC] PHP Warning:  include_once(): Failed opening '/classSecurity.php' for inclusion (include_path='.;C:\php\pear') in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 9
+[10-Apr-2015 04:02:29 UTC] PHP Notice:  Undefined index: PRINTID in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 04:02:29 UTC] PHP Warning:  Invalid argument supplied for foreach() in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 04:02:41 UTC] PHP Notice:  Undefined index: BASEREF in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 8
+[10-Apr-2015 04:02:41 UTC] PHP Warning:  include_once(/classSecurity.php): failed to open stream: No such file or directory in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 9
+[10-Apr-2015 04:02:41 UTC] PHP Warning:  include_once(): Failed opening '/classSecurity.php' for inclusion (include_path='.;C:\php\pear') in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\TPSBIN\functions.php on line 9
+[10-Apr-2015 04:02:41 UTC] PHP Notice:  Undefined index: PRINTID in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 04:02:41 UTC] PHP Warning:  Invalid argument supplied for foreach() in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 04:04:19 UTC] PHP Notice:  Undefined index: PRINTID in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395
+[10-Apr-2015 04:04:19 UTC] PHP Warning:  Invalid argument supplied for foreach() in C:\Users\j.oliver\Documents\NetBeansProjects\CKXU_TPS\Playlist\playlist.receiving.php on line 395

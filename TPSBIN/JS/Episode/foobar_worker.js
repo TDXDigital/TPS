@@ -36,7 +36,7 @@ function get_playing() {
 
     xmlhttp.open("GET", "../../../Episode/EPV3/workers.php?q=np", true);
     xmlhttp.send();
-    setTimeout("get_playing()",1000);
+    setTimeout("get_playing()",1125);
     /*var switch_s = $.ajax({
         url: "EPV3/Switch.php?q=V2",
         cache: false

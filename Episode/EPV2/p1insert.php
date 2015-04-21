@@ -3,6 +3,8 @@
     //include_once "../../TPSBIN/db_connect.php";
     sec_session_start();
     //session_start();
+    
+    date_default_timezone_set($_SESSION['TimeZone']);
 
 $con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
@@ -12,6 +14,8 @@ if (!$con){
 }
 else if($con){
 	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /');}
+        //Set TimeZone
+        
 	$GENRE = "SELECT * from GENRE order by genreid asc";
 	$GENRES = mysql_query($GENRE,$con);
 	$genop = "<OPTION VALUE=\"%\">Select Genre</option>";
@@ -33,13 +37,8 @@ else if($con){
 <!DOCTYPE HTML>
 <html>
 <head>
-	<script type="text/javascript">
-	
-	</script>
-    <script src="../../js/jquery/js/jquery-2.1.1.min.js"></script>
-    <script src="../../js/chosen.jquery.js"></script>
-    <script src="../../TPSBIN/JS/Episode/Create.js"></script>
     <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <link href="../../js/chosen.min.css" rel="stylesheet" type="text/css"/>
     
 <link rel="stylesheet" type="text/css" href="../../altstyle.css" />
 <title>New DPL</title>
@@ -83,17 +82,17 @@ else if($con){
 			</tr>
 			<tr>
 				<td>
-					<select required title="Show Name" name="program" id="shownamebox" onchange="getCallsign(this.form.program.value)">
+					<select required class="chosen-select" title="Show Name" name="program" id="shownamebox" onchange="getCallsign(this.form.program.value)">
 					<?php
 					//<input name="name" type="text" size="25%"/>
-					$program = "select * from program where active='1' order by programname";
+					$program = "select programname from program where active='1' order by programname";
         			$prog=mysql_query($program,$con);
 			        $options="<OPTION VALUE=0>Select Your Show [REQUIRED]</option>";
 			        while ($row=mysql_fetch_array($prog)) {
 			            $name=$row["programname"];
 			//            $callsign=$row["callsign"];
 			//            $alias=$row["Alias"];
-			            $options.="<OPTION VALUE=\"".$name."\">".$name."</option>";
+			            $options.="<OPTION VALUE=\"".addslashes($name)."\">".$name."</option>";
         				}
 					echo $options;
 					?>
@@ -146,7 +145,7 @@ else if($con){
 	<div id="content">
 			<h4>Help</h4>
 		<span>If you are doing a PreRecord or Timeless you must select a Record Date. <br/> Callsign (Station) will be retrieved based on show selected</span>
-		
+                <span>TimeZone: <?php echo date_default_timezone_get(); echo " : Stored(".$_SESSION['TimeZone'].")";?></span>
 	</div>
 	
 <?php
@@ -156,5 +155,9 @@ else{
 	echo 'ERROR!';
 }
 ?>
+    
+    <script src="../../js/jquery/js/jquery-2.1.1.min.js"></script>
+    <script src="../../js/chosen.jquery.min.js"></script>
+    <script src="../../TPSBIN/JS/Episode/Create.js"></script>
 </body>
 </html>

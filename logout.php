@@ -1,5 +1,12 @@
 <?php
 	session_start();
+	if(!isset($_SESSION['LOGIN_SRC'])){
+		$SOURCE = "Security/Login.html?r=0";
+	}
+	else{
+		$SOURCE = $_SESSION['LOGIN_SRC'];
+	}
+	session_unset();
 	session_destroy();
     //$LOC = $_SERVER['HTTP_HOST'];
 	//header("Location: ./Security/Login.html?r=0");

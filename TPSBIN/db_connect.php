@@ -1,10 +1,12 @@
 <?php
+if(session_status()===PHP_SESSION_NONE){
+    session_start();
+}
+error_reporting(E_ERROR);
+//include_once $_SESSION['basedir']."CONFIG.php";
 
-//require_once 'functions.php';
-//init_TPS();
-//include_once "../CONFIG.php";
-//absolute_include('CONFIG.php');
-//date_default_timezone_set($timezone);
+$timezone = $_SESSION['TimeZone'];
+date_default_timezone_set($timezone);
 
 //echo constant("HOST");
 if(!defined("HOST") || !defined("USER") || !defined("PASSWORD") || !defined("DATABASE")){

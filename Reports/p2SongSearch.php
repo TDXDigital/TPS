@@ -290,7 +290,7 @@ if(($pagenum + 2) < $last){
         </div>
     </div>
 	<div id="header">
-		<a href="../masterpage.php"><img src="../images/Ckxu_logo_PNG.png" alt="CKXU" /></a>
+		<a href="../"><img src="../images/Ckxu_logo_PNG.png" alt="CKXU" /></a>
 	</div>
 	<div id="top">
 		<h2>Search Results - Song</h2>
@@ -302,7 +302,7 @@ if(($pagenum + 2) < $last){
         echo "<div style='width:100%;'>Query: ".$SQL."</div>";
     }
     //echo "<div style='width:100%;'>Query: ".$SQL."</div>";
-		echo "<table><tr><th>Playlist</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th><th>CC</th><th>Hit</th><th>Ins</th><th>Log</th></tr>";
+		echo "<table><tr><th>Playlist</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th><th>CC</th><th>Hit</th><th>Ins</th><th>Program</th><th>Log</th></tr>";
 		$ROW = 0;
 		while($row = mysql_fetch_array($data)){
 			echo "<tr";
@@ -312,6 +312,7 @@ if(($pagenum + 2) < $last){
 			$ROW++;
 			echo "><td>". $row['playlistnumber'] . "</td><td>" . $row['time'] . "</td><td>" . $row['title'] . "</td><td>";
 			echo $row['artist'] . "</td><td>" . $row['album'] . "</td><td>".$row['cancon']."</td><td>".$row['hit']."</td><td>".$row['instrumental']."</td><td>";
+                        echo $row['programname'] . "</td><td>";
 			echo "<button type=\"button\" onclick=\"javascript:quickview('../Episode/quickview.php?args=".$row['programname']."@".$row['date']."@".$row['starttime']."@".$row['callsign']."')\">View</button>
 			<button type=\"button\" href=\"../Episode/EPV3/logs.php?p=".$row['programname']."&t=".$row['starttime']."&d=".$row['date']."&c=".$row['callsign']."\" onclick=\"javascript:window.open('../Episode/EPV3/logs.php?p=".$row['programname']."&t=".$row['starttime']."&d=".$row['date']."&c=".$row['callsign']."','popUpWindow','height=800,width=1350,left=10,top=10,,scrollbars=yes,menubar=no'); return false;\">Modify</button>
 			</td></tr>"; 

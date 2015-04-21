@@ -1,4 +1,6 @@
 <?php 
+    error_reporting(E_ALL);
+    
     // THIS FILE SHOULD BE INCLUDED WITHIN A PAGET THAT HAS ALREADY RUN sec_session_start!
     if(!isset($_SESSION)){
         // PRINT OUT LOGIN
@@ -31,32 +33,71 @@
     // CONNECT TO DB
 
     // QUERY "Permissions
-    if($stmt = $mysqli->prepare("SELECT * FROM permissions WHERE callsign=? and access=?")){
-        
-        
-        // Bind DBNAME and access // NEEDS TO BIND ON CALLSIGN
-        if(isset($_SESSION['CALLSIGN'])){
-            $x_call = $_SESSION['CALLSIGN'];//filter_input(INPUT_SESSION,"CALLSIGN");
-            $stmt->bind_param("si",$x_call,$access);
-        }
-        else{
-            $stmt->bind_param("si",$dbname,$access);
+    if($stmt = $mysqli->prepare("SELECT Station_Settings_View, Station_Settings_Edit, Member_View,Member_Edit,Member_Create,Program_View,Program_Edit,Program_Create,"
+        ."Genre_View,Genre_Edit,Genre_Create, Playsheet_View,Playsheet_Edit,Playsheet_Create,"
+        ."Library_View,Library_Edit,Library_Create,Advert_View,Advert_Edit,Advert_Create,"
+        ."Audit_View FROM permissions WHERE  access=?")){
+        // Bind DBNAME and access
+        if(!$stmt->bind_param("i",$access)){
+            die("BP:".$mysqli->error);
         }
         //query
-        $stmt->execute();
-        //
-
-        $perm_arr=$stmt->get_result();
-        $permissions=$perm_arr->fetch_array();
-        //$stmt->bind_result($permissions[]);// not optimal
+        if(!$stmt->execute()){
+            die("EX".$mysqli->error);
+        }
+        $permissions=[];
+        //bind result
+        if(!$stmt->bind_result(
+            $permissions['Station_Settings_View'],
+            $permissions['Station_Settings_Edit'],
+            $permissions['Member_View'],
+            $permissions['Member_Edit'],
+            $permissions['Member_Create'],
+            $permissions['Program_View'],
+            $permissions['Program_Edit'],
+            $permissions['Program_Create'],
+            $permissions['Genre_View'],
+            $permissions['Genre_Edit'],
+            $permissions['Genre_Create'],
+            $permissions['Playsheet_View'],
+            $permissions['Playsheet_Edit'],
+            $permissions['Playsheet_Create'],
+            $permissions['Library_View'],
+            $permissions['Library_Edit'],
+            $permissions['Library_Create'],
+            $permissions['Advert_View'],
+            $permissions['Advert_Edit'],
+            $permissions['Advert_Create'],
+            $permissions['Audit_View']
+            )){
+                die("BR:".$mysqli->error);
+            }
+        //$stmt->bind_result($Station_View,$Station_Edit,$Member_View)
         
+        // fetch result
+        if(!$stmt->fetch()){
+            die("F:".$stmt->error);
+        }
+        
+        // assign into var?
+
+
+        //$perm_arr=$stmt->get_result(); //required mysqlnd
+        
+        //$permissions=$perm_arr->fetch_array();
+        
+        //
+        //$stmt->bind_result($permissions[]);// not optimal
+        //$perm_arr = array();
+        //$stmt->bind_result($perm_arr);
         //$stmt->fetch();
+        
         $stmt->close();
         //error_log($permissions[0]);
     }
     else{
         if(!$SETUP){
-            die('Error 401<br><a href=\'logout.php\'>Authentication Error, please login</a><br><br><sub>GURU: FAILED DB LINK</sub>');
+            die('Error 401<br><a href=\'logout.php\'>Authentication Error, please login</a><br><br><sub>GURU: FAILED DB LINK:'.$mysqli->error.'</sub>');
         }
         else{
             SETVAR_SETUP:
@@ -66,6 +107,7 @@
                             'Program_View'=>0,'Program_Edit'=>0,'Program_Create'=>0,
                             'Genre_View'=>0,'Genre_Edit'=>0,'Genre_Create'=>0,
                             'Playsheet_View'=>0,'Playsheet_Create'=>0,'Playsheet_Edit'=>0,
+                            'Library_View'=>1,'Library_Create'=>1,'Library_Edit'=>1,
                             'Advert_View'=>0,'Advert_Edit'=>0,'Advert_Create'=>0,
                             'Audit_View'=>0];
             $base="../";
@@ -103,7 +145,7 @@
             <span class="icon-bar"></span>
           </button>
             <!--Completed Mini Menu-->
-          <a class="navbar-brand" href="<?php echo $base."\"><img src=\"$base\\$logo";?>" style="height: 20px;" title="logo"/>TPS Broadcast</a>
+            <a class="navbar-brand" href="<?php echo $base."/\"><img src=\"$base\\$logo";?>" style="height: 20px;" title="logo"/><span>TPS Broadcast</span></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
@@ -118,6 +160,7 @@
                 //$permissions_permission=max($permissions['Program_View'],$permissions['Program_Edit'],$permissions['Program_Create']); // RODO: Store in DB
                 $playsheet_permission=max($permissions['Playsheet_View'],$permissions['Playsheet_Create'],$permissions['Playsheet_Edit']);
                 $advertising_permission=max($permissions['Advert_View'],$permissions['Advert_Edit'],$permissions['Advert_Create']);
+                $library_permission=max($permissions['Library_View'],$permissions['Library_Edit'],$permissions['Library_Create']);
                 //$automation_permission=max($permissions['Audit_View'],$permissions['Audit_Edit'],$permissions['Audit_Create']); // TODO: Store in DB
                 $audit_permission=$permissions['Audit_View'];//max($permissions['Audit_View']);
                 if(max($station_permission,$members_permission,$program_permission,$genre_permission,$playsheet_permission,$advertising_permission,$audit_permission)==0){
@@ -194,15 +237,16 @@
               <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Reports and Management<b class=\"caret\"></b></a>
               <ul class=\"dropdown-menu\">
                 <li class=\"dropdown-header\">Programming</li>
-                <li><a href=\"$base/Reports/Stats.php?w=12\">12 Week Statistics</a></li>
-                <li><a href=\"$base/Episode/EPV3/Audit.php\">Programming Audit</a></li>
-                <li><a href=\"$base/station/Audit/\">Reporting Audits</a></li>
+                <li><a href=\"$base/station/Audit/\">Audit Maintenance</a></li>
+                <li><a href=\"$base/Episode/EPV3/Audit.php\">Perform Audit</a></li>
+                <li><a href=\"$base/Reports/Stats.php?w=12\">Programming Statistics</a></li>
                 <li class=\"divider\"></li>
                 <li class=\"dropdown-header\">Music Department</li>
                 <li><a href=\"$base/Reports/MissingLogRep.php\">Missing Logs</a></li>
                 <li><a href=\"$base/Reports/PlaylistRep.php\">Charts</a></li>
                 <li><a href=\"$base/Reports/p1SongSearch.php\">Records Search</a></li>
-                <li><a href=\"$base/Playlist/bulkupdate.php\">Library Update</a></li>
+                <li><a href=\"$base/Playlist/?q=new\">Library Management</a></li>
+                <li><a href=\"$base/Playlist/bulkupdate.php\">Library Bulk Update</a></li>
                 <li><a href=\"$base/Playlist/p1playlistmgr.php\">Playlist Management</a></li>
                 <li class=\"divider\"></li>
                 <li class=\"dropdown-header\">Remote Access and Control</li>

@@ -15,77 +15,100 @@ else if($con){*/
 			die(http_response_code(401));
 	}
 	//if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../login.php');}
+        $UPDATE = FALSE;
 		if(isset($_POST['name'])){
 			if(!$mysqli->query("Update station SET stationname='".addslashes($_POST['name'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo "NAME ERROR: " . $mysqli->error . "</br>";
 			}
+                        else{
+                            $UPDATE = TRUE;
+                        }
 		}
 		if(isset($_POST['desi'])){
 			if(!$mysqli->query("Update station SET Designation='".addslashes($_POST['desi'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo "DESIGNAION ERROR: " . $mysqli->error . "</br>";
 			}
+                        else{$UPDATE = TRUE;}
 		}
 		if(isset($_POST['freq'])){
 			if(!$mysqli->query("Update station SET frequency='".addslashes($_POST['freq'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo "FREQUENCY ERROR: " . $mysqli->error . "</br>";
 			}
+                        else{$UPDATE = TRUE;}
 		}
 		if(isset($_POST['dirp'])){
 			if(!$mysqli->query("Update station SET directorphone='".addslashes($_POST['dirp'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo "DIR-PHONE ERROR: " . $mysqli->error . "</br>";
 			}
+                        else{$UPDATE = TRUE;}
 		}
 		if(isset($_POST['oarp'])){
 			if(!$mysqli->query("Update station SET boothphone='".addslashes($_POST['oarp'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo "BOOTH-PHONE ERROR: " . $mysqli->error . "</br>";
 			}
+                        else{$UPDATE = TRUE;}
 		}
 		if(isset($_POST['webs'])){
 			if(!$mysqli->query("Update station SET website='".addslashes($_POST['webs'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo "WEB URL ERROR: " . $mysqli->error . "</br>";
 			}
+                        else{$UPDATE = TRUE;}
 		}
 		if(isset($_POST['addr'])){
 			if(!$mysqli->query("Update station SET address='".addslashes($_POST['addr'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo "ADDRESS ERROR: " . $mysqli->error . " [Update station SET address='".addslashes($_POST['addr'])."' where callsign='".addslashes($_POST['call'])."' ]</br>";
 			}
+                        else{$UPDATE = TRUE;}
 		}
 		if(isset($_POST['GPPL'])){
 			if(!$mysqli->query("Update station SET ST_PLLG='".addslashes($_POST['GPPL'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo $mysqli->error;
 			}
+                        else{$UPDATE = TRUE;}
 		}
 		if(isset($_POST['DefaultSort'])){
 			if(!$mysqli->query("Update station SET ST_DefaultSort='".addslashes($_POST['DefaultSort'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo $mysqli->error;
 			}
+                        else{$UPDATE = TRUE;}
 		}
 		if(isset($_POST['DisCon'])){
 			if(!$mysqli->query("Update station SET ST_DispCount='".addslashes($_POST['DisCon'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo $mysqli->error;
 			}
+                        else{$UPDATE = TRUE;}
 		}
 		if(isset($_POST['WarnColor'])){
 			if(!$mysqli->query("Update station SET ST_ColorFail='".addslashes($_POST['WarnColor'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo $mysqli->error;
 			}
+                        else{$UPDATE = TRUE;}
 		}
 		if(isset($_POST['PassColor'])){
 			if(!$mysqli->query("Update station SET ST_ColorPass='".addslashes($_POST['PassColor'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo $mysqli->error;
 			}
+                        else{$UPDATE = TRUE;}
 		}
 		if(isset($_POST['NoteColor'])){
 			if(!$mysqli->query("Update station SET ST_ColorNote='".addslashes($_POST['NoteColor'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo $mysqli->error;
 			}
+                        else{$UPDATE = TRUE;}
 		}
 		if(isset($_POST['MGRP'])){
 			if(!$mysqli->query("Update station SET managerphone='".addslashes($_POST['MGRP'])."' where callsign='".addslashes($_POST['call'])."' ")){
 				echo $mysqli->error;
 			}
+                        else{$UPDATE = TRUE;}
 		}
-		$UPDATE = TRUE;
+                if($_POST['STZ']!==$_POST['STZ_Origional']){
+                        if(!$mysqli->query("Update station SET timezone='".addslashes($_POST['STZ'])."' where callsign='".addslashes($_POST['call'])."' ")){
+				echo $mysqli->error;
+			}
+                        else{$UPDATE = TRUE;}
+                }
+		
     /*}
 //else{
 //	echo 'ERROR!';
@@ -134,7 +157,19 @@ else if($con){*/
 				echo "</tr>";
 				
 				echo "<tr><td><label for=\"ADR\"/>Address</label></td><td colspan=\"5\"><input type=\"text\" id=\"ADR\" name=\"addr\" value=\"".$ST['address']."\" maxlength=\"98\" size=\"115\" /></td></tr>";
-				
+				echo "<tr><td><label for=\"STZ\"/>Station Timezone</label></td><td colspan=\"5\"><select id='STZ' name='STZ'>";
+                                $timezone_identifiers = DateTimeZone::listIdentifiers();
+                                foreach($timezone_identifiers as $zone){
+                                    echo "<option value='$zone'";
+                                    if($zone===$ST['timezone']){
+                                        echo " selected ";
+                                    }
+                                    echo ">$zone</option>";
+                                }
+                                echo "</select></td></tr>";
+                                
+                                echo "<input type='hidden' name='STZ_Origional' value='".$ST['timezone']."'/>";
+                                
 				echo "<tr><td colspan=\"100%\" style=\"background-color:#FFE4C4;\"><h4>Programming Settings / Defaults</h4></td></tr>";
 				echo "<tr><td><label for=\"GPP\"/>Group Playlist</label></td><td><select id=\"GPP\" name=\"GPPL\">";
 					if($ST['ST_PLLG']=="1"){

@@ -166,24 +166,24 @@ else if($con){
 	}
 	
 	//$ICC = 0;
-	$EDIC = $_POST['edit'];
-	$SNID = $_POST['SNID'];
-	$CATS = $_POST['category'];
-	$PLAY = $_POST['Playlist'];
-	$SPOK = $_POST['Spoken'];
-	$TIME = $_POST['times'];
-	$TITL = $_POST['titles'];
-	$ARTI = $_POST['artists'];
-	$ALBU = $_POST['albums'];
-	$COMP = $_POST['composers'];
-	$CANC = $_POST['cc'];
-	$HITZ = $_POST['hit'];
-	$INST = $_POST['ins'];
-    $FINI = $_POST['complete'];
-    $TYPE = $_POST['type'];
-	$LANG = $_POST['language'];
-	$NOTE = $_POST['note'];
-	$REMO = $_POST['remove'];
+	$EDIC = $_POST['edit'];//filter_input(INPUT_POST,'edit',FILTER_SANITIZE_NUMBER_INT);//
+	$SNID = $_POST['SNID'];//filter_input(INPUT_POST,'SNID',FILTER_SANITIZE_NUMBER_INT);//
+	$CATS = $_POST['category'];//filter_input(INPUT_POST,'category',FILTER_SANITIZE_STRING);//
+	$PLAY = $_POST['Playlist'];//filter_input(INPUT_POST,'Playlist',FILTER_SANITIZE_STRING);//
+	$SPOK = $_POST['Spoken'];//filter_input(INPUT_POST,'Spoken',FILTER_SANITIZE_NUMBER_FLOAT);//
+	$TIME = $_POST['times'];//filter_input(INPUT_POST,'times',FILTER_SANITIZE_STRIPPED);//
+	$TITL = $_POST['titles'];//filter_input(INPUT_POST,'titles',FILTER_SANITIZE_STRING);//
+	$ARTI = $_POST['artists'];//filter_input(INPUT_POST,'artists',FILTER_SANITIZE_STRING);//
+	$ALBU = $_POST['albums'];//filter_input(INPUT_POST,'albums',FILTER_SANITIZE_STRING);//
+	$COMP = $_POST['composers'];//filter_input(INPUT_POST,'composers',FILTER_SANITIZE_STRING);//
+	$CANC = $_POST['cc'];//filter_input(INPUT_POST,'cc',FILTER_SANITIZE_NUMBER_INT);//
+	$HITZ = $_POST['hit'];//filter_input(INPUT_POST,'hit',FILTER_SANITIZE_NUMBER_INT);//
+	$INST = $_POST['ins'];//filter_input(INPUT_POST,'ins',FILTER_SANITIZE_NUMBER_INT);//
+        $FINI = $_POST['complete'];//filter_input(INPUT_POST,'complete',FILTER_SANITIZE_NUMBER_INT);//
+        $TYPE = $_POST['type'];//filter_input(INPUT_POST,'type',FILTER_SANITIZE_STRING);//
+	$LANG = $_POST['language'];//filter_input(INPUT_POST,'languages',FILTER_SANITIZE_STRING);//
+	$NOTE = $_POST['note'];//filter_input(INPUT_POST,'note',FILTER_SANITIZE_STRING);//
+	$REMO = $_POST['remove'];//filter_input(INPUT_POST,'remove',FILTER_SANITIZE_NUMBER_INT);//
 	 
 	$END = count($EDIC);
 	for ($i=0; $i < $END; $i++){
@@ -328,56 +328,7 @@ else{
 </head>
 <html>
 <body>
-	<script type="text/javascript">
-     function SetRem(chk, ID, ROW, COUNT) {
-         if (chk == true) {
-             document.getElementById(ID).style.background = 'red';
-         }
-         else {
-             //alert('UNCHECK')
-             if (COUNT % 2) {
-                 document.getElementById(ID).style.background = '#DAFFFF'; //'#F9F9AA';
-             }
-             else {
-                 document.getElementById(ID).style.background = 'white';
-             }
-         }
-     }
-
-     function SetEdit(Row) {
-         //alert(Row);
-         //document.forms['general'].Row.checked="true";
-         document.getElementById(Row).checked = "true";
-     }
-     function HideHardware() {
-         $("#HDW_title_open").hide();
-         $("#hdw_prompt").show();
-         $("#hdw").hide();
-     }
-
-     function ShowHardware() {
-         $("#hdw").show();
-         $("#HDW_title_open").show();
-         $("#hdw_prompt").hide();
-     }
-
-     function SetNote(ELID, EDI) {
-         //var VAL = document.getElementById(ELID).value;
-         //alert(document.getElementById(ELID).value)
-         document.getElementById(EDI).checked = "true";
-         var NOTE = prompt("Notes for individual song (90 char Max)", document.getElementById(ELID).value);
-         if (NOTE != null) {
-             document.getElementById(ELID).value = NOTE;
-         }
-     }
-     $(document).ready(function () {
-         // Load Emergency Information
-         GetEAS('EAS', '../../');
-         setInterval(function () {
-            GetEAS('EAS', '../../');
-         }, 15000);
-     });
-	</script>
+	
 	<div class="topbar">
            USER: <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
@@ -401,7 +352,7 @@ else{
 				<span> Show Classification: <?php
 					echo $vars['genre'];
 				?></span>
-			</td><td style=" min-width='225px'">
+			</td><td style=" min-width:'225px'">
 				<?php
 				$getgen = "select * from genre where genreid='" . $vars['genre'] . "' ";
 				$reqar = mysql_query($getgen);
@@ -928,28 +879,36 @@ else{
 			}
 			echo "/></td>";
 			echo "<td><input disabled onChange=\"SetEdit('EDI".$CONT."')\" type=\"checkbox\" name=\"complete[]\" value='".$SONGS['songid']."' ";
-			if( $SONGS['complete'] == "1"){
-				echo " checked ";
-			}
+			if(isset($SONGS['complete'])){
+                            if( $SONGS['complete'] == "1"){
+                                    echo " checked ";
+                            }
+                        }
 			echo "/></td> ";
 			echo "<td>"; // Put Type Here
 	        echo "<select disabled name=type[] onChange=\"SetEdit('EDI".$CONT."')\">";
             echo "\n<option ";
-            if($SONGS['type']=="B"){
-                echo " selected ";
+            if(isset($SONGS['type'])){
+                if($SONGS['type']=="B"){
+                    echo " selected ";
+                }
+
+                echo " value='Background'>BG</option>";
+                echo "\n<option ";
+                if($SONGS['type']=="F" || !isset($SONGS['type'])){
+                    echo " selected ";
+                }
+                echo "value='FG'>FG</option>";
+                echo "\n<option ";
+                if($SONGS['type']=="T"){
+                    echo " selected ";
+                }
+                echo "value='theme'>THM</option>";
+                echo "\n</select>";
             }
-            echo " value='Background'>BG</option>";
-            echo "\n<option ";
-            if($SONGS['type']=="F" || !isset($SONGS['type'])){
-                echo " selected ";
+            else{
+                echo " selected value='NA'>--</option></select> ";
             }
-            echo "value='FG'>FG</option>";
-            echo "\n<option ";
-            if($SONGS['type']=="T"){
-                echo " selected ";
-            }
-            echo "value='theme'>THM</option>";
-            echo "\n</select>";
 			echo "</td>";
 			$LANS = mysql_fetch_array(mysql_query("SELECT languageid from language where songid=\"" . $SONGS['songid'] . "\" "));
 			echo "<td><input onchange=\"SetEdit('EDI".$CONT."')\" onclick=\"SetEdit('EDI".$CONT."')\" type=\"text\" name=\"language[]\" value=\"". $LANS['languageid'] . "\" size=\"10\" maxlength=\"40\" /></td>";
@@ -1002,6 +961,55 @@ else{
 			</tr>
 		</table>
 	</div>
+    <script type="text/javascript">
+     function SetRem(chk, ID, ROW, COUNT) {
+         if (chk == true) {
+             document.getElementById(ID).style.background = 'red';
+         }
+         else {
+             //alert('UNCHECK')
+             if (COUNT % 2) {
+                 document.getElementById(ID).style.background = '#DAFFFF'; //'#F9F9AA';
+             }
+             else {
+                 document.getElementById(ID).style.background = 'white';
+             }
+         }
+     }
 
+     function SetEdit(Row) {
+         //alert(Row);
+         //document.forms['general'].Row.checked="true";
+         document.getElementById(Row).checked = "true";
+     }
+     function HideHardware() {
+         $("#HDW_title_open").hide();
+         $("#hdw_prompt").show();
+         $("#hdw").hide();
+     }
+
+     function ShowHardware() {
+         $("#hdw").show();
+         $("#HDW_title_open").show();
+         $("#hdw_prompt").hide();
+     }
+
+     function SetNote(ELID, EDI) {
+         //var VAL = document.getElementById(ELID).value;
+         //alert(document.getElementById(ELID).value)
+         document.getElementById(EDI).checked = "true";
+         var NOTE = prompt("Notes for individual song (90 char Max)", document.getElementById(ELID).value);
+         if (NOTE != null) {
+             document.getElementById(ELID).value = NOTE;
+         }
+     }
+     $(document).ready(function () {
+         // Load Emergency Information
+         GetEAS('EAS', '../../');
+         setInterval(function () {
+            GetEAS('EAS', '../../');
+         }, 15000);
+     });
+	</script>
 </body>
 </html>
