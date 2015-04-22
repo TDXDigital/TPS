@@ -9,10 +9,10 @@ else{
             include_once("playlist.receiving.php");
         break;
         case "active":
-            echo "Active Commercials to be listed for edit";
+            echo "Not Implemented";
         break;
         case "ver":
-            include_once("traffic.verify_ad.php");
+            echo "Not Implemented";//include_once("traffic.verify_ad.php");
         break;
         default:
             echo "undefined value: ".$PAGE;

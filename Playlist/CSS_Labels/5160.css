@@ -23,7 +23,7 @@ body {
     text-align: center;
     overflow: hidden;
 
-    outline: 1px dotted; /* outline doesn't occupy space like border does */
+    /*outline: 1px dashed; *//* outline doesn't occupy space like border does */
     }
 .page-break  {
     clear: left;
