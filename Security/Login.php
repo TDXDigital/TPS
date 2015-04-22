@@ -105,8 +105,8 @@ if(isset($_POST['return'])){
 else{
     $des = 0;
 }
-$ORIGIN = $_SERVER['HTTP_REFERER'];
-$_SESSION['LOGIN_SRC'] = $_SERVER['HTTP_REFERER'];
+$ORIGIN = $_SERVER['HTTP_REFERER'] ?: $_SERVER['DOCUMENT_ROOT'];
+$_SESSION['LOGIN_SRC'] = $_SERVER['HTTP_REFERER'] ?: $_SERVER['DOCUMENT_ROOT'];
 
 //DETERMINE AUTH TYPE
 foreach( $dbxml->SERVER as $convars):
@@ -129,7 +129,7 @@ if((string)$convars->ID==$db_ID){
     $_SESSION['DBNAME']=$convars->DATABASE;
     */
     if((string)$convars->AUTH == strtoupper("LDAP")){
-        echo "Load Auth Module LDAP";
+        $DEBUG_STR .= "Load Auth Module LDAP";
         include("LDAP_Auth.php");
         if(LDAP_AUTH($postuser, $postpass, $convars)){
             if($des==0){

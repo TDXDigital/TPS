@@ -2,17 +2,88 @@
 
 error_reporting(0);
 define("ENCRYPTION_KEY", "!@#$%^&*");
-if(!is_session_started()){
-    sec_session_start();
-}
-$base = $_SESSION['BASE']?:"";
-include_once $base.'/classSecurity.php';
-//$secur = new Security;
-//define("ENCRYPTION_KEY", $secur.get_key());
-include_once $base.'/CONFIG.php';
-date_default_timezone_set($_SESSION['TimeZone']);
-//date_default_timezone_set($timezone);
+
 /*
+ * 
+ * 
+ */
+$rep_level = error_reporting();
+error_reporting(0);
+function absolute_include($file,$PHP_SELF)
+{
+    /*
+    $file is the file url relative to the root of your site.
+    Yourdomain.com/folder/file.inc would be passed as
+    "folder/file.inc"
+    */
+    
+    //check for last '/', if at end strip it from string
+    
+    if($PHP_SELF===""){
+        $Full_path = substr_count($_SERVER["PHP_SELF"],"/");
+    }
+    else{
+        $Full_path = substr_count($PHP_SELF,"/");
+    }
+    
+    //check if last char is '/'
+    $path_len = strlen($Full_path);
+    if($Full_path[$path_len]==='/'){
+        // remove last '/';
+        $Full_path = substr_replace($Full_path, "", -1);
+    }
+    
+    
+    $folder_depth = substr_count($Full_path,"/");
+
+
+    if($folder_depth == false)
+       $folder_depth = 1;
+    
+    // disable errors for this section due to 'error' caused by checking
+    
+    if(isset($rep_level)){
+        $old_error_level = error_reporting();
+    }
+    else{
+        //$old_error_level = error_reporting();
+        $old_error_level = E_ALL;
+    }
+    error_reporting(0);
+    // Set time to UTC if not set
+    if(date_default_timezone_get()=='UTC')
+    {
+        date_default_timezone_set('UTC');
+    }
+    
+    //error_log("DEFAULT TIME ZONE ".date_default_timezone_get());
+    // set to correct time 
+    error_reporting($old_error_level);
+    
+    $file_path = str_repeat("../", $folder_depth - 1) . $file;
+    if(!file_exists($file_path)){
+        throw new Exception("File [$file_path] does not exist");
+    }
+    else{
+        include_once($file_path);
+    }
+}
+
+try{
+    absolute_include('CONFIG.php');
+}
+catch (Exception $e){
+    error_log($e->getMessage()."; setting timezone to UTC as failback");
+    date_default_timezone_set('UTC');
+}
+
+if(isset($timezone)){
+    date_default_timezone_set($timezone);
+}
+
+
+
+/**
  * Sets connection parameters for SECL logn (DB)
  */
  function set_db_params($dbxml,$target){
@@ -109,7 +180,9 @@ function is_session_started()
 include_once 'psl-config.php';
 // As functions.php is not included
 function sec_session_start() {
-session_start();
+    if(!isset($_SESSION)){
+        session_start();
+    }
 /*
     $session_name = 'sec_session_id';   // Set a custom session name
     $secure = SECURE;
@@ -135,7 +208,7 @@ session_start();
 
 function login($email, $password, $mysqli) {
     // Using prepared statements means that SQL injection is not possible. 
-    if ($stmt = $mysqli->prepare("SELECT id, username, password, salt, access 
+    if ($stmt = $mysqli->prepare("SELECT id, username, password, salt, access
         FROM members
        WHERE email = ?
         LIMIT 1")) {
@@ -146,7 +219,7 @@ function login($email, $password, $mysqli) {
         // get variables from result.
         $stmt->bind_result($user_id, $username, $db_password, $salt, $access);
         $stmt->fetch();
- 
+        
         // hash the password with the unique salt.
         $password = hash('sha512', $password . $salt);
         if ($stmt->num_rows == 1) {
@@ -184,12 +257,24 @@ function login($email, $password, $mysqli) {
                     $_SESSION['logo'] = 'images/Ckxu_logo_2.png';
                     $_SESSION['SRVPOST'] = 'SECL';
                     // Login successful.
+                    
+                    $stmt2=$mysqli->prepare("SELECT callsign FROM station LIMIT 1");
+                    $stmt2->execute();
+                    $stmt2->bind_result($stn_callsign);
+                    $stmt2->fetch();
+                    if(!is_null($stn_callsign)){
+                        $_SESSION['CALLSIGN'] = $stn_callsign;
+                    }
+                    else{
+                        error_log("ERROR: No Stations returned for user $user_id; returned ".$stn_callsign);
+                    }
+                    
                     return true;
                 } else {
                     // Password is not correct
                     // We record this attempt in the database
                     $now = time();
-                    $mysqli->query("INSERT INTO login_attempts(user_id, time)
+                    $stmt->query("INSERT INTO login_attempts(user_id, time)
                                     VALUES ('$user_id', '$now')");
                     return false;
                 }

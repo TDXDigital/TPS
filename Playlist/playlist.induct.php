@@ -19,6 +19,8 @@ $accepted = filter_input(INPUT_POST, "accepted")? :0;
 $variousartists = filter_input(INPUT_POST, "va")? :0;
 $label_size = filter_input(INPUT_POST, "Label_Size")? : 1;
 $locale = filter_input(INPUT_POST, "locale")? :"international";
+$release_date = filter_input(INPUT_POST,'rel_date')?:NULL;
+$note = filter_input(INPUT_POST, "notes")?:NULL;
 if($locale=="International"){
     $CanCon=0;
 }
@@ -64,19 +66,42 @@ if(is_null($labelNum)||$labelNul=="null"){
     header("location: ../Playlist/?q=new&e=9999&s=3");
 }
 
-if(!$stmt3 = $mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,format,genre,status,labelid,Locale,CanCon)
-    VALUES (?,?,?,?,?,?,?,?,?,?)")){
+if(!$stmt3 = $mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,format,genre,status,labelid,Locale,CanCon,release_date,year,note)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)")){
     $stmt3->close();
-    header("location: ../Playlist/?q=new&e=".$mysqli->errno."&s=3&m=".$mysqli->error);
+    header("location: ../Playlist/?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
 }
-if(!$stmt3->bind_param("sssissiisi",$datein,$artist,$album,$variousartists,$format,$genre,$status,$labelNum,$locale,$CanCon)){
+if(!is_null($release_date)){
+    $year = date('Y',strtotime($release_date));
+}
+else{
+    $year = NULL;
+}
+if(!$stmt3->bind_param(
+        "sssissiisisss",
+        $datein,
+        $artist,
+        $album,
+        $variousartists,
+        $format,
+        $genre,
+        $status,
+        $labelNum,
+        $locale,
+        $CanCon,
+        $release_date,
+        $year,
+        $note
+        )){
     $stmt3->close();    
     header("location: ../Playlist/?q=new&e=".$mysqli->errno."&s=3&m=".$mysqli->error);
 }
 
 if(!$stmt3->execute()){
+    error_log("SQL-STMT Error (SEG-3):[".$stmt3->errno."] ".$stmt3->error);
+    $error = [$stmt3->errno,$stmt3->error];
     $stmt3->close();
-    header("location: ../Playlist/?q=new&e=".$mysqli->errno."&s=3&m=".$mysqli->error);
+    header("location: ../Playlist/?q=new&e=".$error[0]."&s=3&m=".$error[1]);
     //echo "ERROR #".$mysqli->errno . "  " .    $mysqli->error;
 }
 else{

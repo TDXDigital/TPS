@@ -3,6 +3,7 @@
     $cerl = error_reporting();
     error_reporting(0);
     include "TPSBIN/functions.php";
+    absolute_include("CONFIG.php", $_SERVER['PHP_SELF']);
     sec_session_start();
     
     //echo "load index<br>";

@@ -7,6 +7,7 @@
 // support functions
 include_once '../../TPSBIN/functions.php';
 
+error_reporting(0);
 //need to set DB Values before this page.
  
 sec_session_start(); // Our custom secure way of starting a PHP session.

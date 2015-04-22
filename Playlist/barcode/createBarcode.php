@@ -2,7 +2,10 @@
   include('php-barcode.php');
   error_reporting(0);
   $testGD = get_extension_funcs("gd"); // Grab function list 
-if (!$testGD){ echo "GD not even installed."; exit; }
+if (!$testGD){
+    error_log("GD not installed / enabled. Please see http://php.net/manual/en/book.image.php for assistance");
+    exit;
+}
   
   // -------------------------------------------------- //
   //                  PROPERTIES
