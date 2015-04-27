@@ -34,15 +34,27 @@
     ?>
     <style type="text/css">
     @media print{
-      body{ background-color:none; background-image:none; color:#000000 }
+        .no-print, .no-print *{
+            display: none !important;
+        }
+        body{
+            background-color:none;
+            background-image:none;
+            color:#000000
+        }
+    }
+    .no-print, .no-print *{
+        background-color: orange;
+        text-align: center;
     }
     </style>
 </head>
 <body>
+    <div class="no-print">This area will not print. please use top and bottom margin of 0.5" and 0.0" sides. some printers may vary</div>
     <?php
     if($stmt=$mysqli->prepare("SELECT artist, album, format, genre, CanCon, Locale FROM library WHERE RefCode = ?")){
         for($i=1;$i<$indent;$i++){
-            echo "<div class=\"label\"></div>";
+            echo "<div class=\"label\" style=\"outline: none;\"></div>";
         }
         foreach($_SESSION['PRINTID'] as $BCD){
             $stmt->bind_param("i",$BCD);
@@ -72,7 +84,8 @@
 <div class="page-break"></div>
 <script>
     document.addEventListener("DOMContentLoaded", function(event) {
-        window.print();
+        setTimeout(window.print(),2000);
+        //window.print();
     });
 </script>
 </body>
