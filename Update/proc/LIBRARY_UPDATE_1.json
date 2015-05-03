@@ -8,8 +8,12 @@
             "Field" : [
                 "Library_View",
                 "Library_Edit",
-                "Library_Create",
-                "Library_TEST"
+                "Library_Create"
+            ],
+            "Null" : [
+                "YES",
+                "YES",
+                "YES"
             ]
         },
         "UPDATE_TYPE" : "FILE",

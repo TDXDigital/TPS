@@ -2,5 +2,14 @@
     "TPS_Errno": "DBUD-002",
     "type" : "database",
     "execute" : "SQL",
-    "SQL_QRY" : []
+    "SQL_QRY" : {
+        "TEST": "SHOW COLUMNS FROM `station` LIKE 'timezone';",
+        "RESULT" : {
+            "Field" : [
+                "timezone"
+            ]
+        },
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "LIBRARY_UPDATE_1.sql"
+    }
 }

@@ -1,4 +1,105 @@
 <?php
+function DatabaseUpdate($Update_PKG){
+    if($Update_PKG['execute']=='SQL'){
+        if(!defined($mysqli)){
+            if(!include_once '../TPSBIN/functions.php'){
+                printf("Exception");
+                throw new Exception("database connection failed - file not found");
+            }
+            sec_session_start();
+            if(!include_once '../TPSBIN/db_connect.php'){
+                printf("Exception");
+                throw new Exception("database connection failed - file not found");
+            }
+        }
+        if($mysqli->connect_errno){
+            printf("Connect failed: %s\n", $mysqli->connect_error);
+            exit();
+        }
+        if($Update_PKG["SQL_QRY"]['TEST']!=''){
+            $sql_simple = [];
+            if($res = $mysqli->query($Update_PKG["SQL_QRY"]['TEST'])){
+                $result = [];
+                $key_only = []; // likely not needed
+                $keys = $Update_PKG["SQL_QRY"]['RESULT'];
+                $Z = [];
+                foreach ($keys as $key => $val){
+                    array_push($key_only,$key);
+                    $r = 0;
+                    foreach ($val as $data){
+                        array_push($result,array($key=>$data));
+                        // insert additional matching keys in some way. not sure yet $result[$r] should work but is not...
+                        $r++;
+                    }
+
+                }
+                $test = [];
+                for($i=0;$i!=$res->num_rows;$i++){
+                    array_push($test,$res->fetch_array(MYSQLI_ASSOC));
+                }
+                $new = array();
+                foreach($test as $key => $value) 
+                {
+                  foreach ($value as $num_key => $content)
+                  {
+                    $new[$num_key][$key] = $content;
+                  }
+                }
+
+                /*var_dump($new);
+                var_dump($keys);*/
+
+                //add match levels
+                //$test = $res->fetch_object();//array(MYSQLI_ASSOC);
+                if(is_array($Update_PKG["SQL_QRY"]['RESULT'])||sizeof($test)>1){
+                    /*foreach ($key_only as $key_i){
+                        $diff = array_diff($result,$test);
+                    }*/
+                    $match = []; $diff = []; $return = []; $klist = [];
+                    $f = 0;
+                    foreach($keys as $key=>$val){
+                        $dt = [];
+                        $temp[$f]=array_intersect_key($new,$keys);
+                        foreach($temp[$f] as $gar=>$v2){
+                            $match[$gar]=$v2;
+                        }
+                        //$submatch = array_push($match[$key]);
+                        //var_dump($match);
+                        $dt = array_diff_assoc($keys[$key],$match[$key]);
+                        if(!empty($dt)){
+                            array_push($diff,$dt);
+                            array_push($klist,$key);
+                            $return[$key]=[];
+                        }
+                        $f++;
+                    }
+                    $e=0;
+                    foreach($diff as $t3){
+                        $return[$klist[$e]]=$t3;
+                        $e++;
+                    }
+                }
+                else{
+                    //echo "NOT ARRAY: $test";
+                    http_response_code(400);
+                }
+                $Pass = FALSE;
+                if(empty($return)){
+                    // assume diff was fine
+                    $Pass = TRUE;
+                }
+                $final = array("Status"=>$Pass,"Result"=>$return);
+                return json_encode($final);
+                /*var_dump($match);
+                var_dump($keys);
+                var_dump($diff);*/
+            }
+        }
+    }
+    else{
+        http_response_code(400);
+    }
+}
 
 function CheckUpdate($file) {
     if(strpos($file,"://")||strpos($file,"\\\\"))
@@ -8,82 +109,7 @@ function CheckUpdate($file) {
     $Update_PKG = json_decode(file_get_contents($file),true);
     switch ($Update_PKG['type']):
         case 'database':
-            if($Update_PKG['execute']=='SQL'){
-                if(!defined($mysqli)){
-                    if(!include_once '../TPSBIN/functions.php'){
-                        printf("Exception");
-                        throw new Exception("database connection failed - file not found");
-                    }
-                    sec_session_start();
-                    if(!include_once '../TPSBIN/db_connect.php'){
-                        printf("Exception");
-                        throw new Exception("database connection failed - file not found");
-                    }
-                }
-                if($mysqli->connect_errno){
-                    printf("Connect failed: %s\n", $mysqli->connect_error);
-                    exit();
-                }
-                if($Update_PKG["SQL_QRY"]['TEST']!=''){
-                    //file_get_contents($UPDATE_PKG['SQL_QRY']['']);
-                    $sql_simple = [];
-                    if($res = $mysqli->query($Update_PKG["SQL_QRY"]['TEST'])){
-                        $result = [];
-                        $key_only = []; // likely not needed
-                        $keys = $Update_PKG["SQL_QRY"]['RESULT'];
-                        $Z = [];
-                        foreach ($keys as $key => $val){
-                            array_push($key_only,$key);
-                            $r = 0;
-                            foreach ($val as $data){
-                                array_push($result,array($key=>$data));
-                                // insert additional matching keys in some way. not sure yet $result[$r] should work but is not...
-                                $r++;
-                            }
-                            
-                        }
-                        $test = [];
-                        for($i=0;$i!=$res->num_rows;$i++){
-                            array_push($test,$res->fetch_array(MYSQLI_ASSOC));
-                        }
-                        $new = array();
-                        foreach($test as $key => $value) 
-                        {
-                          foreach ($value as $num_key => $content)
-                          {
-                            $new[$num_key][$key] = $content;
-                          }
-                        }
-                        
-                        /*var_dump($new);
-                        var_dump($keys);*/
-                        
-                        //add match levels
-                        //$test = $res->fetch_object();//array(MYSQLI_ASSOC);
-                        if(is_array($Update_PKG["SQL_QRY"]['RESULT'])||sizeof($test)>1){
-                            /*foreach ($key_only as $key_i){
-                                $diff = array_diff($result,$test);
-                            }*/
-                            $match = []; $diff = [];
-                            foreach($keys as $key=>$val){
-                                array_push($match,array_intersect_key($new[$key],$keys[$key]));
-                                //var_dump($keydiff);
-                                array_push($diff,array_diff_assoc($keys[$key],$match[$key]));
-                            }
-                        }
-                        else{
-                            echo "NOT ARRAY: $test";
-                        }
-                        var_dump($match);
-                        var_dump($keys);
-                        var_dump($diff);
-                    }
-                }
-                #$test = $mysqli->query()
-            }
-            else{
-                http_response_code(400);
-            }
+            print DatabaseUpdate($Update_PKG);
             break;
         default :
             print 'default';
