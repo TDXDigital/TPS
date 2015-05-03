@@ -1,0 +1,44 @@
+<?php
+print ('<div class="col-sm-3 col-md-2 sidebar">');      
+
+$page = filter_input(INPUT_POST, "q", FILTER_SANITIZE_URL) ?:
+        filter_input(INPUT_GET, "q", FILTER_SANITIZE_URL) ?: "overview";
+
+$options = array(array('overview','Overview',0),array('update','Update',1),array('export','Export',0));
+
+$temp = array();
+for($i = 0 ; $i <= max(array_column($options,2)) ; $i++){
+    print '<ul class="nav nav-sidebar">';
+    $temp=array();
+    for($x = 0 ; $x < sizeof($options[$i]) ; $x++){
+        if($i == $options[$x][2]){
+            //var_dump($options);
+            array_push($temp,array($options[$x][0],$options[$x][1]));
+        }
+    }
+
+    sort($temp);
+    foreach ($temp as $nav){
+        $url = $nav[0];
+        $title = $nav[1];
+        print "<li";
+        if($page == $url){
+            print " class='active' ";
+        }
+        print "><a href='?q=$url'>$title</a></li>\n";
+    }
+    print '</ul>';
+}
+print '</div>';
+
+        
+print '<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main\">';
+switch ($page):
+    case "overview":
+        include "admin.overview";
+        break;
+    default:
+        print "<div class='alert alert-warning' role='alert'>page undefined</div>";
+endswitch;
+
+print ("</div>");
