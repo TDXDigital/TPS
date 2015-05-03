@@ -1,0 +1,23 @@
+<?php
+if(!$updates = scandir("./Update/proc/")){
+    print "<div class='alert alert-critical' role='alert'>page undefined</div>";
+    print "</div>";
+}
+else{
+    $update_JSON = array();
+    foreach ($updates as $update){
+        if(strtolower(substr($update,-5))==='.json'){
+            array_push($update_JSON,json_decode(file_get_contents('./Update/proc/'.$update),true));
+        }
+    }
+    //var_dump($update_JSON);
+    print "</br><table class='table table-bordered table-hover' >"
+    . "<thead><th>#</th><th>Type</th><th>Test for Update</th><th>Apply Update</thead><tbody>";
+    foreach ($update_JSON as $update){
+        print "<tr><td>".$update['TPS_Errno']."</td>"
+                . "<td>".$update['type']."</td>"
+                . "<td>".$update['execute']."</td>";
+        print "</tr>";
+    }
+    print "</tbody></table>";
+}

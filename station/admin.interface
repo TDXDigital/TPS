@@ -37,6 +37,9 @@ switch ($page):
     case "overview":
         include "admin.overview";
         break;
+    case "update":
+        include "admin.update";
+        break;
     default:
         print "<div class='alert alert-warning' role='alert'>page undefined</div>";
 endswitch;
