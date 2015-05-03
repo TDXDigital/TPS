@@ -7,17 +7,24 @@ else{
     $update_JSON = array();
     foreach ($updates as $update){
         if(strtolower(substr($update,-5))==='.json'){
-            array_push($update_JSON,json_decode(file_get_contents('./Update/proc/'.$update),true));
+            $update_JSON[$update]=json_decode(file_get_contents('./Update/proc/'.$update),true);
         }
     }
     //var_dump($update_JSON);
+    $updateList = [];
     print "</br><table class='table table-bordered table-hover' >"
-    . "<thead><th>#</th><th>Type</th><th>Test for Update</th><th>Apply Update</thead><tbody>";
-    foreach ($update_JSON as $update){
+    . "<thead><th>#</th><th>Type</th><th>Update Status</th><th>Apply Update</thead><tbody>";
+    foreach ($update_JSON as $file => $update){
+        $updateList[$file]=$update['TPS_Errno'];
         print "<tr><td>".$update['TPS_Errno']."</td>"
                 . "<td>".$update['type']."</td>"
-                . "<td>".$update['execute']."</td>";
+                . "<td><span id='$file' class='glyphicon glyphicon-transfer' aria-hidden='true'>&nbsp;Checking... (dev)</td>"
+                . "<td><button type='button' class='btn btn-danger'><span class='glyphicon glyphicon-save' aria-hidden='true'><span>&nbsp;Apply Update</span></button>";
+                //. "<span id='$file' class='glyphicon glyphicon-save' aria-hidden='true'>&nbsp;Apply</td>";
         print "</tr>";
     }
     print "</tbody></table>";
 }
+?>
+
+<?php
