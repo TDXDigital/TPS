@@ -23,7 +23,12 @@
     <!-- Custom styles for this template -->
     <link href="js/bootstrap/css/dashboard.css" rel="stylesheet">
     <!--<link href="js/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">-->
-
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- needed in page -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="js/bootstrap/js/bootstrap.min.js"></script>
+    <!--<script src="../../assets/js/docs.min.js"></script>-->
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 
@@ -46,12 +51,7 @@
       </div>
     </div>
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="js/bootstrap/js/bootstrap.min.js"></script>
-    <!--<script src="../../assets/js/docs.min.js"></script>-->
+    
   
 
 </body></html>

@@ -1,5 +1,5 @@
 <?php
-function DatabaseUpdate($Update_PKG){
+function DatabaseUpdateCheck($Update_PKG){
     if($Update_PKG['execute']=='SQL'){
         if(!defined($mysqli)){
             if(!include_once '../TPSBIN/functions.php'){
@@ -101,6 +101,44 @@ function DatabaseUpdate($Update_PKG){
     }
 }
 
+function DatabaseUpdateApply($Update_PKG,$path){
+    if($Update_PKG['execute']=='SQL'){
+        if(!defined($mysqli)){
+            if(!include_once '../TPSBIN/functions.php'){
+                printf("Exception");
+                throw new Exception("database connection failed - file not found");
+            }
+            sec_session_start();
+            if(!include_once '../TPSBIN/db_connect.php'){
+                printf("Exception");
+                throw new Exception("database connection failed - file not found");
+            }
+        }
+        $needed = json_decode(DatabaseUpdateCheck($Update_PKG));
+        if($needed['Status']===false){
+            // needs update
+            if(strtoupper($Update_PKG['SQL_QRY']['UPDATE_TYPE'])==="FILE"){
+                $sql_file = $Update_PKG['SQL_QRY']['UPDATE'];
+                if(strtolower(substr($sql_file,-4))==='.sql'){
+                    // load SQL file
+                    if(!$sql = file_get_contents($path.$sql_file)){
+                        http_response_code(400);
+                    }
+                    else{
+                        $mysqli->query($sql);
+                    }
+                }
+            }
+        }
+        elseif($needed['Status']===null){
+            http_response_code(400);
+        }
+    }
+    else{
+        http_response_code(400);
+    }
+}
+
 function CheckUpdate($file) {
     if(strpos($file,"://")||strpos($file,"\\\\"))
     {
@@ -109,16 +147,28 @@ function CheckUpdate($file) {
     $Update_PKG = json_decode(file_get_contents($file),true);
     switch ($Update_PKG['type']):
         case 'database':
-            print DatabaseUpdate($Update_PKG);
+            print DatabaseUpdateCheck($Update_PKG);
             break;
         default :
-            print 'default';
+            http_response_code(400);//json_encode(array("Status"=>null,"Result"=>array("ERROR")));
             break;
     endswitch;
 }
 
-function ApplyUpdate($param) {
-    
+function ApplyUpdate($file,$path) {
+    if(strpos($file,"://")||strpos($file,"\\\\"))
+    {
+       die(http_response_code(403));
+    }
+    $Update_PKG = json_decode(file_get_contents($file),true);
+    switch ($Update_PKG['type']):
+        case 'database':
+            print DatabaseUpdate($Update_PKG,$path);
+            break;
+        default :
+            http_response_code(400);//json_encode(array("Status"=>null,"Result"=>array("ERROR")));
+            break;
+    endswitch;
 }
 
 error_reporting(0);
@@ -127,13 +177,17 @@ if(!$callerIP=localhost)
 {
     die(http_response_code(403));
 }
-$type = filter_input(INPUT_GET,'q',FILTER_SANITIZE_SPECIAL_CHARS);
-$file = filter_input(INPUT_GET,'f',FILTER_SANITIZE_SPECIAL_CHARS);
-if($type=='a'){
-    ApplyUpdate("proc/".$file);
+$type = filter_input(INPUT_GET,'q',FILTER_SANITIZE_SPECIAL_CHARS)?:
+        filter_input(INPUT_POST,'q',FILTER_SANITIZE_SPECIAL_CHARS);
+$file = filter_input(INPUT_GET,'f',FILTER_SANITIZE_SPECIAL_CHARS)?:
+        filter_input(INPUT_POST,'f',FILTER_SANITIZE_SPECIAL_CHARS);
+$path = filter_input(INPUT_GET, 'd')?:
+        filter_input(INPUT_GET, 'd')?: "proc/";
+if(strtolower($type)==='a'){
+    ApplyUpdate($path.$file,$path);
 }
-elseif($type=='c'){
-    CheckUpdate("proc/".$file);
+elseif(strtolower($type)==='c'){
+    CheckUpdate($path.$file);
 }
 else{
     http_response_code(404);

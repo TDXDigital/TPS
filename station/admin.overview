@@ -1,3 +1,7 @@
+<?php
+
+?>
+
 <h1 class="page-header">Administration Dashboard</h1>
 <!--<h3 class="sub-header">New Admin Interface</h3>-->
   <p>Welcome to the new administration interface! please take a moment to become comfortable with the updated theme, please note that most options have been relocated to the top right menus.</p>
