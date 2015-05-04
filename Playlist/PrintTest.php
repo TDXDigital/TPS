@@ -8,15 +8,30 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>HTML & CSS Avery Labels (5160) by MM at Boulder Information Services</title>
+    <title>Print Labels</title>
     <link href="CSS_Labels/<?php
-    if(TRUE){
+    $type = filter_input(INPUT_GET,'type', FILTER_SANITIZE_NUMBER_INT)?:5160;
+    $indent = filter_input(INPUT_GET,'start', FILTER_SANITIZE_NUMBER_INT) ?: 0;
+    $outline = filter_input(INPUT_GET,'outline',FILTER_SANITIZE_STRING) ?: 'false';
+    
+    
+    if($type==="5160"){
         print "5160";
     }
-    elseif($_GET['t']==="5163"){
+    elseif($type==="5163"){
         print "5163";
     }
     ?>.css" rel="stylesheet" type="text/css" >
+    <?php
+    
+    if(strtolower($outline)==='true'){
+        echo "<style type='text/css'>\xA.label{\xAoutline: 1px dashed;\xA}\xA</style>";
+    }
+    elseif(strtolower($outline)==='true'){
+        echo "<style type='text/css'>\xA.label{\xAoutline: none;\xA}\xA</style>";
+    }
+    
+    ?>
     <style type="text/css">
     @media print{
       body{ background-color:none; background-image:none; color:#000000 }
@@ -26,6 +41,9 @@
 <body>
     <?php
     if($stmt=$mysqli->prepare("SELECT artist, album, format, genre, CanCon, Locale FROM library WHERE RefCode = ?")){
+        for($i=1;$i<$indent;$i++){
+            echo "<div class=\"label\"></div>";
+        }
         foreach($_SESSION['PRINTID'] as $BCD){
             $stmt->bind_param("i",$BCD);
             $stmt->execute();

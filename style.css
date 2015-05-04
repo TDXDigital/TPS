@@ -17,7 +17,7 @@ body {
 	margin: 0;
 	padding: 0;
 	background: #C1C1C1;
-	background-image:url(/images/background.png)
+	background-image:url(/images/background.png);
 	text-align: left;
 	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 	font-size: 13px;

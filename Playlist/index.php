@@ -26,7 +26,7 @@
     <!-- Scripts in subpage might need these functions. need to be loaded and ready-->
     <script src="<?php echo $_SESSION['BASE_REF'];?>/js/jquery/js/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="<?php echo $_SESSION['BASE_REF'];?>/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="<?php echo $_SESSION['BASE_REF'];?>/js/jquery/css/ui-lightness/jquery-ui-1.10.0.custom.min.css"/>
+    <link rel="stylesheet" href="<?php echo $_SESSION['BASE_REF'];?>/js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>
     <script src="<?php echo $_SESSION['BASE_REF'];?>/js/bootstrap/js/bootstrap.min.js"></script>
     <script src="<?php echo $_SESSION['BASE_REF'];?>/js/chosen.jquery.min.js"></script>
     <script src="<?php echo $_SESSION['BASE_REF'];?>/js/bootstrap/checkbox/js/bootstrap-checkbox.js "></script>

@@ -15,8 +15,11 @@
     if(isset($_SESSION['m_logo'])){
         $logo = $_SESSION['m_logo'];
     }
-    else{
+    else if(isset($_SESSION['logo'])){
         $logo = $_SESSION['logo'];
+    }
+    else{
+        $logo = "images/logo.jpg";
     }
     $dbname= $_SESSION['DBNAME']; // NEEDS COMPANY HEAD TO ALLOW SELECTING MULTIPLE CALLSIGNS (This is not right)
     $access=$_SESSION['access'];
@@ -93,7 +96,7 @@
         //error_log($permissions[0]);
     }
     else{
-        if(!$SETUP){
+        if(!isset($SETUP)){
             die('Error 401<br><a href=\'logout.php\'>Authentication Error, please login</a><br><br><sub>GURU: FAILED DB LINK:'.$mysqli->error.'</sub>');
         }
         else{
@@ -130,9 +133,8 @@
         array(0,"<span class=\"icon-bar\"></span>"),
         array(0,"</button>"),
     )*/
+    PRINTMENU:
     ?>
-
-    <!--PRINTMENU:-->
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -161,6 +163,11 @@
                 $library_permission=max($permissions['Library_View'],$permissions['Library_Edit'],$permissions['Library_Create']);
                 //$automation_permission=max($permissions['Audit_View'],$permissions['Audit_Edit'],$permissions['Audit_Create']); // TODO: Store in DB
                 $audit_permission=$permissions['Audit_View'];//max($permissions['Audit_View']);
+                if(max($station_permission,$members_permission,$program_permission,$genre_permission,$playsheet_permission,$advertising_permission,$audit_permission)==0){
+                    echo "<li><div class='alert alert-danger'>"
+                    . "<span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\">"
+                            . "</span><span> No permissions available  [ $dbname , $access ]</span></div></li>";
+                }
                 if($station_permission>0){
                     print("<li><a href=\"$base/station/settings.php?old\">Station Settings</a></li>");
                 }

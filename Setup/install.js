@@ -48,7 +48,7 @@ function install_db(){
         succeess: function( data ){
             //$( "#results" ).append( msg );
             //alert(msg);
-            $("#completed").html(data.status);
+            $("#complete").html(data.status);
         }
     });
 }

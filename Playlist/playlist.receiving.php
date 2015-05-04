@@ -13,8 +13,20 @@
             $error_message = "You cannot insert the same album, artist, and format"
                     . "more than once per day<br>if you really need to record"
                     . "this entry please change the recieving day";
+            unset($message);
         }
-        if($error==="0"){
+        else if($error==="1292"){
+            $error_name = "Invalid Date Format";
+            $error_message = "The date given in either Release date or Date In was invalid"
+                    . "<br>Please use ISO8601 dates only (YYYY-MM-DD)";
+            unset($message);
+        }
+        else if($error==="0"){
+            $error_name="General Error";
+            $error_message = "A Unknown Error Occured: ".$message;
+            unset($message);
+        }
+        else{
             $error_name="General Error";
             $error_message = "A Unknown Error Occured: ".$message;
             unset($message);
@@ -44,19 +56,19 @@
 <div class="panel panel-primary">
     <div class="panel-heading"><span>Basic Information</span>
         <input type="hidden" id="method_hidden" value="any" />
-        <span class="pull-right">Search&nbsp;
+        <div class="pull-right"><span>Search&nbsp;</span>
         <div class="btn-group pull-right" data-toggle="buttons">
             <label class="btn btn-primary active btn-xs">
-                <input type="radio" name="method" id="option1" onchange="javascript: $('#method_hidden').val('any');" value="any" autocomplete="off"> Contains
+                <input type="radio" name="method" id="option1" onchange="javascript: $('#method_hidden').val('any');" value="any"> Contains
             </label>
             <label class="btn btn-primary btn-xs">
-              <input type="radio" name="method" id="option2" onchange="javascript: $('#method_hidden').val('begins');" value="begins" autocomplete="off"> Starts
+              <input type="radio" name="method" id="option2" onchange="javascript: $('#method_hidden').val('begins');" value="begins"> Starts
             </label>
             <label class="btn btn-primary btn-xs">
-              <input type="radio" name="method" id="option3" onchange="javascript: $('#method_hidden').val('exact');" value="exact" autocomplete="off"> Exact
+              <input type="radio" name="method" id="option3" onchange="javascript: $('#method_hidden').val('exact');" value="exact"> Exact
             </label>
         </div>
-        </span>
+        </div>
     </div>
     <div class="panel-body">
         
@@ -157,19 +169,44 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-2">
-                <input type="checkbox" id="va_checkbox" data-label-prepend="Various Artists" class="style3" name="print" value="1" tabindex="8">
+            <div class="col-md-12">
+                &nbsp;
             </div>
-            <div class="col-md-3">
-                <input type="checkbox" data-label-prepend="Accepted" class="style3" name="accept" checked="checked" value="1" tabindex="9">
+        </div>
+        <div class="row">
+            <div class="col-md-1">
+                <input type="checkbox" id="va_checkbox" data-label-prepend="VA" class="style3" name="print" value="1" tabindex="8">
             </div>
-            <div class="col-md-3">
+            <div class="col-md-1">
+                <input type="checkbox" data-label-prepend="Keep" class="style3" name="accept" checked="checked" value="1" tabindex="9">
+            </div>
+            <div class="col-md-1">
                 <input type="checkbox" data-label-prepend="Print" class="style3" name="print" checked="checked" value="1" tabindex="10">
+            </div>
+            <div class="col-md-1">
+                <input type="checkbox" data-label-prepend="PL" class="style3" name="playlist" value="0" tabindex="11">
+            </div>
+            <div class="col-md-3">
+                <div id="ind_group" class="input-group">
+                    <label for="reldate" class="input-group-addon">Release Date</label>
+                    <input id="reldate" type="text" class="form-control" value="<?php print(date("Y-m-d"));?>" name="rel_date" tabindex="12"/>
+                </div>
             </div>
             <div class="col-md-3">
                 <div id="ind_group" class="input-group">
                     <label for="indate" class="input-group-addon">Date In</label>
-                    <input id="indate" type="text" class="form-control" value="<?php print(date("Y-m-d"));?>" name="indate" tabindex="11"/>
+                    <input id="indate" type="text" class="form-control" value="<?php print(date("Y-m-d"));?>" name="indate" tabindex="13"/>
+                </div>
+            </div>
+            <!--<div class="col-md-2">
+                <button type="button" class="btn btn-secondary btn-small" data-toggle="modal" data-target="#myModal">Notes</button>
+            </div>-->
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="ind_group" class="input-group">
+                    <label for="notes" class="input-group-addon">Notes</label>
+                    <input id="notes" type="text" class="form-control" name="notes" tabindex="15" placeholder="optional"/>
                 </div>
             </div>
         </div>
@@ -186,13 +223,13 @@
                 <div class="col-md-6">
                     <div id="web_group" class="input-group">
                         <label for="website" class="input-group-addon" title="Band Website"><span class="glyphicon glyphicon-globe"></span></label>
-                        <input id="website" type="url" class="form-control" name="website" tabindex="13" placeholder="www.bandwebsite.com"/>
+                        <input id="website" type="url" class="form-control" name="website" tabindex="23" placeholder="www.bandwebsite.com"/>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div id="bnc_group" class="input-group">
                         <label for="bandcamp" class="input-group-addon" title="BandCamp URL"><span class="glyphicon glyphicon-tent"></span></label>
-                        <input id="bandcamp" type="url" class="form-control"  name="bandcamp" tabindex="14" placeholder="Bandcamp.com"/>
+                        <input id="bandcamp" type="url" class="form-control"  name="bandcamp" tabindex="24" placeholder="Bandcamp.com"/>
                     </div>
                 </div>
             </div>
@@ -200,13 +237,13 @@
                 <div class="col-md-6">
                     <div id="bnc_group" class="input-group">
                         <label for="fb" class="input-group-addon" title="FaceBook URL"><span class="glyphicon glyphicon-user"></span></label>
-                        <input id="fb" type="url" class="form-control" name="facebook"tabindex="15" placeholder="Facebook.com"/>
+                        <input id="fb" type="url" class="form-control" name="facebook"tabindex="25" placeholder="Facebook.com"/>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div id="bnc_group" class="input-group">
                         <label for="tw" class="input-group-addon" title="Twitter URL"><span class="glyphicon glyphicon-bell"></span></label>
-                        <input id="tw" type="url" class="form-control" name="twitter" tabindex="16" placeholder="Twitter.com"/>
+                        <input id="tw" type="url" class="form-control" name="twitter" tabindex="26" placeholder="Twitter.com"/>
                     </div>
                 </div>
             </div>
@@ -216,20 +253,65 @@
 <div class="well">
     <div class="container-fluid">
         <div class="col-md-8">
-            <input class="btn btn-primary btn-lg btn-block" type="submit" tabindex="17">
+            <input class="btn btn-primary btn-lg btn-block" type="submit" tabindex="27">
         </div>
         <div class="col-md-4">
-            <input id="print_btn" class="btn btn-default btn-lg btn-block" onclick="window.open('printtest.php', '  printwindow');" <?php
+            <input id="print_btn" class="btn btn-default btn-lg btn-block" onclick="PrintModal();" <?php
             if(!isset($_SESSION['PRINTID'])){
             echo "disabled=\"disabled\" ";
             }
-            ?> type="button" value="Print Labels" tabindex="18">
+            ?> type="button" value="Print Labels" tabindex="28">
         </div>
     </div>
 </div>
 </form>
 <datalist id="artists"></datalist>
-    
+
+<div id="printModal" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Print Options</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="template" class="col-sm-4 control-label">Media</label>
+                            <div class="col-sm-4">
+                                <select class="form-control" id="media-type">
+                                    <option value="5160">Avery 5160</option>
+                                    <option value="5163">Avery 5163</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="start" class="col-sm-9 control-label">Start Number</label>
+                            <div class="col-sm-3">
+                                <input type="number" class="form-control" id="start" value="1" max="30" min="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-inline">
+                        <div class="col-sm-3">
+                            <label>
+                                <input type="checkbox" id="outline" value="true">
+                                Show Outlines
+                            </label>
+                        </div>
+                    </div>
+                </form>
+                <!--<p>Please choose your media</p>
+                <p class="text-warning"><small>... small text ... </small></p>-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="PrintLabels()">Print</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <style>
   .ui-autocomplete-loading {
@@ -241,6 +323,21 @@
 
 
 <script type="text/javascript">
+    function PrintModal(printer){
+        $("#printModal").modal({
+            show: 'true'
+        });
+        //window.open('printtest.php', '  printwindow');
+    }
+    
+    function PrintLabels(){
+        print_start = $("#start").val();
+        media_type = $("#media-type").val();
+        outline = $("#outline").is(':checked');
+        window.open('printtest.php?type='+media_type+'&start='+print_start+
+                '&outline='+outline, '  printwindow');
+    }
+    
     function UpdateAutoArtist(method,id){
         method = typeof method !== 'undefined' ? method : "any";
         id = typeof id !== 'undefined' ? id : "art_field";
@@ -271,7 +368,14 @@
         
         document.querySelector('form').onkeypress = checkEnter;
         $.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
-        $( "#indate" ).datepicker();
+        $( "#indate" ).datepicker({
+            changeMonth: true,
+            changeYear: true
+        });
+        $( "#reldate" ).datepicker({
+            changeMonth: true,
+            changeYear: true
+        });
         //update_labels()
         //$("#art_field").keyup(catch_enter());
         $('input[type="checkbox"].style1').checkbox({
@@ -388,6 +492,9 @@
         
     })*/
 </script>
+<?php
+    if(isset($_SESSION['PRINTID'])){
+?>
 <div class="panel panel-info">
     <div class="panel-heading">Entries to be print (dev only)</div>
     <div class="panel-body">
@@ -398,3 +505,6 @@
     ?>
     </div>
 </div>
+<?php
+    }
+?>

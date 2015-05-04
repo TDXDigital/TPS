@@ -20,6 +20,10 @@ include_once '../TPSBIN/functions.php';
 $URR=$_SESSION['user'];
 $PDR=$_SESSION['password'];
 
+if(!isset($_SESSION['user'])||!isset($_SESSION['password'])){
+    // log error and return error 500
+}
+
 $USR=easy_crypt(ENCRYPTION_KEY,$URR);
 $PWD=easy_crypt(ENCRYPTION_KEY,$PDR);
         

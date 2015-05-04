@@ -1,7 +1,8 @@
 <?php
-    session_start();
-
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
+include"../TPSBIN/functions.php";
+include"../TPSBIN/db_connect.php";
+/*
+$con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
@@ -9,13 +10,13 @@ if (!$con){
 	username=' . $_SESSION["username"]);
 }
 else if($con){
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../login.php');}
+	if(!mysqli_select_db($_SESSION['DBNAME'])){header('Location: ../login.php');}
 	
     }
 else{
 	echo 'ERROR!';
 }
-
+*/
 ?>
 
 <!DOCTYPE HTML>
@@ -39,10 +40,14 @@ else{
 		<table border="0" class="tablecss">
 			<?php
 				$SQL = "SELECT * FROM station";
-				$STATIONS = mysql_query($SQL);
+				$STATIONS = $mysqli->query($SQL);
 				$i = 0;
+                                if($STATIONS->num_rows==0){
+                                    echo "<tr><td colspan='5'><span><strong style='color:Red;'>ERROR NO STATION CREATED: </strong>"
+                                    . "<a href='p1insertstation.php'> Please create a station</a></span></td></tr>";
+                                }
 				echo "<tr><th>Station Name</th><th>Callsign</th><th>Designation</th><th>Frequencies</th><th>Address</th></tr>";
-				while($ST = mysql_fetch_array($STATIONS)){
+				while($ST = $STATIONS->fetch_array()){
 					echo "<tr ";
 					if($i%2){
 						echo " style = \"background-colod:lightblue\" />";
