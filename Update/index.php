@@ -84,11 +84,17 @@ function DatabaseUpdateCheck($Update_PKG){
                     http_response_code(400);
                 }
                 $Pass = FALSE;
-                if(empty($return)){
+                if(empty($return)&&sizeof($key_only)===sizeof($match)){
                     // assume diff was fine
                     $Pass = TRUE;
                 }
+                else{
+                    // FAIL, due to empty string or mismatch size
+                    //echo sizeof($key_only)." : ".sizeof($match);
+                }
                 $final = array("Status"=>$Pass,"Result"=>$return);
+                /*echo sizeof($key_only);
+                echo sizeof($new);*/
                 return json_encode($final);
                 /*var_dump($match);
                 var_dump($keys);
