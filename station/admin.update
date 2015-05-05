@@ -1,0 +1,66 @@
+<?php
+if(!$updates = scandir("./Update/proc/")){
+    print "<div class='alert alert-critical' role='alert'>page undefined</div>";
+    print "</div>";
+}
+else{
+    $update_JSON = array();
+    foreach ($updates as $update){
+        if(strtolower(substr($update,-5))==='.json'){
+            $update_JSON[$update]=json_decode(file_get_contents('./Update/proc/'.$update),true);
+        }
+    }
+    //var_dump($update_JSON);
+    $updateList = [];
+    print "</br><table class='table table-bordered table-hover' >"
+    . "<thead><th>#</th><th>Type</th><th>Update Status</th><th>Apply Update</thead><tbody>";
+    foreach ($update_JSON as $file => $update){
+        //array_push($updateList,$update['TPS_Errno']);
+        $updateList[$file]=$update['TPS_Errno'];
+        print "<tr><td>".$update['TPS_Errno']."</td>"
+                . "<td>".$update['type']."</td>"
+                . "<td id='".$update['TPS_Errno']."'><span id='$file' class='glyphicon glyphicon-transfer' aria-hidden='true'>&nbsp;Checking... (dev)</td>"
+                . "<td><button type='button' class='btn btn-danger'><span class='glyphicon glyphicon-save' aria-hidden='true'><span>&nbsp;Apply Update</span></button>";
+                //. "<span id='$file' class='glyphicon glyphicon-save' aria-hidden='true'>&nbsp;Apply</td>";
+        print "</tr>";
+    }
+    print "</tbody></table>";
+}
+?>
+<script type="text/javascript">
+    list = <?php print json_encode($updateList);?>
+    
+    $(document).ready(function(){
+        $.each(list,function(index,value){
+            $.ajax({
+                url: "Update/",
+                method: "POST",
+                data: {q:"c",f:index},
+                statusCode:{
+                    200 : function(data){
+                        result = $.parseJSON(data);
+                        if(result.Status===true){
+                            $("#"+value).html("<div class='alert alert-success' role='alert'><span class='glyphicon glyphicon-ok-circle' aria-hidden=true></span>&nbspStatus OK</div>");
+                        }
+                        else{
+                            $("#"+value).html("<div class='alert alert-warning' role='alert'><span class='glyphicon glyphicon-info-sign' aria-hidden=true></span>&nbspUpdate Required!</div>");
+                        }
+                    },
+                    400 : function(){
+                        
+                    },
+                    403 : function(){
+                        
+                    },
+                    404 : function(){
+                        
+                    }
+                }
+            });//.done(function( msg ) {
+                //alert( "Data Saved: " + msg );
+            //});
+        });
+    });
+</script>
+<?php
+
