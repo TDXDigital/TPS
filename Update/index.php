@@ -109,6 +109,8 @@ function DatabaseUpdateCheck($Update_PKG){
 
 function DatabaseUpdateApply($Update_PKG,$path){
     if($Update_PKG['execute']=='SQL'){
+        
+        //error_log("SQL Selected");
         if(!defined($mysqli)){
             if(!include_once '../TPSBIN/functions.php'){
                 printf("Exception");
@@ -120,8 +122,11 @@ function DatabaseUpdateApply($Update_PKG,$path){
                 throw new Exception("database connection failed - file not found");
             }
         }
-        $needed = json_decode(DatabaseUpdateCheck($Update_PKG));
-        if($needed['Status']===false){
+        //error_log("skipping check");
+        //error_log("checking if update is required");
+        //$needed = json_decode(DatabaseUpdateCheck($Update_PKG));
+        //error_log("JSON:".json_encode($needed));
+        //if($needed['Status']===false){
             // needs update
             if(strtoupper($Update_PKG['SQL_QRY']['UPDATE_TYPE'])==="FILE"){
                 $sql_file = $Update_PKG['SQL_QRY']['UPDATE'];
@@ -131,17 +136,23 @@ function DatabaseUpdateApply($Update_PKG,$path){
                         http_response_code(400);
                     }
                     else{
-                        $mysqli->query($sql);
+                        if(!$mysqli->query($sql)){
+                            //http_response_code(400);
+                            return json_encode(array("Status"=>false,"Result"=>array("SQL"=>$sql,"ERROR"=>mysqli.error)));
+                        }
+                        else{
+                            return json_encode(array("Status"=>true,"Result"=>array("")));
+                        }
                     }
                 }
             }
-        }
+        /*}
         elseif($needed['Status']===null){
             http_response_code(400);
-        }
+        }*/
     }
     else{
-        http_response_code(400);
+        return http_response_code(400);
     }
 }
 
@@ -169,7 +180,8 @@ function ApplyUpdate($file,$path) {
     $Update_PKG = json_decode(file_get_contents($file),true);
     switch ($Update_PKG['type']):
         case 'database':
-            print DatabaseUpdate($Update_PKG,$path);
+            error_log("Apply Update: database determined");
+            print DatabaseUpdateApply($Update_PKG,$path);
             break;
         default :
             http_response_code(400);//json_encode(array("Status"=>null,"Result"=>array("ERROR")));
