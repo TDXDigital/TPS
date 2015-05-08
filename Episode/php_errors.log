@@ -1,9 +1,0 @@
-[28-Jan-2015 04:05:48 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in C:\Users\James\Documents\TPS_GIT\Episode\p1update.php on line 57
-[28-Jan-2015 04:05:48 UTC] PHP Deprecated:  Function ereg() is deprecated in C:\Users\James\Documents\TPS_GIT\Episode\p1update.php on line 94
-[28-Jan-2015 04:05:48 UTC] PHP Deprecated:  Function ereg() is deprecated in C:\Users\James\Documents\TPS_GIT\Episode\p1update.php on line 99
-[28-Jan-2015 04:05:49 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in C:\Users\James\Documents\TPS_GIT\Episode\p1update.php on line 57
-[28-Jan-2015 04:05:49 UTC] PHP Deprecated:  Function ereg() is deprecated in C:\Users\James\Documents\TPS_GIT\Episode\p1update.php on line 94
-[28-Jan-2015 04:05:49 UTC] PHP Deprecated:  Function ereg() is deprecated in C:\Users\James\Documents\TPS_GIT\Episode\p1update.php on line 99
-[28-Jan-2015 04:09:35 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in C:\Users\James\Documents\TPS_GIT\Episode\p1update.php on line 57
-[28-Jan-2015 04:09:35 UTC] PHP Deprecated:  Function ereg() is deprecated in C:\Users\James\Documents\TPS_GIT\Episode\p1update.php on line 94
-[28-Jan-2015 04:09:35 UTC] PHP Deprecated:  Function ereg() is deprecated in C:\Users\James\Documents\TPS_GIT\Episode\p1update.php on line 99

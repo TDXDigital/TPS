@@ -1,5 +1,6 @@
 # example of update package
-```{
+```XML
+{
     "TPS_Errno": "DBUD-001", #Update Name (must be unique)  
     "type" : "database", # type (database, XML, file)  
     "execute" : "SQL", # operation type SQL or file  
@@ -20,4 +21,5 @@
         "UPDATE_TYPE" : "FILE", #update source FILE or STATEMENT  
         "UPDATE" : "LIBRARY_UPDATE_1.sql" # update file or statement depending on Type
     }
-}```
+}
+```

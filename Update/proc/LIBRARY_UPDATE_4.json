@@ -6,8 +6,7 @@
         "TEST": "SHOW COLUMNS FROM `library` WHERE `Field` LIKE 'playlist_flag';",
         "RESULT" : {
             "Field" : [
-                "playlist_flag",
-                "TEST"
+                "playlist_flag"
             ]
         },
         "UPDATE_TYPE" : "FILE",
