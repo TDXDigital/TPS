@@ -46,3 +46,5 @@ The user will use a web browser or other supported application to connect to the
 ####The following PHP extensions are required:
 * LDAP
 * mcrypt
+* mysqli
+* mysqlnd [recommended]
