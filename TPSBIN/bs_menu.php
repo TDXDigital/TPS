@@ -145,11 +145,14 @@
             <span class="icon-bar"></span>
           </button>
             <!--Completed Mini Menu-->
-            <a class="navbar-brand" href="<?php echo $base."/\"><img src=\"$base\\$logo";?>" style="height: 20px;" title="logo"/><span>TPS Broadcast</span></a>
+            <a class="navbar-brand" href="<?php echo $base."/\"><img src=\"$base\\$logo";?>" style="height: 20px;" title="logo" ></a>
         </div>
         <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-              <!-- User access to Dashboard is required. can not remove permission-->
+            <ul class="nav navbar-nav">
+                <li class="active"><a <?php echo "href=\"".$base."\"" ?> >TPS Broadcast</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+            <!-- User access to Dashboard is required. can not remove permission-->
             <li><a <?php echo "href=\"".$base."\"" ?> >Dashboard</a></li>
             <?php   
                 // determine permission for menu
@@ -164,9 +167,11 @@
                 //$automation_permission=max($permissions['Audit_View'],$permissions['Audit_Edit'],$permissions['Audit_Create']); // TODO: Store in DB
                 $audit_permission=$permissions['Audit_View'];//max($permissions['Audit_View']);
                 if(max($station_permission,$members_permission,$program_permission,$genre_permission,$playsheet_permission,$advertising_permission,$audit_permission)==0){
-                    echo "<li><div class='alert alert-danger'>"
-                    . "<span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\">"
-                            . "</span><span> No permissions available  [ $dbname , $access ]</span></div></li>";
+                    if(!$SETUP){
+                        echo "<li><div class='alert alert-danger'>"
+                        . "<span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\">"
+                        . "</span><span> No permissions available  [ $dbname , $access ]</span></div></li>";
+                    }
                 }
                 if($station_permission>0){
                     print("<li><a href=\"$base/station/settings.php?old\">Station Settings</a></li>");
