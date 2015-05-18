@@ -17,7 +17,7 @@
 .ui-combobox-input {
 	width: 60px;
 	margin: 0;
-	#padding: 0.3em;
+	/*padding: 0.3em;*/
 }
 .ui-button-text {
 	padding: 0.3em 0.1em;
