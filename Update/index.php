@@ -138,7 +138,7 @@ function DatabaseUpdateApply($Update_PKG,$path){
                     else{
                         if(!$mysqli->query($sql)){
                             //http_response_code(400);
-                            return json_encode(array("Status"=>false,"Result"=>array("SQL"=>$sql,"ERROR"=>mysqli.error)));
+                            return json_encode(array("Status"=>false,"Result"=>array("SQL"=>$sql,"ERROR"=>$mysqli->errno)));
                         }
                         else{
                             return json_encode(array("Status"=>true,"Result"=>array("")));

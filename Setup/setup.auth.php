@@ -62,74 +62,76 @@
               </div><!-- /.row -->
               
               <br>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">LDAP / LDAP+SSL (LDAPS)</h3>
+              <div id="LDAP">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">LDAP / LDAP+SSL (LDAPS)</h3>
+                    </div>
+                    <div class="panel-body">
+                        Please complete the following section if you are using a LDAP or LDAPS 
+                        form of authentication. Currently manual manipulation of the LDAP_auth.php
+                        module in the Security folder must be performed to set the binding username and password.
+                        Anonymous binds are not supported at this time. 
+
+                        Please add "WebUsers" and "WebAdmins" group to your LDAP or Active Directory. 
+                        Assign "WebAdmins" to Administrators and "WebUsers" to your Users
+                    </div>
                 </div>
-                <div class="panel-body">
-                    Please complete the following section if you are using a LDAP or LDAPS 
-                    form of authentication. Currently manual manipulation of the LDAP_auth.php
-                    module in the Security folder must be performed to set the binding username and password.
-                    Anonymous binds are not supported at this time. 
-                    
-                    Please add "WebUsers" and "WebAdmins" group to your LDAP or Active Directory. 
-                    Assign "WebAdmins" to Administrators and "WebUsers" to your Users
+                <div class="input-group">
+                    <label for="ld_port" class="input-group-addon">LDAP/LDAPS Port</label>
+                    <input id="ld_port" class="form-control" type="number" name="ldp" min="1" <?php
+                           if(isset($_SESSION['ldap_port'])&&!is_null($_SESSION['ldap_port'])){
+                               echo "value=\"".$_SESSION['ldap_port']."\" ";
+                           }
+                           else{
+                               echo " placeholder=\"636\" ";
+                           }
+
+                           ?>/>
                 </div>
-            </div>
-            <div class="input-group">
-                <label for="ld_port" class="input-group-addon">LDAP/LDAPS Port</label>
-                <input id="ld_port" class="form-control" type="number" name="ldp" min="1" <?php
-                       if(isset($_SESSION['ldap_port'])&&!is_null($_SESSION['ldap_port'])){
-                           echo "value=\"".$_SESSION['ldap_port']."\" ";
-                       }
-                       else{
-                           echo " placeholder=\"636\" ";
-                       }
-                       
-                       ?>/>
-            </div>
-            <br>
-            <div class="input-group">
-                <label for="ldap_user" class="input-group-addon">LDAP/LDAPS Server</label>
-                <input id="ldap_user" class="form-control" type="text" name="lds" 
-                        <?php
-                       if(isset($_SESSION['ldap_server'])&&!is_null($_SESSION['ldap_server'])){
-                           echo " value=\"".$_SESSION['ldap_server']."\" ";
-                       }
-                       else{
-                           echo " placeholder=\"ldap://ldap.server.local/ or ldaps://127.0.0.1/ \" ";
-                       }
-                       
-                       ?>"/>
-            </div>
-            <br>
-            <div class="input-group">
-                <label for="ldap_dn" class="input-group-addon">Base DN</label>
-                <input id="ldap_dn" class="form-control" type="text" name="dn" 
-                       <?php
-                       if(isset($_SESSION['ldap_dn'])&&!is_null($_SESSION['ldap_dn'])){
-                           echo "value=\"".$_SESSION['ldap_dn']."\" ";
-                       }
-                       else{
-                           echo " placeholder=\"CN=Users,DC=forest,DC=consoto,DC=local\" ";
-                       }
-                       
-                       ?>/>
-            </div>
-            <br>
-            <div class="input-group">
-                <label for="ldap_domn" class="input-group-addon">Domain</label>
-                <input id="ldap_domn" class="form-control" type="text" name="domn" 
-                       <?php
-                       if(isset($_SESSION['ldap_domn'])&&!is_null($_SESSION['ldap_domn'])){
-                           echo "value=\"".$_SESSION['ldap_domn']."\" ";
-                       }
-                       else{
-                           echo " placeholder=\"consoto\" ";
-                       }
-                       
-                       ?>/>
-            </div>
+                <br>
+                <div class="input-group">
+                    <label for="ldap_user" class="input-group-addon">LDAP/LDAPS Server</label>
+                    <input id="ldap_user" class="form-control" type="text" name="lds" 
+                            <?php
+                           if(isset($_SESSION['ldap_server'])&&!is_null($_SESSION['ldap_server'])){
+                               echo " value=\"".$_SESSION['ldap_server']."\" ";
+                           }
+                           else{
+                               echo " placeholder=\"ldap://ldap.server.local/ or ldaps://127.0.0.1/ \" ";
+                           }
+
+                           ?>"/>
+                </div>
+                <br>
+                <div class="input-group">
+                    <label for="ldap_dn" class="input-group-addon">Base DN</label>
+                    <input id="ldap_dn" class="form-control" type="text" name="dn" 
+                           <?php
+                           if(isset($_SESSION['ldap_dn'])&&!is_null($_SESSION['ldap_dn'])){
+                               echo "value=\"".$_SESSION['ldap_dn']."\" ";
+                           }
+                           else{
+                               echo " placeholder=\"CN=Users,DC=forest,DC=consoto,DC=local\" ";
+                           }
+
+                           ?>/>
+                </div>
+                <br>
+                <div class="input-group">
+                    <label for="ldap_domn" class="input-group-addon">Domain</label>
+                    <input id="ldap_domn" class="form-control" type="text" name="domn" 
+                           <?php
+                           if(isset($_SESSION['ldap_domn'])&&!is_null($_SESSION['ldap_domn'])){
+                               echo "value=\"".$_SESSION['ldap_domn']."\" ";
+                           }
+                           else{
+                               echo " placeholder=\"consoto\" ";
+                           }
+
+                           ?>/>
+                </div>
+              </div>
             <br>
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -168,10 +170,15 @@
                        ?>/>
             </div>
             <br>
-              <div class="input-group">
-                <label for="adpw" class="input-group-addon">Admin Password</label>
-                <input id="adpw" class="form-control" type="password" name="adpw"/>
-            </div>
+                <div class="input-group">
+                    <label for="adpw" class="input-group-addon">Admin Password</label>
+                    <input id="adpw" class="form-control" type="password" name="adpw"/>
+                </div>
+            <br>
+                <div class="input-group">
+                    <label for="adpwc" class="input-group-addon">Confirm Password</label>
+                    <input id="adpwc" class="form-control" type="password" name="adpwc"/>
+                </div>
               <br>
             
             

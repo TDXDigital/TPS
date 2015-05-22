@@ -28,14 +28,14 @@
     ?>'/>
     <input type='hidden' name='q' value='complete'/>
 <div class="panel panel-primary">
-    <div class="panel-heading">Corporate Settings</div>
+    <div class="panel-heading">Installation</div>
     <div class="panel-body">
         <fieldset>
             <div class="row">
                 <div class="col-lg-6">
                     <strong>Please Wait while your system is installed.</strong>
                     <div class="alert alert-warning" role="alert"><span class="glyphicon glyphicon-warning-sign"></span> IMPORTANT: DO NOT REFRESH YOUR BROWSER</div>
-                    <div id="complete" class="alert alert-success" role="alert"><span class="glyphicon glyphicon-check"></span></div>
+                    <div id="complete" class="alert alert-success" role="alert"><span class="glyphicon glyphicon-check"></span><span id="completed"></span></div>
                   <br>
                     <div class="progress">
                         <div id="install_progress_bar" class="progress-bar progress-bar-striped active"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
@@ -43,12 +43,17 @@
                         </div>
                     </div>
                 </div><!-- /.col-lg-3 -->
-                <input class="btn btn-default" type="submit" value="Begin Installation" onclick="install_db(); return false"/>
-                <input class="btn btn-default" type="submit" value="Create Auth Login" onclick="install_xml(); return false"/>
-              </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <input class="btn btn-default" type="submit" value="Begin Installation" onclick="install_db(); return false"/>
+                    <input class="btn btn-default" type="submit" value="Create Auth Login" onclick="install_xml(); return false"/>
+                    <input class="btn btn-default" type="submit" value="Create Administrator" onclick="install_admin(); return false"/>
+                </div>
+            </div>
         </fieldset>
         <br>
-        <input class="btn btn-default" type="submit" value="Next &raquo;" disabled/>
+        <input id="next" class="btn btn-default" type="submit" value="Next &raquo;" disabled/>
         </form>
     </div>
 </div>

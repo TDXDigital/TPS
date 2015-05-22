@@ -1,5 +1,9 @@
 <?php
 
+if(!extension_loaded('mysqli')||!extension_loaded('mysql')){
+    die(http_response_code(500));
+}
+
 if(!isset($_SESSION)){
     session_start();
 }
@@ -23,6 +27,7 @@ $PDR=$_SESSION['password'];
 $USR=easy_crypt(ENCRYPTION_KEY,$URR);
 $PWD=easy_crypt(ENCRYPTION_KEY,$PDR);
         
+error_reporting(0);
 $SERV = [
     "ID"=>  $_SESSION['callsign'] . rand(0, 999),
     "NAME"=> $_SESSION['brand'],
@@ -60,8 +65,16 @@ foreach($SERV as $key=>$value)
    $server->appendChild($em);
 
 }
-$doc->save('../TPSBIN/XML/DBSETTINGS.xml');
-chmod('../TPSBIN/XML/DBSETTINGS.xml',0600);
+if(function(){
+    $doc->save('../TPSBIN/XML/DBSETTINGS.xml');
+    chmod('../TPSBIN/XML/DBSETTINGS.xml',0600);
+})
+{
+    print json_encode(array("status"=>"Complete"));
+}
+else{
+    print json_encode(array("status"=>"Failed"));
+}
 
 // load
 /*

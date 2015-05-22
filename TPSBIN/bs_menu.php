@@ -11,6 +11,7 @@
             goto SETVAR_SETUP;
         }
     }
+    $UPDATE = FALSE;
     $base = $_SESSION['BASE_REF']?:"";
     if(isset($_SESSION['m_logo'])){
         $logo = $_SESSION['m_logo'];
@@ -76,6 +77,8 @@
         
         // fetch result
         if(!$stmt->fetch()){
+            http_response_code(500);
+            print "Please check that permissions are assigned <a href=''></a>";
             die("F:".$stmt->error);
         }
         
@@ -97,7 +100,22 @@
     }
     else{
         if(!isset($SETUP)){
-            die('Error 401<br><a href=\'logout.php\'>Authentication Error, please login</a><br><br><sub>GURU: FAILED DB LINK:'.$mysqli->error.'</sub>');
+            if($mysqli->errno===1054){
+                //update is required
+                if($_SESSION['access']=='2'){
+                    print ("Update required");
+                    $page_check = filter_input(INPUT_GET,'q');
+                    if($page_check!='update'){
+                        
+                    }
+                    $SETUP=FALSE;
+                    goto SETVAR_SETUP;
+                }
+            }
+            else{
+                http_response_code(401);
+                die('Error 401<br><a href=\'logout.php\'>Authentication Error, please login</a><br><br><sub>GURU: FAILED DB LINK:('.$mysqli->errno.') '.$mysqli->error.'</sub>');
+            }
         }
         else{
             SETVAR_SETUP:
@@ -167,7 +185,7 @@
                 //$automation_permission=max($permissions['Audit_View'],$permissions['Audit_Edit'],$permissions['Audit_Create']); // TODO: Store in DB
                 $audit_permission=$permissions['Audit_View'];//max($permissions['Audit_View']);
                 if(max($station_permission,$members_permission,$program_permission,$genre_permission,$playsheet_permission,$advertising_permission,$audit_permission)==0){
-                    if(!$SETUP){
+                    if($SETUP==FALSE&&$UPDATE==FALSE){
                         echo "<li><div class='alert alert-danger'>"
                         . "<span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\">"
                         . "</span><span> No permissions available  [ $dbname , $access ]</span></div></li>";
