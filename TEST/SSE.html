@@ -5,6 +5,7 @@
 </head>
 <body>
   <script>
+      /*https://developer.mozilla.org/en-US/docs/Web/API/EventSource*/
     var source = new EventSource('/events');
     source.onmessage = function(e) {
       document.body.innerHTML += e.data + '<br>';

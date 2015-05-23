@@ -138,7 +138,7 @@ function DatabaseUpdateApply($Update_PKG,$path){
                     else{
                         if(!$mysqli->query($sql)){
                             //http_response_code(400);
-                            return json_encode(array("Status"=>false,"Result"=>array("SQL"=>$sql,"ERROR"=>mysqli.error)));
+                            return json_encode(array("Status"=>false,"Result"=>array("SQL"=>$sql,"ERROR"=>$mysqli->errno)));
                         }
                         else{
                             return json_encode(array("Status"=>true,"Result"=>array("")));
@@ -189,18 +189,22 @@ function ApplyUpdate($file,$path) {
     endswitch;
 }
 
-error_reporting(0);
-$callerIP = $_SERVER['SERVER_ADDR'];
-if(!$callerIP=localhost)
+error_reporting( E_ERROR );
+// function not consistent 
+// http://stackoverflow.com/questions/5705082/is-serverserver-addr-safe-to-rely-on
+
+/*$callerIP = $_SERVER['SERVER_ADDR']; 
+if(!$callerIP==localhost)
 {
+    print json_encode(array("status"=>false,"result"=>array("ADDR"=>$callerIP)));
     die(http_response_code(403));
-}
+}*/
 $type = filter_input(INPUT_GET,'q',FILTER_SANITIZE_SPECIAL_CHARS)?:
         filter_input(INPUT_POST,'q',FILTER_SANITIZE_SPECIAL_CHARS);
 $file = filter_input(INPUT_GET,'f',FILTER_SANITIZE_SPECIAL_CHARS)?:
         filter_input(INPUT_POST,'f',FILTER_SANITIZE_SPECIAL_CHARS);
 $path = filter_input(INPUT_GET, 'd')?:
-        filter_input(INPUT_GET, 'd')?: "proc/";
+        filter_input(INPUT_POST, 'd')?: "proc/";
 if(strtolower($type)==='a'){
     ApplyUpdate($path.$file,$path);
 }

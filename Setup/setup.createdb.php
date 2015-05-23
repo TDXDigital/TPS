@@ -5,12 +5,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+error_reporting(0);
+if(!extension_loaded('mysqli')||!extension_loaded('mysql')){
+    die(http_response_code(500));
+}
+
 $CHECKDB=false;
 
 $return=[];
 include_once "../TPSBIN/functions.php";
     if(!isset($_SESSION)){
         sec_session_start();
+    }
+    if(!isset($_SESSION['host'])){
+        http_response_code(400);
+        die("Missing critical values, please restart setup");
     }
 
     define("HOST",$_SESSION['host']);
@@ -22,23 +31,28 @@ include_once "../TPSBIN/functions.php";
      * Connect to DB, Do not define DATABASE
      * Could not use db_connect as DATABASE is needed.
      */
-if(!$mysqli = new mysqli(HOST, USER, PASSWORD)){
+    !$mysqli = new mysqli(HOST, USER, PASSWORD);
+if($mysqli->connect_error){
     /*
      * return 403
      * cancel run (exit)
      */
-    \header('HTTP/1.1 403 Access Denied', true, 403);
-    exit;
+    http_response_code(403);
+    //\header('HTTP/1.1 403 Access Denied', true, 403);
+    //exit;
     
-    //$return=["status"=>"403","Result"=>$mysqli->connect_error,"e-code"=>$mysqli->connect_errno];
+    $return=["status"=>"403","Result"=>$mysqli->connect_error,"e-code"=>$mysqli->connect_errno];
 }
 elseif(!isset($_SESSION['database'])){
     /*
      * cannot proceede return 400
      * exit run
      */
-    \header('HTTP/1.1 400 Bad Request', true, 400);
-    exit;
+    //\header('HTTP/1.1 400 Bad Request', true, 400);
+    http_response_code(400);
+    //print "Cannot proceede, Database not set";
+    $return=["status"=>"400","Result"=>$mysqli->connect_error,"e-code"=>$mysqli->connect_errno];
+    //exit;
 }
 /*
  * Connection Established.
@@ -86,11 +100,14 @@ else{
     $functions = \file_get_contents("setup.functions.sql");
     //$functions = preg_replace("/[\\n\\r]+/", ' ' , $functions);
     $functions = preg_replace("/[?]+/", $DB_NAME, $functions);
-    if($mysqli->query($functions)!=TRUE){
+    
+    //temporarily removed
+    /*if($mysqli->query($functions)!=TRUE){
         $return=["status"=>"Error","Result"=>"Query failed: (" . $mysqli->errno . ") " . $mysqli->error];
         $error_check=TRUE;
-        echo "<br>".$functions."<br>";
-    }
+        //echo "<br>".$functions."<br>";
+    }*/
+    
     if($error_check===false){
         $return=["status"=>"Complete","Result"=>"Complete"];
     }

@@ -8,7 +8,7 @@ error_reporting(E_ERROR | E_PARSE);
 
 // Storage File (full Directory)
 $DIR = "C:\inetpub\Drupal\TPS\metaupdate\Now_Playing.txt";
-
+$stationname = "CKXU 88.3 FM - Lethbridge's True Alternative";
 $STORAGE = "";
 // Implement Timestamp check against DB for switch changes
 
@@ -59,16 +59,16 @@ function UpdateMeta(){
             'sid'=>3
         ),
         2 => array(
-            'host'=>'cent4.serverhostingcenter.com',
-            'port'=>8715,
+            'host'=>'172.22.10.13',
+            'port'=>8000,
             'password'=>'88.3ForLife',
-            'sid'=>0
+            'sid'=>4
         ),
         3 => array(
             'host'=>'172.22.10.13',
             'port'=>8000,
             'password'=>'88.3ForLife',
-            'sid'=>1
+            'sid'=>5
         )
     );
 
@@ -79,35 +79,35 @@ function UpdateMeta(){
             'user'=>'root',
             'password'=>'88.3ForLife',
             'database'=>'CKXU'
-            ),
+            )/*,
         'RadioDJ'=>array(
             'address'=>'172.22.10.50',
             'user'=>'root',
             'password'=>'88.3ForLife',
             'database'=>'radiodj164_2'
-        )
+        )*/
     );
 
     // Connect to DBs
     echo "Establising Database Connections<br/>";
     $dbl = new mysqli($Source['Logs']['address'],$Source['Logs']['user'],$Source['Logs']['password'],$Source['Logs']['database']);
-    $dba = new mysqli($Source['RadioDJ']['address'],$Source['RadioDJ']['user'],$Source['RadioDJ']['password'],$Source['RadioDJ']['database']);
+    //$dba = new mysqli($Source['RadioDJ']['address'],$Source['RadioDJ']['user'],$Source['RadioDJ']['password'],$Source['RadioDJ']['database']);
 
-    if ($dbl->connect_errno || $dba->connect_errno) {
+    if ($dbl->connect_errno /*|| $dba->connect_errno*/) {
         printf("Connect a error: %s\n", $dbl->connect_error);
-        printf("Connect b error: %s\n", $dba->connect_error);
-        return 0;
+        //printf("Connect b error: %s\n", $dba->connect_error);
+        return 1;
     }
     else{
         echo "Databases connected!<br/>";
     }
 
     // Get currently playing on RadioDJ
-    $a_result = $dba->query("SELECT `date_played`, `artist`, `title`, `duration` FROM `history` WHERE `song_type` = 0 ORDER BY `date_played` DESC LIMIT 1");
+    /*$a_result = $dba->query("SELECT `date_played`, `artist`, `title`, `duration` FROM `history` WHERE `song_type` = 0 ORDER BY `date_played` DESC LIMIT 1");
     $rdj = $a_result->fetch_array();
     $data = $rdj['artist'] . ' - ' . $rdj['title'];
-
-
+*/
+    $data = "Live on $stationname ";//$rdj['artist'] . ' - ' . $rdj['title'];
     // Get Current Program on air and song
     $l_result = $dbl->query("
 SELECT episode.programname, song.title, song.artist, song.time, episode.starttime, ADDDATE(episode.starttime,INTERVAL (SELECT length FROM program where program.programname=episode.programname) minute) AS endtime
@@ -176,7 +176,7 @@ order by song.time desc, episode.starttime desc limit 1;");
     }
 
     $dbl->close();
-    $dba->close();
+    //$dba->close();
 
 }
 
@@ -186,4 +186,4 @@ for($i=0;$i<5;$i++){
     sleep(10);
 }
 SaveStorage();
-?>
+

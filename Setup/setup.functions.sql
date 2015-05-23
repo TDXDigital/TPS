@@ -1,11 +1,4 @@
-USE `?` ;
-
-DELIMITER $$
-
-DROP FUNCTION IF EXISTS `levenshtein` $$
-DROP FUNCTION IF EXISTS `levenshtein_ratio` $$
-
-CREATE DEFINER=`root`@`localhost` FUNCTION `levenshtein`( s1 VARCHAR(255), s2 VARCHAR(255) ) RETURNS int(11)
+DELIMITER | DROP FUNCTION IF EXISTS `levenshtein` | DROP FUNCTION IF EXISTS `levenshtein_ratio` | CREATE DEFINER=`root`@`localhost` FUNCTION `levenshtein`( s1 VARCHAR(255), s2 VARCHAR(255) ) RETURNS int(11)
     DETERMINISTIC
 BEGIN 
     DECLARE s1_len, s2_len, i, j, c, c_temp, cost INT; 
@@ -42,7 +35,7 @@ BEGIN
       END WHILE; 
     END IF; 
     RETURN c; 
-  END$$
+  END|
 
 CREATE DEFINER=`root`@`localhost` FUNCTION `levenshtein_ratio`( s1 VARCHAR(255), s2 VARCHAR(255) ) RETURNS int(11)
     DETERMINISTIC
@@ -55,14 +48,14 @@ BEGIN
       SET max_len = s2_len;  
     END IF; 
     RETURN ROUND((1 - LEVENSHTEIN(s1, s2) / max_len) * 100); 
-  END$$
+  END|
 
 CREATE
 TRIGGER `?`.`switchstatus_BINS`
 BEFORE INSERT ON `?`.`switchstatus`
 FOR EACH ROW
 -- Edit trigger body code below this line. Do not edit lines above this one
-insert into `on_air` (`SourceAir`,`SourceRecord`) values ('1','1')$$
+insert into `on_air` (`SourceAir`,`SourceRecord`) values ('1','1')|
 
 
 DELIMITER ;

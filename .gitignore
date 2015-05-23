@@ -30,3 +30,5 @@ images/sampledata/parks/landscape/Thumbs.db
 /php_errors.log
 /Security/SecureLogin/php_errors.log
 /TPSBIN/php_errors.log
+*php_errors.log
+*Thumbs.db

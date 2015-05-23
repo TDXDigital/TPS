@@ -8,7 +8,7 @@
     $from = filter_input(INPUT_POST, "from", FILTER_SANITIZE_STRING);
     $to = filter_input(INPUT_POST, "to", FILTER_SANITIZE_STRING);
 ?>
-<h3 class="sub-header">Missing Playsheets</h3>
+<h3 class="sub-header">Missing Play sheets</h3>
 <?php
     if(isset($message)){
         echo "<div class=\"panel panel-success\">
@@ -32,7 +32,7 @@ $pr_ID = array();
        $stmt->close();
        
        for($i=0;$i<sizeof($pr_name);$i++){
-           echo ""
+           echo "";
        }
    }
    
