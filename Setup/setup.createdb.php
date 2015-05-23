@@ -5,7 +5,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+error_reporting(0);
 if(!extension_loaded('mysqli')||!extension_loaded('mysql')){
     die(http_response_code(500));
 }
@@ -31,15 +31,17 @@ include_once "../TPSBIN/functions.php";
      * Connect to DB, Do not define DATABASE
      * Could not use db_connect as DATABASE is needed.
      */
-if(!$mysqli = new mysqli(HOST, USER, PASSWORD)){
+    !$mysqli = new mysqli(HOST, USER, PASSWORD);
+if($mysqli->connect_error){
     /*
      * return 403
      * cancel run (exit)
      */
-    \header('HTTP/1.1 403 Access Denied', true, 403);
-    exit;
+    http_response_code(403);
+    //\header('HTTP/1.1 403 Access Denied', true, 403);
+    //exit;
     
-    //$return=["status"=>"403","Result"=>$mysqli->connect_error,"e-code"=>$mysqli->connect_errno];
+    $return=["status"=>"403","Result"=>$mysqli->connect_error,"e-code"=>$mysqli->connect_errno];
 }
 elseif(!isset($_SESSION['database'])){
     /*
@@ -48,8 +50,9 @@ elseif(!isset($_SESSION['database'])){
      */
     //\header('HTTP/1.1 400 Bad Request', true, 400);
     http_response_code(400);
-    print "Cannot proceede, Database not set";
-    exit;
+    //print "Cannot proceede, Database not set";
+    $return=["status"=>"400","Result"=>$mysqli->connect_error,"e-code"=>$mysqli->connect_errno];
+    //exit;
 }
 /*
  * Connection Established.

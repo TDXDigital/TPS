@@ -29,6 +29,9 @@ else{
         case "install":
             include_once("setup.run.php");
         break;
+        case "complete":
+            include_once("setup.complete.php");
+        break;
         case "done":
             include_once("setup.done.php");
         break;

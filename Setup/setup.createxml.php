@@ -65,16 +65,24 @@ foreach($SERV as $key=>$value)
    $server->appendChild($em);
 
 }
-if(function(){
-    $doc->save('../TPSBIN/XML/DBSETTINGS.xml');
-    chmod('../TPSBIN/XML/DBSETTINGS.xml',0600);
-})
-{
-    print json_encode(array("status"=>"Complete"));
+//if(function(){
+if($doc->save('../TPSBIN/XML/DBSETTINGS.xml')){
+    if(chmod('../TPSBIN/XML/DBSETTINGS.xml',0600)){
+        print json_encode(array("status"=>"Complete","value"=>$SERV));
+    }
 }
 else{
-    print json_encode(array("status"=>"Failed"));
+    http_response_code(500);
+    print json_encode(array("status"=>"Fail","value"=>$SERV));
 }
+    
+/*})
+{*/
+    
+/*}
+else{
+    print json_encode(array("status"=>"Failed"));
+}*/
 
 // load
 /*
