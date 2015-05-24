@@ -18,6 +18,7 @@
                 "YES"
             ]
         },
+        "Negate" : 1, # true or false, use true for drop statements
         "UPDATE_TYPE" : "FILE", #update source FILE or STATEMENT  
         "UPDATE" : "LIBRARY_UPDATE_1.sql" # update file or statement depending on Type
     }
