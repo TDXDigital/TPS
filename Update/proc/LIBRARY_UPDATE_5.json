@@ -1,0 +1,15 @@
+{
+    "TPS_Errno": "DBUD-005",
+    "type" : "database",
+    "execute" : "SQL",
+    "SQL_QRY" : {
+        "TEST": "SHOW COLUMNS FROM `library` LIKE 'playlistid%';",
+        "RESULT" : {
+            "Field" : [
+            ]
+        },
+        "Negate": 1,
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "LIBRARY_UPDATE_5.sql"
+    }
+}
