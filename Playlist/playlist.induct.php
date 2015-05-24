@@ -14,6 +14,7 @@ $genre = filter_input(INPUT_POST,"genre")?:NULL;
 $datein = filter_input(INPUT_POST, "indate")?:NULL;
 $label = filter_input(INPUT_POST, "label")?:NULL;
 $format = filter_input(INPUT_POST, "format")?:NULL;
+$playlist = filter_input(INPUT_POST, "playlist")?:FALSE;
 $print = filter_input(INPUT_POST, "print")? : 0;
 $accepted = filter_input(INPUT_POST, "accepted")? :0;
 $variousartists = filter_input(INPUT_POST, "va")? :0;
@@ -21,6 +22,7 @@ $label_size = filter_input(INPUT_POST, "Label_Size")? : 1;
 $locale = filter_input(INPUT_POST, "locale")? :"international";
 $release_date = filter_input(INPUT_POST,'rel_date')?:NULL;
 $note = filter_input(INPUT_POST, "notes")?:NULL;
+
 if($locale=="International"){
     $CanCon=0;
 }
@@ -66,8 +68,26 @@ if(is_null($labelNum)||$labelNul=="null"){
     header("location: ../Playlist/?q=new&e=9999&s=3");
 }
 
-if(!$stmt3 = $mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,format,genre,status,labelid,Locale,CanCon,release_date,year,note)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)")){
+if($playlist===FALSE){
+    // check if entry exists in playlist table
+    
+    // if so, report error
+    
+    // else lleave set to FALSE
+    $playlist=1;
+}
+else{
+    // check if entriy exists in 'playlist' table
+    
+    // if not set to 'PENDING'
+    $playlist = 0;
+    
+    // if so set to 'COMPLETE'
+    // this should no happen unless changing back to already set value??
+}
+
+if(!$stmt3 = $mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
     $stmt3->close();
     header("location: ../Playlist/?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
 }
@@ -78,7 +98,7 @@ else{
     $year = NULL;
 }
 if(!$stmt3->bind_param(
-        "sssissiisisss",
+        "sssissiisisssi",
         $datein,
         $artist,
         $album,
@@ -91,15 +111,16 @@ if(!$stmt3->bind_param(
         $CanCon,
         $release_date,
         $year,
-        $note
+        $note,
+        $playlist
         )){
     $stmt3->close();    
-    header("location: ../Playlist/?q=new&e=".$mysqli->errno."&s=3&m=".$mysqli->error);
+    header("location: ../Playlist/?q=new&e=".$mysqli->errno."&s=3_b&m=".$mysqli->error);
 }
 
 if(!$stmt3->execute()){
-    error_log("SQL-STMT Error (SEG-3):[".$stmt3->errno."] ".$stmt3->error);
-    $error = [$stmt3->errno,$stmt3->error];
+    error_log("SQL-STMT Error (SEG-3):[".$mysqli->errno."] ".$mysqli->error);
+    $error = [$mysqli->errno,$mysqli->error];
     $stmt3->close();
     header("location: ../Playlist/?q=new&e=".$error[0]."&s=3&m=".$error[1]);
     //echo "ERROR #".$mysqli->errno . "  " .    $mysqli->error;

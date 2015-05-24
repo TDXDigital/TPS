@@ -184,7 +184,7 @@
                 <input type="checkbox" data-label-prepend="Print" class="style3" name="print" checked="checked" value="1" tabindex="10">
             </div>
             <div class="col-md-1">
-                <input type="checkbox" data-label-prepend="PL" class="style3" name="playlist" value="0" tabindex="11">
+                <input type="checkbox" data-label-prepend="PL" class="style3" name="playlist" checked="checked" value="0" tabindex="11">
             </div>
             <div class="col-md-3">
                 <div id="ind_group" class="input-group">
@@ -208,6 +208,7 @@
                     <label for="notes" class="input-group-addon">Notes</label>
                     <input id="notes" type="text" class="form-control" name="notes" tabindex="15" placeholder="optional"/>
                 </div>
+                <br>
             </div>
         </div>
     </div>
