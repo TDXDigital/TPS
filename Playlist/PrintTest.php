@@ -50,7 +50,7 @@
     </style>
 </head>
 <body>
-    <div class="no-print">This area will not print. please use top and bottom margin of 0.5" and 0.0" sides. some printers may vary</div>
+    <div class="no-print">Please use top and bottom margin of 0.5" and 0.0" sides. some printers may vary, adjust as needed</div>
     <?php
     if($stmt=$mysqli->prepare("SELECT artist, album, format, genre, CanCon, Locale FROM library WHERE RefCode = ?")){
         for($i=1;$i<$indent;$i++){
