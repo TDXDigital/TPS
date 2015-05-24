@@ -60,6 +60,7 @@ elseif(!isset($_SESSION['database'])){
 else{
     if($mysqli->select_db($_SESSION['database'])){
         if($CHECKDB){
+            http_response_code(406);
             $return=["status"=>"Error","Result"=>"Database Exists, cannot continue"];
         }
     }
@@ -82,21 +83,56 @@ else{
     /* Prepared statement, stage 1: prepare */
     
     $error_check=false;
-    foreach($SQL_Statements as $EXEC){
-        if(!empty($EXEC)){
-            $EXEC.=";";
-            if (($mysqli->query($EXEC))!=TRUE) {
-                $return=["status"=>"Error","Result"=>"Query failed: (" . $mysqli->errno . ") " . $mysqli->error];
-                $error_check=TRUE;
-                echo "ERROR:" . $EXEC ."<br><br>".$mysqli->error."<br><br>";
-            }
-            else{
-                //echo $EXEC . "<br><br>";
-            }
-            
-        }
-        
+    try{
+        $mysqli->query("START TRANSACTION");
+    } catch (Exception $ex) {
+
     }
+    try{
+        $mysqli->autocommit(FALSE);
+        foreach($SQL_Statements as $EXEC){
+            if(strlen($EXEC)<6){
+                $EXEC = str_replace(array("\r", "\n"), '', $EXEC);
+            }/*
+            else{
+                $EXEC = str_replace(array("\r", "\n"), ' ', $EXEC);
+            }*/
+            if(!empty($EXEC)){
+                $EXEC.=";";
+                //$mysqli->query($EXEC);
+                if (($mysqli->query($EXEC))!=TRUE) {
+                    $return=["status"=>"Error","Result"=>"Query failed: (" . $mysqli->errno . ") " . $mysqli->error,"Query"=>$EXEC];
+                    $error_check=TRUE;
+                    if($mysqli->errno==1142){
+                        http_response_code(403);
+                    }
+                    else{
+                        http_response_code(500);
+                    }
+                    echo "ERROR:" . $EXEC ."<br><br>".$mysqli->error."<br><br>";
+                    throw new Exception($mysqli->error,$mysqli->errno);
+                }
+                else{
+                    /*if(strpos($EXEC, "CREATE SCHEMA IF NOT EXISTS")){
+                        $mysqli->commit();
+                    }*/
+                    //echo $EXEC . "<br><br>";
+                }
+            }
+        }
+        if($error_check===FALSE){
+        $mysqli->commit();
+        }
+        else{
+            throw new Exception($mysqli->error,$mysqli->errno);
+        }
+    } catch (Exception $e){
+        $return=["status"=>"Error","Result"=>array("Query"=>$e->getMessage(),"Code"=>$e->getCode())];
+        $error_check=TRUE;
+        $mysqli->rollback();
+    }
+    //$mysqli->commit();
+    $mysqli->autocommit(TRUE);
     $functions = \file_get_contents("setup.functions.sql");
     //$functions = preg_replace("/[\\n\\r]+/", ' ' , $functions);
     $functions = preg_replace("/[?]+/", $DB_NAME, $functions);

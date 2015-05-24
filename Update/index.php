@@ -22,6 +22,7 @@ function DatabaseUpdateCheck($Update_PKG){
                 $result = [];
                 $key_only = []; // likely not needed
                 $keys = $Update_PKG["SQL_QRY"]['RESULT'];
+                $negate = $Update_PKG["SQL_QRY"]['Negate']?:0;
                 $Z = [];
                 foreach ($keys as $key => $val){
                     array_push($key_only,$key);
@@ -83,10 +84,20 @@ function DatabaseUpdateCheck($Update_PKG){
                     //echo "NOT ARRAY: $test";
                     http_response_code(400);
                 }
-                $Pass = FALSE;
+                if($negate){
+                    $Pass = TRUE;
+                }
+                else{
+                    $Pass = FALSE;
+                }
                 if(empty($return)&&sizeof($key_only)===sizeof($match)){
                     // assume diff was fine
-                    $Pass = TRUE;
+                    /*if($negate){
+                        $Pass = FALSE;
+                    }
+                    else{*/
+                        $Pass = TRUE;
+                    //}
                 }
                 else{
                     // FAIL, due to empty string or mismatch size
@@ -144,7 +155,7 @@ function DatabaseUpdateApply($Update_PKG,$path){
                     else{
                         if(!$mysqli->query($sql)){
                             //http_response_code(400);
-                            return json_encode(array("Status"=>false,"Result"=>array("SQL"=>$sql,"ERROR"=>$mysqli->errno)));
+                            return json_encode(array("Status"=>false,"Result"=>array("SQL"=>$sql,"ERROR"=>$mysqli->error,"CODE"=>$mysqli->errno)));
                         }
                         else{
                             return json_encode(array("Status"=>true,"Result"=>array("")));
