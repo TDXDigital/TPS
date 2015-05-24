@@ -1,7 +1,7 @@
 <?php
  
 function UPCAbarcode($code) {
-  $lw = 1.3; $hi = 20;
+  $lw = 1; $hi = 20;
   $Lencode = array('0001101','0011001','0010011','0111101','0100011',
                    '0110001','0101111','0111011','0110111','0001011');
   $Rencode = array('1110010','1100110','1101100','1000010','1011100',
@@ -41,13 +41,13 @@ function UPCAbarcode($code) {
   /* Add the Human Readable Label */
   ImageString($img,4,5,$hi-5,$code[0],$fg);
   for ($x=0;$x<5;$x++) {
-    ImageString($img,5,$lw*(13+$x*6)+15,$hi+5,$code[$x+1],$fg);
-    ImageString($img,5,$lw*(53+$x*6)+15,$hi+5,$code[$x+6],$fg);
+    ImageString($img,2,$lw*(13+$x*6)+15,$hi+5,$code[$x+1],$fg);
+    ImageString($img,2,$lw*(53+$x*6)+15,$hi+5,$code[$x+6],$fg);
   }
   ImageString($img,4,$lw*95+17,$hi-5,$code[11],$fg);
   /* Output the Header and Content. */
   header("Content-Type: image/png");
-  ImagePNG($img);
+  ImagePNG($img); 
 }
  
 if(isset($_GET['bcd'])){

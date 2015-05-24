@@ -11,20 +11,21 @@ require_once '../barcode/validate.php';
 
 session_start();
 $json_arr=array();
-$artist = addslashes(filter_input(INPUT_GET,'term',FILTER_SANITIZE_STRING));
-$type = addslashes(filter_input(INPUT_POST, 'type',FILTER_SANITIZE_STRING));//addslashes($_GET['type']);
+$code = filter_input(INPUT_GET,'code',FILTER_SANITIZE_NUMBER_INT)?:
+        filter_input(INPUT_POST,'code',FILTER_SANITIZE_NUMBER_INT);
+//$type = addslashes(filter_input(INPUT_POST, 'type',FILTER_SANITIZE_STRING));//addslashes($_GET['type']);
 
 if(validate_UPCABarcode($artist)||  validate_EAN13Barcode($artist)){
-    $artist = substr($artist, 1,10);
-    $artist = ltrim($artist,'0');
+    $code = substr($code, 1,10);
+    $code = ltrim($code,'0');
 }
 
 include_once '../../TPSBIN/functions.php';
 include_once '../../TPSBIN/db_connect.php';
 
-$query_artist = "SELECT RefCode, datein, artist, album, genre, status, recordlabel.Name as label_name FROM library LEFT JOIN recordlabel on library.labelid=recordlabel.LabelNumber where artist REGEXP '$artist' or refcode='$artist' order by soundex(artist) asc limit 50;";
+$query = "SELECT RefCode, datein, artist, album, genre, status, recordlabel.Name as label_name FROM library LEFT JOIN recordlabel on library.labelid=recordlabel.LabelNumber where refcode='$code limit 1;";
 
-$result=$mysqli->query($query_artist);
+$result=$mysqli->query($query);
 if($mysqli->error){
     die($mysqli->error);
 }
