@@ -6,10 +6,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
+require_once '../barcode/validate.php';
+
 session_start();
 $json_arr=array();
 $artist = addslashes(filter_input(INPUT_GET,'term',FILTER_SANITIZE_STRING));
 $type = addslashes(filter_input(INPUT_POST, 'type',FILTER_SANITIZE_STRING));//addslashes($_GET['type']);
+
+if(validate_UPCABarcode($artist)||  validate_EAN13Barcode($artist)){
+    $artist = substr($artist, 1,10);
+    $aartist = ltrim($artist,'0');
+}
 
 include_once '../../TPSBIN/functions.php';
 include_once '../../TPSBIN/db_connect.php';
