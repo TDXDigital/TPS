@@ -29,6 +29,10 @@ if($locale=="International"){
 else{
     $CanCon=1;
 }
+
+if($accepted<>0){
+    $accepted = 1;
+}
 $labelNum = NULL;
 
 // Get label number if exists
@@ -79,11 +83,18 @@ if($playlist===FALSE){
 else{
     // check if entriy exists in 'playlist' table
     
-    // if not set to 'PENDING'
-    $playlist = 0;
-    
-    // if so set to 'COMPLETE'
-    // this should no happen unless changing back to already set value??
+    // if rejected, it cannot go to playlist by definition.
+    // set to FALSE in that case (1)
+    if(!$accepted){
+        $playlist = 1;
+    }
+    else{
+        // if not set to 'PENDING'
+        $playlist = 0;
+
+        // if so set to 'COMPLETE'
+        // this should no happen unless changing back to already set value??
+    }
 }
 
 if(!$stmt3 = $mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag)
@@ -105,7 +116,7 @@ if(!$stmt3->bind_param(
         $variousartists,
         $format,
         $genre,
-        $status,
+        $accepted,
         $labelNum,
         $locale,
         $CanCon,
