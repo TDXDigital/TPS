@@ -91,6 +91,8 @@ function DatabaseUpdateCheck($Update_PKG){
                 else{
                     // FAIL, due to empty string or mismatch size
                     //echo sizeof($key_only)." : ".sizeof($match);
+                    http_response_code(500);
+                    $Pass = FALSE;
                 }
                 $final = array("Status"=>$Pass,"Result"=>$return);
                 /*echo sizeof($key_only);
@@ -99,6 +101,10 @@ function DatabaseUpdateCheck($Update_PKG){
                 /*var_dump($match);
                 var_dump($keys);
                 var_dump($diff);*/
+            }
+            else{
+                http_response_code(500);
+                return json_encode(array("Status"=>FALSE,"Result"=>array($mysqli->errno,$mysqli->error)));
             }
         }
     }
