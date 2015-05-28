@@ -139,7 +139,7 @@
             </div>
             <div class="col-md-3">
                 <div id="ind_group" class="input-group">
-                    <label for="label" class="input-group-addon">Format</label>
+                    <label for="label" class="input-group-addon">Region</label>
                     <select class="form-control" name="locale" tabindex="5">
                         <option value="International">International</option>
                         <option value="Country">Country</option>
@@ -325,36 +325,87 @@
                 <form class="form-horizontal">
                     <div class="form-inline">
                         <div class="form-group">
-                            <label for="template" class="col-sm-3 control-label">Album</label>
+                            <label for="template" class="col-sm-2 control-label">Album</label>
                             <div class="col-sm-3">
                                 <input id="e_album" class="form-control"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="start" class="col-sm-3 control-label">Artist</label>
+                            <label for="start" class="col-sm-2 control-label">Artist</label>
                             <div class="col-sm-3">
                                 <input id="e_artist" class="form-control" autocomplete="on" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="start" class="col-sm-3 control-label">Label</label>
+                            <label for="start" class="col-sm-2 control-label">Label</label>
                             <div class="col-sm-3">
                                 <input id="e_LabelName" class="form-control" autocomplete="on" />
                             </div>
                         </div>
                     </div>
                     <div class="form-inline">
-                        <div class="col-sm-3">
-                            <label>
-                                Various Artists
-                                <input id="e_variousartists" type="checkbox" value="true">
-                            </label>
+                        <div class="form-group">
+                            <label for="template" class="col-sm-2 control-label">Format</label>
+                            <div class="col-sm-3">
+                                <input id="e_format" class="form-control"/>
+                            </div>
                         </div>
-                        <div class="col-sm-2">
-                            <label>
-                                CanCon
-                                <input id="e_CanCon" type="checkbox" value="true">
-                            </label>
+                        <div class="form-group">
+                            <label for="start" class="col-sm-2 control-label">Genre</label>
+                            <div class="col-sm-2">
+                                <input id="e_genre" class="form-control" autocomplete="on" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="start" class="col-sm-8 control-label">Various Artists</label>
+                            <div class="col-sm-1 ">
+                                <input id="e_variousartists" type="checkbox" class="form-control" autocomplete="on" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="template" class="col-sm-3 control-label">Released</label>
+                            <div class="col-sm-2">
+                                <input id="e_release_date" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="start" class="col-sm-3 control-label">Received</label>
+                            <div class="col-sm-2">
+                                <input id="e_datein" class="form-control" autocomplete="on" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="start" class="col-sm-3 control-label">Expired</label>
+                            <div class="col-sm-2">
+                                <input id="e_dateout" class="form-control" autocomplete="on" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-inline">
+                        <div class="form-group col-sm-4">
+                            <div id="format" class="input-group">
+                                <label for="label" class="input-group-addon">Region</label>
+                                <select id="e_locale" class="form-control" name="locale" tabindex="5">
+                                    <option value="International">International</option>
+                                    <option value="Country">Country</option>
+                                    <option value="Province">Province</option>
+                                    <option value="Local">Local</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label for="start" class="col-sm-3 control-label">Received</label>
+                            <div class="col-sm-2">
+                                <input id="e_datein" class="form-control" autocomplete="on" />
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label for="start" class="col-sm-3 control-label">Expired</label>
+                            <div class="col-sm-2">
+                                <input id="e_dateout" class="form-control" autocomplete="on" />
+                            </div>
                         </div>
                     </div>
                 </form>
