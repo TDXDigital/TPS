@@ -363,7 +363,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="submit_edit()">Submit</button>
+                <button type="button" class="btn btn-primary" disabled data-dismiss="modal" onclick="submit_edit()">Submit</button>
             </div>
         </div>
     </div>
@@ -497,7 +497,7 @@
         });
     });
     $(document).ready(function(){
-       edit('000005803637');
+       //edit('000005803637');
     });
     function self_titled(){
         $("#alb_field").val($("#art_field").val());
