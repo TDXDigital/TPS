@@ -497,7 +497,7 @@
         });
     });
     $(document).ready(function(){
-       //edit('000005803637');
+       edit('000005803637');
     });
     function self_titled(){
         $("#alb_field").val($("#art_field").val());
