@@ -19,12 +19,11 @@ function absolute_include($file,$PHP_SELF)
     
     //check for last '/', if at end strip it from string
     
-    if($PHP_SELF===""){
-        $Full_path = substr_count($_SERVER["PHP_SELF"],"/");
+    if(!defined($PHP_SELF)){
+        $PHP_SELF = $_SERVER["PHP_SELF"];
     }
-    else{
-        $Full_path = substr_count($PHP_SELF,"/");
-    }
+    
+    $Full_path = substr_count($PHP_SELF,"/");
     
     //check if last char is '/'
     $path_len = strlen($Full_path);
@@ -60,9 +59,9 @@ function absolute_include($file,$PHP_SELF)
     // set to correct time 
     error_reporting($old_error_level);
     
-    $file_path = str_repeat("../", $folder_depth - 1) . $file;
+    $file_path = str_repeat("../", $folder_depth-1) . $file;
     if(!file_exists($file_path)){
-        throw new Exception("File [$file_path] does not exist");
+        throw new Exception("File [$file_path] does not exist from path $PHP_SELF with depth $folder_depth");
     }
     else{
         include_once($file_path);

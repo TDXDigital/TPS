@@ -33,7 +33,7 @@ $i=1;
 while($row = $result->fetch_array(MYSQLI_ASSOC)){
     //echo $row['artist'] ."<br/>";
     //array_push($json_arr,$row['artist']);
-    echo"<tr><td>".$row['RefCode']."<br><button type=\"button\" disabled onclick='edit(".$row['RefCode'].")' class=\"btn btn-default btn-xs\">
+    echo"<tr><td>".$row['RefCode']."<br><button type=\"button\" onclick='edit(".$row['RefCode'].")' class=\"btn btn-default btn-xs\">
   <span class=\"glyphicon glyphicon-pencil\" aria-hidden=\"true\"></span> Edit
 </button>
 </td><td>".$row['datein']."</td><td>".$row['artist']."</td><td>".$row['album']."</td><td>".$row['genre']."</td><td>".$row['label_name']."</td><td>".$row['status']."</td></tr>

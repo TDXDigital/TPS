@@ -11,11 +11,11 @@ date_default_timezone_set($timezone);
 //echo constant("HOST");
 if(!defined("HOST") || !defined("USER") || !defined("PASSWORD") || !defined("DATABASE")){
     session_destroy();
-    echo "<br>HOST:".constant("HOST");
+    /*echo "<br>HOST:".constant("HOST");
     echo "<br>USER:".constant("USER");
     echo "<br>PASSWORD:".constant("PASSWORD");
-    echo "<br>DATABASE:".constant("DATABASE");
-    echo "<br><br><a href=/Security/login.html?e=invalid%20params>Return to login</a>";
+    echo "<br>DATABASE:".constant("DATABASE");*/
+    die("<br><br><a href=/Security/login.html?e=invalid%20params>Return to login</a>");
     //header('location: /Security/login.html?e=invalid%20params');
 }
 elseif(!isset($_SESSION['DBHOST'])&&$legacy){

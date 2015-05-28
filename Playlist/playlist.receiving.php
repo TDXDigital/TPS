@@ -314,6 +314,61 @@
     </div>
 </div>
 
+<div id="edit" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Edit: <span id="modal-title"></span></h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="template" class="col-sm-3 control-label">Album</label>
+                            <div class="col-sm-3">
+                                <input id="e_album" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="start" class="col-sm-3 control-label">Artist</label>
+                            <div class="col-sm-3">
+                                <input id="e_artist" class="form-control" autocomplete="on" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="start" class="col-sm-3 control-label">Label</label>
+                            <div class="col-sm-3">
+                                <input id="e_LabelName" class="form-control" autocomplete="on" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-inline">
+                        <div class="col-sm-3">
+                            <label>
+                                Various Artists
+                                <input id="e_variousartists" type="checkbox" value="true">
+                            </label>
+                        </div>
+                        <div class="col-sm-2">
+                            <label>
+                                CanCon
+                                <input id="e_CanCon" type="checkbox" value="true">
+                            </label>
+                        </div>
+                    </div>
+                </form>
+                <!--<p>Please choose your media</p>
+                <p class="text-warning"><small>... small text ... </small></p>-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="submit_edit()">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
   .ui-autocomplete-loading {
     background: white url("../images/GIF/ajax-loader3.gif") right center no-repeat;
@@ -328,6 +383,50 @@
         $("#printModal").modal({
             show: 'true'
         });
+        //window.open('printtest.php', '  printwindow');
+    }
+    
+    function edit(id){
+        $("#edit").modal({
+            show: 'true'
+        });
+        $.ajax({
+            url:"AJAX/playlist.libdata.php",
+            type: "json",
+            method: "POST",
+            data: {code:id},
+            beforeSend: function(){
+                $(".modal-title").html("<img src='../images/GIF/ajax-loader3.gif'/>");
+            },
+            success: function( data ){
+                var parsed = $.parseJSON(data);
+                $.each(parsed, function(k,v){
+                    var obj = $("#e_"+k)
+                    if(obj.is(":text")){
+                        if(v!==null){
+                            obj.val(v);
+                        }
+                    }
+                    else if(obj.is(":checkbox")){
+                        if(v==="1"){
+                            //obj.attr(checked,"checked");
+                            obj.prop('checked',true);
+                        }
+                    }
+                    else if(obj.is("select")){
+                        if(v!=="0"){
+                            //obj.attr(checked,"checked");
+                            //obj.prop('checked',true);
+                            alert('select not defined');
+                        }
+                    }
+                    console.log(k+":"+v);
+                })
+            },
+            complete: function(){
+                $(".modal-title").html("Edit: "+id);
+            }
+        })
         //window.open('printtest.php', '  printwindow');
     }
     
@@ -397,7 +496,9 @@
             uncheckedClass: 'icon-check-empty'
         });
     });
-    
+    $(document).ready(function(){
+       edit('000005803637');
+    });
     function self_titled(){
         $("#alb_field").val($("#art_field").val());
     }
@@ -508,4 +609,4 @@
 </div>
 <?php
     }
-?>
+    
