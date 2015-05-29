@@ -84,7 +84,7 @@ else{
     //
     //var_dump($sql);
     /* Prepared statement, stage 1: prepare */
-    
+    error_reporting(0);
     $error_check=false;
     try{
         $mysqli->query("START TRANSACTION");
