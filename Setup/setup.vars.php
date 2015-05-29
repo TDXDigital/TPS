@@ -60,8 +60,17 @@ $LDAP_bind_u = \filter_input(INPUT_POST, 'bndu',\FILTER_SANITIZE_STRING);
 $LDAP_bind_p = \filter_input(INPUT_POST, 'bndp',\FILTER_SANITIZE_STRING);
 
 // Auth - SECL
-$SECL_user = \filter_input(INPUT_POST, 'admail', \FILTER_SANITIZE_EMAIL);
+$SECL_email = \filter_input(INPUT_POST, 'admail', \FILTER_SANITIZE_EMAIL);
 $SECL_password = \filter_input(INPUT_POST, 'adpw', \FILTER_SANITIZE_ENCODED);
+$SECL_username = \filter_input(INPUT_POST, 'adun', \FILTER_SANITIZE_ENCODED);
+
+$SALT = hash('sha512', uniqid(openssl_random_pseudo_bytes(16), TRUE));
+
+$SECL_Hash_Pass = hash('sha512', $SECL_password . $SALT);
+
+/*if($SECL_USER!=NULL){
+    require '../TPSBIN/register.inc.php';
+}*/
 
 // Settings
 /* @var $callsign type */
@@ -181,6 +190,16 @@ if(!is_null($authtype)){
             "<br>Domain:".$LDAP_domain;
         }
         
+    }
+    elseif($authtype==="SECL"){
+        $_SESSION['admin_username']=$SECL_username;
+        $_SESSION['admin_email']=$SECL_email;
+        $_SESSION['admin_password']=$SECL_Hash_Pass;
+        $_SESSION['SALT']=$SALT;
+        if($DEBUG){
+            echo "<br><br>LDAP_Port:".$LDAP_port."<br>LDAP_Server:".$LDAP_server."<br>DN:".$LDAP_DN.
+            "<br>Domain:".$LDAP_domain;
+        }
     }
 }
 

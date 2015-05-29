@@ -1,6 +1,8 @@
 <?php
-include_once 'db_connect.php';
-include_once 'psl-config.php';
+//absolute_include($file, $PHP_SELF)
+
+include_once '../Security/db_connect.php';
+include_once '../Security/psl-config.php';
  
 $error_msg = "";
  
