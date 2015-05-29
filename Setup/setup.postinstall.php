@@ -111,6 +111,7 @@ else{
                         http_response_code(403);
                     }
                     else{
+                        $return=["status"=>"Error","Result"=>"Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error,"Query"=>$EXEC];
                         http_response_code(500);
                     }
                     echo "ERROR:" . $EXEC ."<br><br>".$mysqli->error."<br><br>";
