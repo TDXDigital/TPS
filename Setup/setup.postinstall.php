@@ -68,7 +68,7 @@ else{
         }
     }
     $sql = \file_get_contents("setup.postinstall.permissions.sql");
-    $permissions = \file_get_contents("setup.postinstall.permissions.sql");
+    $permissions = \file_get_contents("setup.postinstall.user.sql");
     //$sql = preg_replace("/[\\n\\r]+/", " ", $sql);
     $callsign=$_SESSION['callsign'];
     
