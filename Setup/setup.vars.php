@@ -1,6 +1,6 @@
 <?php
 
-$DEBUG=FALSE;
+$DEBUG=TRUE;
 
 include "../TPSBIN/functions.php";
 if(is_session_started()===FALSE) { session_start(); }
@@ -39,7 +39,7 @@ $username = \filter_input(INPUT_POST, 'r',\FILTER_SANITIZE_STRING);
 $password = \filter_input(INPUT_POST, 'd',  \FILTER_SANITIZE_STRING);
 
 
-// Auth
+// Auth - LDAP
 /* @var $auid type */
 $auid = \filter_input(INPUT_POST, 'uid', \FILTER_SANITIZE_STRING);
 /* @var $sysuser type */
@@ -58,6 +58,10 @@ $LDAP_domain = \filter_input(INPUT_POST, 'domn',\FILTER_SANITIZE_STRING);
 $LDAP_bind_u = \filter_input(INPUT_POST, 'bndu',\FILTER_SANITIZE_STRING);
 /* @var $LDAP_bind_p type */
 $LDAP_bind_p = \filter_input(INPUT_POST, 'bndp',\FILTER_SANITIZE_STRING);
+
+// Auth - SECL
+$SECL_user = \filter_input(INPUT_POST, 'admail', \FILTER_SANITIZE_EMAIL);
+$SECL_password = \filter_input(INPUT_POST, 'adpw', \FILTER_SANITIZE_ENCODED);
 
 // Settings
 /* @var $callsign type */

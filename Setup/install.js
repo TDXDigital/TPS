@@ -38,16 +38,15 @@ function install_db(){
     $.ajax({
         url:"setup.createdb.php",
         dataType:"json",
-        async: false,
         statusCode: {
             404: function() {
-              alert( "Server Not Found" );
+              console.log( "Server Not Found" );
             },
             403: function() {
-                alert("Access Denied");
+                console.log("Access Denied");
             },
             400: function() {
-                alert("Invalid Session, please retry session");
+                console.log("Invalid Session, please retry session");
             }
         },
         beforeSend: function(){
@@ -59,6 +58,10 @@ function install_db(){
             $('.progress-bar').css('width', 33.3+'%').attr('aria-valuenow', 33.3); 
             $("#conplete").show();
             $("#completed").append(data.status+": Database Created");
+            return true;
+        },
+        error: function(data){
+            return false;
         }
     });
 }
@@ -71,10 +74,12 @@ function install_xml(){
         cache: false,
         statusCode: {
             404: function() {
-              alert( "Server Not Found" );
+              console.log( "Server Not Found" );
+              $("#progress_status").html("an Error Occured");
             },
             403: function() {
-                alert("Access Denied");
+                console.log("Access Denied");
+                $("#progress_status").html("an Error Occured");
             }
         },
         beforeSend: function(){
@@ -86,6 +91,9 @@ function install_xml(){
             $('.progress-bar').css('width', 66.6+'%').attr('aria-valuenow', 66.6); 
             $("#conplete").show();
             $("#completed").append("<br>"+data.status+": Login Config Created");
+        },
+        error: function(data){
+            $("#progress_status").html("an Error Occured");
         }
     });
 }
@@ -98,10 +106,10 @@ function create_admin(){
         cache: false,
         statusCode: {
             404: function() {
-              alert( "Server Not Found" );
+              console.log( "Server Not Found" );
             },
             403: function() {
-                alert("Access Denied");
+                console.log("Access Denied");
             }
         },
         beforeSend: function(){
@@ -128,8 +136,19 @@ function complete(){
 jQuery(document).ready(function(){
     prep_install();
     var dots_run=setInterval(update_dots,750);
-    install_db();
-    install_xml();
-    clearInterval(dots_run);
-    complete();
+    if(install_db()){
+      install_xml();  
+      complete();
+    }
+    else{
+        clearInterval(dots_run);
+        complete();
+        $('#complete').hide();
+        $('.progress-bar').removeClass("active progress-bar-striped");
+        $('.progress-bar').addClass("progress-bar-danger");
+        $("#progress_status").html("Setup Failed");
+    }
+    //install_xml();
+    
+    
 });
