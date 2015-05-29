@@ -102,6 +102,7 @@ else{
             }*/
             if(!empty($EXEC)){
                 $EXEC.=";";
+                $access = 2;
                 //$mysqli->query($EXEC);
                 if ((!$stmt = $mysqli->prepare($EXEC))) {
                     $return=["status"=>"Error","Result"=>"Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error,"Query"=>$EXEC];
@@ -117,8 +118,11 @@ else{
                 }
                 else{
                     
-                    $stmt->bind_param("is", 2,$callsign);
-                    $stmt->execute();
+                    $stmt->bind_param("is", $access ,$callsign);
+                    if(!$stmt->execute()){
+                        http_response_code(500);
+                        $return=["status"=>"Error","Result"=>"Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error,"Query"=>$EXEC];
+                    }
                     $stmt->close();
                     /*if(strpos($EXEC, "CREATE SCHEMA IF NOT EXISTS")){
                         $mysqli->commit();
