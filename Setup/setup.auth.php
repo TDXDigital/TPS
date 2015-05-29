@@ -158,8 +158,8 @@
                 </div>
             </div>
               <div class="input-group">
-                <label for="admail" class="input-group-addon">Admin Email</label>
-                <input id="admail" class="form-control" type="email" name="admail" <?php
+                <label for="email" class="input-group-addon">Admin Email</label>
+                <input  class="form-control" type="email" name="admail" <?php
                        if(isset($_SESSION['admin_email'])&&!is_null($_SESSION['admin_email'])){
                            echo "value=\"".$_SESSION['admin_email']."\" ";
                        }
@@ -171,17 +171,25 @@
             </div>
             <br>
                 <div class="input-group">
-                    <label for="adun" class="input-group-addon">Admin Username</label>
-                    <input id="adun" class="form-control" type="text" name="adun" id="username"/>
+                    <label for="username" class="input-group-addon">Admin Username</label>
+                    <input class="form-control" type="text" name="adun" id="username"<?php
+                       if(isset($_SESSION['admin_username'])&&!is_null($_SESSION['admin_username'])){
+                           echo "value=\"".$_SESSION['admin_username']."\" ";
+                       }
+                       else{
+                           echo " placeholder=\"email@domain.com\" ";
+                       }
+                       
+                       ?>/>
                 </div>
                 <div class="input-group">
-                    <label for="adpw" class="input-group-addon">Admin Password</label>
-                    <input id="adpw" class="form-control" type="password" name="adpw" id="password"/>
+                    <label for="password" class="input-group-addon">Admin Password</label>
+                    <input class="form-control" type="password" name="adpw" id="password"/>
                 </div>
             <br>
                 <div class="input-group">
-                    <label for="adpwc" class="input-group-addon">Confirm Password</label>
-                    <input id="adpwc" class="form-control" type="password" name="adpwc" id="confirmpwd"/>
+                    <label for="configmpwd" class="input-group-addon">Confirm Password</label>
+                    <input class="form-control" type="password" name="adpwc" id="confirmpwd"/>
                 </div>
               <br>
             
@@ -194,7 +202,6 @@
                                    this.form.email,
                                    this.form.password,
                                    this.form.confirmpwd);" value="Next &raquo;"/>
-        </form>
     </div>
 </div>
 </form>

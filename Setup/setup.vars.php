@@ -61,7 +61,7 @@ $LDAP_bind_p = \filter_input(INPUT_POST, 'bndp',\FILTER_SANITIZE_STRING);
 
 // Auth - SECL
 $SECL_email = \filter_input(INPUT_POST, 'admail', \FILTER_SANITIZE_EMAIL);
-$SECL_password = \filter_input(INPUT_POST, 'adpw', \FILTER_SANITIZE_ENCODED);
+$SECL_password = \filter_input(INPUT_POST, 'p');
 $SECL_username = \filter_input(INPUT_POST, 'adun', \FILTER_SANITIZE_ENCODED);
 
 $SALT = hash('sha512', uniqid(openssl_random_pseudo_bytes(16), TRUE));
@@ -195,9 +195,11 @@ if(!is_null($authtype)){
         $_SESSION['admin_username']=$SECL_username;
         $_SESSION['admin_email']=$SECL_email;
         $_SESSION['admin_password']=$SECL_Hash_Pass;
+        $_SESSION['st_password']=$SECL_password;
         $_SESSION['SALT']=$SALT;
         if($DEBUG){
-            echo "<br><br>SECL_User:".$SECL_username."<br>SECL_EMAIL:".$SECL_email."<br>HPWD:".$SECL_Hash_Pass.
+            echo "<br><br>SECL_User:".$SECL_username."<br>SECL_EMAIL:".$SECL_email.
+                    "<br>HPWD:".$SECL_Hash_Pass."<br>password:".$SECL_password.
             "<br>SALT:".$SALT;
         }
     }
