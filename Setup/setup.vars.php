@@ -197,8 +197,8 @@ if(!is_null($authtype)){
         $_SESSION['admin_password']=$SECL_Hash_Pass;
         $_SESSION['SALT']=$SALT;
         if($DEBUG){
-            echo "<br><br>LDAP_Port:".$LDAP_port."<br>LDAP_Server:".$LDAP_server."<br>DN:".$LDAP_DN.
-            "<br>Domain:".$LDAP_domain;
+            echo "<br><br>SECL_User:".$SECL_username."<br>SECL_EMAIL:".$SECL_email."<br>HPWD:".$SECL_Hash_Pass.
+            "<br>SALT:".$SALT;
         }
     }
 }
