@@ -6,6 +6,8 @@
 
 var dotsequence=0;
 var opencalls = 0;
+var dots_run
+
 /*
  * Updates the dots displayed after a progress bar statement (. .. ...)
  */
@@ -58,9 +60,11 @@ function install_db(){
             $('.progress-bar').css('width', 33.3+'%').attr('aria-valuenow', 33.3); 
             $("#conplete").show();
             $("#completed").append(data.status+": Database Created");
+            install_xml();
             return true;
         },
         error: function(data){
+            $("#progress_status").html("Could not create Database");
             return false;
         }
     });
@@ -91,9 +95,10 @@ function install_xml(){
             $('.progress-bar').css('width', 66.6+'%').attr('aria-valuenow', 66.6); 
             $("#conplete").show();
             $("#completed").append("<br>"+data.status+": Login Config Created");
+            create_admin();
         },
         error: function(data){
-            $("#progress_status").html("an Error Occured");
+            $("#progress_status").html("could not create login file");
         }
     });
 }
@@ -113,19 +118,24 @@ function create_admin(){
             }
         },
         beforeSend: function(){
-            $("#progress_status").html("Creating Login Config");
+            $("#progress_status").html("Administrator Created and Permissions set");
         },
         success: function( data ){
             //$( "#results" ).append( msg );
             //alert(msg);
-            $('.progress-bar').css('width', 66.6+'%').attr('aria-valuenow', 66.6); 
+            $('.progress-bar').css('width', 100.0+'%').attr('aria-valuenow', 100.00); 
             $("#conplete").show();
             $("#completed").append("<br>"+data.status+": Login Config Created");
+            complete();
+        },
+        error: function(data){
+            $("#progress_status").html("Could not create permissions and administrator");
         }
     });
 }
 
 function complete(){
+    clearInterval(dots_run);
     $('.progress-bar').removeClass("active progress-bar-striped");
     $('.dots').html('...');
     $("#progress_status").html("Complete");
@@ -135,8 +145,11 @@ function complete(){
 
 jQuery(document).ready(function(){
     prep_install();
-    var dots_run=setInterval(update_dots,750);
-    if(install_db()){
+    dots_run=setInterval(update_dots,750);
+    install_db()
+    //install_xml();  
+    //complete();
+    /*if(install_db()){
       install_xml();  
       complete();
     }
@@ -147,7 +160,7 @@ jQuery(document).ready(function(){
         $('.progress-bar').removeClass("active progress-bar-striped");
         $('.progress-bar').addClass("progress-bar-danger");
         $("#progress_status").html("Setup Failed");
-    }
+    }*/
     //install_xml();
     
     
