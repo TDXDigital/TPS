@@ -6,7 +6,8 @@
     <link rel="stylesheet" href="../phpstyle.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
-    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"/>
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
     <script type="text/JavaScript" src="../TPSBIN/JS/sha512.js"></script> 
     <script type="text/JavaScript" src="../TPSBIN/JS/forms.js"></script> 
     <script src="../TPSBIN/JS/GLOBAL/Utilities.js"></script>
@@ -19,11 +20,16 @@
         .hidden-div{
             display: none;
         }
+        
     </style>
 </head>
 <body>
-	<div style="text-align: center; width: 500px; margin: auto;" id="content">
-		<div><img src="../DEV/DevImg.png" alt="Dev Login"/></div>
+    <div class="background-image"></div>
+	<div style="text-align: center; width: 500px; margin: auto;" id="content" class="content">
+            <div><!--<img src="../DEV/DevImg.png" alt="Dev Login"/>-->
+                <i class="fa fa-lock fa-3x pull-left"></i>
+                <h1 class="">Sign-in</h1>
+            </div>
 		<div style="margin: auto;"><form name="login" method="post" action="Login.php">
             <div id="Error" class="alert alert-warning hidden-div"></div>
             <fieldset>

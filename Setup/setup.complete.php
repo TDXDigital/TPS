@@ -17,7 +17,7 @@
     </div>";
     }
 ?>
-<form action='../' method="POST">
+<form action='../logout.php' method="POST">
     <input type='hidden' name='e' value='<?php
         if(isset($_SESSION['max_page']) && is_numeric($_SESSION['max_page'])){
             echo $PAGES[$_SESSION['max_page']][0];

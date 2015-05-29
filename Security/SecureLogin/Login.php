@@ -38,7 +38,8 @@ if (login_check($mysqli) == true) {
     </head>
     <body>
         <form action="process_login.php" method="post" name="login_form" id="form_input">  
-        <div class="container">    
+            <div class="background-image"></div>
+        <div class="container content-clear">    
         <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
             <div class="panel panel-info" >
                     <div class="panel-heading">

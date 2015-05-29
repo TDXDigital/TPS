@@ -45,11 +45,11 @@
                 </div><!-- /.col-lg-3 -->
             </div>
             <div class="row">
-                <div class="col-lg-6">
+                <!--<div class="col-lg-6">
                     <input class="btn btn-default" type="submit" value="Begin Installation" onclick="install_db(); return false"/>
                     <input class="btn btn-default" type="submit" value="Create Auth Login" onclick="install_xml(); return false"/>
-                    <input class="btn btn-default" type="submit" value="Create Administrator" onclick="install_admin(); return false"/>
-                </div>
+                    <input class="btn btn-default" type="submit" value="Create Administrator" onclick="create_admin(); return false"/>
+                </div>-->
             </div>
         </fieldset>
         <br>

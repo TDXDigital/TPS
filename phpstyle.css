@@ -299,3 +299,44 @@ color:#CCCCCC;
     padding-right: $pad;
   }
 }
+
+* {
+  box-sizing: border-box;
+}
+.background-image {
+  background-image: url('../images/banners/sea-193803_1280.jpg');
+  background-size: cover;
+  display: block;
+  filter: blur(2px);
+  -webkit-filter: blur(2px);
+  height: 100%;
+  width: 100%;
+  left: 0;
+  position: fixed;
+  right: 0;
+  z-index: 1;
+}
+.content {
+    background: rgba(255, 255, 255, 0.65);
+    border-radius: 3px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    top: 10px;
+    left: 0;
+    position: fixed;
+    margin-left: 20px;
+    margin-right: 20px;
+    right: 0;
+    z-index: 2;
+    padding: 0 10px;
+  }
+  
+  .content-clear {
+    top: 10px;
+    left: 0;
+    position: fixed;
+    margin-left: 20px;
+    margin-right: 20px;
+    right: 0;
+    z-index: 2;
+  }

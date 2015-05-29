@@ -6,3 +6,33 @@
 [21-Apr-2015 04:37:05 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in C:\Users\James\Documents\TPS_GIT\Episode\EPV3\Reports.php on line 76
 [21-Apr-2015 04:37:17 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in C:\Users\James\Documents\TPS_GIT\Episode\EPV3\Reports.php on line 76
 [21-Apr-2015 04:37:48 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\Users\James\Documents\TPS_GIT\Episode\EPV3\Reports.php on line 263
+[28-May-2015 04:15:46 UTC] File [CONFIG.php] does not exist from path /Episode/EPV3/Switch.php with depth 1; setting timezone to UTC as failback
+[28-May-2015 04:15:46 UTC] PHP Notice:  Use of undefined constant NONE - assumed 'NONE' in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 47
+[28-May-2015 04:16:28 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 123
+[28-May-2015 04:17:12 UTC] File [CONFIG.php] does not exist from path /Episode/EPV3/Switch.php with depth 1; setting timezone to UTC as failback
+[28-May-2015 04:17:12 UTC] PHP Notice:  Use of undefined constant NONE - assumed 'NONE' in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 47
+[28-May-2015 04:17:54 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 123
+[28-May-2015 04:18:15 UTC] File [CONFIG.php] does not exist from path /Episode/EPV3/Switch.php with depth 1; setting timezone to UTC as failback
+[28-May-2015 04:18:15 UTC] PHP Notice:  Use of undefined constant NONE - assumed 'NONE' in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 47
+[28-May-2015 04:18:57 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 123
+[28-May-2015 04:18:57 UTC] File [CONFIG.php] does not exist from path /Episode/EPV3/Switch.php with depth 1; setting timezone to UTC as failback
+[28-May-2015 04:18:57 UTC] PHP Notice:  Use of undefined constant NONE - assumed 'NONE' in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 47
+[28-May-2015 04:19:39 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 123
+[28-May-2015 04:19:39 UTC] File [CONFIG.php] does not exist from path /Episode/EPV3/Switch.php with depth 1; setting timezone to UTC as failback
+[28-May-2015 04:19:39 UTC] PHP Notice:  Use of undefined constant NONE - assumed 'NONE' in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 47
+[28-May-2015 04:20:21 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 123
+[28-May-2015 04:20:21 UTC] File [CONFIG.php] does not exist from path /Episode/EPV3/Switch.php with depth 1; setting timezone to UTC as failback
+[28-May-2015 04:20:21 UTC] PHP Notice:  Use of undefined constant NONE - assumed 'NONE' in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 47
+[28-May-2015 04:21:03 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 123
+[28-May-2015 04:21:25 UTC] File [CONFIG.php] does not exist from path /Episode/EPV3/Switch.php with depth 1; setting timezone to UTC as failback
+[28-May-2015 04:21:25 UTC] PHP Notice:  Use of undefined constant NONE - assumed 'NONE' in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 47
+[28-May-2015 04:22:07 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 123
+[28-May-2015 04:22:07 UTC] File [CONFIG.php] does not exist from path /Episode/EPV3/Switch.php with depth 1; setting timezone to UTC as failback
+[28-May-2015 04:22:07 UTC] PHP Notice:  Use of undefined constant NONE - assumed 'NONE' in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 47
+[28-May-2015 04:22:49 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 123
+[28-May-2015 04:23:31 UTC] File [CONFIG.php] does not exist from path /Episode/EPV3/Switch.php with depth 1; setting timezone to UTC as failback
+[28-May-2015 04:23:31 UTC] PHP Notice:  Use of undefined constant NONE - assumed 'NONE' in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 47
+[28-May-2015 04:24:13 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 123
+[28-May-2015 04:24:13 UTC] File [CONFIG.php] does not exist from path /Episode/EPV3/Switch.php with depth 1; setting timezone to UTC as failback
+[28-May-2015 04:24:13 UTC] PHP Notice:  Use of undefined constant NONE - assumed 'NONE' in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 47
+[28-May-2015 04:24:55 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\Users\James\Documents\NetBeansProjects\TPS\TPSBIN\cron.php on line 123

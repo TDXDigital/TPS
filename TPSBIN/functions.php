@@ -272,9 +272,11 @@ function login($email, $password, $mysqli) {
                 } else {
                     // Password is not correct
                     // We record this attempt in the database
-                    $now = time();
-                    $stmt->query("INSERT INTO login_attempts(user_id, time)
-                                    VALUES ('$user_id', '$now')");
+                    // 
+                    // needs prepare then execute without mysqlnd
+                    //$now = time();
+                    /*$stmt->query("INSERT INTO login_attempts(user_id, time)
+                                    VALUES ('$user_id', '$now')");*/
                     return false;
                 }
             }

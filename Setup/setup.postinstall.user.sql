@@ -1,0 +1,1 @@
+INSERT INTO members (access, username, email, password, salt) VALUES ( ?, ?, ?, ?, ?);

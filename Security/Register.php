@@ -13,20 +13,20 @@ if(!defined("HOST")||!defined("DATABASE")||!defined("USER")||!defined("PASSWORD"
     echo "DT:".$SECL_TARGET. ":DT</br>";
     foreach( $dbxml->SERVER as $CONVAR_SECL):
         if((string)$CONVAR_SECL->ID==$SECL_TARGET){
-            echo "MATCH";
+            //echo "MATCH";
             define("DBID", (string)$CONVAR_SECL->ID);     // The host you want to connect to.
-            echo "ID:" . (string)$CONVAR_SECL->ID . "</br>";
+            //echo "ID:" . (string)$CONVAR_SECL->ID . "</br>";
             define("HOST", (string)$CONVAR_SECL->IPV4);     // The host you want to connect to.
             define("DATABASE", (string)$CONVAR_SECL->DATABASE);     // The host you want to connect to.
-            echo "HOST:" . (string)$CONVAR_SECL->IPV4 . "</br>";
-            echo "KEY:" .ENCRYPTION_KEY."</br>";
+            //echo "HOST:" . (string)$CONVAR_SECL->IPV4 . "</br>";
+            //echo "KEY:" .ENCRYPTION_KEY."</br>";
             define("USER", easy_decrypt(\ENCRYPTION_KEY, (string)$CONVAR_SECL->USER));    // The database username. 
-            echo "USER:".easy_decrypt(ENCRYPTION_KEY, $CONVAR_SECL->USER)."</br>";
+            //echo "USER:".easy_decrypt(ENCRYPTION_KEY, $CONVAR_SECL->USER)."</br>";
             define("PASSWORD", easy_decrypt(\ENCRYPTION_KEY, (string)$CONVAR_SECL->PASSWORD));    // The database password.             define("DATABASE", $CONVAR_SECL->DATABASE);    // The database name.
-            echo "PASSWD:".easy_decrypt(ENCRYPTION_KEY, $CONVAR_SECL->PASSWORD)."</br>";
+            //echo "PASSWD:".easy_decrypt(ENCRYPTION_KEY, $CONVAR_SECL->PASSWORD)."</br>";
         }
         else{
-            echo "NM:".$SECL_TARGET. ":NM:".$CONVAR_SECL->ID."</br>";
+            //echo "NM:".$SECL_TARGET. ":NM:".$CONVAR_SECL->ID."</br>";
         }
         //var_dump($CONVAR_SECL);
     endforeach;
