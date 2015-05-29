@@ -67,13 +67,20 @@ else{
             $return=["status"=>"Error","Result"=>"Database Exists, cannot continue"];
         }
     }
-    $sql = \file_get_contents("setup.postinstall.sql");
+    $sql = \file_get_contents("setup.postinstall.permissions.sql");
+    $permissions = \file_get_contents("setup.postinstall.permissions.sql");
     //$sql = preg_replace("/[\\n\\r]+/", " ", $sql);
     $callsign=$_SESSION['callsign'];
+    
+    $username = $_SESSION['admin_username'];
+    $email = $_SESSION['admin_email'];
+    $password = $_SESSION['admin_password'];
+    $SALT = $_SESSION['SALT'];
     //$sql = preg_replace("/[?]+/", $callsign, $sql);
     
     
     $SQL_Statements=explode(";",$sql);
+    $PER_Statements=explode(";",$permissions);
     /*
     if (!($mysqli->query($sql))) {
         $return=["status"=>"Error","Result"=>"Query failed: (" . $mysqli->errno . ") " . $mysqli->error];
@@ -120,6 +127,46 @@ else{
                 else{
                     
                     $stmt->bind_param("is", $access ,$callsign);
+                    if(!$stmt->execute()){
+                        http_response_code(409);
+                        $return=["status"=>"Error","Result"=>"Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error,"Query"=>$EXEC];
+                    }
+                    $stmt->close();
+                    /*if(strpos($EXEC, "CREATE SCHEMA IF NOT EXISTS")){
+                        $mysqli->commit();
+                    }*/
+                    //echo $EXEC . "<br><br>";
+                }
+            }
+        }
+        foreach($PER_Statements as $EXEC){
+            if(strlen($EXEC)<6){
+                $EXEC = str_replace(array("\r", "\n"), '', $EXEC);
+            }/*
+            else{
+                $EXEC = str_replace(array("\r", "\n"), ' ', $EXEC);
+            }*/
+            if(!empty($EXEC)){
+                $EXEC.=";";
+                $access=2;
+                //$mysqli->query($EXEC);
+                if ((!$stmt = $mysqli->prepare($EXEC))) {
+                    $return=["status"=>"Error","Result"=>"Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error,"Query"=>$EXEC];
+                    $error_check=TRUE;
+                    if($mysqli->errno==1142){
+                        http_response_code(403);
+                    }
+                    else{
+                        $return=["status"=>"Error","Result"=>"Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error,"Query"=>$EXEC];
+                        http_response_code(500);
+                    }
+                    echo "ERROR:" . $EXEC ."<br><br>".$mysqli->error."<br><br>";
+                    throw new Exception($mysqli->error,$mysqli->errno);
+                }
+                else{
+                    
+                    $stmt->bind_param("issss", $access ,$username, $email, $password, $SALT);
+                    //$insert_stmt->bind_param('ssss', $username, $email, $password, $random_salt);
                     if(!$stmt->execute()){
                         http_response_code(409);
                         $return=["status"=>"Error","Result"=>"Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error,"Query"=>$EXEC];
