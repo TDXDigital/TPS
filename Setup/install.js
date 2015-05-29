@@ -100,7 +100,7 @@ function install_xml(){
 
 function create_admin(){
     $.ajax({
-        url:"setup.createadmin.php",
+        url:"setup.postinstall.php",
         dataType:"json",
         async: false,
         cache: false,

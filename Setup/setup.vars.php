@@ -1,6 +1,6 @@
 <?php
 
-$DEBUG=TRUE;
+$DEBUG=FALSE;
 
 include "../TPSBIN/functions.php";
 if(is_session_started()===FALSE) { session_start(); }

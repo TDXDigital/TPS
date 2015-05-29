@@ -69,8 +69,8 @@ else{
     }
     $sql = \file_get_contents("setup.postinstall.sql");
     //$sql = preg_replace("/[\\n\\r]+/", " ", $sql);
-    $DB_NAME=$_SESSION['database'];
-    $sql = preg_replace("/[?]+/", $DB_NAME, $sql);
+    $callsign=$_SESSION['callsign'];
+    //$sql = preg_replace("/[?]+/", $callsign, $sql);
     
     
     $SQL_Statements=explode(";",$sql);
@@ -103,8 +103,8 @@ else{
             if(!empty($EXEC)){
                 $EXEC.=";";
                 //$mysqli->query($EXEC);
-                if (($mysqli->query($EXEC))!=TRUE) {
-                    $return=["status"=>"Error","Result"=>"Query failed: (" . $mysqli->errno . ") " . $mysqli->error,"Query"=>$EXEC];
+                if ((!$stmt = $mysqli->prepare($EXEC))) {
+                    $return=["status"=>"Error","Result"=>"Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error,"Query"=>$EXEC];
                     $error_check=TRUE;
                     if($mysqli->errno==1142){
                         http_response_code(403);
@@ -116,6 +116,10 @@ else{
                     throw new Exception($mysqli->error,$mysqli->errno);
                 }
                 else{
+                    
+                    $stmt->bind_param("is", 2,$callsign);
+                    $stmt->execute();
+                    $stmt->close();
                     /*if(strpos($EXEC, "CREATE SCHEMA IF NOT EXISTS")){
                         $mysqli->commit();
                     }*/
@@ -138,7 +142,7 @@ else{
     $mysqli->autocommit(TRUE);
     $functions = \file_get_contents("setup.functions.sql");
     //$functions = preg_replace("/[\\n\\r]+/", ' ' , $functions);
-    $functions = preg_replace("/[?]+/", $DB_NAME, $functions);
+    $functions = preg_replace("/[?]+/", $callsign, $functions);
     
     //temporarily removed
     /*if($mysqli->query($functions)!=TRUE){
