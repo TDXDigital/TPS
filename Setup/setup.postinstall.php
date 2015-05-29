@@ -121,7 +121,7 @@ else{
                     
                     $stmt->bind_param("is", $access ,$callsign);
                     if(!$stmt->execute()){
-                        http_response_code(500);
+                        http_response_code(409);
                         $return=["status"=>"Error","Result"=>"Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error,"Query"=>$EXEC];
                     }
                     $stmt->close();
