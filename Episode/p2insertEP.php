@@ -436,20 +436,57 @@ else{
          // set displays
         <?php
             //workers
-            if($RDS_Enabled){ print("Display_RDS();"); };
+            if($RDS_Enabled){ print("Display_RDS(); var RDS=true;"); }
+            else{
+                print "var RDS=false";
+            }
             if($Switch_Enabled){ print("Display_Switch();"); };
             if($Foobar_Enabled){ print("Foobar2000();"); };
          ?>
          // Load Emergency Information
-         GetEAS('EAS', '../');
-         setInterval(function () {
-             GetEAS('EAS', '../');
+        GetEAS('EAS', '../');
+        var EAS_fail = 0;
+        var RDS_fail = 0;
+        var STC_fail = 0;
+        
+        var eas_ctl = setInterval(function () {
+             if(!GetEAS('EAS', '../')){
+                 EAS_fail++;
+                 if(EAS_fail>1){
+                     console.log("EAS has failed to load twice in a row, cancelling further requests");
+                     clearInterval(eas_ctl);
+                 }
+             }
+             else{
+                 EAS_fail=0;
+             }
          }, 15000);
-
-         setInterval(function () {
-             Display_RDS();
-             Display_Switch();
-         }, 20000);
+         
+        var RDS_ctl = setInterval(function () {
+             if(!Display_RDS()){
+                 RDS_fail++;
+                 if(RDS_fail>1){
+                     console.log("RDS has failed to load twice in a row, cancelling further requests");
+                     clearInterval(RDS_ctl)
+                 }
+             }
+             else{
+                 RDS_fail=0;
+             }
+         }, 30000);
+         
+         Display_Switch();
+         /*var STC_ctl = setInterval(function () {
+             if(!Display_Switch()){
+                 STC_fail++;
+                 if(STC_fail>2){
+                     console.log("Switch check has failed three times in a row, cancelling further requests")
+                 }
+             }
+             else{
+                 STC_fail=0;
+             }
+         }, 20000);*/
          /*$('input[name=sub]').click(function() { 
          $.blockUI({ message: '<h1><img src="/images/GIF/ajax-loader1.gif" />Processing...</h1>' }); 
          //test(); 

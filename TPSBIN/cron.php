@@ -44,7 +44,7 @@
         function __construct($username=NULL,$password=NULL,$database=NULL,$host=NULL,$port=3306){
             try
             {
-                error_reporting(NONE);
+                error_reporting(0);
                 // check if values given
                 //if (is_null($host) || is_null($database) || is_null($username) || is_null($password)) throw new Exception("Please specify the host, database, username and password!");
                 //echo "initialized";
@@ -96,7 +96,7 @@
         static private function mail_user(){
             
         }
-        static public function update_switch($mute=FALSE,$server){
+        static public function update_switch_ACS8p2($mute=FALSE,$server){
             // does not output result of query to screen, only to database
             
             include_once "db_connect.php";
@@ -107,7 +107,9 @@
 	        $ROOT = addslashes($_GET['q']);
             //$server = "ckxu3400lg.local.ckxu.com";
             //$mute=FALSE;
-            
+            if($server==NULL){
+                $sel = "SELECT switch_address FROM station";
+            }
             $res=array();
             $info=array();
             $MISMATCH=FALSE;
@@ -120,10 +122,18 @@
 
             $fp = fsockopen($server, 23, $errno, $errstr, 30);
             for($i=0;! $fp||$i>5; $i++){
-                $fp=fsockopen($server, 23, $errno, $errstr, 30);
+                if(!$fp=fsockopen($server, 23, $errno, $errstr, 30)){
+                    http_response_code(404);
+                    return FALSE;
+                }
+                if(!$fp===FALSE){
+                    http_response_code(403);
+                    return "Address invalid";
+                }
             }   
-            if (!$fp) {
-                echo "$errstr ($errno)<br />\n";
+            if(!$fp){
+                http_response_code(403);
+                return "$errstr ($errno)<br />\n";
             } else {
             	// Write command to stream, get response and analyse.
             	// Get Switcher Status

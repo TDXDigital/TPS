@@ -342,6 +342,10 @@ function load(){
             }
             switch_worker.onmessage = function(event) {
                 //document.getElementById("result").innerHTML = event.data;
+                if(event.error){
+                    Stop_Switch_Worker();
+                    return false;
+                }
                 $("#switch_status").html(event.data);
             };
         } else {
@@ -360,6 +364,7 @@ function load(){
      }
 
     function Stop_Switch_Worker(){
+        console.log("Stopping Switch Worker...");
         switch_worker.terminate();
         switch_worker=undefined;
     }
