@@ -33,7 +33,7 @@
         }
     }
 ?>
-<h3 class="sub-header">Induction</h3>
+<h3 class="sub-header">Receiving Reports</h3>
 <?php
     if(isset($message)){
         echo "<div class=\"panel panel-success\">
@@ -54,21 +54,8 @@
 ?>
 <form action="playlist.induct.php" method="post">
 <div class="panel panel-primary">
-    <div class="panel-heading"><span>Basic Information</span>
+    <div class="panel-heading"><span>Report Settings</span>
         <input type="hidden" id="method_hidden" value="any" />
-        <div class="pull-right"><span>Search&nbsp;</span>
-        <div class="btn-group pull-right" data-toggle="buttons">
-            <label class="btn btn-primary active btn-xs">
-                <input type="radio" name="method" id="option1" onchange="javascript: $('#method_hidden').val('any');" value="any"> Contains
-            </label>
-            <label class="btn btn-primary btn-xs">
-              <input type="radio" name="method" id="option2" onchange="javascript: $('#method_hidden').val('begins');" value="begins"> Starts
-            </label>
-            <label class="btn btn-primary btn-xs">
-              <input type="radio" name="method" id="option3" onchange="javascript: $('#method_hidden').val('exact');" value="exact"> Exact
-            </label>
-        </div>
-        </div>
     </div>
     <div class="panel-body">
         

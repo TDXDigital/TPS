@@ -1,6 +1,7 @@
 <?php
-    error_reporting(E_ERROR);
+    //error_reporting(E_ERROR);
     include_once "../TPSBIN/functions.php";
+    error_reporting(E_ERROR);
       sec_session_start();
 
       //session_start();
@@ -181,7 +182,7 @@ else{
                                     $playcount = mysql_fetch_array($playcount_arr);
                                     //echo $playcount['result'];
                                     $UPAD = "UPDATE adverts SET Playcount='".$playcount['result']."' where AdId='".addslashes($_POST['AdNum'])."' or XREF='".addslashes($_POST['AdNum'])."'";
-                    /*$UPAD = "update adverts set Playcount=Playcount+1 where AdId=\"" . $_POST['AdNum'] . "\" ";
+                                    /*$UPAD = "update adverts set Playcount=Playcount+1 where AdId=\"" . $_POST['AdNum'] . "\" ";
                                     $ADQN = mysql_query("select XREF from adverts where AdId='" . $_POST['AdNum'] . "' and XREF IS NOT NULL");
                                     if(mysql_num_rows($ADQN)!=0){
                                             $XREF=mysql_fetch_array($ADQN);
