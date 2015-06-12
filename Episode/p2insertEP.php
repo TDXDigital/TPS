@@ -1,5 +1,5 @@
 <?php
-    //error_reporting(E_ERROR);
+    error_reporting(E_ERROR);
     include_once "../TPSBIN/functions.php";
       sec_session_start();
 
@@ -166,66 +166,66 @@ else{
               if (isset($_POST['cat'])){
               	if($_POST['cat']=='51'){
               		if(isset($_POST['AdNum'])){
-              								
-							// UPDATE Playcount
-							$SPupSQL = "select SponsId from program where programname='" . $pgm_name . "' and callsign='" . addslashes($CALLSHOW) . "' and SponsId is not null";
-							if(!$SPup = mysql_query($SPupSQL)){
-								array_push($error, mysql_errno() . "</td><td>" . mysql_error()); 
-							}
-							//echo mysql_num_rows($SPup);
-							if(mysql_num_rows($SPup)==0){
-								$playcountsql = "SELECT Playcount+1 as result from adverts where AdId='".addslashes($_POST['AdNum'])."'";
-								if(!$playcount_arr = mysql_query($playcountsql)){
-									echo mysql_error();
-								}
-								$playcount = mysql_fetch_array($playcount_arr);
-								//echo $playcount['result'];
-								$UPAD = "UPDATE adverts SET Playcount='".$playcount['result']."' where AdId='".addslashes($_POST['AdNum'])."' or XREF='".addslashes($_POST['AdNum'])."'";
-		              			/*$UPAD = "update adverts set Playcount=Playcount+1 where AdId=\"" . $_POST['AdNum'] . "\" ";
-								$ADQN = mysql_query("select XREF from adverts where AdId='" . $_POST['AdNum'] . "' and XREF IS NOT NULL");
-								if(mysql_num_rows($ADQN)!=0){
-									$XREF=mysql_fetch_array($ADQN);
-									$UPXREF = "update adverts set Playcount=(select Playcount as result where AdId=\"" . $_POST['AdNum'] . "\") where AdId=\"" . $XREF['XREF'] . "\" ";
-								}*/
-								/*else{
-								 	//Not Required to report as many ads do not have XREF
-									//array_push($error, mysql_errno() . "</td><td>" . mysql_error());
-									array_push($error,"999</td><td> XREF not Defined (ignore for now)"); 
-								}*/
-									// SET FLAG IF NOT AVAILABLE
-		              			$result_Flag = mysql_query("select Playcount from adverts where AdId='" . addslashes($_POST['AdNum']) . "' and Category='51'");
-                                //$result_AdType = mysql_query("select Playcount from adverts where AdId='" . addslashes($_POST['AdNum']) . "' and Category='51'");
-		              			$FlCheck = mysql_fetch_array($result_Flag);
-								//echo $FlCheck['Playcount'];
-								$Sel51Flag = $minplaysql51 = "select MIN(Playcount) from adverts where Category='51' and Active='1' and Friend='1' ";
-								$Min51Flag = mysql_query($Sel51Flag);
-								$flagLevel = mysql_fetch_array($Min51Flag);
-								//echo $flagLevel['MIN(Playcount)'];
-								if($FlCheck['Playcount']>$flagLevel['MIN(Playcount)']){
-									$indyns.=", AdViolationFlag";
-		                			$BUFFS.=", '1' ";
-								}
-								
-								if(!mysql_query($UPAD)){
-									echo "<div class='error'>AD ERROR: ".mysql_error() . " <br/>Using: $UPAD</div>";
-								}
-								else{
-                                    $ADINS=TRUE;
-									/*if($UPXREF!=""){
-										if(!mysql_query($UPXREF)){
-											echo $UPXREF;
-											echo "XREF ERROR:" . mysql_error();
-										}
-									}*/
-								}
-							}
-							
-					}
-					/*else {
-						$UPAD = "update adverts set Playcount=Playcount+1 where AdName LIKE \"%" . $_POST['title'] . "%\" and Category!='51'";
-					}*/
-					
-					//echo $UPAD;
+
+                            // UPDATE Playcount
+                            $SPupSQL = "select SponsId from program where programname='" . $pgm_name . "' and callsign='" . addslashes($CALLSHOW) . "' and SponsId is not null";
+                            if(!$SPup = mysql_query($SPupSQL)){
+                                    array_push($error, mysql_errno() . "</td><td>" . mysql_error()); 
+                            }
+                            //echo mysql_num_rows($SPup);
+                            if(mysql_num_rows($SPup)==0){
+                                    $playcountsql = "SELECT Playcount+1 as result from adverts where AdId='".addslashes($_POST['AdNum'])."'";
+                                    if(!$playcount_arr = mysql_query($playcountsql)){
+                                            echo mysql_error();
+                                    }
+                                    $playcount = mysql_fetch_array($playcount_arr);
+                                    //echo $playcount['result'];
+                                    $UPAD = "UPDATE adverts SET Playcount='".$playcount['result']."' where AdId='".addslashes($_POST['AdNum'])."' or XREF='".addslashes($_POST['AdNum'])."'";
+                    /*$UPAD = "update adverts set Playcount=Playcount+1 where AdId=\"" . $_POST['AdNum'] . "\" ";
+                                    $ADQN = mysql_query("select XREF from adverts where AdId='" . $_POST['AdNum'] . "' and XREF IS NOT NULL");
+                                    if(mysql_num_rows($ADQN)!=0){
+                                            $XREF=mysql_fetch_array($ADQN);
+                                            $UPXREF = "update adverts set Playcount=(select Playcount as result where AdId=\"" . $_POST['AdNum'] . "\") where AdId=\"" . $XREF['XREF'] . "\" ";
+                                    }*/
+                                    /*else{
+                                            //Not Required to report as many ads do not have XREF
+                                            //array_push($error, mysql_errno() . "</td><td>" . mysql_error());
+                                            array_push($error,"999</td><td> XREF not Defined (ignore for now)"); 
+                                    }*/
+                                            // SET FLAG IF NOT AVAILABLE
+                    $result_Flag = mysql_query("select Playcount from adverts where AdId='" . addslashes($_POST['AdNum']) . "' and Category='51'");
+                    //$result_AdType = mysql_query("selet Playcount from adverts where AdId='" . addslashes($_POST['AdNum']) . "' and Category='51'");
+                    $FlCheck = mysql_fetch_array($result_Flag);
+                                    //echo $FlCheck['Playcount'];
+                                    $Sel51Flag = $minplaysql51 = "select MIN(Playcount) from adverts where Category='51' and Active='1' and Friend='1' ";
+                                    $Min51Flag = mysql_query($Sel51Flag);
+                                    $flagLevel = mysql_fetch_array($Min51Flag);
+                                    //echo $flagLevel['MIN(Playcount)'];
+                                    if($FlCheck['Playcount']>$flagLevel['MIN(Playcount)']){
+                                        $indyns.=", AdViolationFlag";
+                                        $BUFFS.=", '1' ";
+                                    }
+
+                                    if(!mysql_query($UPAD)){
+                                            echo "<div class='error'>AD ERROR: ".mysql_error() . " <br/>Using: $UPAD</div>";
+                                    }
+                                    else{
+                                        $ADINS=TRUE;
+                                            /*if($UPXREF!=""){
+                                                    if(!mysql_query($UPXREF)){
+                                                            echo $UPXREF;
+                                                            echo "XREF ERROR:" . mysql_error();
+                                                    }
+                                            }*/
+                                    }
+                            }
+
+            }
+            /*else {
+                    $UPAD = "update adverts set Playcount=Playcount+1 where AdName LIKE \"%" . $_POST['title'] . "%\" and Category!='51'";
+            }*/
+
+            //echo $UPAD;
 					
               	}
                 else{

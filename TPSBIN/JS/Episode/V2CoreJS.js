@@ -336,17 +336,27 @@ function load(){
         // EPV3/Switch.php
         // generate web workers to handle updating diapla
      function Display_Switch() {
+         SWR_error = 0;
         if(typeof(Worker) !== "undefined") {
             if(typeof(switch_worker) == "undefined") {
                 switch_worker = new Worker("../TPSBIN/JS/Episode/switch_worker.js");
             }
             switch_worker.onmessage = function(event) {
                 //document.getElementById("result").innerHTML = event.data;
-                if(event.error){
-                    Stop_Switch_Worker();
-                    return false;
+                if (event.data == "error") {
+                    if(SWR_error>1){
+                        $("#switch_status").html("Error not resolved, terminating further queries");
+                        Stop_Switch_Worker();
+                        return false;
+                    }
+                    else{
+                        $("#switch_status").html("An error occured, will retry");
+                        SWR_error++;
+                    }
                 }
-                $("#switch_status").html(event.data);
+                else{
+                    $("#switch_status").html(event.data);
+                }
             };
         } else {
             // Sorry! No Web Worker support..
@@ -375,8 +385,9 @@ function load(){
                 foobar_worker = new Worker("../TPSBIN/JS/Episode/foobar_worker.js");
             }
             foobar_worker.onmessage = function (event) {
-                if (event.data == "error") {
+                if (event.data === "error") {
                     Foobar2000_stop();
+                    return false;
                 }
                 else {
                     process_foobar(event.data);
