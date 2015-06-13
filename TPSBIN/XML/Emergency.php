@@ -9,6 +9,12 @@
     //sec_session_start();
     header("application/JSON");
 $data = "http://www.emergencyalert.alberta.ca/aeapublic/feed.atom";
+
+if(!file_exists($data)){
+    error_log("Could not locate $data");
+    http_response_code(404);
+    return FALSE;
+}
 $entries = file_get_contents($data);
 $entries = new SimpleXmlElement($entries);
 if(count($entries)):

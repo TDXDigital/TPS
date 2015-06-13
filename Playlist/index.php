@@ -58,8 +58,8 @@
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
             <li <?php if($PAGE=="new"){echo "class='active' ";}?>><a href="?q=new">Receiving / Induction</a></li>
-            <!--<li <?php if($PAGE=="active"){echo "class='active' ";}?>><a href="?q=active">Active Traffic</a></li>
-            <li <?php if($PAGE=="previous"){echo "class='active' ";}?>><a href="?q=previous">Previous Traffic</a></li>-->
+            <li <?php if($PAGE=="report"){echo "class='active' ";}?>><a href="?q=report">Receiving Reports</a></li>
+            <!--<li <?php if($PAGE=="previous"){echo "class='active' ";}?>><a href="?q=previous">Previous Traffic</a></li>-->
             <!--<li><a href="#">Export</a></li>-->
           </ul>
           <!--<ul class="nav nav-sidebar">

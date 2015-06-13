@@ -1,6 +1,7 @@
 <?php
     //error_reporting(E_ERROR);
     include_once "../TPSBIN/functions.php";
+    error_reporting(E_ERROR);
       sec_session_start();
 
       //session_start();
@@ -166,66 +167,66 @@ else{
               if (isset($_POST['cat'])){
               	if($_POST['cat']=='51'){
               		if(isset($_POST['AdNum'])){
-              								
-							// UPDATE Playcount
-							$SPupSQL = "select SponsId from program where programname='" . $pgm_name . "' and callsign='" . addslashes($CALLSHOW) . "' and SponsId is not null";
-							if(!$SPup = mysql_query($SPupSQL)){
-								array_push($error, mysql_errno() . "</td><td>" . mysql_error()); 
-							}
-							//echo mysql_num_rows($SPup);
-							if(mysql_num_rows($SPup)==0){
-								$playcountsql = "SELECT Playcount+1 as result from adverts where AdId='".addslashes($_POST['AdNum'])."'";
-								if(!$playcount_arr = mysql_query($playcountsql)){
-									echo mysql_error();
-								}
-								$playcount = mysql_fetch_array($playcount_arr);
-								//echo $playcount['result'];
-								$UPAD = "UPDATE adverts SET Playcount='".$playcount['result']."' where AdId='".addslashes($_POST['AdNum'])."' or XREF='".addslashes($_POST['AdNum'])."'";
-		              			/*$UPAD = "update adverts set Playcount=Playcount+1 where AdId=\"" . $_POST['AdNum'] . "\" ";
-								$ADQN = mysql_query("select XREF from adverts where AdId='" . $_POST['AdNum'] . "' and XREF IS NOT NULL");
-								if(mysql_num_rows($ADQN)!=0){
-									$XREF=mysql_fetch_array($ADQN);
-									$UPXREF = "update adverts set Playcount=(select Playcount as result where AdId=\"" . $_POST['AdNum'] . "\") where AdId=\"" . $XREF['XREF'] . "\" ";
-								}*/
-								/*else{
-								 	//Not Required to report as many ads do not have XREF
-									//array_push($error, mysql_errno() . "</td><td>" . mysql_error());
-									array_push($error,"999</td><td> XREF not Defined (ignore for now)"); 
-								}*/
-									// SET FLAG IF NOT AVAILABLE
-		              			$result_Flag = mysql_query("select Playcount from adverts where AdId='" . addslashes($_POST['AdNum']) . "' and Category='51'");
-                                //$result_AdType = mysql_query("select Playcount from adverts where AdId='" . addslashes($_POST['AdNum']) . "' and Category='51'");
-		              			$FlCheck = mysql_fetch_array($result_Flag);
-								//echo $FlCheck['Playcount'];
-								$Sel51Flag = $minplaysql51 = "select MIN(Playcount) from adverts where Category='51' and Active='1' and Friend='1' ";
-								$Min51Flag = mysql_query($Sel51Flag);
-								$flagLevel = mysql_fetch_array($Min51Flag);
-								//echo $flagLevel['MIN(Playcount)'];
-								if($FlCheck['Playcount']>$flagLevel['MIN(Playcount)']){
-									$indyns.=", AdViolationFlag";
-		                			$BUFFS.=", '1' ";
-								}
-								
-								if(!mysql_query($UPAD)){
-									echo "<div class='error'>AD ERROR: ".mysql_error() . " <br/>Using: $UPAD</div>";
-								}
-								else{
-                                    $ADINS=TRUE;
-									/*if($UPXREF!=""){
-										if(!mysql_query($UPXREF)){
-											echo $UPXREF;
-											echo "XREF ERROR:" . mysql_error();
-										}
-									}*/
-								}
-							}
-							
-					}
-					/*else {
-						$UPAD = "update adverts set Playcount=Playcount+1 where AdName LIKE \"%" . $_POST['title'] . "%\" and Category!='51'";
-					}*/
-					
-					//echo $UPAD;
+
+                            // UPDATE Playcount
+                            $SPupSQL = "select SponsId from program where programname='" . $pgm_name . "' and callsign='" . addslashes($CALLSHOW) . "' and SponsId is not null";
+                            if(!$SPup = mysql_query($SPupSQL)){
+                                    array_push($error, mysql_errno() . "</td><td>" . mysql_error()); 
+                            }
+                            //echo mysql_num_rows($SPup);
+                            if(mysql_num_rows($SPup)==0){
+                                    $playcountsql = "SELECT Playcount+1 as result from adverts where AdId='".addslashes($_POST['AdNum'])."'";
+                                    if(!$playcount_arr = mysql_query($playcountsql)){
+                                            echo mysql_error();
+                                    }
+                                    $playcount = mysql_fetch_array($playcount_arr);
+                                    //echo $playcount['result'];
+                                    $UPAD = "UPDATE adverts SET Playcount='".$playcount['result']."' where AdId='".addslashes($_POST['AdNum'])."' or XREF='".addslashes($_POST['AdNum'])."'";
+                                    /*$UPAD = "update adverts set Playcount=Playcount+1 where AdId=\"" . $_POST['AdNum'] . "\" ";
+                                    $ADQN = mysql_query("select XREF from adverts where AdId='" . $_POST['AdNum'] . "' and XREF IS NOT NULL");
+                                    if(mysql_num_rows($ADQN)!=0){
+                                            $XREF=mysql_fetch_array($ADQN);
+                                            $UPXREF = "update adverts set Playcount=(select Playcount as result where AdId=\"" . $_POST['AdNum'] . "\") where AdId=\"" . $XREF['XREF'] . "\" ";
+                                    }*/
+                                    /*else{
+                                            //Not Required to report as many ads do not have XREF
+                                            //array_push($error, mysql_errno() . "</td><td>" . mysql_error());
+                                            array_push($error,"999</td><td> XREF not Defined (ignore for now)"); 
+                                    }*/
+                                            // SET FLAG IF NOT AVAILABLE
+                    $result_Flag = mysql_query("select Playcount from adverts where AdId='" . addslashes($_POST['AdNum']) . "' and Category='51'");
+                    //$result_AdType = mysql_query("selet Playcount from adverts where AdId='" . addslashes($_POST['AdNum']) . "' and Category='51'");
+                    $FlCheck = mysql_fetch_array($result_Flag);
+                                    //echo $FlCheck['Playcount'];
+                                    $Sel51Flag = $minplaysql51 = "select MIN(Playcount) from adverts where Category='51' and Active='1' and Friend='1' ";
+                                    $Min51Flag = mysql_query($Sel51Flag);
+                                    $flagLevel = mysql_fetch_array($Min51Flag);
+                                    //echo $flagLevel['MIN(Playcount)'];
+                                    if($FlCheck['Playcount']>$flagLevel['MIN(Playcount)']){
+                                        $indyns.=", AdViolationFlag";
+                                        $BUFFS.=", '1' ";
+                                    }
+
+                                    if(!mysql_query($UPAD)){
+                                            echo "<div class='error'>AD ERROR: ".mysql_error() . " <br/>Using: $UPAD</div>";
+                                    }
+                                    else{
+                                        $ADINS=TRUE;
+                                            /*if($UPXREF!=""){
+                                                    if(!mysql_query($UPXREF)){
+                                                            echo $UPXREF;
+                                                            echo "XREF ERROR:" . mysql_error();
+                                                    }
+                                            }*/
+                                    }
+                            }
+
+            }
+            /*else {
+                    $UPAD = "update adverts set Playcount=Playcount+1 where AdName LIKE \"%" . $_POST['title'] . "%\" and Category!='51'";
+            }*/
+
+            //echo $UPAD;
 					
               	}
                 else{
@@ -436,20 +437,57 @@ else{
          // set displays
         <?php
             //workers
-            if($RDS_Enabled){ print("Display_RDS();"); };
+            if($RDS_Enabled){ print("Display_RDS(); var RDS=true;"); }
+            else{
+                print "var RDS=false";
+            }
             if($Switch_Enabled){ print("Display_Switch();"); };
             if($Foobar_Enabled){ print("Foobar2000();"); };
          ?>
          // Load Emergency Information
-         GetEAS('EAS', '../');
-         setInterval(function () {
-             GetEAS('EAS', '../');
+        GetEAS('EAS', '../');
+        var EAS_fail = 0;
+        var RDS_fail = 0;
+        var STC_fail = 0;
+        
+        var eas_ctl = setInterval(function () {
+             if(!GetEAS('EAS', '../')){
+                 EAS_fail++;
+                 if(EAS_fail>1){
+                     console.log("EAS has failed to load twice in a row, cancelling further requests");
+                     clearInterval(eas_ctl);
+                 }
+             }
+             else{
+                 EAS_fail=0;
+             }
          }, 15000);
-
-         setInterval(function () {
-             Display_RDS();
-             Display_Switch();
-         }, 20000);
+         
+        var RDS_ctl = setInterval(function () {
+             if(!Display_RDS()){
+                 RDS_fail++;
+                 if(RDS_fail>1){
+                     console.log("RDS has failed to load twice in a row, cancelling further requests");
+                     clearInterval(RDS_ctl)
+                 }
+             }
+             else{
+                 RDS_fail=0;
+             }
+         }, 30000);
+         
+         Display_Switch();
+         /*var STC_ctl = setInterval(function () {
+             if(!Display_Switch()){
+                 STC_fail++;
+                 if(STC_fail>2){
+                     console.log("Switch check has failed three times in a row, cancelling further requests")
+                 }
+             }
+             else{
+                 STC_fail=0;
+             }
+         }, 20000);*/
          /*$('input[name=sub]').click(function() { 
          $.blockUI({ message: '<h1><img src="/images/GIF/ajax-loader1.gif" />Processing...</h1>' }); 
          //test(); 

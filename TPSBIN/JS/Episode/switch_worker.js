@@ -28,6 +28,12 @@ function check_switch() {
                postMessage("Processing Error");
               //alert('There was an error 400')
            }
+           else if(xmlhttp.status == 404) {
+               postMessage("error, server not found");
+           }
+           else if(xmlhttp.status == 403) {
+               postMessage("error");
+           }
            else {
                postMessage("An Error Occured");
                //alert('something else other than 200 was returned')

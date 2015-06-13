@@ -12,9 +12,10 @@
     	/*
     	 * system should detect if switch is enabled from a DB ssettings
     	 */
-    	$switch_query->update_switch(FALSE,$switch);
+        if(!$switch_query->update_switch_ACS8p2(FALSE,$switch)){
+            http_response_code(403);
+        }
     	
     }
     // Replaced code with function of cron script
 
-?>

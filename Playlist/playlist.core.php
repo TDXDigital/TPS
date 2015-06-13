@@ -8,6 +8,8 @@ else{
         case "new":
             include_once("playlist.receiving.php");
         break;
+        case "report":
+            include_once 'playlist.report.php';
         case "active":
             echo "Not Implemented";
         break;
