@@ -304,7 +304,7 @@ color:#CCCCCC;
   box-sizing: border-box;
 }
 .background-image {
-  background-image: url('../images/banners/sea-193803_1280.jpg');
+  background-image: url('images/banners/sea-193803_1280.jpg');
   background-size: cover;
   display: block;
   filter: blur(2px);

@@ -67,8 +67,10 @@ function GetEAS(target,basedir){
     .done(function (data) {
         var tgt_EAS = '#'.concat(target);
         $(tgt_EAS).html(data)
+        return true;
     })
     .fail(function (textStatus) {
         $(tgt_EAS).innerHTML("<span class='ui-state-error'>Could not load EAS data (Got " + textStatus + ")");
+        return false;
     });
 }
