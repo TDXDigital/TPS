@@ -3,12 +3,17 @@
 session_start();
 
 error_reporting(E_ERROR);
+
+require '../../../TPSBIN/functions.php';
+require '../../../TPSBIN/db_connect.php';
+
+
 //if($_SESSION['usr']=='user')
 //{
   //header('location: login.php');
 //}
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
-if (!$con){
+//$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
+/*if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
 	}
@@ -17,22 +22,23 @@ else if($con){
 }
 else{
 	echo 'ERROR!';
-}
+}*/
     //Get Callsign Associated with Programname
     //Retrieve from URL the showname
-    $n = filter_input(INPUT_GET,'n'); //urldecode($_GET["n"]);
+    $n = filter_input(INPUT_GET,'n',FILTER_SANITIZE_STRING); //urldecode($_GET["n"]);
 	
-	$getSQL = "select callsign from program where programname='" . $n ."' and active='1' order by callsign asc";
-	$result = mysql_query($getSQL);
+	$getSQL = "select callsign from program where programname='$n' and active='1' order by callsign asc";
+	$result = $mysqli->query($getSQL);
 	
-	if(mysql_num_rows($result)==0){
+	if($result->num_rows===0){
 		$getSQL = "select callsign,timezone from station order by callsign asc";
-            $result = mysql_query($getSQL);
-            date_default_timezone_set($result['timezone']);
-            $_SESSION('TimeZone');
+            $result2 = $mysqli->query($getSQL);
+            $result_assoc = $result2->fetch_array(MYSQLI_ASSOC);
+            date_default_timezone_set($result_assoc['timezone']);
+            //$_SESSION('TimeZone');
 	}
-	while($row = mysql_fetch_array($result)){
+	while($row = $result->fetch_array(MYSQLI_ASSOC)){
 		echo "<option value=\"".$row['callsign']."\">".$row['callsign']."</option>";
 	}
 	
-	mysql_close($con);
+	$mysqli->close();

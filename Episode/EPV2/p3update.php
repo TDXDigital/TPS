@@ -1,6 +1,9 @@
 <?php
     session_start();
-	$DEBUG = FALSE;
+    $DEBUG = filter_input(INPUT_POST,'debug',FILTER_SANITIZE_NUMBER_INT)?:FALSE;
+    if(!$DEBUG){
+        error_reporting(E_ERROR);
+    }
 	
 $con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
@@ -333,7 +336,7 @@ else{
            USER: <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
 	<div id="header" style="width: <?php echo $SETW ?>">
-		<a href="#"><img src="../../<?php echo $_SESSION['logo'];?>" alt="CKXU" /></a>
+		<a href="#"><img src="../../<?php echo $_SESSION['logo'];?>" alt="Logo" /></a>
 	</div>
 	<div id="top" style="width: <?php echo $SETW ?>">
 		<table><tr><td style="width: 200px"><span style="font-size: 25px;">Update/Edit Log</span></td><td style="width: 100px"></td><td style="width: 300px"><span>Sponsor:<?php
