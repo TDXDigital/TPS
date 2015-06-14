@@ -5,3 +5,25 @@
 [12-Jun-2015 02:43:19 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
 [14-Jun-2015 18:02:28 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
 [14-Jun-2015 18:13:39 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 18:25:47 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 18:34:39 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 19:06:33 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 19:06:34 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 19:06:44 UTC] PHP Warning:  date(): It is not safe to rely on the system's timezone settings. You are *required* to use the date.timezone setting or the date_default_timezone_set() function. In case you used any of those methods and you are still getting this warning, you most likely misspelled the timezone identifier. We selected the timezone 'UTC' for now, but please set date.timezone to select your timezone. in C:\Users\James\Documents\NetBeansProjects\TPS\Episode\EPV2\AJAX\date.php on line 2
+[14-Jun-2015 19:06:51 UTC] PHP Warning:  date(): It is not safe to rely on the system's timezone settings. You are *required* to use the date.timezone setting or the date_default_timezone_set() function. In case you used any of those methods and you are still getting this warning, you most likely misspelled the timezone identifier. We selected the timezone 'UTC' for now, but please set date.timezone to select your timezone. in C:\Users\James\Documents\NetBeansProjects\TPS\Episode\EPV2\AJAX\date.php on line 2
+[14-Jun-2015 19:06:53 UTC] PHP Warning:  date(): It is not safe to rely on the system's timezone settings. You are *required* to use the date.timezone setting or the date_default_timezone_set() function. In case you used any of those methods and you are still getting this warning, you most likely misspelled the timezone identifier. We selected the timezone 'UTC' for now, but please set date.timezone to select your timezone. in C:\Users\James\Documents\NetBeansProjects\TPS\Episode\EPV2\AJAX\date.php on line 2
+[14-Jun-2015 19:08:17 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 19:15:36 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 19:15:39 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 19:23:51 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 19:27:16 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 19:29:46 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 19:30:22 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 19:31:07 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 19:32:10 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 19:35:32 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 19:35:34 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 19:36:42 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 19:36:44 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 19:37:29 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback
+[14-Jun-2015 19:41:10 UTC] File [CONFIG.php] does not exist from path /Episode/EPV2/AJAX/UpdateTime.php with depth 1; setting timezone to UTC as failback

@@ -3,7 +3,10 @@
     include_once "../TPSBIN/functions.php";
     include_once "../TPSBIN/db_connect.php";
     
-    error_reporting(E_ERROR);
+    
+    $DEBUG = filter_input(INPUT_POST,'debug',FILTER_SANITIZE_NUMBER_INT)?:0;
+    
+    error_reporting(E_ALL);
       sec_session_start();
 
       //session_start();
@@ -20,7 +23,7 @@
       else{
           $DESCRIPTION = "";
       }*/
-/*
+
 $con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
@@ -31,7 +34,7 @@ else if($con){
 }
 else{
 	echo 'ERROR! cannot obtain access... this terminal may not be authorised for access';
-}*/
+}
 	$error = array();
 	$warning = array();
 	
@@ -59,51 +62,84 @@ else{
 	//$pgm_name = filter_input(INPUT_POST, 'program', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         //$pgm_name = addslashes($_POST['program']);
         $pgm_name = filter_input(INPUT_POST,'program',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pgm_date = filter_input(INPUT_POST,'user_date',FILTER_SANITIZE_SPECIAL_CHARS);
+        $pgm_time = filter_input(INPUT_POST,'user_time',FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $pgm_type = filter_input(INPUT_POST,'brType',FILTER_SANITIZE_NUMBER_INT);
+        $pgm_pr_date = filter_input(INPUT_POST,'prdate',FILTER_SANITIZE_STRING)?:NULL;
+        
+        /*
+         * GET CALLSIGN FROM PGM in DB
+         */
+        $post_callsign = filter_input(INPUT_POST,'callsign',FILTER_SANITIZE_ENCODED);
         
         $call_stmt = $mysqli->prepare("select callsign from program where programname=? ");
+        if(!$call_stmt->bind_param('s',$pgm_name)){
+            error_log("encountered error on callsign bind in episode ".$call_stmt->error);
+            $CALLSHOW = $post_callsign;
+        }
+        else{
+            if($call_stmt->execute()){
+                $call_stmt->bind_result($CALLSHOW);
+                $call_stmt->fetch();
+                if($CALLSHOW<>$post_callsign){
+                    error_log("could not verify callsign for $pgm_name with callsign $CALLSHOW and POST value $post_callsign ");
+                    $CALLSHOW=$post_callsign;
+                }
+            }
+            else{
+                $CALLSHOW = $post_callsign;
+            }
+        }
+        $call_stmt->close();
         
+        /*
+         * GET existing entries
+         */
+        /*$GET_Episodes = $mysqli->query("select EpNum,programname, from episode LEFT JOIN program on program.programname=episode.programname where episode.callsign=? and episode.programname=? and episode.date=? and episode.starttime=? order by episode.date");
+        $GET_Episodes->bind_param('ssss',$CALLSHOW,$pgm_name,$pgm_date,$pgm_time);
         
-        $SHOWQU = mysql_query($SHOWQ,$con);
-        $CALLROWS = mysql_fetch_array($SHOWQU);
-        $CALLSHOW = $CALLROWS["callsign"];
+        //$RESEPSEL=$mysqli->query($INSEPSEL);
+        $EPINFO=$RESEPSEL->fetch_array(MYSQLI_ASSOC);
+        $ADINS=FALSE;*/
         
-        //$CALLSHOW = filter_input(INPUT_POST, 'callsign', FILTER_SANITIZE_STRING);
-
         $INSEPSEL = "select * from episode LEFT JOIN program on program.programname=episode.programname where episode.callsign='" . addslashes($CALLSHOW) . "' and episode.programname='" . $pgm_name . "' and episode.date='" . addslashes($_POST['user_date']) . "' and episode.starttime='" . addslashes($_POST['user_time']) . "' order by episode.date";
-        $RESEPSEL=mysql_query($INSEPSEL,$con);
-        $EPINFO=mysql_fetch_array($RESEPSEL);
+        if(!$RESEPSEL=$mysqli->query($INSEPSEL)){
+            die($mysqli->error);
+        }
+        $EPINFO=$RESEPSEL->fetch_array(MYSQLI_ASSOC);
         $ADINS=FALSE;
         
-		$SETTINGS = mysql_fetch_array(mysql_query("SELECT * FROM station WHERE callsign='".$CALLSHOW."' "));
-		date_default_timezone_set($SETTINGS['timezone']);
-		
-		//echo $_POST['title'];
-        if(mysql_numrows($RESEPSEL)=="0"){
-        	if($_POST['brType']>0){
-        		$inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description, IP_Created) values ( '" . addslashes($CALLSHOW) . "', '" . $pgm_name . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '$DESCRIPTION','".$_SERVER['REMOTE_ADDR']."' )";
-        	}
-		  else if(!isset($_POST['enprerec']))
-          {
-            $inep = "insert into episode (callsign, programname, date, starttime, description, IP_Created) values ( '" . addslashes($CALLSHOW) . "', '" . $pgm_name . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '$DESCRIPTION','".$_SERVER['REMOTE_ADDR']."' )";
-            
-          }
-          else
-          {
-            $inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description, IP_Created) values ( '" . addslashes($CALLSHOW) . "', '" . $pgm_name . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '$DESCRIPTION','".$_SERVER['REMOTE_ADDR']."' )";
-          }
-            if(!mysql_query($inep,$con))
+        
+        $SETTINGS = mysql_fetch_array(mysql_query("SELECT * FROM station WHERE callsign='".$CALLSHOW."' "));
+        date_default_timezone_set($SETTINGS['timezone']);
+
+        //echo $_POST['title'];
+        if($DEBUG){
+            echo "<h2>NUM_ROWS: ".$RESEPSEL->num_rows."</h2>";
+        }
+        if($RESEPSEL->num_rows===0){
+            $pgm_null = $pgm_pr_date;
+            $pr_string = ($pgm_null?NULL:true)?'NULL':"'".$pgm_pr_date."'";
+            $inep = "insert into episode ("
+                    . "callsign, programname, date, starttime, "
+                    . "prerecorddate, description, IP_Created) values "
+                    . "( '$CALLSHOW', '$pgm_name',"
+                    . " '$pgm_date', '$pgm_time', $pr_string "
+                    . ", '$DESCRIPTION',"
+                    . "'".$_SERVER['REMOTE_ADDR']."' )";
+            if(!$mysqli->query($inep))
             {
-              echo 'SQL Error<br />';
-              echo mysql_error() . "<br/>";
+              echo 'Could not create episode<br />';
+              echo $mysqli->error."<br/>";
               //console.log("ERROR MYSQL: ".mysql_error());
                 //die($inep . "<br/>");
                 echo "<br>$inep<br>";
             }
-		$RESEPSEL=mysql_query($INSEPSEL,$con);
-		$EPINFO=mysql_fetch_array($RESEPSEL);
+		$RESEPSEL=$mysqli->query($INSEPSEL);
+		$EPINFO=$RESEPSEL->fetch_array(MYSQLI_ASSOC);
 		  
         }
-        else if(mysql_numrows($RESEPSEL)>"1"){
+        else if($RESEPSEL->num_rows>1){
           echo 'warning, multiple episodes with same information!';
         }
         $program = "select * from performs order by programname";
@@ -290,14 +326,14 @@ else{
         // Using updated code
         
 		$SQLProg = "SELECT Genre.*, Program.length from Genre, Program where Program.programname=\"" . $pgm_name . "\" and program.callsign=\"" . addslashes($CALLSHOW) . "\" and Program.genre=Genre.genreid";
-		if(!($result = mysql_query($SQLProg))){
+		if(!($result = mysql_query($SQLProg,$con))){
 			echo "Program Error 001 " . mysql_error();
 		}
 		if(!($Requirements = mysql_fetch_array($result))){
 			echo "Program Error 002 " . mysql_error();
 		}
 		$SQL2PR = "SELECT * from Program where programname=\"" . $pgm_name . "\" and callsign=\"" . addslashes($CALLSHOW) . "\" ";
-		if(!($result2 = mysql_query($SQL2PR))){
+		if(!($result2 = mysql_query($SQL2PR,$con))){
 			echo "Program Error 003 " . mysql_error();
 		}
 		if(!($Req2 = mysql_fetch_array($result2))){

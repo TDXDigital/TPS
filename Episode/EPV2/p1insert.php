@@ -1,6 +1,7 @@
 <?php
     include_once "../../TPSBIN/functions.php";
-    //include_once "../../TPSBIN/db_connect.php";
+    include_once "../../TPSBIN/db_connect.php";
+    
     sec_session_start();
     //session_start();
     
@@ -41,7 +42,7 @@ else if($con){
     <link href="../../js/chosen.min.css" rel="stylesheet" type="text/css"/>
     
 <link rel="stylesheet" type="text/css" href="../../altstyle.css" />
-<title>New DPL</title>
+<title>New Episode</title>
 </head>
 <body>
 	<div class="topbar">
