@@ -1,6 +1,8 @@
 <?php
     //error_reporting(E_ERROR);
     include_once "../TPSBIN/functions.php";
+    include_once "../TPSBIN/db_connect.php";
+    
     error_reporting(E_ERROR);
       sec_session_start();
 
@@ -10,13 +12,15 @@
       $END_TIME_VAL="00:00:00";
       $DEBUG = FALSE;
       $FINALIZED = !isset($EPINFO['endtime']);
+      $DESCRIPTION = filter_input(INPUT_POST,'Description',FILTER_SANITIZE_STRING)?:"";
+      /*
       if(isset($_POST['Description'])){
         $DESCRIPTION = addslashes($_POST['Description']);
       }
       else{
           $DESCRIPTION = "";
-      }
-
+      }*/
+/*
 $con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
@@ -27,7 +31,7 @@ else if($con){
 }
 else{
 	echo 'ERROR! cannot obtain access... this terminal may not be authorised for access';
-}
+}*/
 	$error = array();
 	$warning = array();
 	
@@ -36,8 +40,8 @@ else{
 	//##########################//
 
 	$switchqu = "select * from switchstatus ORDER BY ID DESC limit 1 ";
-	$switchre = mysql_query($switchqu);
-	$switchArray = mysql_fetch_array($switchre);
+	$switchre = $mysqli->query($switchqu);
+	$switchArray = $switchre->fetch_array(MYSQLI_ASSOC);
 	$broadcastcheck = $switchArray['Bank1'];
 	$RadioDJ = substr($broadcastcheck, -16 , 1 );
 	$booth1 = substr($broadcastcheck, -14 , 1 );
@@ -45,17 +49,20 @@ else{
 	if($RadioDJ == "1"){
 		array_push($warning,"<strong><br/>Warning: At " . substr($switchArray['timestamp'],-8,5) . " the 24 Hour system was live to air<br/><br/></strong>");
 	}
-    elseif ($booth2 == "1"){
-        array_push($warning,"<strong><br/>Notice: Booth 2 is on air<br/><br/></strong>");
-    }
-    elseif($booth1 == "0"){
-        //array_push($warning,"<strong><br/>Notice: No valid audio source is to air. pleae check switch or warning settings<br/><br/></strong>");
-    }
+        elseif ($booth2 == "1"){
+            array_push($warning,"<strong><br/>Notice: Booth 2 is on air<br/><br/></strong>");
+        }
+        elseif($booth1 == "0"){
+            //array_push($warning,"<strong><br/>Notice: No valid audio source is to air. pleae check switch or warning settings<br/><br/></strong>");
+        }
 	// END Switch Check
 	//$pgm_name = filter_input(INPUT_POST, 'program', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $pgm_name = addslashes($_POST['program']);
+        //$pgm_name = addslashes($_POST['program']);
+        $pgm_name = filter_input(INPUT_POST,'program',FILTER_SANITIZE_SPECIAL_CHARS);
         
-        $SHOWQ = "select callsign from program where programname='" . $pgm_name . "' ";
+        $call_stmt = $mysqli->prepare("select callsign from program where programname=? ");
+        
+        
         $SHOWQU = mysql_query($SHOWQ,$con);
         $CALLROWS = mysql_fetch_array($SHOWQU);
         $CALLSHOW = $CALLROWS["callsign"];
