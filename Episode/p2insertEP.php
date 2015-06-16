@@ -61,16 +61,16 @@ else{
 	// END Switch Check
 	//$pgm_name = filter_input(INPUT_POST, 'program', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         //$pgm_name = addslashes($_POST['program']);
-        $pgm_name = filter_input(INPUT_POST,'program',FILTER_SANITIZE_STRING);
-        $pgm_date = filter_input(INPUT_POST,'user_date',FILTER_SANITIZE_STRING);
-        $pgm_time = filter_input(INPUT_POST,'user_time',FILTER_SANITIZE_STRING);
-        $pgm_type = filter_input(INPUT_POST,'brType',FILTER_SANITIZE_NUMBER_INT);
-        $pgm_pr_date = filter_input(INPUT_POST,'prdate',FILTER_SANITIZE_STRING)?:NULL;
+        $pgm_name = filter_input(INPUT_POST,'program');
+        $pgm_date = filter_input(INPUT_POST,'user_date');
+        $pgm_time = filter_input(INPUT_POST,'user_time');
+        $pgm_type = filter_input(INPUT_POST,'brType');
+        $pgm_pr_date = filter_input(INPUT_POST,'prdate')?:NULL;
         
         /*
          * GET CALLSIGN FROM PGM in DB
          */
-        $post_callsign = filter_input(INPUT_POST,'callsign',FILTER_SANITIZE_ENCODED);
+        $post_callsign = filter_input(INPUT_POST,'callsign');
         
         $call_stmt = $mysqli->prepare("select callsign from program where programname=? ");
         if(!$call_stmt->bind_param('s',$pgm_name)){

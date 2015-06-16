@@ -79,7 +79,7 @@ else if($con){
                    // MySQL Commands
                    
                    // sanatize inputs
-                    $cname = filter_input(INPUT_POST,'pname',FILTER_SANITIZE_STRING);
+                    $cname = addslashes(filter_input(INPUT_POST,'pname'));
                     //$cname = addslashes($_POST['pname']);
                     $ccallsign = addslashes($_POST['callsign']);
                     $clength = addslashes($_POST['length']);
