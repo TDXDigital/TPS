@@ -1,21 +1,28 @@
 <?php
     //error_reporting(E_ERROR);
     include_once "../TPSBIN/functions.php";
-    error_reporting(E_ERROR);
+    include_once "../TPSBIN/db_connect.php";
+    
+    
+    $DEBUG = filter_input(INPUT_POST,'debug',FILTER_SANITIZE_NUMBER_INT)?:0;
+    
+    error_reporting(E_ERROR &~ E_DEPRECATED); // mysql is known to be deprecated
       sec_session_start();
 
       //session_start();
       $ADIDS = array();
       $ADOPT = "";
       $END_TIME_VAL="00:00:00";
-      $DEBUG = FALSE;
-      $FINALIZED = !isset($EPINFO['endtime']);
+      //$DEBUG = TRUE; // OVERRIDE
+      $FINALIZED = FALSE;//!isset($EPINFO['endtime']);
+      $DESCRIPTION = filter_input(INPUT_POST,'Description',FILTER_SANITIZE_STRING)?:"";
+      /*
       if(isset($_POST['Description'])){
         $DESCRIPTION = addslashes($_POST['Description']);
       }
       else{
           $DESCRIPTION = "";
-      }
+      }*/
 
 $con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
@@ -36,8 +43,8 @@ else{
 	//##########################//
 
 	$switchqu = "select * from switchstatus ORDER BY ID DESC limit 1 ";
-	$switchre = mysql_query($switchqu);
-	$switchArray = mysql_fetch_array($switchre);
+	$switchre = $mysqli->query($switchqu);
+	$switchArray = $switchre->fetch_array(MYSQLI_ASSOC);
 	$broadcastcheck = $switchArray['Bank1'];
 	$RadioDJ = substr($broadcastcheck, -16 , 1 );
 	$booth1 = substr($broadcastcheck, -14 , 1 );
@@ -45,65 +52,220 @@ else{
 	if($RadioDJ == "1"){
 		array_push($warning,"<strong><br/>Warning: At " . substr($switchArray['timestamp'],-8,5) . " the 24 Hour system was live to air<br/><br/></strong>");
 	}
-    elseif ($booth2 == "1"){
-        array_push($warning,"<strong><br/>Notice: Booth 2 is on air<br/><br/></strong>");
-    }
-    elseif($booth1 == "0"){
-        //array_push($warning,"<strong><br/>Notice: No valid audio source is to air. pleae check switch or warning settings<br/><br/></strong>");
-    }
+        elseif ($booth2 == "1"){
+            array_push($warning,"<strong><br/>Notice: Booth 2 is on air<br/><br/></strong>");
+        }
+        elseif($booth1 == "0"){
+            //array_push($warning,"<strong><br/>Notice: No valid audio source is to air. pleae check switch or warning settings<br/><br/></strong>");
+        }
 	// END Switch Check
 	//$pgm_name = filter_input(INPUT_POST, 'program', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $pgm_name = addslashes($_POST['program']);
+        //$pgm_name = addslashes($_POST['program']);
+        $pgm_name = filter_input(INPUT_POST,'program');
+        if ( urlencode(urldecode($pgm_name)) === $pgm_name){
+            //data is urlencoded
+            $pgm_name = urldecode($pgm_name);
+        } else {
+            //data is NOT urlencoded
+            // nothing needed
+        }
+        $pgm_date = filter_input(INPUT_POST,'user_date');
+        $pgm_time = filter_input(INPUT_POST,'user_time');
+        $pgm_type = filter_input(INPUT_POST,'brType');
+        $pgm_pr_date = filter_input(INPUT_POST,'prdate')?:NULL;
         
-        $SHOWQ = "select callsign from program where programname='" . $pgm_name . "' ";
-        $SHOWQU = mysql_query($SHOWQ,$con);
-        $CALLROWS = mysql_fetch_array($SHOWQU);
-        $CALLSHOW = $CALLROWS["callsign"];
+        /*
+         * GET CALLSIGN FROM PGM in DB
+         */
+        $post_callsign = filter_input(INPUT_POST,'callsign');
         
-        //$CALLSHOW = filter_input(INPUT_POST, 'callsign', FILTER_SANITIZE_STRING);
-
-        $INSEPSEL = "select * from episode LEFT JOIN program on program.programname=episode.programname where episode.callsign='" . addslashes($CALLSHOW) . "' and episode.programname='" . $pgm_name . "' and episode.date='" . addslashes($_POST['user_date']) . "' and episode.starttime='" . addslashes($_POST['user_time']) . "' order by episode.date";
-        $RESEPSEL=mysql_query($INSEPSEL,$con);
-        $EPINFO=mysql_fetch_array($RESEPSEL);
-        $ADINS=FALSE;
+        $call_stmt = $mysqli->prepare("select callsign from program where programname=? ");
+        if(!$call_stmt->bind_param('s',$pgm_name)){
+            error_log("encountered error on callsign bind in episode ".$call_stmt->error);
+            $CALLSHOW = $post_callsign;
+        }
+        else{
+            if($call_stmt->execute()){
+                $call_stmt->bind_result($CALLSHOW);
+                $call_stmt->fetch();
+                if($CALLSHOW<>$post_callsign){
+                    //$pgm_name = urldecode($pgm_name);
+                    error_log("could not verify callsign for $pgm_name with callsign $CALLSHOW and POST value $post_callsign ");
+                    $CALLSHOW=$post_callsign;
+                    
+                }
+            }
+            else{
+                $CALLSHOW = $post_callsign;
+                //echo "determined callsign";
+            }
+        }
+        $call_stmt->close();
         
-		$SETTINGS = mysql_fetch_array(mysql_query("SELECT * FROM station WHERE callsign='".$CALLSHOW."' "));
-		date_default_timezone_set($SETTINGS['timezone']);
-		
-		//echo $_POST['title'];
-        if(mysql_numrows($RESEPSEL)=="0"){
-        	if($_POST['brType']>0){
-        		$inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description, IP_Created) values ( '" . addslashes($CALLSHOW) . "', '" . $pgm_name . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '$DESCRIPTION','".$_SERVER['REMOTE_ADDR']."' )";
-        	}
-		  else if(!isset($_POST['enprerec']))
-          {
-            $inep = "insert into episode (callsign, programname, date, starttime, description, IP_Created) values ( '" . addslashes($CALLSHOW) . "', '" . $pgm_name . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '$DESCRIPTION','".$_SERVER['REMOTE_ADDR']."' )";
+        /*
+         * GET existing entries
+         */
+        /*$GET_Episodes = $mysqli->query("select EpNum,programname, from episode LEFT JOIN program on program.programname=episode.programname where episode.callsign=? and episode.programname=? and episode.date=? and episode.starttime=? order by episode.date");
+        $GET_Episodes->bind_param('ssss',$CALLSHOW,$pgm_name,$pgm_date,$pgm_time);
+        
+        //$RESEPSEL=$mysqli->query($INSEPSEL);
+        $EPINFO=$RESEPSEL->fetch_array(MYSQLI_ASSOC);
+        $ADINS=FALSE;*/
+        
+        //$INSEPSEL = "select * from episode LEFT JOIN program on program.programname=episode.programname where episode.callsign='" . addslashes($CALLSHOW) . "' and episode.programname='" . $pgm_name . "' and episode.date='" . addslashes($_POST['user_date']) . "' and episode.starttime='" . addslashes($_POST['user_time']) . "' order by episode.date";
+        $INSEPSEL = "select episode.callsign,episode.programname,"
+                . " episode.`date`, episode.EndStamp, episode.starttime, episode.endtime, "
+                . "episode.prerecorddate, episode.totalspokentime, "
+                . "episode.description, episode.lock, episode.type, "
+                . "episode.EpNum, program.length, program.genre, "
+                . "program.active, program.CCX, program.PLX,"
+                . "program.HitLimit, program.SponsId, program.displayorder,"
+                . "program.theme, program.ProgramID, program.Display_Order,"
+                . "program.reviewable from episode LEFT JOIN program on "
+                . "program.programname=episode.programname where "
+                . "episode.callsign=? and episode.programname=? "
+                . "and episode.date=? and episode.starttime=? "
+                . "order by episode.date";
+        if(!$check_episode = $mysqli->prepare($INSEPSEL)){
+            die("Terminal error, could not prepare query, please reload page [".$check_episode->error." : $INSEPSEL]");
+        }
+        if(!$check_episode->bind_param('ssss',$CALLSHOW,$pgm_name,$pgm_date,$pgm_time)){
+            die("Bind Error, (133)");
+        }
+        if(!$check_episode->execute()){
+            die ("Execution Error, (136)");
+        }
+        /*$check_episode->bind_result(
+                $EPINFO['callsign'],
+                $EPINFO['programname'],
+                $EPINFO['date'],
+                $EPINFO['starttime'])*/
+        if(!$check_episode->bind_result(
+                $ep_callsign, $ep_name,
+                $ep_date,$ep_end,$ep_start, $ep_EndStamp,
+                $ep_pr_date,$ep_sp_time,$ep_description,
+                $ep_lock,$ep_type, $ep_num,
+                $ep_length, $ep_genre, $pgm_active,
+                $pgm_CCX, $pgm_PLX, $pgm_HitLimit,
+                $pgm_SponsID, $pgm_displayorder, $pgm_theme,
+                $pgm_ID, $pgm_Disp_Order, $pgm_reviewable
+                )){
+            die("could not bind result : ".$check_episode->error);
+                }
+        $check_episode->fetch();
+        
+        if($DEBUG){
+            "<span> Episode Created: EpisodeID Found $ep_num</span><br>";
+            var_dump("Episode Found",$ep_callsign, $ep_name,
+                $ep_date,["START"=>$ep_start],["END"=>$ep_end], $ep_EndStamp,
+                $ep_pr_date,$ep_sp_time,$ep_description,
+                $ep_lock,$ep_type, $ep_num,
+                $ep_length, $ep_genre, $pgm_active,
+                $pgm_CCX, $pgm_PLX, $pgm_HitLimit,
+                $pgm_SponsID, $pgm_displayorder, $pgm_theme,
+                $pgm_ID, $pgm_Disp_Order, $pgm_reviewable);
+        echo "<br>";
+        }
+        /*if($check_episode->fetch()===FALSE){
+            die("Terminal Error: could not fetch information, ".$check_episode->error);
+        }*/
+        /*
+        $EPINFO['callsign'] = $ep_callsign;
+        $EPINFO['programname'] = $ep_name;
+        $EPINFO['date'] = $ep_date;
+        $EPINFO['starttime'] = $ep_start;
+        $EPINFO['endtime'] = $ep_end;
+        $EPINFO['prerecorddate'] = $ep_pr_date;*/
+        /*if(!$EPINFO=$check_episode->fetch()){
             
-          }
-          else
-          {
-            $inep = "insert into episode (callsign, programname, date, starttime, prerecorddate, description, IP_Created) values ( '" . addslashes($CALLSHOW) . "', '" . $pgm_name . "', '" . addslashes($_POST['user_date']) . "', '" . addslashes($_POST['user_time']) . "', '" . addslashes($_POST['prdate']) . "', '$DESCRIPTION','".$_SERVER['REMOTE_ADDR']."' )";
-          }
-            if(!mysql_query($inep,$con))
+        }*/
+        //$EPINFO=//$check_episode->fetch_array(MYSQLI_ASSOC);
+        //$check_episode->close();
+        /*if(!$RESEPSEL=$mysqli->query($INSEPSEL)){
+            die($mysqli->error);
+        }
+        $EPINFO=$RESEPSEL->fetch_array(MYSQLI_ASSOC);
+        $ADINS=FALSE;
+        */
+        
+
+        //echo $_POST['title'];
+        /*if($DEBUG){
+            echo "<h2>NUM_ROWS: ".$RESEPSEL->num_rows."</h2>";
+        }*/
+        if($pgm_ID===NULL){
+            $pgm_null = $pgm_pr_date;
+            $pr_string = ($pgm_null?NULL:true)?'NULL':"'".$pgm_pr_date."'";
+            $inep = "insert into episode ("
+                    . "callsign, programname, date, starttime, "
+                    . "prerecorddate, description, IP_Created) values "
+                    . "( '$CALLSHOW', '".mysql_escape_string($pgm_name)."',"
+                    . " '$pgm_date', '$pgm_time', $pr_string "
+                    . ", '$DESCRIPTION',"
+                    . "'".$_SERVER['REMOTE_ADDR']."' )";
+            if(!$mysqli->query($inep))
             {
-              echo 'SQL Error<br />';
-              echo mysql_error() . "<br/>";
-              //console.log("ERROR MYSQL: ".mysql_error());
+                echo 'Could not create episode<br /> PgmID:'.var_dump($pgm_ID)."<br>";
+                echo $mysqli->error."<br/>";
+                //console.log("ERROR MYSQL: ".mysql_error());
                 //die($inep . "<br/>");
                 echo "<br>$inep<br>";
             }
-		$RESEPSEL=mysql_query($INSEPSEL,$con);
-		$EPINFO=mysql_fetch_array($RESEPSEL);
-		  
+            else{
+                $check_episode->execute();
+                $check_episode->fetch();
+            }
+            if($DEBUG){
+                var_dump("Created Episode",$ep_callsign, $ep_name,
+                $ep_date,$ep_start,$ep_end, $ep_EndStamp,
+                $ep_pr_date,$ep_sp_time,$ep_description,
+                $ep_lock,$ep_type, $ep_num,
+                $ep_length, $ep_genre, $pgm_active,
+                $pgm_CCX, $pgm_PLX, $pgm_HitLimit,
+                $pgm_SponsID, $pgm_displayorder, $pgm_theme,
+                $pgm_ID, $pgm_Disp_Order, $pgm_reviewable);
+                echo "<br>";
+            }
+            //$RESEPSEL=$mysqli->query($INSEPSEL);
+            //$EPINFO=$RESEPSEL->fetch_array(MYSQLI_ASSOC);
+		
         }
-        else if(mysql_numrows($RESEPSEL)>"1"){
+        else if($RESEPSEL->num_rows>1){
           echo 'warning, multiple episodes with same information!';
         }
+        $check_episode->close();
+        
+        
+        $query_settings = "select callsign,"
+                . "stationname, ST_DefaultSort,ST_PLLG,ST_ForceComposer,"
+                . "ST_ForceArtist, ST_ForceAlbum,ST_ColorFail,ST_ColorPass"
+                . ", ST_PLRG, ST_DispCount, ST_ColorNote,ST_ADSH, ST_PSAH,"
+                . "timezone from station where callsign=?";
+        if($setting_stmt = $mysqli->prepare($query_settings)){
+            $setting_stmt->bind_param("s",$CALLSHOW);
+            $setting_stmt->execute();
+            $setting_stmt->bind_result($SETTINGS['callsign'],$SETTINGS['stationname']
+                    ,$SETTINGS['ST_DefaultSort'],$SETTINGS['ST_PLLG'],$SETTINGS['ST_ForceComposer'],
+                    $SETTINGS['ST_ForceArtist'],$SETTINGS['ST_ForceAlbum'],$SETTINGS['ST_ColorFail'],
+                    $SETTINGS['ST_ColorPass'],$SETTINGS['ST_PLRG'],$SETTINGS['ST_DispCount'],
+                    $SETTINGS['ST_ColorNote'],$SETTINGS['ST_ADSH'],$SETTINGS['ST_PSAH'],
+                    $SETTINGS['timezone']);
+            $setting_stmt->fetch();
+            $setting_stmt->close();
+        }
+        else{
+            error_log("could not query settings: $query_settings due to ".$mysqli->error);
+            if($DEBUG){
+                echo "<br> Settings Failed with $query_settings on ".$mysqli->error."<br>";
+            }
+        }
+        date_default_timezone_set($SETTINGS['timezone']);
+        
         $program = "select * from performs order by programname";
-        $prog=mysql_query($program,$con);
+        $prog=$mysqli->query($program);
         
         $options="";
-        while ($row=mysql_fetch_array($prog)) {
+        while ($row=$prog->fetch_array(MYSQLI_ASSOC)) {
             $name=$row["programname"];
             $options.="<OPTION VALUE=\"".$name."\">".$name."</option>";
         }
@@ -116,7 +278,7 @@ else{
               //dynamic SQL CREATION
               
               $indyns = "insert into SONG (callsign, programname, date, starttime";
-              $BUFFS = "'" . addslashes($CALLSHOW) . "' , '" . $pgm_name . "' , '" . addslashes($_POST['user_date']) . "' , '" . addslashes($_POST['user_time']) . "'";
+              $BUFFS = "'" . addslashes($CALLSHOW) . "' , '" . mysql_escape_string($pgm_name) . "' , '" . addslashes($_POST['user_date']) . "' , '" . addslashes($_POST['user_time']) . "'";
               if (isset($_POST['instrumental'])){
                 $indyns.=", instrumental";
                 $BUFFS.=", '1' ";
@@ -245,7 +407,7 @@ else{
 			  //echo $DYNAMIC;
               if(!mysql_query($DYNAMIC,$con))
               {
-                echo 'SQL Error<br />';
+                echo 'SQL Error - Song Insert<br />';
                 echo mysql_error();
               }
               else //This is executed if the song is inserted
@@ -257,7 +419,7 @@ else{
 						else{
 							$LANGIN = $QRR['Language'];
 						}
-                          $langDef = "insert into language values ('" . addslashes($CALLSHOW) . "', '". $pgm_name ."', '" . addslashes($_POST['user_date']) . "', '". addslashes($_POST['user_time']) . "', '" . addslashes($LASTLINK) . "', '" . $LANGIN . "')";
+                          $langDef = "insert into language values ('" . addslashes($CALLSHOW) . "', '". mysql_escape_string($pgm_name) ."', '" . addslashes($_POST['user_date']) . "', '". addslashes($_POST['user_time']) . "', '" . addslashes($LASTLINK) . "', '" . $LANGIN . "')";
                           if(!mysql_query($langDef,$con))
                           {
                               echo 'SQL Error, Language Insertion<br />';
@@ -282,15 +444,15 @@ else{
         // This information is needed by either method 
         // Using updated code
         
-		$SQLProg = "SELECT Genre.*, Program.length from Genre, Program where Program.programname=\"" . $pgm_name . "\" and program.callsign=\"" . addslashes($CALLSHOW) . "\" and Program.genre=Genre.genreid";
-		if(!($result = mysql_query($SQLProg))){
+		$SQLProg = "SELECT Genre.*, Program.length from Genre, Program where Program.programname=\"" . mysql_escape_string($pgm_name) . "\" and program.callsign=\"" . mysql_escape_string($CALLSHOW) . "\" and Program.genre=Genre.genreid";
+		if(!($result = mysql_query($SQLProg,$con))){
 			echo "Program Error 001 " . mysql_error();
 		}
 		if(!($Requirements = mysql_fetch_array($result))){
 			echo "Program Error 002 " . mysql_error();
 		}
-		$SQL2PR = "SELECT * from Program where programname=\"" . $pgm_name . "\" and callsign=\"" . addslashes($CALLSHOW) . "\" ";
-		if(!($result2 = mysql_query($SQL2PR))){
+		$SQL2PR = "SELECT * from Program where programname=\"" . mysql_escape_string($pgm_name) . "\" and callsign=\"" . addslashes($CALLSHOW) . "\" ";
+		if(!($result2 = mysql_query($SQL2PR,$con))){
 			echo "Program Error 003 " . mysql_error();
 		}
 		if(!($Req2 = mysql_fetch_array($result2))){
@@ -319,12 +481,12 @@ else{
 		}
 		
 		// COUNT CANCON
-		$SQLCOUNTCC = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and cancon='1' ";
+		$SQLCOUNTCC = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and cancon='1' ";
 		$resultCC = mysql_query($SQLCOUNTCC);
 		$RECCC = mysql_num_rows($resultCC);
 		
 		// COUNT PLAYLIST
-		$SQLCOUNTPL = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and playlistnumber IS NOT NULL ";
+		$SQLCOUNTPL = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and playlistnumber IS NOT NULL ";
 		if($SETTINGS['ST_PLLG']=='1'){
 			$SQLCOUNTPL .="group by playlistnumber";	
 		}
@@ -332,14 +494,14 @@ else{
 		$RECPL = mysql_num_rows($resultPL);
 		
 		//COUNT ADS
-		$SQLCOUNT51 = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category='51' and AdViolationFlag is null";
+		$SQLCOUNT51 = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category='51' and AdViolationFlag is null";
 		$result51 = mysql_query($SQLCOUNT51);
 		$REC51 = mysql_num_rows($result51);
 		
 		//COUNT PSA
-		$SQLCOUNTPROMO = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category='45'";
-		$SQLCOUNTPSA = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category like '1%' and (title like '%PSA%' or Artist like 'Station PSA')";
-		//$SQLCOUNTPSA = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category like '1%' and title like '%Promo%' ";
+		$SQLCOUNTPROMO = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category='45'";
+		$SQLCOUNTPSA = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category like '1%' and (title like '%PSA%' or Artist like 'Station PSA')";
+		//$SQLCOUNTPSA = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category like '1%' and title like '%Promo%' ";
 		$resultPSA = mysql_query($SQLCOUNTPSA);
 		$resultPROMO = mysql_query($SQLCOUNTPROMO);
 		$RECPSA = mysql_num_rows($resultPROMO);
@@ -663,8 +825,8 @@ if(false){
 	// ################ REQ CC PL ##################
     if($Requirements['CCType']=='0'){
         $SQL_CC_COUNT = "SELECT 
-        (SELECT count(*) FROM song WHERE callsign='" . addslashes($EPINFO['callsign']) . "' and programname='" . addslashes($EPINFO['programname']) . "' and date='" . addslashes($EPINFO['date']) . "' and starttime='" . addslashes($EPINFO['starttime']). "' and category not like '1%' and category not like '4%' and category not like '5%') AS Total,
-        (SELECT count(*) FROM song WHERE callsign='" . addslashes($EPINFO['callsign']) . "' and programname='" . addslashes($EPINFO['programname']) . "' and date='" . addslashes($EPINFO['date']) . "' and starttime='" . addslashes($EPINFO['starttime']). "' and category not like '1%' and category not like '4%' and category not like '5%' and cancon='1') AS CC_Num,
+        (SELECT count(*) FROM song WHERE callsign='" . mysql_escape_string($ep_callsign) . "' and programname='" . mysql_escape_string($ep_name) . "' and date='" . mysql_escape_string($ep_date) . "' and starttime='" . mysql_escape_string($ep_start). "' and category not like '1%' and category not like '4%' and category not like '5%') AS Total,
+        (SELECT count(*) FROM song WHERE callsign='" . mysql_escape_string($ep_callsign) . "' and programname='" . mysql_escape_string($ep_name) . "' and date='" . mysql_escape_string($ep_date) . "' and starttime='" . mysql_escape_string($ep_start). "' and category not like '1%' and category not like '4%' and category not like '5%' and cancon='1') AS CC_Num,
         (SELECT round(((CC_Num / Total)*100),2)) AS Percent";
         if(!$CC_PER_RES = mysql_query($SQL_CC_COUNT)){
             echo "<span class='ui-state-highlight ui-corner-all'>".mysql_error()."</span>";
@@ -704,8 +866,8 @@ if(false){
         // GET PERCENTAGE FROM DB
         
         $SQL_PL_COUNT = "SELECT 
-        (SELECT count(*) FROM song WHERE callsign='" . addslashes($EPINFO['callsign']) . "' and programname='" . addslashes($EPINFO['programname']) . "' and date='" . addslashes($EPINFO['date']) . "' and starttime='" . addslashes($EPINFO['starttime']). "' and category not like '1%' and category not like '4%' and category not like '5%') AS Total,
-        (SELECT count(*) FROM song WHERE callsign='" . addslashes($EPINFO['callsign']) . "' and programname='" . addslashes($EPINFO['programname']) . "' and date='" . addslashes($EPINFO['date']) . "' and starttime='" . addslashes($EPINFO['starttime']). "' and category not like '1%' and category not like '4%' and category not like '5%' and Playlistnumber IS NOT NULL) AS Count,
+        (SELECT count(*) FROM song WHERE callsign='" . mysql_escape_string($ep_callsign) . "' and programname='" . mysql_escape_string($ep_name) . "' and date='" . mysql_escape_string($ep_date) . "' and starttime='" . mysql_escape_string($ep_start). "' and category not like '1%' and category not like '4%' and category not like '5%') AS Total,
+        (SELECT count(*) FROM song WHERE callsign='" . mysql_escape_string($ep_callsign) . "' and programname='" . mysql_escape_string($ep_name) . "' and date='" . mysql_escape_string($ep_date) . "' and starttime='" . mysql_escape_string($ep_start). "' and category not like '1%' and category not like '4%' and category not like '5%' and Playlistnumber IS NOT NULL) AS Count,
         (SELECT round(((Count / Total)*100),2)) AS Percent";
         if(!$PL_PER_RES = mysql_query($SQL_PL_COUNT)){
             echo "style=\"background-color:".$SETTINGS['ST_ColorFail'].";\" >";
@@ -787,10 +949,10 @@ if(false){
         <?php
             if(FALSE){//implement system variable to determine if shown (stored in station)
                 if($_SESSION['access']==2){
-                    $Hardware_Query="SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='".$EPINFO['callsign']."' and in_service='1' and ipv4_address IS NOT NULL group by hardware.hardwareid order by friendly_name ASC";
+                    $Hardware_Query="SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='".mysql_escape_string($ep_callsign)."' and in_service='1' and ipv4_address IS NOT NULL group by hardware.hardwareid order by friendly_name ASC";
                 }
                 else{
-                $Hardware_Query="SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='".$EPINFO['callsign']."' and in_service='1' and ipv4_address IS NOT NULL and hardware.room=(SELECT `hardware`.`room` AS `room_ip` FROM hardware WHERE hardware.ipv4_address='".$_SERVER['REMOTE_ADDR']."' and `hardware`.`hardware_type`='1' and `hardware`.`in_service`='1' order by `hardware`.`hardwareid` LIMIT 1) group by hardware.hardwareid order by friendly_name ASC";
+                $Hardware_Query="SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='".mysql_escape_string($ep_callsign)."' and in_service='1' and ipv4_address IS NOT NULL and hardware.room=(SELECT `hardware`.`room` AS `room_ip` FROM hardware WHERE hardware.ipv4_address='".$_SERVER['REMOTE_ADDR']."' and `hardware`.`hardware_type`='1' and `hardware`.`in_service`='1' order by `hardware`.`hardwareid` LIMIT 1) group by hardware.hardwareid order by friendly_name ASC";
                 }
                 if(!$Equipment_List = mysql_query($Hardware_Query)){
                     error_log("Encountered Error: p2indexEP.php, Query HArdware_Query returned invalid result: ".mysql_error());
@@ -849,19 +1011,19 @@ if(false){
         <tr><td style="vertical-align:top">
 
 	    
-	    <?php echo $EPINFO['date']; ?>
+	    <?php echo $ep_date; ?>
         </td><td style="vertical-align:top">
 	    
-	    <?php echo $EPINFO['starttime']; ?>
+	    <?php echo $ep_start; ?>
         </td><td style="vertical-align:top">
              
-             <?php echo $EPINFO['programname'];?>
+             <?php echo $ep_name;?>
         </td><td style="vertical-align:top">
              
-             <?php echo $EPINFO['callsign'];?>
+             <?php echo $ep_callsign;?>
         </td><td style="vertical-align:top">
              
-             <?php echo $EPINFO['description']; ?>
+             <?php echo $ep_description; ?>
         </td><td style="vertical-align:top">
 	    <?php 
 	     	
@@ -919,7 +1081,7 @@ if(false){
 						while($PdAds=mysql_fetch_array($READS)){
 							if($PdAds['Limit'] == NULL || $PdAds['Playcount'] < $PdAds['Limit']){
 								// Check BlockLimit (BLIM)
-								$CHECKBLIM = "SELECT count(song.songid) FROM adrotation,song WHERE adrotation.AdId='".$PdAds['AdId']."' AND song.title='".addslashes($PdAds['AdName'])."' and song.date='".$EPINFO['date']."' and song.time BETWEEN '".$PdAds['startTime']."' AND '".$PdAds['endTime']."' ";
+								$CHECKBLIM = "SELECT count(song.songid) FROM adrotation,song WHERE adrotation.AdId='".mysql_escape_string($PdAds['AdId'])."' AND song.title='".mysql_escape_string($PdAds['AdName'])."' and song.date='".mysql_escape_string($ep_date)."' and song.time BETWEEN '".mysql_escape_string($PdAds['startTime'])."' AND '".mysql_escape_string($PdAds['endTime'])."' ";
 								$BL_lim_R = mysql_query($CHECKBLIM);
 								$BL_lim = mysql_fetch_array($BL_lim_R);
 								if(mysql_error()){
@@ -930,7 +1092,7 @@ if(false){
 									$REQAD .= "<option value='".$PdAds['AdId']."'>".$PdAds['AdName']."</option>";
 									array_push($RQADSIDS,$PdAds['AdId']);
                                     array_push($ADIDS,$PdAds['AdId']);
-                                    $SQL_PL_AD = "INSERT INTO promptlog (EpNum,AdNum) VALUES (".addslashes($EPINFO['EpNum']).",".addslashes($PdAds['AdId']).")";
+                                    $SQL_PL_AD = "INSERT INTO promptlog (EpNum,AdNum) VALUES (".mysql_escape_string($ep_num).",".addslashes($PdAds['AdId']).")";
                                     if(!mysql_query($SQL_PL_AD)){
                                         echo "<!-- ERROR: " . mysql_error() . "-->";
                                         error_log("TPS Error; Line 951: Could not perform SQL Query - ".mysql_error());
@@ -1082,7 +1244,7 @@ if(false){
         	<input type="date" name="user_date" hidden value=<?php echo "\"" . $_POST['user_date'] . "\"";?>/>
         	<input type="time" name="user_time" hidden value=<?php echo "\"" . $_POST['user_time'] . "\"";?>/>
         	<input type="text" name="program" hidden value=<?php echo "\"" . $_POST['program'] . "\"";?> />
-        	<input type="text" name="station" hidden value=<?php echo "\"" . $CALLSHOW . "\"";?> />
+        	<input type="text" name="callsign" hidden value=<?php echo "\"" . $CALLSHOW . "\"";?> />
         	<input type="text" name="description" hidden value=<?php echo "\"" . $DESCRIPTION . "\""; ?> />
         	<input type="hidden" name="artist" hidden value=<?php echo "\"" . $CALLSHOW . "\""; ?> />
         	<input type="hidden" name="album" hidden value="Advertisement" />
@@ -1170,9 +1332,9 @@ if(false){
                        </th>
                        <th>
                            <input type="time" id="ins_time" name="time" value=<?php
-                           if(isset($_POST['ENPREC']) || isset($EPINFO['prerecorddate'])){
-                           	if(isset($EPINFO['endtime'])){
-	                             echo "\"" . $EPINFO['endtime'] . "\"";
+                           if(isset($_POST['ENPREC']) || isset($ep_pr_date)){
+                           	if(isset($ep_end)){
+	                             echo "\"" . $ep_end . "\"";
 	                           }
 	                           else if(isset($_POST['time'])){
 	                             echo "\"" . $_POST['time'] . "\"";
@@ -1282,7 +1444,7 @@ if(false){
         	<input type="date" name="user_date" hidden value=<?php echo "\"" . $_POST['user_date'] . "\"";?>/>
         	<input type="time" name="user_time" hidden value=<?php echo "\"" . $_POST['user_time'] . "\"";?>/>
         	<input type="text" name="program" hidden value=<?php echo "\"" . $_POST['program'] . "\"";?> />
-        	<input type="text" name="station" hidden value=<?php echo "\"" . $CALLSHOW . "\"";?> />
+        	<input type="text" name="callsign" hidden value=<?php echo "\"" . $CALLSHOW . "\"";?> />
         	<input type="text" name="description" hidden value=<?php echo "\"" . $DESCRIPTION . "\""; ?> />
         	<input type="text" name="artist" hidden="true" value=<?php echo "\"" . $CALLSHOW . "\""; ?> />
         	<input type="text" name="album" hidden="true" value="Advertisement" />-->
@@ -1340,9 +1502,9 @@ if(false){
                        </th>
                        <th>
                            <input type="time" name="time" value=<?php
-                           if(isset($_POST['ENPREC']) || isset($EPINFO['prerecorddate'])){
-                           	if(isset($EPINFO['endtime'])){
-	                             echo "\"" . $EPINFO['endtime'] . "\"";
+                           if(isset($_POST['ENPREC']) || isset($ep_pr_date)){
+                           	if(isset($ep_end)){
+	                             echo "\"" . $ep_end . "\"";
 	                           }
 	                           else if(isset($_POST['time'])){
 	                             echo "\"" . $_POST['time'] . "\"";
@@ -1397,7 +1559,7 @@ if(false){
         	<input type="date" name="user_date" hidden value=<?php echo "\"" . $_POST['user_date'] . "\"";?>/>
         	<input type="time" name="user_time" hidden value=<?php echo "\"" . $_POST['user_time'] . "\"";?>/>
         	<input type="text" name="program" hidden value=<?php echo "\"" . $_POST['program'] . "\"";?> />
-        	<input type="text" name="station" hidden value=<?php echo "\"" . $CALLSHOW . "\"";?> />
+        	<input type="text" name="callsign" hidden value=<?php echo "\"" . $CALLSHOW . "\"";?> />
         	<input type="text" name="description" hidden value=<?php echo "\"" . $DESCRIPTION . "\""; ?> />
         	   <!-- //// END FORM DEFINITION //// --> 
         <div id="inputdiv" style="width: 100%; text-align: center; ">
@@ -1416,10 +1578,10 @@ if(false){
                        <th>
                            Time
                        </th>
-                      <?php if($EPINFO['Display_Order']==0){
+                      <?php if($pgm_Disp_Order==0){
                             echo "<th style=\"width:40px;\">Title</th><th id=\"arHead\">Artist</th><th>Album (Release Title)</th>";
                         }
-                        elseif($EPINFO['Display_Order']==1){
+                        elseif($pgm_Disp_Order==1){
                             echo "<th style=\"width:40px;\"id=\"arHead\">Artist</th><th>Album (Release Title)</th><th>Title</th>";
                         }
                         else{
@@ -1492,9 +1654,9 @@ if(false){
                        </th>
                        <th>
                            <input type="time" name="time" value=<?php
-                           if(isset($_POST['ENPREC']) || isset($EPINFO['prerecorddate'])){
-                           	if(isset($EPINFO['endtime'])){
-	                             echo "\"" . $EPINFO['endtime'] . "\"";
+                           if(isset($_POST['ENPREC']) || isset($ep_pr_date)){
+                           	if(isset($ep_end)){
+	                             echo "\"" . $ep_end . "\"";
 	                           }
 	                           else if(isset($_POST['time'])){
 	                             echo "\"" . $_POST['time'] . "\"";
@@ -1510,7 +1672,7 @@ if(false){
                        </th>
                        <th>
                        <?php
-                           if($EPINFO['Display_Order']==0){
+                           if($pgm_Disp_Order==0){
                                echo"<input type=\"text\" name=\"title\" id=\"title001\" size=\"25\" required maxlength=\"90\" placeholder=\"Title\">
                            <input list=\"spoken\" name=\"title\" id=\"data1\" size=\"25\" disabled required  maxlength=\"90\" style=\"display:none\" value=\"Spoken Word / Talk\"/>
                            <datalist id=\"spoken\">
@@ -1524,7 +1686,7 @@ if(false){
                            <input type=\"text\" id=\"albin\" name=\"album\" size=\"25\" maxlength=\"90\" placeholder=\"Album\"/>
                        </th>";
                            }
-                           else if($EPINFO['Display_Order']==1){
+                           else if($pgm_Disp_Order==1){
                                echo"<input type=\"text\" id=\"artin\" name=\"artist\" size=\"25\" maxlength=\"90\" placeholder=\"Artist\"/>
                        </th><th>
                            <input type=\"text\" id=\"albin\" name=\"album\" size=\"25\" maxlength=\"90\" placeholder=\"Album\"/>
@@ -1587,10 +1749,10 @@ if(false){
                       <tr><td colspan="100%">Recorded Information</td></tr>
                       <tr><th style="width:70px">Category</th><th style="width:50px">Playlist</th><th style="width:50px">Spoken</th><th style="width:60px">Time</th>
                       <?php 
-                            if($EPINFO['Display_Order']==0){
+                            if($pgm_Disp_Order==0){
                                 echo "<th width=\"230px\">Title</th><th width=\"230px\">Artist</th><th width=\"230px\">Album</th>";
                             }
-                            else if ($EPINFO['Display_Order']==1){
+                            else if ($pgm_Disp_Order==1){
                                 echo "<th width=\"230px\">Artist</th><th width=\"230px\">Album</th><th width=\"230px\">Title</th>";
                             }
 
@@ -1598,9 +1760,9 @@ if(false){
                       <th style="width:250px;">Composer</th><th style="width:20px;">CC</th><th width="20px">Hit</th><th width="20px">Ins</th><th width="200px">Language</th></tr></thead>
                <tbody class="striped"><tr> <!-- Row for displaying already entered data -->
                    <?php
-                   	$ORDERque = "select displayorder from program where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' ";
+                   	$ORDERque = "select displayorder from program where callsign='" . addslashes($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' ";
 					$ORDER = mysql_fetch_array(mysql_query($ORDERque));
-                    $query = "select * from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' order by time " . $ORDER['displayorder'] .", songid " . $ORDER['displayorder'];
+                    $query = "select * from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' order by time " . $ORDER['displayorder'] .", songid " . $ORDER['displayorder'];
                     $listed=mysql_query($query,$con);
                      if(mysql_num_rows($listed)=="0"){
                        echo "<tr><td colspan=\"100%\" style=\"background-color:".$SETTINGS['ST_ColorFail'].";\">No Songs Recorded Yet</td></tr>";
@@ -1627,7 +1789,7 @@ if(false){
                            echo "</td><td>";
                                 echo $list['time'];
                            echo "</td><td>"; /// Artist - Album - Title
-                           if($EPINFO['Display_Order']==0){
+                           if($pgm_Disp_Order==0){
                                 echo $list['title'];
                            echo "</td><td>";
                                 echo $list['artist'];
@@ -1635,7 +1797,7 @@ if(false){
                                 echo $list['album'];
                            echo "</td><td>";
                            }
-                           else if($EPINFO['Display_Order']==1){
+                           else if($pgm_Disp_Order==1){
                                 echo $list['artist'];
                            echo "</td><td>";
                                 echo $list['album'];
@@ -1688,7 +1850,7 @@ if(false){
                                        echo "<span class=\"ui-icon ui-icon-notice\"></span>";
                                    }
                            }
-                           $songlang = mysql_query("select languageid from LANGUAGE where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and songid='". addslashes($list['songid']) ."'");
+                           $songlang = mysql_query("select languageid from LANGUAGE where callsign='" . addslashes($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and songid='". addslashes($list['songid']) ."'");
                            $rowlang = mysql_fetch_array($songlang);
                            echo "</td><td>";
                                 echo $rowlang['languageid'];
@@ -1729,13 +1891,13 @@ if(false){
         <tr>
         
         	<?php
-        	if(!isset($EPINFO['endtime'])){
+        	if($ep_end===NULL){
         		echo "<td colspan=\"2\" style=\"background-color:white; color:darkred;\"><span>Active:<br>Not Finalized</span>";
         	}
-            elseif(!isset($EPINFO['EndStamp'])){
+            elseif($ep_EndStamp!=NULL){
                 echo "<td colspan=\"2\" style=\"background-color: #BB6599; color: black;\"><span>Complete:<br>Finalized - No Audit</span>";
             }
-            elseif(strtotime($EPINFO['EndStamp'])>strtotime('yesterday')){
+            elseif(strtotime($ep_EndStamp)>strtotime('yesterday')){
                 echo "<td colspan=\"2\" style=\"background-color: #FFFF00; color: black;\"><span>Complete:<br>Finalized - Editable</span>";
             }
 			else{
@@ -1745,11 +1907,11 @@ if(false){
         </td>
         <td colspan="2">
         <input type="text" name="spoken" value=<?php
-                           if(isset($EPINFO['totalspokentime'])){
-                             echo "\"" . $EPINFO['totalspokentime'] . "\" readonly=\"true\"";
+                           if(isset($ep_sp_time)){
+                             echo "\"" . $ep_sp_time . "\" readonly=\"true\"";
                            }
                            else{
-                           	$SUMAR = "select sum(Spoken) from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . $pgm_name . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' order by time desc";
+                           	$SUMAR = "select sum(Spoken) from SONG where callsign='" . mysql_escape_string($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' order by time desc";
 							   if($spokensum = mysql_fetch_array(mysql_query($SUMAR))){
 							   	if($spokensum['sum(Spoken)'] > 0){
                            			echo " \"".$spokensum['sum(Spoken)'] . "\" readonly=\"true\"";
@@ -1768,9 +1930,9 @@ if(false){
         <td colspan="1">
         <input id="end_time" type="time" name="end" required value=<?php
                         
-                        if(isset($_POST['ENPREC']) || isset($EPINFO['prerecorddate'])){
-                           	if(isset($EPINFO['endtime'])){
-	                             $END_TIME_VAL = "\"" . $EPINFO['endtime'] . "\"";
+                        if(isset($_POST['ENPREC']) || isset($ep_pr_date)){
+                           	if(isset($ep_end)){
+	                             $END_TIME_VAL = "\"" . $ep_end . "\"";
 	                           }
 	                           else if(isset($_POST['time'])){
 	                             $END_TIME_VAL =  "\"" . $_POST['time'] . "\"";
@@ -1780,8 +1942,8 @@ if(false){
 	                           }
 					    }
 						else{
-                            if(isset($EPINFO['endtime'])){
-                                $END_TIME_VAL = "\"" . $EPINFO['endtime'] . "\"";
+                            if(isset($ep_end)){
+                                $END_TIME_VAL = "\"" . $ep_end . "\"";
                             }
 							else{
                                 $END_TIME_VAL = "\"" . date('H:i') . "\" ";
@@ -1812,7 +1974,7 @@ if(false){
         <tr>
         <?php
             echo "<form name=\"exit\" action=\"../\" method=\"POST\" ";
-            if(!isset($EPINFO['endtime'])){
+            if(!isset($ep_end)){
             	echo " onSubmit=\"return confirm('WARNING: Unfinalized Episode\\n\\nThis episode is not finalized. Are you sure you want to exit?')\">";
             }
 			else{
@@ -1841,7 +2003,7 @@ if(false){
         <td colspan="1">
         <form name="refresh" action="p2insertEP.php" method="POST">
         <input type="hidden" name="callsign" value=<?php echo "\"" . $CALLSHOW . "\"" ?> />
-        <input type="hidden" name="program" value=<?php echo "\"" . $pgm_name . "\"" ?> />
+        <input type="hidden" name="program" value=<?php echo "\"" . addcslashes($clean_program,'"') . "\"" ?> />
         <input type="hidden" name="user_date" value=<?php echo "\"" . $_POST['user_date'] . "\"" ?> />
         <input type="hidden" name="user_time" value=<?php echo "\"" . $_POST['user_time'] . "\"" ?> />
         <input type="submit" value="Refresh" />
@@ -1853,7 +2015,7 @@ if(false){
         <!--<img src="../images/mysqls.png" alt="MySQL Powered" />-->
         </td></tr>
         <?php 
-        $PROML = mysql_query("SELECT count(*) AS Result FROM PromptLog WHERE EpNum='".addslashes($EPINFO['EpNum'])."' ");
+        $PROML = mysql_query("SELECT count(*) AS Result FROM PromptLog WHERE EpNum='".mysql_escape_string($ep_num)."' ");
         $PROMPTS = mysql_fetch_array($PROML);
             if($_SESSION['access']=='2'){
                 if(isset($_POST['IPOR'])){
@@ -1865,10 +2027,10 @@ if(false){
                 if(empty($LOCATION)){
                     $LOCATION = $_SERVER['REMOTE_ADDR'];
                 }
-                $QUERY_HWD = "SELECT count(*) AS hardware FROM hardware WHERE ipv4_address='$LOCATION' and in_service='1' and station='".$EPINFO['callsign']."'";
+                $QUERY_HWD = "SELECT count(*) AS hardware FROM hardware WHERE ipv4_address='".mysql_escape_string($LOCATION)."' and in_service='1' and station='".mysql_escape_string($ep_callsign)."'";
                 $Equipment = mysql_fetch_array(mysql_query($QUERY_HWD));
 
-                echo "<tr style=\"background-color:#FFD633;\"><td colspan='2'>ADMINISTRATOR ACCESS</td><td colspan='2'>EPISODE: ".$EPINFO['EpNum']."</td><td colspan='1'>Prompt Records: ".$PROMPTS['Result']."</td>
+                echo "<tr style=\"background-color:#FFD633;\"><td colspan='2'>ADMINISTRATOR ACCESS</td><td colspan='2'>EPISODE: ".$ep_num."</td><td colspan='1'>Prompt Records: ".$PROMPTS['Result']."</td>
                 <td><a href='javascript:void(0)'>Hardware Count: ".$Equipment['hardware']."</a><button onclick='Foobar2000()'>StartFoobarWorker</button><button onclick='Foobar2000_stop()'>StopFoobarWorker</button></td>
                 </tr>";
             }

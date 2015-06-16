@@ -1,4 +1,5 @@
 <?php
+    error_reporting(0);
 	session_start();
 	if(!isset($_SESSION['LOGIN_SRC'])){
 		$SOURCE = "Security/Login.html?r=0";
@@ -10,7 +11,7 @@
 	session_destroy();
     //$LOC = $_SERVER['HTTP_HOST'];
 	//header("Location: ./Security/Login.html?r=0");
-    error_reporting(0);
+    //error_reporting(0);
     /*if($_SESSION['LOGIN_SRC']!=""){
         header("Location: " . $_SESSION['LOGIN_SRC']);
        //echo "LOGIN SEC KNOWN";
@@ -25,4 +26,4 @@
     //}
     
     //echo "You have been logged out <br /><br /><a href=./Security/Login.html>Click Here to return to Login</a>";
-?>
+
