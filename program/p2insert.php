@@ -79,18 +79,29 @@ else if($con){
                    // MySQL Commands
                    
                    // sanatize inputs
-                    $cname = addslashes(filter_input(INPUT_POST,'pname'));
+                    $cname = filter_input(INPUT_POST,'pname');
+                    /*if ( urlencode(urldecode($cname)) === $cname){
+                        //data is urlencoded
+                        $cname = urldecode($cname);
+                    } else {
+                        //data is NOT urlencoded
+                        // nothing needed
+                    }*/
+                    
                     //$cname = addslashes($_POST['pname']);
-                    $ccallsign = addslashes($_POST['callsign']);
-                    $clength = addslashes($_POST['length']);
-                    $csyndicate = addslashes($_POST['syndicate']);
-                    $cgenre = addslashes($_POST['genre']);
+                    $ccallsign = $_POST['callsign'];
+                    $clength = $_POST['length'];
+                    $csyndicate = $_POST['syndicate'];
+                    $cgenre = filter_input(INPUT_POST,'genre',FILTER_SANITIZE_STRING);//$_POST['genre'];
+                    $calias = filter_input(INPUT_POST,'dj1',FILTER_SANITIZE_STRING);//$_POST['dj1']
 				   
 					// this should be reduced to a single sanatized command
-                   $sql = "insert into program (programname, callsign, length, syndicatesource, genre) values ('" . $cname . "' , '" . $ccallsign . "' , '" . $clength . "' , '" . $csyndicate . "' , '" . $cgenre . "')";
-                   $performs = "insert into performs (callsign, programname, Alias) values ('" . $ccallsign . "' , '" . $cname . "' , '" . $_POST['dj1'] . "')";
+                   //$sql = "insert into program (programname, callsign, length, syndicatesource, genre) values ('" . $cname . "' , '" . $ccallsign . "' , '" . $clength . "' , '" . $csyndicate . "' , '" . $cgenre . "')";
+                   //$performs = "insert into performs (callsign, programname, Alias) values ('" . $ccallsign . "' , '" . $cname . "' , '" . $_POST['dj1'] . "')";
+                    $performs = "insert into performs (callsign, programname, Alias) values (?,?,?)";
 				   
-				   
+                    //$mysqli->autocommit(FALSE); //overkill??
+                    
                 if($cname == ""){
                   echo '<h4 style="background-color:yellow;">Error: The program must have a name.<br />insert not attempted</h4>';
                 }
@@ -98,7 +109,40 @@ else if($con){
                   echo '<h4 style="background-color:yellow;">Error: The program must have a DJ.<br />insert not attempted</h4>';
                 }
                 else{
-                  if($mysqli->query($sql)){
+                    if($insert_program = $mysqli->prepare("insert into program (programname, callsign, length, syndicatesource, genre) values (?,?,?,?,?)")){
+                        if(!$insert_program->bind_param('ssiss',$cname,$ccallsign,$clength,$csyndicate,$cgenre)){
+                            die("Failed to bind database values");
+                        }
+                        if(!$insert_program->execute()){
+                            echo '<h4 style="background-color:red; color:white;">This Data failed to be entered into the database</h4>';
+                            echo '<p style="background-color:red; color:white;">Error Description: ' . $insert_program->error;
+                        }
+                        else{
+                            if(!$insert_performs = $mysqli->prepare($performs)){
+                                echo '<h4 style="background-color:red; color:white;">This Data failed to be entered into the database</h4>';
+                                echo '<p style="background-color:red; color:white;">Error Description: ' . $insert_performs->error;
+                            }
+                            else{
+                                $insert_performs->bind_param('sss',$ccallsign,$cname,$calias);
+                                if($insert_performs->execute()){
+                                    //if($mysqli->commit())
+                                    $insert_performs->close();
+                                    $insert_program->close();
+                                    echo '<h5 style="background-color:lightgreen;">This Data was succesfully entered into the database</h5>';
+                                    header("location: p3advupdate.php?resource=" . $_POST['pname'] . "@" . $_POST['callsign']);
+                                }
+                                else{
+                                    
+                                }
+                            }
+                        }
+                    }
+                    else{
+                        echo '<h4 style="background-color:red; color:white;">This Data failed to be entered into the database</h4>';
+                        echo '<p style="background-color:red; color:white;">Error Description: ' . $insert_program->error;
+                        $insert_program->close();
+                    }
+                  /*if($mysqli->query($sql)){
                            if($mysqli->query($performs)){
                              //echo '<h5 style="background-color:lightgreen;">This Data was succesfully entered into the database</h5>';
                              header("location: p3advupdate.php?resource=" . $_POST['pname'] . "@" . $_POST['callsign']);
@@ -112,7 +156,7 @@ else if($con){
                   else{
                        echo '<h4 style="background-color:red; color:white;">This Data failed to be entered into the database</h4>';
                        echo '<p style="background-color:red; color:white;">Error Description: ' . $mysqli->error;
-                  }
+                  }*/
                 }
                 ?>
             </td>

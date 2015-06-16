@@ -20,7 +20,14 @@ else if($con){
 	
 	// FETCH UNIVERSAL POST VALUES
 	if(isset($_POST['program'])){
-		$SHOW = addslashes($_POST['program']);
+		$SHOW = $_POST['program'];
+                if ( urlencode(urldecode($SHOW)) === $SHOW){
+                    //data is urlencoded
+                    $SHOW = addslashes(urldecode($SHOW));
+                } else {
+                    //data is NOT urlencoded
+                    $SHOW = addslashes($SHOW);
+                }
 	}
 	else{
 		$SHOW = "NULL";
@@ -298,7 +305,7 @@ else if($con){
                         }
                     }
                     else{
-                        echo "Not > 0";
+                        //echo "Not > 0";
                     }
                 }
                 else{
@@ -940,20 +947,20 @@ else{
 					<input name="changed" value="true" hidden="true" />
 						<input type="text" hidden name="changed" value="TRUE"/>
 						<input type="text" hidden name="callsign" value=<?php echo "\"" . $CALL . "\"" ?> />
-	            		<input type="text" hidden name="program" value=<?php echo "\"" . stripslashes($SHOW) . "\"" ?> />
+	            		<input type="text" hidden name="program" value=<?php echo "\"" . urlencode(stripslashes($SHOW)) . "\"" ?> />
 	            		<input type="text" hidden name="user_date" value=<?php echo "\"" . $DATE . "\"" ?> />
 	            		<input type="text" hidden name="user_time" value=<?php echo "\"" . $START . "\"" ?> />
 					<input type="submit" value="Submit Changes"></form></td><td>
 					<form action="../p2insertEP.php" method="POST">
 						<input type="text" hidden name="callsign" value=<?php echo "\"" . $CALL . "\"" ?> />
-	            		<input type="text" hidden name="program" value=<?php echo "\"" . stripslashes($SHOW) . "\"" ?> />
+	            		<input type="text" hidden name="program" value=<?php echo "\"" . urlencode(stripslashes($SHOW)) . "\"" ?> />
 	            		<input type="text" hidden name="user_date" value=<?php echo "\"" . $DATE . "\"" ?> />
 	            		<input type="text" hidden name="user_time" value=<?php echo "\"" . $START . "\"" ?> />
 	            		<input type="submit" value="Return to Addition"/>
 	            	</form></td><td>
 					<form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" >
 						<input type="text" hidden name="callsign" value=<?php echo "\"" . $CALL . "\"" ?> />
-	            		<input type="text" hidden name="program" value=<?php echo "\"" . stripslashes($SHOW) . "\"" ?> />
+	            		<input type="text" hidden name="program" value=<?php echo "\"" . urlencode(stripslashes($SHOW)) . "\"" ?> />
 	            		<input type="text" hidden name="user_date" value=<?php echo "\"" . $DATE . "\"" ?> />
 	            		<input type="text" hidden name="user_time" value=<?php echo "\"" . $START . "\"" ?> />
 						<input type="submit" value="Reset" />

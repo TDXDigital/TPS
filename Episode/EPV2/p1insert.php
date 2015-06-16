@@ -93,7 +93,7 @@ else if($con){
 			            $name=$row["programname"];
 			//            $callsign=$row["callsign"];
 			//            $alias=$row["Alias"];
-			            $options.="<OPTION VALUE=\"".addslashes($name)."\">".$name."</option>";
+			            $options.="<OPTION VALUE=\"".urlencode($name)."\">".$name."</option>";
         				}
 					echo $options;
 					?>
