@@ -30,13 +30,22 @@ function GetLibraryfull($artist, $album=NULL){
             . "artist like ? and album like ?")){
         $stmt->bind_param('ss',$artist,$album);
         $stmt->execute();
-        $stmt->bind_result($res['datein'],$res['dateout'],$res['RefCode'],
-                $res['artist'],$res['album'],$res['format'],$res['variousartists'],
-                $res['condition'],$res['genre'],$res['status'],$res['labelid'],
-                $res['Locale'],$res['CanCon'],$res['updated'],$res['release_date'],
-                $res['note'],$res['playlist_flag']);
+        $stmt->bind_result($datein,$dateout,$RefCode_q,
+                $artist_q,$album_q,$format,$variousartists,
+                $condition,$genre,$status,$labelid,
+                $Locale,$CanCon,$updated,$release_date,
+                $note,$playlist_flag);
         while($stmt->fetch()){
-            array_push($result, $res);
+            array_push($result, array(
+                'datein'=>$datein,'dateout'=>$dateout,'RefCode'=>$RefCode_q,
+                'artist'=>$artist_q,'album'=>$album_q,'format'=>$format,
+                'variousartists'=>$variousartists,
+                'condition'=>$condition,'genre'=>$genre,'status'=>$status,
+                'labelid'=>$labelid,
+                'Locale'=>$Locale,'CanCon'=>$CanCon,'updated'=>$updated,
+                'release_date'=>$release_date,
+                'note'=>$note,'playlist_flag'=>$playlist_flag
+            ));
         }
         $stmt->close();
     }
@@ -62,13 +71,22 @@ function GetLibraryRefcode($refcode){
             . "Refcode = ?")){
         $stmt->bind_param('s',$refcode);
         $stmt->execute();
-        $stmt->bind_result($res['datein'],$res['dateout'],$res['RefCode'],
-                $res['artist'],$res['album'],$res['format'],$res['variousartists'],
-                $res['condition'],$res['genre'],$res['status'],$res['labelid'],
-                $res['Locale'],$res['CanCon'],$res['updated'],$res['release_date'],
-                $res['note'],$res['playlist_flag']);
+        $stmt->bind_result($datein,$dateout,$RefCode_q,
+                $artist_q,$album_q,$format,$variousartists,
+                $condition,$genre,$status,$labelid,
+                $Locale,$CanCon,$updated,$release_date,
+                $note,$playlist_flag);
         while($stmt->fetch()){
-            array_push($result, $res);
+            array_push($result, array(
+                'datein'=>$datein,'dateout'=>$dateout,'RefCode'=>$RefCode_q,
+                'artist'=>$artist_q,'album'=>$album_q,'format'=>$format,
+                'variousartists'=>$variousartists,
+                'condition'=>$condition,'genre'=>$genre,'status'=>$status,
+                'labelid'=>$labelid,
+                'Locale'=>$Locale,'CanCon'=>$CanCon,'updated'=>$updated,
+                'release_date'=>$release_date,
+                'note'=>$note,'playlist_flag'=>$playlist_flag
+            ));
         }
         $stmt->close();
     }
