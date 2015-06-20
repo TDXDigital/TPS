@@ -52,9 +52,9 @@ function GetLibraryRefcode($refcode){
     if($refcode===Null){
         $refcode='%';
     }
-    elseif(!$exact){
+    /*elseif(!$exact){
         $refcode="%{$refcode}%";
-    }
+    }*/
     if($stmt = $mysqli->prepare("SELECT datein,dateout,RefCode,artist,album,"
             . "`format`,variousartists,`condition`,genre,`status`,labelid,"
             . "Locale,CanCon,updated,release_date,note,playlist_flag "
