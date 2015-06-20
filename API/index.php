@@ -80,9 +80,12 @@ function GetLibraryRefcode($refcode){
 
 function ListLibrary(){
     global $mysqli;
+    $result = [];
     $library = $mysqli->query(
             "SELECT RefCode,artist,album,status FROM library");
-    $result = $library->fetch_array(MYSQLI_ASSOC);
+    while($result_temp = $library->fetch_array(MYSQLI_ASSOC)){
+        array_push($result, $result_temp);
+    }
     return $result;
 }
 $app = new \Slim\Slim(array(
