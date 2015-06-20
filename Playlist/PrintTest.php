@@ -43,6 +43,20 @@
             color:#000000
         }
     }
+    
+    @page :right{
+        margin: 0.0cm;
+    }
+    
+    @page :left{
+        margin: 0.0cm;
+    }
+    @page :top{
+        margin: 0.5cm;
+    }
+    @page :bottom{
+        margin: 0.5cm;
+    }
     .no-print, .no-print *{
         background-color: orange;
         text-align: center;

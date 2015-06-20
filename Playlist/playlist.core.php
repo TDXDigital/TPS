@@ -9,7 +9,8 @@ else{
             include_once("playlist.receiving.php");
         break;
         case "report":
-            include_once 'playlist.report.php';
+            include_once 'playlist.recievingReport.php';
+            break;
         case "active":
             echo "Not Implemented";
         break;
