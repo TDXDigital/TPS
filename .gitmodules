@@ -1,3 +1,9 @@
 [submodule "TPSBIN/Slim"]
 	path = TPSBIN/Slim
 	url = https://github.com/slimphp/Slim
+[submodule "TPSBIN/plates"]
+	path = TPSBIN/plates
+	url = https://github.com/thephpleague/plates.git
+[submodule "TPSBIN/waveform"]
+	path = TPSBIN/waveform
+	url = https://github.com/afreiday/php-waveform-png.git
