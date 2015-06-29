@@ -1,84 +1,96 @@
 <?php
 
-    $cerl = error_reporting();
-    error_reporting(0);
-    include "TPSBIN/functions.php";
-    absolute_include("CONFIG.php", $_SERVER['PHP_SELF']);
-    sec_session_start();
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+if(is_null(filter_input(INPUT_GET,'twig'))){
+    require_once 'legacy_controller.php';
+}
+else{
+    error_reporting(E_ALL);
+
+    //===============================
+    //   INCLUDES
+    //===============================
+    require 'TPSBIN/Slim/Slim/Slim.php';
     
-    //echo "load index<br>";
-    // check for installation
-    if(!defined('HOST')||!isset($_SESSION['DBHOST'])){
-        $filename="TPSBIN/XML/DBSETTINGS.xml";
-        if(!file_exists($filename)){
-            header('location: Setup/');
-        }
-        else{
-            //header('location: Security/login.html?e=syserr_nchost&v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
-            header('location: logout.php?v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
-        }
-    }
-    else{
-        // setup exists
-        if(isset($_SESSION)){
-            // session exists, proceed as normal
-            goto start;
-        }
-        else{
-            //unknown error.
-            echo "Installation has been completed or this copy of TPS may be corrupt. please check installation folder.";
-        }
-    }
+    \Slim\Slim::registerAutoloader();
     
-    start:
-    error_reporting($cerl);
-    if (!isset($_SESSION)) {
-        sec_session_start();
-    }
-    /*else{
-        header('location: Security/login.html');
-    }*/
-    $mysqlnd = function_exists('mysqli_fetch_all');
+    require 'TPSBIN/Slim-Views/Twig.php';
+    #require 'TPSBIN/Slim-Views/Twig.php';
+    // pimple required for twig
+    #require 'TPSBIN/pimple/src/Pimple/ServiceProviderInterface.php';
     
-    if ($mysqlnd||isset($_GET['strongarm'])) {
-        if(!isset($_SESSION["BASE_REF"])){
-            $_SESSION['BASE_REF'] = $_SERVER['REQUEST_URI'];
-        }
-        if(isset($_GET['old'])){
-            if($_SESSION['access']==2){
-                include_once "station/admin_old.php";
-                //header("location: masterpage.php");
-            }
-            else{
-                //include_once "djhome.php";
-                include_once "station/user_old.php";
-                //header("djhome.php");
-            }
-        }
+    #require 'TPSBIN/slim-twig/src/Twig.php';
     
-        else{
-            if($_SESSION['access']==2){
-                include_once "station/admin.php";
-                //header("location: masterpage.php");
-            }
-            else{
-                //include_once "station/user.php";
-                //include_once "djhome.php";
-                include_once "station/user_old.php";
-                //header("djhome.php");
-            }
-        }
-    }
-    else{
-        echo "<span>Your server does not support mysqlnd, please enable this feature for full operations.</span>";
-        if($_SESSION['access']==2){
-                include_once "station/admin_old.php";
-                //header("location: masterpage.php");
-            }
-            else{
-                //include_once "djhome.php";
-                include_once "station/user_old.php";
-                //header("djhome.php");
-            }
-    }
-?>
+    require 'TPSBIN/twig/lib/Twig/Autoloader.php';
+    Twig_Autoloader::register();
+
+    //--------------------------
+    // DB and generic functions
+    //--------------------------
+    require 'TPSBIN/functions.php';
+    require 'TPSBIN/db_connect.php';
+
+    //---------------------
+    // API function includes
+    //---------------------
+    //require 'LibraryAPI.php';
+
+
+    //========================
+    // MAIN EXECUTION
+    //========================
+    $app = new \Slim\Slim(array(
+        'view' => new \Slim\Views\Twig(),
+        'debug' => true
+    ));
+    //$app->view(new Slim\Views\Twig());
+    
+    $view = $app->view();
+    
+    $view->parserOptions = array(
+        'debug' => true,
+        'cache' => dirname(__FILE__) . '/cache'
+    );
+    
+    $view->parserExtensions = array(
+        new \Slim\Views\Twig()
+    );
+    
+    //----------------------------
+    // Library API
+    //----------------------------
+    /*
+    $app->get('/library/:refcode', function ($refcode) {
+        print json_encode(GetLibraryRefcode($refcode));
+    });
+    $app->get('/library/artist/:artist', function ($artist) {
+        print json_encode(GetLibraryfull($artist));
+    });
+    $app->get('/library/:artist/:album', function ($artist,$album) {
+        print json_encode(GetLibraryfull($artist,$album));
+    });
+    $app->get('/library/', function () {
+        print json_encode(ListLibrary());
+    });*/
+    $app->get('/',function() use ($app){
+        $view->render('index.html.twig');
+    });
+    $app->run();
+
+
+    /*
+    require_once 'TPSBIN/twig/lib/Twig/autoloader.php';
+    Twig_Autoloader::register();
+
+    $loader = new Twig_Loader_Filesystem('TPSBIN/templates');
+    $twig = new Twig_Environment($loader);
+
+    echo $twig->render('index.html.twig', array('a_variable' => 'Fabien'));
+    */
+}
+
