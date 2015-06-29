@@ -1,4 +1,8 @@
 <?php 
+/*
+    BootStrap menu creation
+*/
+
     error_reporting(E_ALL);
     
     // THIS FILE SHOULD BE INCLUDED WITHIN A PAGET THAT HAS ALREADY RUN sec_session_start!

@@ -1,5 +1,9 @@
 <?php
     session_start();
+    error_reporting(E_ALL);
+    
+    require '../TPSBIN/functions.php';
+    require '../TPSBIN/db_connect.php';
 ?>
 <!DOCTYPE HTML>
 <head>
@@ -12,7 +16,7 @@
            Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
 	<div id="header">
-		<a href="../masterpage.php"><img src="../images/Ckxu_logo_PNG.png" alt="CKXU" /></a>
+		<a href="../masterpage.php"><img src="<?php print '../'.$_SESSION['logo'] ?>" alt="Logo" /></a>
 	</div>
 	<div id="top">
 		<h2>Edit Program</h2>
@@ -231,7 +235,12 @@ else if($con){
 			if($_POST['djadd']!='0'){
 				$DJI = "Insert into Performs (callsign, programname, Alias, STdate) values ('" . $CALLS . "', '" . $PROGNAME . "' , '" . $_POST['djadd'] . "' , '" . date('Y-m-d H:i:s') . "' ) ";
 				if(!mysql_query($DJI)){
-					echo mysql_errno() . "<br />". mysql_error();
+                                    if(mysql_errno() === 1062){
+                                        print "<span style='color: red;'><strong>Error: The DJ specified already has an entry in this program</strong></span>";
+                                    }
+                                    else{
+                                        echo mysql_errno() . "<br />". mysql_error();
+                                    }
 				}
 			}
 		}
@@ -466,7 +475,7 @@ else{
 	<?php 
 		//$DJSQL
 		//$CURRENT =   
-		$SQDJ = "SELECT performs.Alias, DATE(performs.STdate) AS Start, DATE(performs.ENdate) AS End, dj.djname ,IF(ENdate<now(),0,1) AS Active FROM ckxu.performs LEFT JOIN dj ON performs.Alias=dj.Alias where performs.programname=\"" . addslashes($PRONAME) . "\" and performs.callsign=\"" . addslashes($CALLS) . "\" order by Active desc, STdate desc";
+		$SQDJ = "SELECT performs.Alias, DATE(performs.STdate) AS Start, DATE(performs.ENdate) AS End, dj.djname ,IF(ENdate<now(),0,1) AS Active FROM performs LEFT JOIN dj ON performs.Alias=dj.Alias where performs.programname=\"" . addslashes($PRONAME) . "\" and performs.callsign=\"" . addslashes($CALLS) . "\" order by Active desc, STdate desc";
 		if(!($perfres = mysql_query($SQDJ))){
 			echo mysql_error();
 		}

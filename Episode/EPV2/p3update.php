@@ -1,6 +1,9 @@
 <?php
     session_start();
-	$DEBUG = FALSE;
+    $DEBUG = filter_input(INPUT_POST,'debug',FILTER_SANITIZE_NUMBER_INT)?:FALSE;
+    if(!$DEBUG){
+        error_reporting(E_ERROR);
+    }
 	
 $con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
@@ -17,7 +20,14 @@ else if($con){
 	
 	// FETCH UNIVERSAL POST VALUES
 	if(isset($_POST['program'])){
-		$SHOW = addslashes($_POST['program']);
+		$SHOW = $_POST['program'];
+                if ( urlencode(urldecode($SHOW)) === $SHOW){
+                    //data is urlencoded
+                    $SHOW = addslashes(urldecode($SHOW));
+                } else {
+                    //data is NOT urlencoded
+                    $SHOW = addslashes($SHOW);
+                }
 	}
 	else{
 		$SHOW = "NULL";
@@ -295,7 +305,7 @@ else if($con){
                         }
                     }
                     else{
-                        echo "Not > 0";
+                        //echo "Not > 0";
                     }
                 }
                 else{
@@ -333,7 +343,7 @@ else{
            USER: <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
 	<div id="header" style="width: <?php echo $SETW ?>">
-		<a href="#"><img src="../../<?php echo $_SESSION['logo'];?>" alt="CKXU" /></a>
+		<a href="#"><img src="../../<?php echo $_SESSION['logo'];?>" alt="Logo" /></a>
 	</div>
 	<div id="top" style="width: <?php echo $SETW ?>">
 		<table><tr><td style="width: 200px"><span style="font-size: 25px;">Update/Edit Log</span></td><td style="width: 100px"></td><td style="width: 300px"><span>Sponsor:<?php
@@ -937,20 +947,20 @@ else{
 					<input name="changed" value="true" hidden="true" />
 						<input type="text" hidden name="changed" value="TRUE"/>
 						<input type="text" hidden name="callsign" value=<?php echo "\"" . $CALL . "\"" ?> />
-	            		<input type="text" hidden name="program" value=<?php echo "\"" . stripslashes($SHOW) . "\"" ?> />
+	            		<input type="text" hidden name="program" value=<?php echo "\"" . urlencode(stripslashes($SHOW)) . "\"" ?> />
 	            		<input type="text" hidden name="user_date" value=<?php echo "\"" . $DATE . "\"" ?> />
 	            		<input type="text" hidden name="user_time" value=<?php echo "\"" . $START . "\"" ?> />
 					<input type="submit" value="Submit Changes"></form></td><td>
 					<form action="../p2insertEP.php" method="POST">
 						<input type="text" hidden name="callsign" value=<?php echo "\"" . $CALL . "\"" ?> />
-	            		<input type="text" hidden name="program" value=<?php echo "\"" . stripslashes($SHOW) . "\"" ?> />
+	            		<input type="text" hidden name="program" value=<?php echo "\"" . urlencode(stripslashes($SHOW)) . "\"" ?> />
 	            		<input type="text" hidden name="user_date" value=<?php echo "\"" . $DATE . "\"" ?> />
 	            		<input type="text" hidden name="user_time" value=<?php echo "\"" . $START . "\"" ?> />
 	            		<input type="submit" value="Return to Addition"/>
 	            	</form></td><td>
 					<form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" >
 						<input type="text" hidden name="callsign" value=<?php echo "\"" . $CALL . "\"" ?> />
-	            		<input type="text" hidden name="program" value=<?php echo "\"" . stripslashes($SHOW) . "\"" ?> />
+	            		<input type="text" hidden name="program" value=<?php echo "\"" . urlencode(stripslashes($SHOW)) . "\"" ?> />
 	            		<input type="text" hidden name="user_date" value=<?php echo "\"" . $DATE . "\"" ?> />
 	            		<input type="text" hidden name="user_time" value=<?php echo "\"" . $START . "\"" ?> />
 						<input type="submit" value="Reset" />

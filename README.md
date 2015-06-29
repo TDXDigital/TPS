@@ -41,7 +41,7 @@ as well as the authentication type used for user login. supported methods of Log
 The database must always use a MySQL server at the current time.
 
 ## 1.1 Requirements
-This program requires a Web Server (such as apache or IIS) with PHP installed as well as a MySQL 5+ database.
+This program requires a Web Server (such as apache or IIS) with PHP 5.4+ installed as well as a MySQL 5.6.5+ database.
 The user will use a web browser or other supported application to connect to the database. 
 ####The following PHP extensions are required:
 * LDAP
