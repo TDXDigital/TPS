@@ -1,114 +1,34 @@
 <?php
 //error_reporting(0);
+
+//===============================
+//   INCLUDES
+//===============================
 require '../TPSBIN/Slim/Slim/Slim.php';
 \Slim\Slim::registerAutoloader();
 
+//--------------------------
+// DB and generic functions
+//--------------------------
 require '../TPSBIN/functions.php';
 require '../TPSBIN/db_connect.php';
-$exact=filter_input(INPUT_GET,'exact',FILTER_SANITIZE_NUMBER_INT)?:FALSE;
-//$db = $mysqli;
 
-function GetLibraryfull($artist, $album=NULL){
-    global $mysqli,$exact;
-    $result = array();
-    if($artist===Null){
-        $artist='%';
-    }
-    elseif(!$exact){
-        $artist="%{$artist}%";
-    }
-    if($album===Null){
-        $album='%';
-    }
-    elseif(!$exact){
-        $album="%{$album}%";
-    }
-    if($stmt = $mysqli->prepare("SELECT datein,dateout,RefCode,artist,album,"
-            . "`format`,variousartists,`condition`,genre,`status`,labelid,"
-            . "Locale,CanCon,updated,release_date,note,playlist_flag "
-            . "FROM library where "
-            . "artist like ? and album like ?")){
-        $stmt->bind_param('ss',$artist,$album);
-        $stmt->execute();
-        $stmt->bind_result($datein,$dateout,$RefCode_q,
-                $artist_q,$album_q,$format,$variousartists,
-                $condition,$genre,$status,$labelid,
-                $Locale,$CanCon,$updated,$release_date,
-                $note,$playlist_flag);
-        while($stmt->fetch()){
-            array_push($result, array(
-                'datein'=>$datein,'dateout'=>$dateout,'RefCode'=>$RefCode_q,
-                'artist'=>$artist_q,'album'=>$album_q,'format'=>$format,
-                'variousartists'=>$variousartists,
-                'condition'=>$condition,'genre'=>$genre,'status'=>$status,
-                'labelid'=>$labelid,
-                'Locale'=>$Locale,'CanCon'=>$CanCon,'updated'=>$updated,
-                'release_date'=>$release_date,
-                'note'=>$note,'playlist_flag'=>$playlist_flag
-            ));
-        }
-        $stmt->close();
-    }
-    else{
-        $result=["error"=>$mysqli->error];
-    }
-    return $result;
-}
+//---------------------
+// API function includes
+//---------------------
+require 'LibraryAPI.php';
 
-function GetLibraryRefcode($refcode){
-    global $mysqli,$exact;
-    $result = array();
-    if($refcode===Null){
-        $refcode='%';
-    }
-    /*elseif(!$exact){
-        $refcode="%{$refcode}%";
-    }*/
-    if($stmt = $mysqli->prepare("SELECT datein,dateout,RefCode,artist,album,"
-            . "`format`,variousartists,`condition`,genre,`status`,labelid,"
-            . "Locale,CanCon,updated,release_date,note,playlist_flag "
-            . "FROM library where "
-            . "Refcode = ?")){
-        $stmt->bind_param('s',$refcode);
-        $stmt->execute();
-        $stmt->bind_result($datein,$dateout,$RefCode_q,
-                $artist_q,$album_q,$format,$variousartists,
-                $condition,$genre,$status,$labelid,
-                $Locale,$CanCon,$updated,$release_date,
-                $note,$playlist_flag);
-        while($stmt->fetch()){
-            array_push($result, array(
-                'datein'=>$datein,'dateout'=>$dateout,'RefCode'=>$RefCode_q,
-                'artist'=>$artist_q,'album'=>$album_q,'format'=>$format,
-                'variousartists'=>$variousartists,
-                'condition'=>$condition,'genre'=>$genre,'status'=>$status,
-                'labelid'=>$labelid,
-                'Locale'=>$Locale,'CanCon'=>$CanCon,'updated'=>$updated,
-                'release_date'=>$release_date,
-                'note'=>$note,'playlist_flag'=>$playlist_flag
-            ));
-        }
-        $stmt->close();
-    }
-    else{
-        $result=["error"=>$mysqli->error];
-    }
-    return $result;
-}
 
-function ListLibrary(){
-    global $mysqli;
-    $result = [];
-    $library = $mysqli->query(
-            "SELECT RefCode,artist,album,status FROM library");
-    while($result_temp = $library->fetch_array(MYSQLI_ASSOC)){
-        array_push($result, $result_temp);
-    }
-    return $result;
-}
+//========================
+// MAIN EXECUTION
+//========================
 $app = new \Slim\Slim(array(
     'debug' => true
 ));
+
+//----------------------------
+// Library API
+//----------------------------
 $app->get('/library/:refcode', function ($refcode) {
     print json_encode(GetLibraryRefcode($refcode));
 });
@@ -122,3 +42,4 @@ $app->get('/library/', function () {
     print json_encode(ListLibrary());
 });
 $app->run();
+
