@@ -7,3 +7,6 @@
 [submodule "TPSBIN/waveform"]
 	path = TPSBIN/waveform
 	url = https://github.com/afreiday/php-waveform-png.git
+[submodule "TPSBIN/twig"]
+	path = TPSBIN/twig
+	url = git://github.com/twigphp/Twig.git
