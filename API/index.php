@@ -4,8 +4,9 @@
 //===============================
 //   INCLUDES
 //===============================
-require '../TPSBIN/Slim/Slim/Slim.php';
-\Slim\Slim::registerAutoloader();
+/*require '../TPSBIN/Slim/Slim/Slim.php';
+\Slim\Slim::registerAutoloader();*/
+require '../vendor/autoload.php';
 
 //--------------------------
 // DB and generic functions

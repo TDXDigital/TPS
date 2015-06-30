@@ -1,0 +1,15 @@
+{
+    "name":"tps/slim-mvc",
+    "require": {
+        "slim/slim": "^2.6",
+        "slim/views": "^0.1.3",
+        "twig/twig": "^1.18",
+        "slim/twig-view": "^1.1"
+    },
+    "autoload":{
+        "psr-0":{
+            "TPS": "vendor/",
+            "Controller":"./"
+        }
+    }
+}

@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -15,82 +15,18 @@ else{
     //===============================
     //   INCLUDES
     //===============================
-    require 'TPSBIN/Slim/Slim/Slim.php';
-    
-    \Slim\Slim::registerAutoloader();
-    
-    require 'TPSBIN/Slim-Views/Twig.php';
-    #require 'TPSBIN/Slim-Views/Twig.php';
-    // pimple required for twig
-    #require 'TPSBIN/pimple/src/Pimple/ServiceProviderInterface.php';
-    
-    #require 'TPSBIN/slim-twig/src/Twig.php';
-    
-    require 'TPSBIN/twig/lib/Twig/Autoloader.php';
-    Twig_Autoloader::register();
+    require("vendor/autoload.php");
 
-    //--------------------------
-    // DB and generic functions
-    //--------------------------
-    require 'TPSBIN/functions.php';
-    require 'TPSBIN/db_connect.php';
+    $router = new \TPS\Router;
 
-    //---------------------
-    // API function includes
-    //---------------------
-    //require 'LibraryAPI.php';
-
-
-    //========================
-    // MAIN EXECUTION
-    //========================
-    $app = new \Slim\Slim(array(
-        'view' => new \Slim\Views\Twig(),
-        'debug' => true
-    ));
-    //$app->view(new Slim\Views\Twig());
-    
-    $view = $app->view();
-    
-    $view->parserOptions = array(
-        'debug' => true,
-        'cache' => dirname(__FILE__) . '/cache'
+    $routes = array(
+        '/' => '',
+        '/test/:title' => 'Main:test@get'
     );
-    
-    $view->parserExtensions = array(
-        new \Slim\Views\Twig()
-    );
-    
-    //----------------------------
-    // Library API
-    //----------------------------
-    /*
-    $app->get('/library/:refcode', function ($refcode) {
-        print json_encode(GetLibraryRefcode($refcode));
-    });
-    $app->get('/library/artist/:artist', function ($artist) {
-        print json_encode(GetLibraryfull($artist));
-    });
-    $app->get('/library/:artist/:album', function ($artist,$album) {
-        print json_encode(GetLibraryfull($artist,$album));
-    });
-    $app->get('/library/', function () {
-        print json_encode(ListLibrary());
-    });*/
-    $app->get('/',function() use ($app){
-        $view->render('index.html.twig');
-    });
-    $app->run();
 
+    $router->addRoutes($routes);
 
-    /*
-    require_once 'TPSBIN/twig/lib/Twig/autoloader.php';
-    Twig_Autoloader::register();
+    $router->set404Handler("Main:notFound");
 
-    $loader = new Twig_Loader_Filesystem('TPSBIN/templates');
-    $twig = new Twig_Environment($loader);
-
-    echo $twig->render('index.html.twig', array('a_variable' => 'Fabien'));
-    */
+    $router->run();
 }
-
