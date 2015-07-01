@@ -1,16 +1,23 @@
 <?php
 
-require("../vendor/autoload.php");
+    error_reporting(E_ALL);
 
-$router = new \TPS\Router;
+    //===============================
+    //   INCLUDES
+    //===============================
+    require("vendor/autoload.php");
 
-$routes = array(
-    '/' => '',
-    '/test/:title' => 'Main:test@get'
-);
+    $router = new \TPS\Router;
 
-$router->addRoutes($routes);
+    $routes = array(
+        '/' => '',
+        '/test/:title' => 'Main:test@get',
+        '/login'=>'Main:login@get',
+        '/login'=>'Main:login@post'
+    );
 
-$router->set404Handler("Main:notFound");
+    $router->addRoutes($routes);
 
-$router->run();
+    $router->set404Handler("Main:notFound");
+
+    $router->run();

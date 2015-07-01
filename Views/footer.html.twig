@@ -1,0 +1,10 @@
+{% block post %}
+    
+    <footer class="footer">
+        <div class="container">
+            <p class="text-muted">
+                Copyright &copy; {{organization|default('')}} {{"now"|date("Y")}}
+            </p>
+        </div>
+    </footer>
+{% endblock %}

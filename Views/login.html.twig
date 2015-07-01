@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="{{ siteUrl }}CSS/backgroundBlur.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+    <script type="text/JavaScript" src="{{ siteUrl }}TPSBIN/JS/sha512.js"></script> 
+    <script type="text/JavaScript" src="{{ siteUrl }}TPSBIN/JS/forms.js"></script> 
+    <script src="{{ siteUrl }}TPSBIN/JS/GLOBAL/Utilities.js"></script>
+    <style>
+        .Fill{
+         width: 100%;   
+         text-align: center;
+         margin: 4px 0px 4px 0px;
+        }
+        .hidden-div{
+            display: none;
+        }
+        
+    </style>
+</head>
+<body>
+	<div style="text-align: center; width: 500px; margin: auto;" id="content" class="content">
+            <div><!--<img src="../DEV/DevImg.png" alt="Dev Login"/>-->
+                <i class="fa fa-lock fa-3x pull-left"></i>
+                <h1 class="">Sign-in</h1>
+            </div>
+		<div style="margin: auto;"><form name="login" method="post" action="{{ siteUrl }}Security/Login.php">
+            <div id="Error" class="alert alert-warning hidden-div"></div>
+            <fieldset>
+		        <input name="name" id="field1" placeholder="Username" readonly value="Please Wait..." required title="Username" type="text" class="Fill ui-corner-all"/><br/>
+		        <input name="pass" id="field2" placeholder="Password" readonly required title="Password" class="Fill ui-corner-all" type="password"/>
+                <label for="srvr">Select Server: </label>
+                <select name="SRVID" id="srvr" onchange="check_auth_type()">
+                    <!--<option value="CKXU001" selected>Picard</option>
+                    <option value="CKXU002" >Riker</option>
+                    <option value="CKXU003" >Development</option>
+                    <option value="SECL001" >Secure Development Login</option>-->
+                </select>
+		        <input type="submit" id="btn-login" value="Login" disabled class="Fill ui-corner-all"/>
+            </fieldset>
+		  <br/><br/><br /> 
+		</form></div>
+	</div>
+            <div class=" content-clear ">
+                {% block footer %}
+                    {% include 'footer.html.twig' %}
+                {% endblock %}
+            </div>
+            <div class="background-image image-{{ random(['iss','sea','moon',
+                                'headphone','sparkles','sunset','waterdrop'])
+    }}"></div>
+    <div class="background-image darken"></div>
+    <script type="text/javascript">
+        
+        function check_auth_type(){
+            SRV_ID = $("#srvr").find(":selected").val();
+            //alert(SRV_ID);
+            $.ajax({
+                method: "POST",
+                datatype:"json",
+                data: {'id':SRV_ID},
+                url: "{{ siteUrl }}Security/checkauthtype.php",
+                success: function(datar){
+                        $.each(datar,function(index,value){
+                            if(value.AUTH[0]==="SECL"){
+                                $("#field1").val("SECL Auth Type");
+                                $("#field1").prop("disabled","disabled");
+                                $("#field2").prop("disabled","disabled");
+                                $("#field2").val("***");
+                                $("#field2").prop("readonly",true);
+                                $("#btn-login").removeAttr('disabled');
+                                $("#Error").html("Please click Login to go to your login page or change server")
+                                $("#Error").removeClass("hidden-div");
+                            }
+                            else{
+                                $("Error").html();
+                                $("#Error").addClass("hidden-div");
+                                $("#field1").val("");
+                                $("#field1").prop("readonly",false);
+                                $("#field1").removeAttr("disabled");
+                                $("#field2").removeAttr("disabled");
+                                $("#field2").val("");
+                                $("#field2").prop("readonly",false);
+                                $("#btn-login").removeAttr('disabled');
+                            }
+                            //alert(value.AUTH[0]);
+                        })
+                        
+                    //}
+                }
+            });
+        }
+        
+        function load_servers(){
+            $.ajax({
+                dataType: "json",
+                url: "{{ siteUrl }}Security/listservers.php",
+                success: function(data){
+                    $('#srvr').html("");
+                    //console.log(data);
+                    var server_ids = [];
+                    $.each( data ,function( index,value){
+                        server_ids.push("<option value='"+value.server[0]+"'>"+value.NAME[0]+"</option>");
+                    });
+                    $('#srvr').append(server_ids);
+                }
+            });
+            //check_auth_type();
+        }
+        
+        $(document).ready(function(){
+            //var dfd = $.Deferred();
+            //dfd
+            //        .done(load_servers())
+            //        .done(check_auth_type());
+            
+            load_servers();
+            window.setTimeout(check_auth_type,500);
+        });
+        </script>
+</body>
+
+</html>

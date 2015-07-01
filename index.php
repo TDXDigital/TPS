@@ -10,6 +10,8 @@ if(is_null(filter_input(INPUT_GET,'twig'))){
     require_once 'legacy_controller.php';
 }
 else{
+    require_once 'public/index.php';
+    /*
     error_reporting(E_ALL);
 
     //===============================
@@ -21,12 +23,14 @@ else{
 
     $routes = array(
         '/' => '',
-        '/test/:title' => 'Main:test@get'
+        '/test/:title' => 'Main:test@get',
+        '/login'=>'Main:login@get',
+        '/login/'=>'Main:login@post'
     );
 
     $router->addRoutes($routes);
 
     $router->set404Handler("Main:notFound");
 
-    $router->run();
+    $router->run();*/
 }

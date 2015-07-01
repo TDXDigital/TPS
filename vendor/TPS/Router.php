@@ -37,7 +37,7 @@ Class Router{
           $func = $this->processCallback($path);
 
           $r = new \Slim\Route($route, $func);
-          $r->setHttpMethods(strtoupper($method));
+          $r->via(strtoupper($method));#setHttpMethods(strtoupper($method));
 
           array_push($this->routes, $r);
       }
