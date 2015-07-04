@@ -9,7 +9,7 @@
     if(!defined('HOST')||!isset($_SESSION['DBHOST'])){
         $filename="TPSBIN/XML/DBSETTINGS.xml";
         if(!file_exists($filename)){
-            header('location: Setup/index.php');
+            header('location: Setup/');
         }
         else{
             //header('location: Security/login.html?e=syserr_nchost&v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
