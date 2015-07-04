@@ -2,11 +2,17 @@
 <html>
 <head>
     <title>{{title}}</title>
-    <link rel="stylesheet" href="{{ siteUrl }}CSS/backgroundBlur.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
-    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!-- Bootstrap core CSS -->
+    <link href="{{ siteUrl }}/vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <!--<link href="{{ siteUrl }}/CSS/cover.css" rel="stylesheet">-->
+    <link href="{{ siteUrl }}/CSS/backgroundBlur.css" rel="stylesheet"
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+          
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    
     <script type="text/JavaScript" src="{{ siteUrl }}TPSBIN/JS/sha512.js"></script> 
     <script type="text/JavaScript" src="{{ siteUrl }}TPSBIN/JS/forms.js"></script> 
     <script src="{{ siteUrl }}TPSBIN/JS/GLOBAL/Utilities.js"></script>
@@ -28,7 +34,7 @@
                 <i class="fa fa-lock fa-3x pull-left"></i>
                 <h1 class="">Sign-in</h1>
             </div>
-		<div style="margin: auto;"><form name="login" method="post" action="{{ siteUrl }}Security/Login.php">
+		<div style="margin: auto;"><form name="login" method="post" action="{{ siteUrl }}login/secl{{append}}">
             <div id="Error" class="alert alert-warning hidden-div"></div>
             <fieldset>
 		        <input name="name" id="field1" placeholder="Username" readonly value="Please Wait..." required title="Username" type="text" class="Fill ui-corner-all"/><br/>
@@ -45,12 +51,14 @@
 		  <br/><br/><br /> 
 		</form></div>
 	</div>
-            <div class=" content-clear ">
-                {% block footer %}
-                    {% include 'footer.html.twig' %}
-                {% endblock %}
+        <div class="mastfoot">
+            <div class="content-clear">
+            {% block footer %}
+                {% include 'footer.html.twig' %}
+            {% endblock %}
             </div>
-            <div class="background-image image-{{ random(['iss','sea','moon',
+        </div>
+        <div class="background-image image-{{ random(['iss','sea','moon',
                                 'headphone','sparkles','sunset','waterdrop'])
     }}"></div>
     <div class="background-image darken"></div>
@@ -67,14 +75,17 @@
                 success: function(datar){
                         $.each(datar,function(index,value){
                             if(value.AUTH[0]==="SECL"){
-                                $("#field1").val("SECL Auth Type");
-                                $("#field1").prop("disabled","disabled");
-                                $("#field2").prop("disabled","disabled");
-                                $("#field2").val("***");
-                                $("#field2").prop("readonly",true);
+                                //$("#field1").val("");
+                                $("#field1").prop("readonly",false);
+                                $("#field1").removeAttr("disabled");
+                                $("#field2").removeAttr("disabled");
+                                $("#field2").prop("readonly",false);
+                                //$("#field2").prop("disabled","disabled");
+                                //$("#field2").val("***");
+                                //$("#field2").prop("readonly",true);
                                 $("#btn-login").removeAttr('disabled');
-                                $("#Error").html("Please click Login to go to your login page or change server")
-                                $("#Error").removeClass("hidden-div");
+                                //$("#Error").html("Please click Login to go to your login page or change server")
+                                //$("#Error").removeClass("hidden-div");
                             }
                             else{
                                 $("Error").html();

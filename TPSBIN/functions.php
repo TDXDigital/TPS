@@ -72,7 +72,7 @@ try{
     absolute_include('CONFIG.php');
 }
 catch (Exception $e){
-    error_log($e->getMessage()."; setting timezone to UTC as failback");
+    #error_log($e->getMessage()."; setting timezone to UTC as failback");
     date_default_timezone_set('UTC');
 }
 

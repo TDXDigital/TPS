@@ -12,8 +12,8 @@
     $routes = array(
         '/' => '',
         '/test/:title' => 'Main:test@get',
-        '/login'=>'Main:login@get',
-        '/login'=>'Main:login@post'
+        '/login'=>'Main:login@get'#,
+        #'/login'=>'Main:login@post'
     );
 
     $router->addRoutes($routes);

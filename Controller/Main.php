@@ -9,7 +9,8 @@ Class Main extends \TPS\Controller
     }
     public function login()
     {
-        $this->render("login", array("title" => $this->data->message, "name" => "Login"));
+        $this->render("login", array("title" => $this->data->siteName,
+            "append"=>$this->data->append,"name" => "Login"));
     }
     public function test($title)
     {
@@ -20,6 +21,7 @@ Class Main extends \TPS\Controller
     {
         $url = $_SERVER['REQUEST_URI'];
         $this->render('error', array(
+            "statusCode"=>404,
             "title"=>"PC LOAD LETTER (404)",
             "message"=>"Error 404: Page Not Found",
             "details"=>array("page '$url' could not be found","you managed to request a page that cannot print"
