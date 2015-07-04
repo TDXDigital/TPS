@@ -1,7 +1,7 @@
 <?php
 
     $cerl = error_reporting();
-    error_reporting(0);
+    //error_reporting(0);
     sec_session_start();
     
     //echo "load index<br>";
