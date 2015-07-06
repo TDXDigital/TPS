@@ -1,5 +1,5 @@
 {
-    "name": "ckxu/tps",
+    "name": "tps/slim-mvc",
     "description": "TPS system utilities",
     "require": {
         "slim/views": "^0.1.3",
@@ -7,17 +7,17 @@
         "slim/slim": "^2.6",
         "twbs/bootstrap":"^3.3"
     },
+    "autoload":{
+        "psr-0":{
+            "TPS\\": "vendor/",
+            "Controller\\": "./"
+        }
+    },
     "license": "MIT",
     "authors": [
         {
             "name": "James Oliver",
             "email": "j.oliver@alumni.uleth.ca"
         }
-    ],
-    "autoload":{
-        "psr-0":{
-            "TPS": "vendor/",
-            "Controller":"./"
-        }
-    }
+    ]
 }
