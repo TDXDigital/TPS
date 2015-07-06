@@ -17,7 +17,7 @@ if(isset($_SESSION['PAGES'])){
     $PAGES = $_SESSION['PAGES'];
 }
 else{
-    $PAGES = NULL;
+    $PAGES = [];
 }
 
 // Welcome
