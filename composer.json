@@ -7,6 +7,14 @@
         "slim/twig-view": "^1.1",
         "twbs/bootstrap": "^3.3"
     },
+    
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "James Oliver",
+            "email": "j.oliver@alumni.uleth.ca"
+        }
+    ],
     "autoload":{
         "psr-0":{
             "TPS": "vendor/",
