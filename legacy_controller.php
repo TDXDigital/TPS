@@ -13,7 +13,13 @@
         }
         else{
             //header('location: Security/login.html?e=syserr_nchost&v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
-            header('location: logout.php?v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
+            if(defined('HOST')){
+                header('location: logout.php?v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
+            }
+            else{
+                header('location: logout.php?v=&s='.$_SESSION['DBHOST']);
+            }
+            
         }
     }
     else{
@@ -24,7 +30,7 @@
         }
         else{
             //unknown error.
-            echo "Installation has been completed or this copy of TPS may be corrupt. please check installation folder.";
+            die("Installation has been completed or this copy of TPS may be corrupt. please check installation folder.");
         }
     }
     
@@ -42,6 +48,7 @@
     $mysqlnd = function_exists('mysqli_fetch_all');
     
     if ($mysqlnd||isset($_GET['strongarm'])) {
+        $_SESSION['NDSupport']=TRUE;
         if(!isset($_SESSION["BASE_REF"])){
             $_SESSION['BASE_REF'] = $_SERVER['REQUEST_URI'];
         }
@@ -71,7 +78,8 @@
         }
     }
     else{
-        echo "<span>Your server does not support mysqlnd, please enable this feature for full operations.</span>";
+        #echo "<span>Your server does not support mysqlnd, please enable this feature for full operations.</span>";
+        $_SESSION['NDSupport']=FALSE;
         if($_SESSION['access']==2){
                 include_once "station/admin_old.php";
                 //header("location: masterpage.php");
