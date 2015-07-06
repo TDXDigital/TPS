@@ -1,13 +1,12 @@
 {
-    "name":"tps/slim-mvc",
+    "name": "ckxu/tps",
+    "description": "TPS system utilities",
     "require": {
-        "slim/slim": "^2.6",
         "slim/views": "^0.1.3",
         "twig/twig": "^1.18",
-        "slim/twig-view": "^1.1",
-        "twbs/bootstrap": "^3.3"
+        "slim/slim": "^2.6",
+        "twbs/bootstrap":"^3.3"
     },
-    
     "license": "MIT",
     "authors": [
         {

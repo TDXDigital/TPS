@@ -3,7 +3,7 @@
     $cerl = error_reporting();
     //error_reporting(0);
     session_start();
-    
+
     //echo "load index<br>";
     // check for installation
     if(!defined('HOST')||!isset($_SESSION['DBHOST'])){
@@ -13,13 +13,15 @@
         }
         else{
             //header('location: Security/login.html?e=syserr_nchost&v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
+            /*
             if(defined('HOST')){
-                header('location: Security/logout.php?v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
+                header('location: logout.php?v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
             }
             else{
-                header('location: Security/logout.php?v=&s='.$_SESSION['DBHOST']);
-            }
-            
+                header('location: logout.php?v=&s='.$_SESSION['DBHOST']);
+            }*/
+            require("logout.php");
+
         }
     }
     else{
@@ -33,7 +35,7 @@
             die("Installation has been completed or this copy of TPS may be corrupt. please check installation folder.");
         }
     }
-    
+
     start:
     include "TPSBIN/functions.php";
     #absolute_include("CONFIG.php", $_SERVER['PHP_SELF']);
@@ -46,7 +48,7 @@
         header('location: Security/login.html');
     }*/
     $mysqlnd = function_exists('mysqli_fetch_all');
-    
+
     if ($mysqlnd||isset($_GET['strongarm'])) {
         $_SESSION['NDSupport']=TRUE;
         if(!isset($_SESSION["BASE_REF"])){
@@ -63,7 +65,7 @@
                 //header("djhome.php");
             }
         }
-    
+
         else{
             if($_SESSION['access']==2){
                 include_once "station/admin.php";
