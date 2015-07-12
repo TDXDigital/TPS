@@ -9,7 +9,7 @@
     },
     "autoload":{
         "psr-0":{
-            "TPS\\": "vendor/",
+            "TPS\\": "router/",
             "Controller\\": "./"
         }
     },
