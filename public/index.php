@@ -6,7 +6,13 @@
     //   INCLUDES
     //===============================
     $path = dirname(__DIR__).DIRECTORY_SEPARATOR."vendor/autoload.php";
-    echo $path;
+    if(realpath($path)){
+        $path=realpath($path);
+        echo $path;
+    }
+    else{
+        echo $path;
+    }
     require($path);
     
     #error_log("loading: ".dirname(__FILE__)."/../vendor/autoload.php");
