@@ -67,6 +67,7 @@ Class Router{
 
   public function run()
   {
+      print "<br>started Run...";
       $display404 = true;
       $uri = $this->request->getResourceUri();
       $method = $this->request->getMethod();
