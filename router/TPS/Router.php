@@ -54,7 +54,7 @@ Class Router{
       $function = ($path != "") ? $path : "index";
 
       $func = function () use ($class, $function) {
-          $class = '\Controller\\' . $class;
+          $class = '\\Controller\\' . $class;
           $class = new $class();
 
           $args = func_get_args();
