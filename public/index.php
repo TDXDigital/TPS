@@ -5,8 +5,11 @@
     //===============================
     //   INCLUDES
     //===============================
-    require(dirname(__FILE__)."/../vendor/autoload.php");
-    error_log("loading: ".dirname(__FILE__)."/../vendor/autoload.php");
+    $path = dirname(__DIR__).DIRECTORY_SEPARATOR."vendor/autoload.php";
+    echo $path;
+    require($path);
+    
+    #error_log("loading: ".dirname(__FILE__)."/../vendor/autoload.php");
     //require("./vendor/autoload.php");
 
     $router = new \TPS\Router;
