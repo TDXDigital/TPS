@@ -5,7 +5,9 @@
     //===============================
     //   INCLUDES
     //===============================
-    require("vendor/autoload.php");
+    require(dirname(__FILE__)."/../vendor/autoload.php");
+    error_log("loading: ".dirname(__FILE__)."/../vendor/autoload.php");
+    //require("./vendor/autoload.php");
 
     $router = new \TPS\Router;
 
