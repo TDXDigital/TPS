@@ -25,5 +25,8 @@
 Thumbs.db
 error_log
 php_errors.log
-!/vendor/TPS/*
 /vendor/
+!vendor/TPS/*
+!*vendor/TPS/*
+!vendor/TPS/*/
+!vendor/TPS/
