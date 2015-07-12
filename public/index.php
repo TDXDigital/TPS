@@ -5,31 +5,23 @@
     //===============================
     //   INCLUDES
     //===============================
-    $path = dirname(__DIR__).DIRECTORY_SEPARATOR."vendor/autoload.php";
+    $path = dirname(__DIR__).DIRECTORY_SEPARATOR."vendor".DIRECTORY_SEPARATOR."autoload.php";
     if(realpath($path)){
         $path=realpath($path);
-        echo $path;
-    }
-    else{
-        echo $path;
     }
     require($path);
-    print "added".$path;
-    #error_log("loading: ".dirname(__FILE__)."/../vendor/autoload.php");
-    //require("./vendor/autoload.php");
 
     $router = new \TPS\Router;
-
+    print "<br>"."Loaded Router";
     $routes = array(
         '/' => '',
         '/test/:title' => 'Main:test@get',
-        '/login'=>'Main:login@get'#,
-        #'/login'=>'Main:login@post'
+        '/login'=>'Main:login@get'
     );
-
+    print "<br>"."Loaded Routes Array";
     $router->addRoutes($routes);
-
+    print "<br>"."Set Routes";
     $router->set404Handler("Main:notFound");
-
+    print "<br>"."Added 404 Handeler";
     $router->run();
-    print "done";
+    print "<br>"."Ran Run";
