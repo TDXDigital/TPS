@@ -76,6 +76,7 @@ Class Router{
           print "checking routes";
           if ($route->matches($uri)) {
               if ($route->supportsHttpMethod($method) || $route->supportsHttpMethod("ANY")) {
+                  print "call_user_func_array";
                   call_user_func_array($route->getCallable(), array_values($route->getParams()));
                   $display404 = false;
               }
