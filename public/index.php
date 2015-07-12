@@ -14,7 +14,7 @@
         echo $path;
     }
     require($path);
-    
+    print "added".$path;
     #error_log("loading: ".dirname(__FILE__)."/../vendor/autoload.php");
     //require("./vendor/autoload.php");
 
@@ -32,3 +32,4 @@
     $router->set404Handler("Main:notFound");
 
     $router->run();
+    print "done";
