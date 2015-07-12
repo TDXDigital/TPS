@@ -28,7 +28,7 @@ Class Main extends \TPS\Controller
             . "please follow the navigation to the homepage and load letter paper"),
             "navigation"=>array(
                 array(
-                    "href"=>"/",
+                    "href"=>"/?twig",
                     "caption"=>"Home"
                     )
             )
