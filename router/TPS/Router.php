@@ -72,6 +72,7 @@ Class Router{
       $method = $this->request->getMethod();
 
       foreach ($this->routes as $i => $route) {
+          print "checking routes";
           if ($route->matches($uri)) {
               if ($route->supportsHttpMethod($method) || $route->supportsHttpMethod("ANY")) {
                   call_user_func_array($route->getCallable(), array_values($route->getParams()));
