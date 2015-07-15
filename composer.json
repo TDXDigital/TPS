@@ -9,8 +9,8 @@
     },
     "autoload":{
         "psr-0":{
-            "TPS": "router/",
-            "Controller": "./"
+            "TPS//": "router/",
+            "Controller//": "./"
         }
     },
     "license": "MIT",
