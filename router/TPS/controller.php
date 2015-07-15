@@ -20,6 +20,7 @@ Class Controller extends \Slim\Slim
         if (strpos($name, ".html.twig") === false) {
             $name = $name . ".html.twig";
         }
+        print "calling render";
         parent::render($name, $data, $status);
     }
 }
