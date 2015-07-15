@@ -46,7 +46,7 @@ Class Router{
   protected function processCallback($path)
   {
       $class = "Main";
-
+      print ("Got Callback Function Call");
       if (strpos($path, ":") !== false) {
           list($class, $path) = explode(":", $path);
       }
