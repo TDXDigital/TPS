@@ -66,18 +66,14 @@ Class Router{
 
   public function run()
   {
-      print "<br>started Run...";
       $display404 = true;
       $uri = $this->request->getResourceUri();
       $method = $this->request->getMethod();
 
       foreach ($this->routes as $i => $route) {
-          print "checking routes";
           if ($route->matches($uri)) {
               if ($route->supportsHttpMethod($method) || $route->supportsHttpMethod("ANY")) {
-                  print "call_user_func_array";
                   call_user_func_array($route->getCallable(), array_values($route->getParams()));
-                  print "...survived...";
                   $display404 = false;
               }
           }
@@ -90,6 +86,5 @@ Class Router{
             echo "404 - route not found";
         }
       }
-      print "<br>completed Run";
   }
 }
