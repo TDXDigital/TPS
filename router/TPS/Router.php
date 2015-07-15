@@ -1,8 +1,9 @@
 <?php
-# http://code.tutsplus.com/tutorials/taming-slim-20--net-30669
 namespace TPS;
 
-Class Router{
+Class Router
+{
+  # http://code.tutsplus.com/tutorials/taming-slim-20--net-30669
   protected $routes;
   protected $request;
   protected $errorHandler;
