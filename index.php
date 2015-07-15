@@ -7,8 +7,8 @@
  */
 
 if(is_null(filter_input(INPUT_GET,'twig'))){
-    require_once 'legacy_controller.php';
+    require_once('legacy_controller.php');
 }
 else{
-    require_once 'public/index.php';
+    require_once('public/index.php');
 }
