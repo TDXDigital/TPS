@@ -1,6 +1,6 @@
 <?php
 namespace Controller;
-Error_reporting(0);
+#Error_reporting(0);
 Class Main extends \TPS\Controller
 {
     public function index()
