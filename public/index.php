@@ -7,9 +7,9 @@
     //   INCLUDES
     //===============================
     $path = dirname(__DIR__).DIRECTORY_SEPARATOR."vendor".DIRECTORY_SEPARATOR."autoload.php";
-    if(realpath($path)){
-        $path=realpath($path);
-    }
+    //if(realpath($path)){
+    //$path=realpath($path);
+    //}
     require($path);
 
     $router = new \TPS\Router;
