@@ -137,12 +137,12 @@ function LDAP_AUTH($user, $password, $xml_server) {
                 $_SESSION['AutoComLimit'] = 8;
                 $_SESSION['AutoComEnable'] = TRUE;
                 $_SESSION['TimeZone']='UTC'; // this is just the default to be updated after login
-                echo $DEBUG;
+                #echo $DEBUG;
                 return true;
             } else {
                 // user has no rights
 		        $DEBUG .= "Access Denied<br/>";
-                        echo $DEBUG;
+                        #echo $DEBUG;
                 return false;
             }
 
@@ -154,6 +154,7 @@ function LDAP_AUTH($user, $password, $xml_server) {
         }
     }
     catch (Exception $e){
+        error_log("Could not Bind LDAP server");
         die("could not bind to server... error thrown");
     }
 }
