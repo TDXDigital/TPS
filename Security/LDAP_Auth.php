@@ -1,10 +1,11 @@
 <?php
-    
+$DEBUG="<span style='color:orange'>Imported LDAPS Auth Module<br/></span>";
 if(!isset($_SESSION)){
     session_start();
 }
 function LDAP_AUTH($user, $password, $xml_server) {
     if(!extension_loaded('ldap')){
+        error_log("ldap module not installed but requested by login");
         header($_SERVER['Login.html?err=No%20LDAP%20Support']);
     }
     $DEBUG="<span style='color:orange'>LOADED LDAP(S)<br/></span>";
