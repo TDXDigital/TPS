@@ -2,11 +2,13 @@
 
     $cerl = error_reporting();
     //error_reporting(0);
-    session_start();
+    if(!isset($_SESSION)){
+        session_start();
+    }
 
     //echo "load index<br>";
     // check for installation
-    if(!defined('HOST')||!isset($_SESSION['DBHOST'])){
+    if(!isset($_SESSION['DBHOST'])){
         $filename="TPSBIN/XML/DBSETTINGS.xml";
         if(!file_exists($filename)){
             header('location: Setup/');

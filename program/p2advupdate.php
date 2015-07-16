@@ -12,10 +12,10 @@
 <html>
 <body>
 	<div class="topbar">
-           Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
+           Welcome, <?php echo(strtoupper($_SESSION['fname'])); ?>
     </div>
 	<div id="header">
-		<a href="../masterpage.php"><img src="<?php print "../".$_SESSION['logo']; ?>" alt="CKXU" /></a>
+		<a href="../masterpage.php"><img src="<?php print "../".$_SESSION['logo']; ?>" alt="Logo" /></a>
 	</div>
 	<div id="top">
 		<h2>Edit Program Advanced Search</h2>
@@ -92,7 +92,7 @@
     if(isset($_POST['genre'])){
             $SQLA .= "and program.genre LIKE '" . addslashes($_POST['genre']) . "' ";
     }
-    $SQLA .= " order by programname";
+    $SQLA .= " order by active DESC,programname";
 
     $result = $mysqli->query($SQLA) or die($mysqli->error);
     if($result->num_rows==0){

@@ -6,17 +6,17 @@ include_once "../TPSBIN/db_connect.php";
 ?>
 <head>
 <link rel="stylesheet" type="text/css" href="../phpstyle.css" />
-<title>DPL Administration</title>
+<title>TPS Administration</title>
 </head>
 <html>
 <body>
       <div class="topbar">
-           Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
+           Welcome, <?php echo(strtoupper($_SESSION['fname'])); ?>
            </div>
 
       <table border="0" align="center" width="1000">
       <tr>
-           <td align="center"><img src="../images/Ckxu_logo_PNG.png" alt="ckxu"/></td>
+           <td align="center"><img src="<?php print "../".$_SESSION['logo']; ?>" alt="logo"/></td>
       </tr>
       <tr style="background-color:white;">
       <td>

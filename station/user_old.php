@@ -9,63 +9,6 @@ include_once "TPSBIN/functions.php";
 include_once "TPSBIN/db_connect.php";
 include_once 'CONFIG.php';
 
-
-/*
-function getBrowser()
-     {
-         $u_agent = $_SERVER['HTTP_USER_AGENT'];
-		 $broswer = get_browser(null, true);
-         $ub = '';
-         if(preg_match('MSIE',$u_agent))
-         {
-             $ub = "Internet Explorer";
-         }
-         else if(preg_match('Mozilla',$u_agent))
-         {
-             $ub = "Mozilla";
-         }
-         else if(preg_match('Safari',$u_agent))
-         {
-             $ub = "Apple Safari";
-         }
-         else if(preg_match('Chrome',$u_agent))
-         {
-             $ub = "Google Chrome";
-         }
-         else if(preg_match('Flock',$u_agent))
-          {
-             $ub = "Flock";
-         }
-         else if(preg_match('Opera',$u_agent))
-         {
-             $ub = "Opera";
-         }
-         else if(preg_match('Netscape',$u_agent))
-         {
-             $ub = "Netscape";
-         }
-		 else{
-		 	$ub = "Undefined";
-		 }
-         return $ub;
-     }
-*/
-/*$con = mysql_connect(constant("HOST"),constant("USER"),constant("PASSWORD"),constant("DATABASE"));
-if (!$con){
-	echo "Error 401: Access Denied<br>Please Verify you are logged in.<br><br><a href='../logout.php'>Login Here</a><br>Details:";
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
-	}
-else if($con){
-	if(!mysql_select_db("CKXU")){header('Location: Security/login.php');} // or die("<h1>Error ".mysql_errno() ."</h1><br />check access (privileges) to the SQL server db CKXU for this user <br /><br /><hr />Error details:<br />" .mysql_error() . "<br /><br /><a href=login.php>Return</a>");
-}
-else{
-	echo 'ERROR!';
-}*/
-
-/*if($_SESSION['usr']=='user')
-{
-  header('location: episode/p1insertEP.php');
-}*/
 ?>
 <!DOCTYPE HTML>
 <html>

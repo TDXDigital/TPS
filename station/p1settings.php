@@ -1,22 +1,9 @@
 <?php
-include"../TPSBIN/functions.php";
-include"../TPSBIN/db_connect.php";
-/*
-$con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
-if (!$con){
-	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
-
-	username=' . $_SESSION["username"]);
-}
-else if($con){
-	if(!mysqli_select_db($_SESSION['DBNAME'])){header('Location: ../login.php');}
-	
-    }
-else{
-	echo 'ERROR!';
-}
-*/
+date_default_timezone_set('UTC');
+include_once dirname(__DIR__).DIRECTORY_SEPARATOR."TPSBIN".
+        DIRECTORY_SEPARATOR."functions.php";
+include_once dirname(__DIR__).DIRECTORY_SEPARATOR."TPSBIN".
+                DIRECTORY_SEPARATOR."db_connect.php";
 ?>
 
 <!DOCTYPE HTML>
@@ -27,10 +14,10 @@ else{
 <html>
 <body>
 	<div class="topbar">
-           User:, <?php echo(strtoupper($_SESSION['usr'])); ?>
+           User:, <?php echo(strtoupper($_SESSION['fname'])); ?>
     </div>
 	<div id="header">
-		<a href="../masterpage.php"><img src="../images/Ckxu_logo_PNG.png" alt="CKXU" /></a>
+		<a href="../masterpage.php"><img src="<?php print "../".$_SESSION['logo']; ?>" alt="logo" /></a>
 	</div>
 	<div id="top">
 		<h2>Edit Settings and Information</h2>
@@ -80,9 +67,9 @@ else{
 				<td>
 				<input type="submit" value="Select"/></form></td><td>
 				<input type="button" value="Reset" onClick="window.location.reload()"></td><td>
-				<form method="POST" action="../masterpage.php"><input type="submit" value="Menu"/></form>
+				<form method="POST" action="../"><input type="submit" value="Menu"/></form>
 				</td>
-				<td width="100%" align="right"><img src="../images/mysqls.png" alt="MySQL Powered"/></td>
+				<!--<td width="100%" align="right"><img src="../images/mysqls.png" alt="MySQL Powered"/></td>-->
 			</tr>
 		</table>
 	</div>

@@ -1,45 +1,40 @@
 <?php
-    session_start();
+date_default_timezone_set('UTC');
+include_once dirname(__DIR__).DIRECTORY_SEPARATOR."TPSBIN".
+        DIRECTORY_SEPARATOR."functions.php";
+include_once dirname(__DIR__).DIRECTORY_SEPARATOR."TPSBIN".
+                DIRECTORY_SEPARATOR."db_connect.php";
 
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
-if (!$con){
-	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
-
-	username=' . $_SESSION["username"]);
+$GENRE = "SELECT * from GENRE order by genreid asc";
+$GENRES = $mysqli->query($GENRE);
+$genop = "<OPTION VALUE=\"%\">Select Genre</option>";
+while ($genrerow=$GENRES->fetch_array(MYSQLI_ASSOC)) {
+    $GENid=$genrerow["genreid"];
+    $genop.="<OPTION VALUE=\"" . $GENid . "\">". $GENid ."</option>";
 }
-else if($con){
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /user/login');}
-	$GENRE = "SELECT * from GENRE order by genreid asc";
-	$GENRES = mysql_query($GENRE,$con);
-	$genop = "<OPTION VALUE=\"%\">Select Genre</option>";
-	while ($genrerow=mysql_fetch_array($GENRES)) {
-        $GENid=$genrerow["genreid"];
-        $genop.="<OPTION VALUE=\"" . $GENid . "\">". $GENid ."</option>";
-    }
-	$djsql="SELECT * from DJ where active='1' order by djname";
-    $djresult=mysql_query($djsql,$con);
+$djsql="SELECT * from DJ where active='1' order by djname";
+$djresult=$mysqli->query($djsql);
 
-    $djoptions="<option value=0>Any</option>";//<OPTION VALUE=0>Choose</option>";
-    while ($djrow=mysql_fetch_array($djresult)) {
-        $Alias=$djrow["Alias"];
-        $name=$djrow["djname"];
-        $djoptions.="<OPTION VALUE=\"".$Alias."\">" . $name . "</option>";
-    }
+$djoptions="<option value=0>Any</option>";//<OPTION VALUE=0>Choose</option>";
+while ($djrow=$djresult->fetch_array(MYSQLI_ASSOC)) {
+    $Alias=$djrow["Alias"];
+    $name=$djrow["djname"];
+    $djoptions.="<OPTION VALUE=\"".$Alias."\">" . $name . "</option>";
+}
 ?>
 
 <!DOCTYPE HTML>
 <head>
 <link rel="stylesheet" type="text/css" href="../altstyle.css" />
-<title>DPL Administration</title>
+<title>TPS Administration</title>
 </head>
 <html>
 <body>
 	<div class="topbar">
-           Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
+           Welcome, <?php echo(strtoupper($_SESSION['fname'])); ?>
     </div>
 	<div id="header">
-		<a href="../masterpage.php"><img src="../images/Ckxu_logo_PNG.png" alt="CKXU" /></a>
+		<a href="../"><img src="<?php print "../".$_SESSION['logo']; ?>" alt="logo" /></a>
 	</div>
 	<div id="top">
 		<h2>Edit Program Advanced Search</h2>
@@ -123,12 +118,5 @@ else if($con){
 		
 	</div>
 	<div style="height: 50px;">&nbsp</div>
-<?php
-
-}
-else{
-	echo 'ERROR!';
-}
-?>
 </body>
 </html>

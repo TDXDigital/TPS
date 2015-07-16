@@ -1,6 +1,8 @@
 <?php
+//namespace TPS;
+date_default_timezone_set('UTC');
 
-error_reporting(0);
+//error_reporting(0);
 define("ENCRYPTION_KEY", "!@#$%^&*");
 
 /*
@@ -8,7 +10,7 @@ define("ENCRYPTION_KEY", "!@#$%^&*");
  * 
  */
 $rep_level = error_reporting();
-error_reporting(0);
+//error_reporting(0);
 function absolute_include($file,$PHP_SELF)
 {
     /*
@@ -19,7 +21,7 @@ function absolute_include($file,$PHP_SELF)
     
     //check for last '/', if at end strip it from string
     
-    if(!defined($PHP_SELF)){
+    if(!isset($PHP_SELF)){
         $PHP_SELF = $_SERVER["PHP_SELF"];
     }
     
@@ -69,7 +71,7 @@ function absolute_include($file,$PHP_SELF)
 }
 
 try{
-    absolute_include('CONFIG.php');
+    absolute_include('CONFIG.php',__DIR__);
 }
 catch (Exception $e){
     #error_log($e->getMessage()."; setting timezone to UTC as failback");
