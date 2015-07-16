@@ -158,4 +158,4 @@ function LDAP_AUTH($user, $password, $xml_server) {
         die("could not bind to server... error thrown");
     }
 }
-?>
+
