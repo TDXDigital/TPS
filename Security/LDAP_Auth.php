@@ -74,10 +74,10 @@ function LDAP_AUTH($user, $password, $xml_server) {
     // verify user and password
     $DEBUG .= "<span>Attempting LDAP bind with $ldap_usr_dom\\$bindUser<br/></span>";
     $DEBUG .= "<span>Using DN:$ldap_dn<br/></span>";
-    print $DEBUG;
     try{
         if($bind = @ldap_bind($ldap, $ldap_usr_dom . '\\' . $bindUser, $bindpassword)) {
 	    $DEBUG .= "<span style='color: green;'>Bind Accepted with $ldap_usr_dom\\$bindUser<br/></span>";
+            print $DEBUG;
             // valid
             // check presence in groups
             $filter = "(sAMAccountName=" . $user . ")";
