@@ -142,6 +142,7 @@ function LDAP_AUTH($user, $password, $xml_server) {
             } else {
                 // user has no rights
 		        $DEBUG .= "Access Denied<br/>";
+                        echo $DEBUG;
                 return false;
             }
 

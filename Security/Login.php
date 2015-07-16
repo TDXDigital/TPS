@@ -133,7 +133,9 @@ foreach( $dbxml->SERVER as $convars):
         */
         if((string)$convars->AUTH == strtoupper("LDAP")){
             $DEBUG_STR .= "Load Auth Module LDAP";
-            include("LDAP_Auth.php");
+            if(include("LDAP_Auth.php")){
+                $DEBUG_STR .="Loaded [OK]";
+            }
             if(LDAP_AUTH($postuser, $postpass, $convars)){
                 if($des==0){
                     header("Location: $dest");
