@@ -7,7 +7,7 @@ function LDAP_AUTH($user, $password, $xml_server) {
     if(!extension_loaded('ldap')){
         header($_SERVER['Login.html?err=No%20LDAP%20Support']);
     }
-    $DEBUG="";
+    $DEBUG="<span style='color:orange'>LOADED LDAP(S)<br/></span>";
     if((string)$xml_server->ACTIVE == '0'){
         $DEBUG .= "<p>ERROR: Selected server has been disabled by an administrator</p>";
         die("<p>Click <a href='$ORIGIN'>Here</a> to return to login");
