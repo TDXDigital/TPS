@@ -51,7 +51,7 @@ function LDAP_AUTH($user, $password, $xml_server) {
         $DEBUG .= "<span style='color:yellow; background-color: black;'>LDAP PORT UNKNOWN:$ldap_port<br/></span>";
     }
     $DEBUG .= "<span>Attempting LDAP Connection:</span>";
-	try{
+    try{
         if($ldap = ldap_connect($ldap_host,$ldap_port)){
             $DEBUG .= "<span style='color: green;'> [Connection Established]<br/></span>";
         }

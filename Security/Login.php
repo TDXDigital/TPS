@@ -3,9 +3,9 @@
    include(dirname(__DIR__).DIRECTORY_SEPARATOR."TPSBIN".
            DIRECTORY_SEPARATOR."functions.php");
 
-   $DEBUG=FALSE;
+   $DEBUG=TRUE;//FALSE;
    if(isset($_GET)){
-       $DEBUG=TRUE;
+       //$DEBUG=TRUE;
    }
    else{
        $DEBUG=FALSE;
