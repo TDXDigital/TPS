@@ -57,6 +57,7 @@ function LDAP_AUTH($user, $password, $xml_server) {
             $DEBUG .= "<span style='color: green;'> [Connection Established]<br/></span>";
         }
         else{
+            die("LDAP Server connection failed");
             $DEBUG .= "<span style='color: red;'> [Connection Refused]<br/></span>";
         }
     }
@@ -77,7 +78,7 @@ function LDAP_AUTH($user, $password, $xml_server) {
     try{
         if($bind = ldap_bind($ldap, $ldap_usr_dom . '\\' . $bindUser, $bindpassword)) {
 	    $DEBUG .= "<span style='color: green;'>Bind Accepted with $ldap_usr_dom\\$bindUser<br/></span>";
-            print $DEBUG;
+            
             // valid
             // check presence in groups
             $filter = "(sAMAccountName=" . $user . ")";
@@ -139,18 +140,21 @@ function LDAP_AUTH($user, $password, $xml_server) {
                 $_SESSION['AutoComEnable'] = TRUE;
                 $_SESSION['TimeZone']='UTC'; // this is just the default to be updated after login
                 #echo $DEBUG;
+                print $DEBUG;
                 return true;
             } else {
                 // user has no rights
 		        $DEBUG .= "Access Denied<br/>";
                         #echo $DEBUG;
+                        print $DEBUG;
                 return false;
             }
 
         } else {
             // invalid name or password
 	    $DEBUG .= "<span style='color: red;'>Invalid Username or password using <span style='color: blue;'>$ldap_usr_dom\\$bindUser</span> with password ".
-        isset($bindpassword)."<br/><br/></span>";
+            isset($bindpassword)."<br/><br/></span>";
+            print $DEBUG;
             return false;
         }
     }
