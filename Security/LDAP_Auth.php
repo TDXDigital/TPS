@@ -153,13 +153,13 @@ function LDAP_AUTH($user, $password, $xml_server) {
 
         } else {
             // invalid name or password
-            if (ldap_get_option($bind, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error)) {
+            if (ldap_get_option($bind, LDAP_OPT_ERROR_STRING, $extended_error)) {
                 echo "Error Binding to LDAP: $extended_error";
             } else {
                 echo "Error Binding to LDAP: No additional information is available.";
             }
 	    $DEBUG .= "<span style='color: red;'>Invalid Username or password using <span style='color: blue;'>$ldap_usr_dom\\$bindUser</span> with password ".
-            /*isset($bindpassword)*/ $bindpassword."<br/><br/></span>";
+            isset($bindpassword)?'yes':'no'."<br/><br/></span>";
             print $DEBUG;
             return false;
         }
