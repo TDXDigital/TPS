@@ -6,6 +6,6 @@
  * and open the template in the editor.
  */
 date_default_timezone_set('UTM');
-include DIRECTORY_SEPARATOR."TPSBIN".DIRECTORY_SEPARATOR."functions.php";
+include "TPSBIN".DIRECTORY_SEPARATOR."functions.php";
 $value = filter_input(INPUT_GET,'q');
 print easy_crypt($ENCR_KEY, $value);
