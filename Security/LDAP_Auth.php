@@ -159,7 +159,7 @@ function LDAP_AUTH($user, $password, $xml_server) {
                 echo "Error Binding to LDAP: No additional information is available.";
             }
 	    $DEBUG .= "<span style='color: red;'>Invalid Username or password using <span style='color: blue;'>$ldap_usr_dom\\$bindUser</span> with password ".
-            isset($bindpassword)?'yes':'no'."<br/><br/></span>";
+            (isset($bindpassword)?'yes':'no')."<br/><br/></span>";
             print $DEBUG;
             return false;
         }
