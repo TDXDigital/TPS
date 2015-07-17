@@ -30,6 +30,7 @@ include_once 'psl-config.php';   // As functions.php is not included
 
 if(!$mysqli = new mysqli(constant("HOST"), constant("USER"), constant("PASSWORD"), constant("DATABASE"))){
     //header('location: /Security/login.php?e=database%20access%20denied');
+    print (constant("HOST"). constant("USER"). constant("PASSWORD"). constant("DATABASE"));
     session_destroy();
     die($mysqli->connect_error." <a href='/Security/login.php?e=database%20access%20denied'>please login again</a>");
     //header('location: /Security/login.php?e=database%20access%20denied');
