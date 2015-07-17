@@ -76,7 +76,7 @@ function LDAP_AUTH($user, $password, $xml_server) {
     $DEBUG .= "<span>Attempting LDAP bind with $ldap_usr_dom\\$bindUser<br/></span>";
     $DEBUG .= "<span>Using DN:$ldap_dn<br/></span>";
     try{
-        ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+        ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3) ;
         $bind = ldap_bind($ldap, $ldap_usr_dom . '\\' . $bindUser, $bindpassword);
         if($bind){
 	    $DEBUG .= "<span style='color: green;'>Bind Accepted with $ldap_usr_dom\\$bindUser<br/></span>";
