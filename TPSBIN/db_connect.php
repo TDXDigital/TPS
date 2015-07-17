@@ -30,7 +30,7 @@ else{
 
 include_once 'psl-config.php';   // As functions.php is not included
 
-if(!$mysqli = new mysqli($_SESSION("DBHOST"), $_SESSION("usr"), $_SESSION("rpw"), $_SESSION("DBNAME"))){
+if(!$mysqli = new mysqli($_SESSION["DBHOST"], $_SESSION["usr"], $_SESSION["rpw"], $_SESSION["DBNAME"])){
     //header('location: /Security/login.php?e=database%20access%20denied');
     print (constant("HOST"). constant("USER"). constant("PASSWORD"). constant("DATABASE"));
     session_destroy();
