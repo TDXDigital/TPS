@@ -1,4 +1,18 @@
 <?php
+
+function findHOME($i,$path, $max){
+    if(file_exists($path.DIRECTORY_SEPARATOR."CONFIG.php")){
+        return $path;
+    }
+    elseif($i>$max){
+        return false;
+    }
+    else{
+        $i++;
+        return findHOME($i, dirname($path), $max);
+    }
+}
+
 date_default_timezone_set('UTC');
 if(session_status()===PHP_SESSION_NONE){
     session_start();
@@ -26,6 +40,13 @@ if(!isset($_SESSION['DBHOST'])&&$legacy){
     $_SESSION['DBNAME']=constant("DATABASE");
 }
 else{
+    //assume root
+    $i = 0;
+    $path = findHOME($i,__DIR__,10);
+    if($path){
+        //print "found"
+        require $path.DIRECTORY_SEPARATOR."CONFIG.php";
+    }
 }
 
 include_once 'psl-config.php';   // As functions.php is not included
