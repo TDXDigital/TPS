@@ -1,7 +1,7 @@
 <?php
 
-function findHOME($i,$path, $max){
-    if(file_exists($path.DIRECTORY_SEPARATOR."CONFIG.php")){
+function findHOME($i,$path, $max,$file){
+    if(file_exists($path.DIRECTORY_SEPARATOR.$file)){
         return $path;
     }
     elseif($i>$max){
@@ -9,7 +9,7 @@ function findHOME($i,$path, $max){
     }
     else{
         $i++;
-        return findHOME($i, dirname($path), $max);
+        return findHOME($i, dirname($path), $max, "CONFIG.php");
     }
 }
 
