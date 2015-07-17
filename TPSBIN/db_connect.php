@@ -38,6 +38,6 @@ if($mysqli->connect_error)
 {   
     error_log("FATAL ERROR: ".$mysqli->connect_error); // LOG PHP
     error_log("FATAL ERROR: ".$mysqli->connect_error, 4); // LOG SAPI
-    die("FATAL ERROR [<span style='color:red'>".$mysqli->connect_error . "</span>]</br><br/>DATABASE CONNECTION FAILED;<br><br>THIS ERROR HAS BEEN REPORTED<br><br>please <a href='logout.php'>logout</a> and try again");
+    die("FATAL ERROR [<span style='color:red'>".$mysqli->errno." ".$mysqli->connect_error . "</span>]</br><br/>DATABASE CONNECTION FAILED;<br><br>THIS ERROR HAS BEEN REPORTED<br><br>please <a href='logout.php'>logout</a> and try again");
 }
 
