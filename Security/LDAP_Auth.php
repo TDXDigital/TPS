@@ -76,7 +76,8 @@ function LDAP_AUTH($user, $password, $xml_server) {
     $DEBUG .= "<span>Attempting LDAP bind with $ldap_usr_dom\\$bindUser<br/></span>";
     $DEBUG .= "<span>Using DN:$ldap_dn<br/></span>";
     try{
-        if($bind = ldap_bind($ldap, $ldap_usr_dom . '\\' . $bindUser, $bindpassword)) {
+        $bind = ldap_bind($ldap, $ldap_usr_dom . '\\' . $bindUser, $bindpassword);
+        if($bind){
 	    $DEBUG .= "<span style='color: green;'>Bind Accepted with $ldap_usr_dom\\$bindUser<br/></span>";
             
             // valid
@@ -152,6 +153,11 @@ function LDAP_AUTH($user, $password, $xml_server) {
 
         } else {
             // invalid name or password
+            if (ldap_get_option($bind, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error)) {
+                echo "Error Binding to LDAP: $extended_error";
+            } else {
+                echo "Error Binding to LDAP: No additional information is available.";
+            }
 	    $DEBUG .= "<span style='color: red;'>Invalid Username or password using <span style='color: blue;'>$ldap_usr_dom\\$bindUser</span> with password ".
             isset($bindpassword)."<br/><br/></span>";
             print $DEBUG;
