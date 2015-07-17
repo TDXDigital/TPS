@@ -10,25 +10,27 @@ $timezone = $_SESSION['TimeZone'];
 date_default_timezone_set($timezone);
 
 //echo constant("HOST");
-if(!defined("HOST") || !defined("USER") || !defined("PASSWORD") || !defined("DATABASE")){
+/*if(!defined("HOST") || !defined("USER") || !defined("PASSWORD") || !defined("DATABASE")){
     session_destroy();
-    /*echo "<br>HOST:".constant("HOST");
+    echo "<br>HOST:".constant("HOST");
     echo "<br>USER:".constant("USER");
     echo "<br>PASSWORD:".constant("PASSWORD");
-    echo "<br>DATABASE:".constant("DATABASE");*/
+    echo "<br>DATABASE:".constant("DATABASE");
     die("<br><br><a href=/Security/login.html?e=invalid%20params>Return to login</a>");
     //header('location: /Security/login.html?e=invalid%20params');
-}
-elseif(!isset($_SESSION['DBHOST'])&&$legacy){
+}*/
+if(!isset($_SESSION['DBHOST'])&&$legacy){
     $_SESSION['DBHOST']=constant("HOST");
     $_SESSION['usr']=constant("USER");
     $_SESSION['rpw']=constant("PASSWORD");
     $_SESSION['DBNAME']=constant("DATABASE");
 }
+else{
+}
 
 include_once 'psl-config.php';   // As functions.php is not included
 
-if(!$mysqli = new mysqli(constant("HOST"), constant("USER"), constant("PASSWORD"), constant("DATABASE"))){
+if(!$mysqli = new mysqli($_SESSION("DBHOST"), $_SESSION("usr"), $_SESSION("rpw"), $_SESSION("DBNAME"))){
     //header('location: /Security/login.php?e=database%20access%20denied');
     print (constant("HOST"). constant("USER"). constant("PASSWORD"). constant("DATABASE"));
     session_destroy();
