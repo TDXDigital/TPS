@@ -14,16 +14,7 @@
             header('location: Setup/');
         }
         else{
-            //header('location: Security/login.html?e=syserr_nchost&v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
-            /*
-            if(defined('HOST')){
-                header('location: logout.php?v='.constant('HOST').'&s='.$_SESSION['DBHOST']);
-            }
-            else{
-                header('location: logout.php?v=&s='.$_SESSION['DBHOST']);
-            }*/
             require("logout.php");
-
         }
     }
     else{
