@@ -2,7 +2,7 @@
 
 date_default_timezone_set('UTC');
 
-include "finctions.php";
+include_once "functions.php";
 if(session_status()===PHP_SESSION_NONE){
     session_start();
 }

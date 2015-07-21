@@ -9,7 +9,7 @@
     //echo "load index<br>";
     // check for installation
     if(!isset($_SESSION['DBHOST'])){
-        $filename="TPSBIN/XML/DBSETTINGS.xml";
+        $filename=__DIR__.DIRECTORY_SEPARATOR."TPSBIN/XML/DBSETTINGS.xml";
         if(!file_exists($filename)){
             header('location: Setup/');
         }
@@ -39,9 +39,9 @@
     }
 
     start:
-    include "TPSBIN/functions.php";
+    include_once __DIR__.DIRECTORY_SEPARATOR."TPSBIN/functions.php";
     #absolute_include("CONFIG.php", $_SERVER['PHP_SELF']);
-    include "CONFIG.php";
+    include_once "CONFIG.php";
     error_reporting($cerl);
     if (!isset($_SESSION)) {
         sec_session_start();
@@ -94,4 +94,3 @@
                 //header("djhome.php");
             }
     }
-?>
