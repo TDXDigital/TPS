@@ -53,3 +53,5 @@ $view->parserOptions = array(
 $view->parserExtensions = array(
     new \Slim\Views\TwigExtension(),
 );
+
+$base_url = $app->router()->getCurrentRoute();

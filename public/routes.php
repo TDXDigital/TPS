@@ -1,6 +1,12 @@
 <?php
 $app->notFound(function() use ($app) {
-    $app->render('error.html.twig');
+    global $base_url, $twig;
+    $params = array(
+        'base_url' => $base_url,
+        'title' => 'Error 404',
+        'message' => "$base_url  not found",
+    );
+    $app->render('error.html.twig',$params);
 });
 
 //Routes for customer(s) resource
