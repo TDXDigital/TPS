@@ -21,7 +21,7 @@ include_once $TPSBIN.DIRECTORY_SEPARATOR."functions.php";
 if(session_status()===PHP_SESSION_NONE){
     session_start();
 }
-error_reporting(E_ERROR);
+#error_reporting(E_ERROR);
 //include_once $_SESSION['basedir']."CONFIG.php";
 
 $timezone = $_SESSION['TimeZone'];
@@ -46,10 +46,9 @@ if(!isset($_SESSION['DBHOST'])&&$legacy){
 else{
     //assume root
     $i = 0;
-    $path = findHOME($i,__DIR__,10);
+    $path = findHOME($i,__DIR__,10,"CONFIG.php");
     if($path){
-        //print "found"
-        require $path.DIRECTORY_SEPARATOR."CONFIG.php";
+        require_once $path.DIRECTORY_SEPARATOR."CONFIG.php";
     }
 }
 

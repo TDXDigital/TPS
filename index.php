@@ -9,7 +9,7 @@
 //Used to silence annoying warnings so we can load the proper timezone...
 date_default_timezone_set('UTC');
 session_start();
-require (__DIR__.DIRECTORY_SEPARATOR."CONFIG.php");
+require_once (__DIR__.DIRECTORY_SEPARATOR."CONFIG.php");
 date_default_timezone_set($timezone);
 
 if(is_null(filter_input(INPUT_GET,'twig'))){
