@@ -1,4 +1,14 @@
 <?php
+
+#Config paramaters specific to Slim / Twig
+#if needed create slimConfig.php in the same directory and
+#specify the system temp (linux likely needs /tmp due to SELinux
+//$ConfigTemp = $basepath.DIRECTORY_SEPARATOR."temp";
+
+if(file_exists('slimConfig.php')){
+    require_once('slimConfig.php');
+}    
+
 // Set variables
 $debug = TRUE;
 $basepath = dirname(__DIR__).DIRECTORY_SEPARATOR;
@@ -13,7 +23,7 @@ $slim_path = $basepath."lib".DIRECTORY_SEPARATOR."Slim".DIRECTORY_SEPARATOR
 $SystemViews_path = $basepath.DIRECTORY_SEPARATOR."Views"
         .DIRECTORY_SEPARATOR."System";*/
 $views_path = $basepath.DIRECTORY_SEPARATOR."Views";
-$temp_path = $basepath.DIRECTORY_SEPARATOR."temp";
+$temp_path = $Config_Temp?:$basepath.DIRECTORY_SEPARATOR."temp";
 
 //load twig
 if(file_exists($autoload_path)){

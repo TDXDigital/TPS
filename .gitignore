@@ -31,3 +31,4 @@ php_errors.log
 !*vendor/TPS/*
 !vendor/TPS/*/
 !vendor/TPS/
+/public/slimConfig.php
