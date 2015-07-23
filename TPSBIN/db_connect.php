@@ -2,7 +2,22 @@
 
 date_default_timezone_set('UTC');
 
-include "finctions.php";
+function findLocal($i,$path, $max,$file){
+    if(file_exists($path.DIRECTORY_SEPARATOR.$file)){
+        return $path;
+    }
+    elseif($i>$max){
+        return false;
+    }
+    else{
+        $i++;
+        return findLocal($i, dirname($path), $max, "CONFIG.php");
+    }
+}
+
+$TPSBIN = findLocal(0,__DIR__,10,"functions.php");
+
+include_once $TPSBIN.DIRECTORY_SEPARATOR."functions.php";
 if(session_status()===PHP_SESSION_NONE){
     session_start();
 }

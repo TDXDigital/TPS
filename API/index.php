@@ -42,5 +42,5 @@ $app->get('/library/:artist/:album', function ($artist,$album) {
 $app->get('/library/', function () {
     print json_encode(ListLibrary());
 });
-$app->run();
+$view->run();
 

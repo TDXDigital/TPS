@@ -6,7 +6,8 @@
         "slim/extras": "*",
         "twig/twig": "^1.18",
         "slim/slim": "^2.6",
-        "twbs/bootstrap":"^3.3"
+        "twbs/bootstrap": "^3.3",
+        "smarty/smarty": "3"
     },
     "autoload":{
         "psr-0":{

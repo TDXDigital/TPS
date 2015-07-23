@@ -25,6 +25,7 @@ composer.lock
 Thumbs.db
 error_log
 php_errors.log
+/temp
 /vendor/
 !vendor/TPS/*
 !*vendor/TPS/*
