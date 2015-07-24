@@ -53,5 +53,10 @@ $view->parserOptions = array(
 $view->parserExtensions = array(
     new \Slim\Views\TwigExtension(),
 );
+$app->hook('slim.before', function () use ($app) {
+    $posIndex = strpos( $_SERVER['PHP_SELF'], '/index.php');
+    $base_url = substr( $_SERVER['PHP_SELF'], 0, $posIndex);
+    $app->view()->appendData(array('baseUrl' => $base_url ));
+});
 
 $base_url = $app->router()->getCurrentRoute();

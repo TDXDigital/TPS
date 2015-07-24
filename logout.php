@@ -9,6 +9,7 @@
 	}
 	session_unset();
 	session_destroy();
+        session_commit();
     //$LOC = $_SERVER['HTTP_HOST'];
 	//header("Location: ./Security/Login.html?r=0");
     //error_reporting(0);

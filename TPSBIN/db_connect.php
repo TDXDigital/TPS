@@ -56,15 +56,37 @@ include_once 'psl-config.php';   // As functions.php is not included
 
 if(!$mysqli = new mysqli($_SESSION["DBHOST"], $_SESSION["usr"], $_SESSION["rpw"], $_SESSION["DBNAME"])){
     //header('location: /Security/login.php?e=database%20access%20denied');
-    print (constant("HOST"). constant("USER"). constant("PASSWORD"). constant("DATABASE"));
+    //print (constant("HOST"). constant("USER"). constant("PASSWORD"). constant("DATABASE"));
     session_destroy();
-    die($mysqli->connect_error." <a href='/Security/login.php?e=database%20access%20denied'>please login again</a>");
+    session_commit();
+    if(isset($app)){
+        $errorData = array(
+            'message' => 'Database connection failed',
+            'detail' => 'If this continues to occur the system may be misconfigured, please contact the administrator',
+            'code' => 500,
+        );
+        $app->render('error.html.twig',$errorData,500);
+    }
+    else{
+        die($mysqli->connect_error." <a href='/Security/login.php?e=database%20access%20denied'>please login again</a>");
+    }
     //header('location: /Security/login.php?e=database%20access%20denied');
 }
 if($mysqli->connect_error)
 {   
     error_log("FATAL ERROR: ".$mysqli->connect_error); // LOG PHP
     error_log("FATAL ERROR: ".$mysqli->connect_error, 4); // LOG SAPI
-    die("FATAL ERROR [<span style='color:red'>".$mysqli->errno." ".$mysqli->connect_error . "</span>]</br><br/>DATABASE CONNECTION FAILED;<br><br>THIS ERROR HAS BEEN REPORTED<br><br>please <a href='logout.php'>logout</a> and try again");
+    session_commit();
+    if(isset($app)){
+        $errorData = array(
+            'message' => 'Database connection failed',
+            'detail' => 'If this continues to occur the system may be misconfigured, please contact the administrator',
+            'code' => 500,
+        );
+        $app->render('error.html.twig',$errorData,500);
+    }
+    else{
+        die("FATAL ERROR [<span style='color:red'>".$mysqli->errno." ".$mysqli->connect_error . "</span>]</br><br/>DATABASE CONNECTION FAILED;<br><br>THIS ERROR HAS BEEN REPORTED<br><br>please <a href='logout.php'>logout</a> and try again");
+    }
 }
 
