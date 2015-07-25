@@ -1,0 +1,77 @@
+.background-image {
+  background-size: cover;
+  display: block;
+  filter: blur(2px);
+  -webkit-filter: blur(2px);
+  height: 100%;
+  width: 100%;
+  left: 0;
+  position: fixed;
+  right: 0;
+  z-index: 1;
+}
+
+.image-iss{
+    background-image: url('../images/banners/iss-600459_1920.jpg');
+}
+
+.image-sea{
+    background-image: url('../images/banners/sea-193803_1280.jpg');
+}
+
+.image-moon{
+    background-image: url('../images/banners/moon-769918_1920.jpg');
+}
+
+.image-headphone{
+    background-image: url('../images/banners/headphones-791163_1920.jpg');
+}
+
+.image-waterdrop{
+    background-image: url('../images/banners/drop-of-water-597108_1280.jpg');
+}
+
+.image-sparkles{
+    background-image: url('../images/banners/sparkles-254263.jpg');
+}
+
+.image-sunset{
+    background-image: url('../images/banners/sunset-625614_1920.jpg');
+}
+.darken{
+    background: rgba(0, 0, 0, 0.65);
+}
+
+.content {
+    background: rgba(255, 255, 255, 0.65);
+    border-radius: 3px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    top: 10px;
+    left: 0;
+    position: fixed;
+    margin-left: 20px;
+    margin-right: 20px;
+    right: 0;
+    z-index: 2;
+    padding: 0 10px;
+  }
+  
+  .content-clear {
+    top: 10px;
+    left: 0;
+    position: fixed;
+    margin-left: 20px;
+    margin-right: 20px;
+    right: 0;
+    z-index: 2;
+  }
+  
+  .content-raw{
+      position: fixed;
+      z-index: 2;
+  }
+  
+  .site-wrapper-inner{
+      z-index: 3;
+  }
