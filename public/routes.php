@@ -9,13 +9,8 @@ $app->notFound(function() use ($app) {
     $app->render('error.html.twig',$params);
 });
 
-$app->get('/', function() use ($app){
-    if(session_id()==''||!isset($_SESSION)){
-        $app->redirect('./login/');
-    }
-    else{
-        $app->render('test.html.twig');
-    }
+$app->get('/', $authenticate($app), function() use ($app){
+    $app->render('test.html.twig');
 });
 
 $app->get('/login', function() use ($app){
@@ -23,66 +18,53 @@ $app->get('/login', function() use ($app){
     $app->redirect('Security/login.html');
 });
 
-//Routes for customer(s) resource
-$app->get('/customers', function () {
-    global $base_url, $twig;
-
-    $data = ModelsCustomers::all();
-
-    $params = array('data' => $data,
-        'base_url' => $base_url,
-        'title' => 'All Customers Listing'
-    );
-    echo $twig->render('profile.html.twig', $params);
+$app->get("/login", function () use ($app) {
+   $flash = $app->view()->getData('flash');
+   $error = '';
+   if (isset($flash['error'])) {
+      $error = $flash['error'];
+   }
+   $urlRedirect = '/';
+   if ($app->request()->get('r') && $app->request()->get('r') != '/logout' && $app->request()->get('r') != '/login') {
+      $_SESSION['urlRedirect'] = $app->request()->get('r');
+   }
+   if (isset($_SESSION['urlRedirect'])) {
+      $urlRedirect = $_SESSION['urlRedirect'];
+   }
+   $email_value = $email_error = $password_error = '';
+   if (isset($flash['email'])) {
+      $email_value = $flash['email'];
+   }
+   if (isset($flash['errors']['email'])) {
+      $email_error = $flash['errors']['email'];
+   }
+   if (isset($flash['errors']['password'])) {
+      $password_error = $flash['errors']['password'];
+   }
+   $app->render('login.php', array('error' => $error, 'email_value' => $email_value, 'email_error' => $email_error, 'password_error' => $password_error, 'urlRedirect' => $urlRedirect));
 });
 
-$app->get('/customers/add', function () {
-    global $base_url, $twig;
-
-    $data = ModelsCustomers::all();
-
-    $params = array('data' => $data,
-        'base_url' => $base_url,
-        'title' => 'Add New Customer Record'
-    );
-    echo $twig->render('profile.html.twig', $params);
-});
-
-$app->get('/customers/:id', function ($customer_id) {
-    global $base_url, $twig;
-
-    $data = ModelsCustomers::find($customer_id);
-
-    $params = array('data' => $data,
-        'base_url' => $base_url,
-        'title' => 'Customer Record Editor'
-    );
-    echo $twig->render('customers_editor.html', $params);
-});
-
-$app->post('/customers', function() use ($app) {
-    global $base_url;
-    $data = $app->request->post();
-
-    if (isset($data['put'])) {
-        $customer_id = $data['customer_id'];
-        $customer = ModelsCustomers::find($customer_id);
-    } else if (isset($data['delete'])) {
-        $customer_id = $data['customer_id'];
-
-        ModelsCustomers::find($customer_id)->delete();
-
-        $app->redirect($base_url . '/customers');
-
-        return;
-    } else {
-        $customer = new ModelsCustomers();
+$app->post("/login", function () use ($app) {
+    $email = $app->request()->post('email');
+    $password = $app->request()->post('password');
+    $errors = array();
+    if ($email != "brian@nesbot.com") {
+        $errors['email'] = "Email is not found.";
+    } else if ($password != "aaaa") {
+        $app->flash('email', $email);
+        $errors['password'] = "Password does not match.";
     }
-
-    $customer->userInput($data);
-    $customer->save();
-
-    $app->redirect($base_url . '/customers');
+    if (count($errors) > 0) {
+        $app->flash('errors', $errors);
+        $app->redirect('/login');
+    }
+    $_SESSION['user'] = $email;
+    if (isset($_SESSION['urlRedirect'])) {
+       $tmp = $_SESSION['urlRedirect'];
+       unset($_SESSION['urlRedirect']);
+       $app->redirect($tmp);
+    }
+    $app->redirect('/');
 });
 
 $app->run();

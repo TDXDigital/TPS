@@ -39,6 +39,9 @@ $app = new \Slim\Slim(array(
     'debug' => true,
     'view' => new \Slim\Views\Twig(),
 ));
+
+$app->add(new \Slim\Middleware\SessionCookie(array('secret' => '67Hj4s3')));
+
 $env = $app->environment;
 $app->config(array(
     'templates.path' => $views_path
@@ -60,3 +63,4 @@ $app->hook('slim.before', function () use ($app) {
 });
 
 $base_url = $app->router()->getCurrentRoute();
+

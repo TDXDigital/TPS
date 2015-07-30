@@ -83,7 +83,9 @@ if($mysqli->connect_error)
             'detail' => 'If this continues to occur the system may be misconfigured, please contact the administrator',
             'code' => 500,
         );
-        $app->render('error.html.twig',$errorData,500);
+        
+        //$app->render('error.html.twig',$errorData,500);
+        //$app->stop();
     }
     else{
         die("FATAL ERROR [<span style='color:red'>".$mysqli->errno." ".$mysqli->connect_error . "</span>]</br><br/>DATABASE CONNECTION FAILED;<br><br>THIS ERROR HAS BEEN REPORTED<br><br>please <a href='logout.php'>logout</a> and try again");
