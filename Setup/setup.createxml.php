@@ -70,6 +70,9 @@ if($doc->save('../TPSBIN/XML/DBSETTINGS.xml')){
     if(chmod('../TPSBIN/XML/DBSETTINGS.xml',0600)){
         print json_encode(array("status"=>"Complete","value"=>$SERV));
     }
+    else{
+        print json_encode(array("status"=>"warning","value"=>"could not change permissions"));
+    }
 }
 else{
     http_response_code(500);

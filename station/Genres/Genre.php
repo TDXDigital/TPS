@@ -1,10 +1,13 @@
 <?php
-    session_start();
-    $con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
+
+require '../../TPSBIN/functions.php';
+require '../../TPSBIN/db_connect.php';
+    //session_start();
+    //$con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
     $ERR[] = NULL;
-    if(!$con){
+    /*if(!$con){
         array_push($ERR,"<tr><td>E1</td><td>ERROR</td><td>DB NOT AVAILABLE</td><td>".$_SESSION['DBHOST']."</td><td>Check Login</td><td>Check server status</td><td>FATAL</td><td>ERROR</td><td>0001</td></tr>");
-    }
+    }*/
     /*if(isset($_GET['genre'])){
         $UID_GET = addslashes($_GET['genre']);
         $SQL_FETCH = "SELECT * FROM genre WHERE UID='$UID_GET'";
@@ -64,7 +67,7 @@
                                     }
                                     else{
                                         $STN = "SELECT callsign AS csn, stationname AS name FROM `station`";
-                                        if($result = mysqli_query($con,$STN)){
+                                        if($result = $mysqli->query($STN)){
                                             while($SN = $result->fetch_object()){
                                                 echo "<option value='".$SN->csn."'>".$SN->name."</option>";
                                             }
@@ -78,15 +81,18 @@
                         </div>
                         <div class="left">
                             <label for="cangen">CanCon</label>
-                            <br/><input type="number" id="cangen" min="0" name="cangen" placeholder="Defined Number" required value="<?php echo $CCNUM;?>"/>
-                            <br/><input type="number" step="1" min="0" max="100" id="ccperc" name="canper" placeholder="Percent" required value="<?php echo $CCPERC;?>"/><label for="ccperc">%</label>
-                            <br/><select name="cctype"><option value="1">Number</option><option value="0" selected>Percentage</option></select>
+                            <br/><input type="radio" name="cctype" value="1"><input type="number" id="cangen" min="0" name="cangen" placeholder="Defined Number" required value="<?php echo $CCNUM;?>"/>
+                            <br/><input type="radio" name="cctype" value="0" checked="checked"><input type="number" step="1" min="0" max="100" id="ccperc" name="canper" placeholder="Percent" required value="<?php echo $CCPERC;?>"/><label for="ccperc">%</label>
                         </div>
                         <div class="left">
                             <label for="Plgen">Playlist</label>
-                            <br/><input type="number" id="Plgen" min="0" name="plgen" placeholder="Defined Number" required value="<?php echo $PLNUM?>"/>
-                            <br/><input type="number" step="1" min="0" max="100" id="plperc" name="plperc" placeholder="Percent" required value="<?php echo $PLPERC;?>"/><label for="plperc">%</label>
-                            <br/><select name="pltype"><option value="1">Number</option><option value="0" selected>Percentage</option></select>
+                            <br/><input type="radio" name="pltype" value="1"><input type="number" id="Plgen" min="0" name="plgen" placeholder="Defined Number" required value="<?php echo $PLNUM?>"/>
+                            <br/><input type="radio" name="pltype" value="0" checked="checked"><input type="number" step="1" min="0" max="100" id="plperc" name="plperc" placeholder="Percent" required value="<?php echo $PLPERC;?>"/><label for="plperc">%</label>
+                        </div>
+                        <div class="left">
+                            <label for="fcgen">FemCon</label>
+                            <br/><input disabled='disabled' type="radio" name="fctype" value="1"><input type="number" id="fcgen" min="0" name="fcgen" disabled='disabled' placeholder="Not Implemented" required value="<?php echo $PLNUM?>"/>
+                            <br/><input disabled='disabled' type="radio" name="fctype" value="0" checked="chedked"><input type="number" step="1" min="0" disabled='disabled' max="100" id="plperc" name="fcperc" placeholder="Percent" required value="<?php echo $PLPERC;?>"/><label for="plperc">%</label>
                         </div>
                     </fieldset>
                 <div>
@@ -132,7 +138,7 @@
                                    
                                    $QUERY = "SELECT genre.*, (SELECT count(programname) FROM program WHERE program.genre=genre.genreid AND program.active='1') AS PGM_Count, (SELECT count(*) FROM program where program.active='1' group by callsign) AS Total, (SELECT PGM_Count / Total) AS Percent FROM genre";
                                    //echo $QUERY;
-                                   if($res = mysqli_query($con,$QUERY)){
+                                   if($res = $mysqli->query($QUERY)){
                                        while($obj = $res->fetch_object()){
                                            echo "<tr><td><input type='checkbox' onchange='EditOnly()' name='delete[]' value='".$obj->UID."'/>";
                                            echo "<input type='hidden' name='UID[]' value='".$obj->UID."'/></td>";
@@ -174,7 +180,7 @@
                                        }
                                    }
                                    else{
-                                       echo "error: ".mysqli_error($con);
+                                       echo "error: ".$mysqli->error;
                                    }
                                    
                                 }
@@ -183,12 +189,12 @@
                                     <td>FATAL</td><td>ERROR</td><td>0001</td></tr>";
                                 }*/
                                 //$con.close();
-                                mysqli_close($con);
+                                $mysqli->close();
 
                             ?>
                         </tbody>
                     </table>
-                    <div class="left;">
+                    <div class="left">
                         <input type="submit" value="Save Changes" />
                         <input type="reset"/>
                         <input type="button" value="Cancel" onclick="window.location.href='../../masterpage.php'"/>
