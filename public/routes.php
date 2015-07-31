@@ -14,8 +14,8 @@ $app->get('/', $authenticate($app), function() use ($app){
 });
 
 $app->get('/login', function() use ($app){
-    //$app->render('login.html.twig');
-    $app->redirect('Security/login.html');
+    $app->render('login.html.twig');
+    //$app->redirect('/Security/login.html');
 });
 
 $app->get("/login", function () use ($app) {
