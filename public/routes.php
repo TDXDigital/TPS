@@ -4,7 +4,7 @@ $app->notFound(function() use ($app) {
     $params = array(
         'base_url' => $base_url,
         'title' => 'Error 404',
-        'message' => "$base_url Url not found",
+        'message' => "We couldn't find the page you asked for, sorry about that",
     );
     $app->render('error.html.twig',$params);
 });

@@ -1,7 +1,7 @@
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 #RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.php [QSA,L,NC]
-FallbackResource index.php
+RewriteRule ^ index.php [QSA,L]
+#FallbackResource index.php
 
 Options -Indexes

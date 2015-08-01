@@ -17,5 +17,4 @@ if(!is_null(filter_input(INPUT_GET,'twig'))){
 }
 else{
     require_once('legacy_controller.php');
-    
 }
