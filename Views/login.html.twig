@@ -43,7 +43,7 @@
                 <i class="fa fa-lock fa-3x pull-left"></i>
                 <h1 class="">Sign-in</h1>
             </div>
-            <div style="margin: auto;"><form name="login" method="post" action="../Security/login.php">
+            <div style="margin: auto;"><form name="login" method="post"> <!-- action="../Security/login.php" -->
             <div id="Error" class="alert alert-warning">{{Username_error}}</div>
             <fieldset>
                 <input name="name" id="field1" placeholder="Username" readonly value="{{Username|default('')}}" required title="Username" type="text" class="Fill ui-corner-all {% if Username_error %} has-error {%endif%}"/><br/>
