@@ -14,8 +14,9 @@ $slim_path = $basepath."lib".DIRECTORY_SEPARATOR."Slim".DIRECTORY_SEPARATOR
         .DIRECTORY_SEPARATOR."User";
 $SystemViews_path = $basepath.DIRECTORY_SEPARATOR."Views"
         .DIRECTORY_SEPARATOR."System";*/
-$views_path = $basepath.DIRECTORY_SEPARATOR."Views";
-$temp_path = $basepath.DIRECTORY_SEPARATOR."temp";
+$views_path = $basepath."Views";
+#$temp_path = $basepath."temp";
+$temp_path = 'false';
 
 require_once 'header.php';
 
