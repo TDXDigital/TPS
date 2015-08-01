@@ -5,7 +5,9 @@
 #specify the system temp (linux likely needs /tmp due to SELinux
 //$ConfigTemp = $basepath.DIRECTORY_SEPARATOR."temp";
 
-require_once('slimConfig.php');
+if(file_exists('slimConfig.php')){
+    require_once('slimConfig.php');
+}
 
 //load twig
 if(file_exists($autoload_path)){
