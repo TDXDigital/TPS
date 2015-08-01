@@ -20,7 +20,8 @@ elseif(file_exists($twig_path)&&file_exists($slim_path)){
     Slim\Slim::registerAutoloader();
 }
 else{
-    header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
+    header($_SERVER['SERVER_PROTOCOL'] . '500 Internal Server Error', true, 500);
+    error_log("Error 500: Slim not found in TPS");
     die('500 Internal Server Error');
 }
 

@@ -16,7 +16,7 @@ $SystemViews_path = $basepath.DIRECTORY_SEPARATOR."Views"
         .DIRECTORY_SEPARATOR."System";*/
 $views_path = $basepath."Views";
 #$temp_path = $basepath."temp";
-$temp_path = 'false';
+$temp_path = false;
 
 require_once 'header.php';
 
