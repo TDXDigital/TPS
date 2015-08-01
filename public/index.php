@@ -1,5 +1,5 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) {session_start();}
+//if (session_status() !== PHP_SESSION_ACTIVE) {session_start();}
 
 // Set variables
 $debug = TRUE;
@@ -22,8 +22,10 @@ require_once 'header.php';
 
 $authenticate = function ($app) {
     return function () use ($app) {
-        if (!isset($_SESSION['usr'])) {
+        if (!isset($_SESSION['access'])) {
             $_SESSION['urlRedirect'] = $app->request()->getPathInfo();
+            /*$app->render('dump_session.php');
+            $app->stop();*/
             $app->flash('error', 'Login required');
             $app->redirect('/login');
         }
@@ -37,19 +39,5 @@ $app->hook('slim.before.dispatch', function() use ($app) {
    }
    $app->view()->setData('usr', $user);
 });
-
-/*if(isset($_SESSION['DBHOST'])){
-    require_once $basepath.DIRECTORY_SEPARATOR."TPSBIN".DIRECTORY_SEPARATOR."db_connect.php";
-}
-elseif($app->router()->getCurrentRoute()=='/login'){ #dont redirect login route
-    
-    $app->get('/login', function() use ($app){
-        //$app->render('login.html.twig');
-        $app->redirect('Security/login.html');
-    });
-}
-else{
-    $app->redirect('/login');
-}*/
 require_once 'routes.php';
 

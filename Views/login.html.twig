@@ -2,12 +2,14 @@
 <html>
 <head>
     <title>{{title}}</title>
+    
     <!-- Bootstrap core CSS -->
     <link href="{{ siteUrl }}/vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <!--<link href="{{ siteUrl }}/CSS/cover.css" rel="stylesheet">-->
-    <link href="{{ siteUrl }}/CSS/backgroundBlur.css" rel="stylesheet"
+    <!--<link href="{{ siteUrl }}/css/cover.css" rel="stylesheet">-->
+    <link href="{{ siteUrl }}/css/backgroundBlur.css" rel="stylesheet"
+          
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
           
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -25,6 +27,13 @@
         .hidden-div{
             display: none;
         }
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 30px;
+            background-color: rgba(255,255,255,0.8);
+        }
         
     </style>
 </head>
@@ -34,10 +43,10 @@
                 <i class="fa fa-lock fa-3x pull-left"></i>
                 <h1 class="">Sign-in</h1>
             </div>
-		<div style="margin: auto;"><form name="login" method="post" action="{{ siteUrl }}login/secl{{append}}">
-            <div id="Error" class="alert alert-warning hidden-div"></div>
+            <div style="margin: auto;"><form name="login" method="post" action="../Security/login.php">
+            <div id="Error" class="alert alert-warning">{{Username_error}}</div>
             <fieldset>
-		        <input name="name" id="field1" placeholder="Username" readonly value="Please Wait..." required title="Username" type="text" class="Fill ui-corner-all"/><br/>
+                <input name="name" id="field1" placeholder="Username" readonly value="{{Username|default('')}}" required title="Username" type="text" class="Fill ui-corner-all {% if Username_error %} has-error {%endif%}"/><br/>
 		        <input name="pass" id="field2" placeholder="Password" readonly required title="Password" class="Fill ui-corner-all" type="password"/>
                 <label for="srvr">Select Server: </label>
                 <select name="SRVID" id="srvr" onchange="check_auth_type()">
@@ -52,12 +61,12 @@
 		</form></div>
 	</div>
         <div class="mastfoot">
-            <div class="content-clear">
-            {% block footer %}
-                {% include 'footer.html.twig' %}
-            {% endblock %}
+            <div class="inner">
+                {% block footer %}
+                    {% include 'footer.html.twig' %}
+                {% endblock %}
             </div>
-        </div>
+          </div>
         <div class="background-image image-{{ random(['iss','sea','moon',
                                 'headphone','sparkles','sunset','waterdrop'])
     }}"></div>

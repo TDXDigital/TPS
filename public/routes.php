@@ -13,10 +13,10 @@ $app->get('/', $authenticate($app), function() use ($app){
     $app->render('test.html.twig');
 });
 
-$app->get('/login', function() use ($app){
+/*$app->get('/login', function() use ($app){
     $app->render('login.html.twig');
     //$app->redirect('/Security/login.html');
-});
+);*/
 
 $app->get("/login", function () use ($app) {
    $flash = $app->view()->getData('flash');
@@ -32,33 +32,33 @@ $app->get("/login", function () use ($app) {
       $urlRedirect = $_SESSION['urlRedirect'];
    }
    $email_value = $email_error = $password_error = '';
-   if (isset($flash['email'])) {
-      $email_value = $flash['email'];
+   if (isset($flash['Username'])) {
+      $email_value = $flash['Username'];
    }
-   if (isset($flash['errors']['email'])) {
-      $email_error = $flash['errors']['email'];
+   if (isset($flash['errors']['Username'])) {
+      $email_error = $flash['errors']['Username'];
    }
    if (isset($flash['errors']['password'])) {
       $password_error = $flash['errors']['password'];
    }
-   $app->render('login.php', array('error' => $error, 'email_value' => $email_value, 'email_error' => $email_error, 'password_error' => $password_error, 'urlRedirect' => $urlRedirect));
+   $app->render('login.html.twig', array('error' => $error, 'Username' => $email_value, 'Username_error' => $email_error, 'password_error' => $password_error, 'urlRedirect' => $urlRedirect));
 });
 
 $app->post("/login", function () use ($app) {
-    $email = $app->request()->post('email');
-    $password = $app->request()->post('password');
+    $username = $app->request()->post('name');
+    $password = $app->request()->post('pass');
     $errors = array();
-    if ($email != "brian@nesbot.com") {
-        $errors['email'] = "Email is not found.";
+    if ($username != "brian@nesbot.com") {
+        $errors['Username'] = "Username not found.";
     } else if ($password != "aaaa") {
-        $app->flash('email', $email);
+        $app->flash('Username', $username);
         $errors['password'] = "Password does not match.";
     }
     if (count($errors) > 0) {
         $app->flash('errors', $errors);
         $app->redirect('/login');
     }
-    $_SESSION['user'] = $email;
+    $_SESSION['user'] = $username;
     if (isset($_SESSION['urlRedirect'])) {
        $tmp = $_SESSION['urlRedirect'];
        unset($_SESSION['urlRedirect']);
