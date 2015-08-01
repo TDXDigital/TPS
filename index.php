@@ -12,7 +12,7 @@ session_start();
 require_once (__DIR__.DIRECTORY_SEPARATOR."CONFIG.php");
 date_default_timezone_set($timezone);
 
-if(is_null(filter_input(INPUT_GET,'legacy'))){
+if(!is_null(filter_input(INPUT_GET,'twig'))){
     require_once('public/index.php');
 }
 else{
