@@ -1,5 +1,6 @@
 .background-image {
   background-size: cover;
+  background-position: center;
   display: block;
   filter: blur(2px);
   -webkit-filter: blur(2px);
@@ -28,7 +29,7 @@
 }
 
 .image-waterdrop{
-    background-image: url('../images/banners/drop-of-water-597108_1280.jpg');
+    background-image: url('../images/banners/bush-87494_1280.jpg');
 }
 
 .image-sparkles{
@@ -38,12 +39,28 @@
 .image-sunset{
     background-image: url('../images/banners/sunset-625614_1920.jpg');
 }
+
+.image-architect{
+    background-image: url('../images/banners/architecture-543250_1280.jpg');
+}
+
+.image-outdoors{
+    background-image: url('../images/banners/outdoors-867219_1920.jpg');
+}
+
+.image-vineyard{
+    background-image: url('../images/banners/winery-865093_1920.jpg');
+}
+.image-forest-1{
+    background-image: url('../images/banners/autumn-194834_1920.jpg');
+}
+
 .darken{
-    background: rgba(0, 0, 0, 0.65);
+    background: rgba(0, 0, 0, 0.35);
 }
 
 .content {
-    background: rgba(255, 255, 255, 0.65);
+    background: rgba(255, 255, 255, 0.85);
     border-radius: 3px;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;

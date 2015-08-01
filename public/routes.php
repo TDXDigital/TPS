@@ -10,7 +10,7 @@ $app->notFound(function() use ($app) {
 });
 
 $app->get('/', $authenticate($app), function() use ($app){
-    $app->render('test.html.twig');
+    $app->render('dashboard.twig');
 });
 
 /*$app->get('/login', function() use ($app){
@@ -144,8 +144,8 @@ $app->post("/login", function () use ($app) {
                     }
                 }
                 catch (Exception $ex){
-                    error_log("Could not Bind LDAP server");
-                    $errors['Username'] = "Login Server not available";
+                    #error_log("Could not Bind LDAP server");
+                    $errors['Username'] = "Invalid login";
                 }
             }
             elseif((string)$server->AUTH == strtoupper("SECL")){

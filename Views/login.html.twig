@@ -44,7 +44,7 @@
                 <h1 class="">Sign-in</h1>
             </div>
             <div style="margin: auto;"><form name="login" method="post"> <!-- action="../Security/login.php" -->
-            <div id="Error" class="alert alert-warning">{{Username_error}}</div>
+            <div id="Error" class="alert alert-warning hidden-div">{{Username_error}}</div>
             <fieldset>
                 <input name="name" id="field1" placeholder="Username" readonly value="{{Username|default('')}}" required title="Username" type="text" class="Fill ui-corner-all {% if Username_error %} has-error {%endif%}"/><br/>
 		        <input name="pass" id="field2" placeholder="Password" readonly required title="Password" class="Fill ui-corner-all" type="password"/>
@@ -67,12 +67,14 @@
                 {% endblock %}
             </div>
           </div>
-        <div class="background-image image-{{ random(['iss','sea','moon',
-                                'headphone','sparkles','sunset','waterdrop'])
+        <div class="background-image image-{{ random(['sea','architect','outdoors','waterdrop','forest-1','vineyard'])
     }}"></div>
     <div class="background-image darken"></div>
     <script type="text/javascript">
-        
+        if($.trim( $('#Error').html() ).length){
+            $("#Error").removeClass("hidden-div");
+            $("#Error").delay( 2500 ).fadeOut( 400 )
+        }
         function check_auth_type(){
             SRV_ID = $("#srvr").find(":selected").val();
             //alert(SRV_ID);
@@ -97,13 +99,14 @@
                                 //$("#Error").removeClass("hidden-div");
                             }
                             else{
-                                $("Error").html();
-                                $("#Error").addClass("hidden-div");
-                                $("#field1").val("");
+                                //$("Error").html();
+                                
+                                //.addClass("hidden-div");
+                                //$("#field1").val("");
                                 $("#field1").prop("readonly",false);
                                 $("#field1").removeAttr("disabled");
                                 $("#field2").removeAttr("disabled");
-                                $("#field2").val("");
+                                //$("#field2").val("");
                                 $("#field2").prop("readonly",false);
                                 $("#btn-login").removeAttr('disabled');
                             }

@@ -20,14 +20,22 @@ $temp_path = false;
 
 require_once 'header.php';
 
-$authenticate = function ($app) {
-    return function () use ($app) {
+$authenticate = function ($app,$access=0) {
+    return function () use ($app,$access) {
         if (!isset($_SESSION['access'])) {
             $_SESSION['urlRedirect'] = $app->request()->getPathInfo();
-            /*$app->render('dump_session.php');
-            $app->stop();*/
             $app->flash('error', 'Login required');
             $app->redirect('/login');
+        }
+        elseif($access){
+            if(!is_array($access)){
+                $array = array($access);
+            }
+            if(!in_array($_SESSION['access'],$access)){
+                $_SESSION['urlRedirect'] = $app->request()->getPathInfo();
+                $app->flash('error', 'Insufficient Permissions');
+                $app->redirect('/login');
+            }
         }
     };
 };
