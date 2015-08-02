@@ -171,8 +171,6 @@ $app->post("/login", function () use ($app) {
         $app->flash('errors', $errors);
         $app->redirect('/login');
     }
-    $_SESSION['user'] = $username;
-    $_SESSION['access'] = 2;
     if (isset($_SESSION['urlRedirect'])) {
        $tmp = $_SESSION['urlRedirect'];
        unset($_SESSION['urlRedirect']);
