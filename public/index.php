@@ -43,8 +43,13 @@ $app->hook('slim.before.dispatch', function() use ($app) {
    if (isset($_SESSION['user'])) {
       $uid = $_SESSION['user'];
    }
+   $access = null;
+   if (isset($_SESSION['access'])) {
+      $access = $_SESSION['access'];
+   }
    $app->view()->setData('userName',$user);
    $app->view()->setData('userId',$uid);
+   $app->view()->setData('permissions',$access);
 });
 require_once 'routes.php';
 
