@@ -88,6 +88,21 @@
                 </li>
             </ul>
         </li>
+        {% endif %}
+        <li>
+            <a href="javascript:;" data-toggle="collapse" data-target="#reviews"><i class="fa fa-fw fa-tags"></i> Reviews <i class="fa fa-fw fa-caret-down"></i></a>
+            <ul id="reviews" class="collapse">
+                <li>
+                    <a href="/reviews/list"><i class='fa fa-comments-o'></i> Available Reviews</a>
+                </li>
+                {% if permissions > 1 %}
+                <li>
+                    <a href="/reviews/complete"><i class='fa fa-check-square'></i> Completed Reviews</a>
+                </li>
+                {% endif %}
+            </ul>
+        </li>
+        {% if permissions > 1 %}
         <li>
             <a href="javascript:;" data-toggle="collapse" data-target="#management"><i class="fa fa-fw fa-gavel"></i> Management <i class="fa fa-fw fa-caret-down"></i></a>
             <ul id="management" class="collapse">
@@ -101,7 +116,7 @@
                     <a href="/Episode/EPV3/Audit.php"><i class='fa fa-flag-checkered'></i> Audit</a>
                 </li>
                 <li>
-                    <a href="/Reports/Stats.php?w=12"><i class='fa fa-heartbeat'></i> Statistics</a>
+                    <a href="/Reports/Stats.php?w=12"><i class='fa fa-pie-chart'></i> Statistics</a>
                 </li>
             </ul>
         </li>

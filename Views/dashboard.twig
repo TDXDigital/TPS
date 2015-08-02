@@ -22,8 +22,8 @@
     <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['timeline']}]}"></script>
     <script type="text/javascript">
 
-    google.setOnLoadCallback(drawChart);
-    function drawChart() {
+    google.setOnLoadCallback(drawChart1);
+    function drawChart1() {
         var jsonData = $.ajax({
             url: "/api/episode/recent",
             dataType:"json",
@@ -44,6 +44,7 @@
     }
 
     </script>
+    {% if permission > 1 %}
     <script type="text/javascript">
 
     google.setOnLoadCallback(drawChart);
@@ -68,4 +69,5 @@
     }
 
     </script>
+    {% endif %}
 {% endblock %}

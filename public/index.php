@@ -40,8 +40,8 @@ $app->hook('slim.before.dispatch', function() use ($app) {
       $user = $_SESSION['fname'];
    }
    $uid = null;
-   if (isset($_SESSION['user'])) {
-      $uid = $_SESSION['user'];
+   if (isset($_SESSION['account'])) {
+      $uid = $_SESSION['account'];
    }
    $access = null;
    if (isset($_SESSION['access'])) {

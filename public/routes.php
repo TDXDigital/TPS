@@ -203,6 +203,13 @@ if(isset($_SESSION["DBHOST"])){
             $app->render('notSupported.twig', array('title'=>'User Settings'));
         });
     });
+    
+    $app->group('/review', $authenticate, function () use ($app,$authenticate){
+        $app->get('/', $authenticate, function () use ($app){
+            global $mysqli;
+            $select = "Select * from Library left join Reviews on P.id = Q.id where Q.id is NULL;";
+        });
+    });
 
     $app->group('/api', $authenticate, function () use ($app,$authenticate) {
         $app->group('/library', $authenticate, function () use ($app,$authenticate){
