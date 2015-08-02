@@ -10,6 +10,7 @@ $app->notFound(function() use ($app) {
 });
 
 $app->get('/', $authenticate($app), function() use ($app){
+    
     $app->render('dashboard.twig');
 });
 
@@ -184,6 +185,54 @@ $app->get("/logout", function () use ($app) {
    session_unset();
    $app->view()->setData('access', null);
    $app->render('error.html.twig',array('statusCode'=>'Logout','title'=>'Logout', 'message'=>'You have been logged out'));
+});
+
+if(isset($_SESSION["DBHOST"])){
+    require_once 'TPSBIN'.DIRECTORY_SEPARATOR.'functions.php';
+    require_once 'TPSBIN'.DIRECTORY_SEPARATOR.'db_connect.php';
+}
+require_once 'lib_api'.DIRECTORY_SEPARATOR.'LibraryAPI.php';
+// user group
+$app->group('/user', $authenticate, function () use ($app) {
+    // Get book with ID
+    $app->get('/:id', function ($id) use ($app) {
+        $app->render('notSupported.twig',array('title'=>'User Profile'));
+    });
+    $app->get('/:id/inbox', function ($id) use ($app) {
+        $app->render('notSupported.twig', array('title'=>'User Inbox'));
+    });
+    $app->get('/:id/settings', function ($id) use ($app) {
+        $app->render('notSupported.twig', array('title'=>'User Settings'));
+    });
+});
+
+$app->group('/api', $authenticate, function () use ($app,$authenticate) {
+    $app->group('/library', $authenticate, function () use ($app,$authenticate){
+        $app->get('/:refcode', function ($refcode){
+            print json_encode(GetLibraryRefcode($refcode));
+        });
+        $app->get('/artist/:artist', function ($artist) use ($app) {
+            print json_encode(GetLibraryfull($artist));
+        });
+        $app->get('/:artist/:album', function ($artist,$album) use ($app) {
+            print json_encode(GetLibraryfull($artist,$album));
+        });
+        $app->get('/', $authenticate, function () {
+            print json_encode(ListLibrary());
+        });
+    });
+    $app->get('/', function() use ($app){
+        $app->render('error.html.twig',
+                array(
+                    'title'=>'API Access',
+                    'message'=>'please query against a supported API section',
+                    'details'=>array(
+                        'for more information please see our wiki on '
+                    . '<a href="https://github.com/TDXDigital/TPS/wiki/API-Documentation">'
+                    . 'GitHub</a>'),
+                    ));
+    });
+    
 });
 
 $app->run();

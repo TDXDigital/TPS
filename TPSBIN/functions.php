@@ -21,6 +21,7 @@
         }
     }
 
+$TPSBIN = dirname(findHOME(0,__DIR__,10,"functions.php"));
 
     /*
      * 
@@ -37,7 +38,7 @@
         */
 
         //check for last '/', if at end strip it from string
-
+        /*
         if(!isset($PHP_SELF)){
             $PHP_SELF = $_SERVER["PHP_SELF"];
         }
@@ -85,6 +86,10 @@
         else{
             include_once($file_path);
         }
+         * 
+         */
+        global $TPSBIN;
+        include_once $TPSBIN.DIRECTORY_SEPARATOR.$file;
     }
 
     try{
@@ -110,19 +115,19 @@
               if((string)$server->ID === $target){
                   if($server->RESOLVE === "URL")
                   {
-                    define("HOST",$server->URL);
+                    define("DBHOST",$server->URL);
                   }
                   elseif($server->RESOLVE === "IPV4")
                   {
-                    define("HOST",$server->IPV4);
+                    define("DBHOST",$server->IPV4);
                   }
                   else
                   {
                       if($server->URL!=""){
-                          define("HOST",$server->URL);  
+                          define("DBHOST",$server->URL);  
                       }
                       else{
-                          define("HOST",$server->IPV4);
+                          define("DBHOST",$server->IPV4);
                       }
                   }
                   //define("HOST",  constant('HOST') );

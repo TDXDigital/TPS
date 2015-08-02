@@ -91,4 +91,4 @@ if($mysqli->connect_error)
         die("FATAL ERROR [<span style='color:red'>".$mysqli->errno." ".$mysqli->connect_error . "</span>]</br><br/>DATABASE CONNECTION FAILED;<br><br>THIS ERROR HAS BEEN REPORTED<br><br>please <a href='logout.php'>logout</a> and try again");
     }
 }
-
+$GLOBALS['db'] = $mysqli;

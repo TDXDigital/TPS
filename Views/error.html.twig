@@ -47,7 +47,7 @@
               {% block content %}
             <h1 class="cover-heading">{{message}}</h1>
             {% for detail in details %}
-                <p class="lead">{{detail}}</p>
+                <p class="lead">{{detail|raw}}</p>
             {% endfor %}
             {% endblock %}
             <br/>

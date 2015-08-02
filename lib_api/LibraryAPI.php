@@ -1,4 +1,4 @@
-<?php
+<?php        
 $exact=filter_input(INPUT_GET,'exact',FILTER_SANITIZE_NUMBER_INT)?:FALSE;
 
 function GetLibraryfull($artist, $album=NULL){
@@ -96,6 +96,9 @@ function GetLibraryRefcode($refcode){
 
 function ListLibrary(){
     global $mysqli;
+    if(is_null($mysqli)){
+        return '';#$mysqli = $GLOBALS['db'];
+    }
     $result = [];
     $library = $mysqli->query(
             "SELECT RefCode,artist,album,status FROM library");
