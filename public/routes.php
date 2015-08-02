@@ -191,48 +191,138 @@ if(isset($_SESSION["DBHOST"])){
     require_once 'TPSBIN'.DIRECTORY_SEPARATOR.'functions.php';
     require_once 'TPSBIN'.DIRECTORY_SEPARATOR.'db_connect.php';
     require_once 'lib_api'.DIRECTORY_SEPARATOR.'LibraryAPI.php';
+
+    // user group
+    $app->group('/user', $authenticate, function () use ($app) {
+        // Get book with ID
+        $app->get('/:id', function ($id) use ($app) {
+            $app->render('notSupported.twig',array('title'=>'User Profile'));
+        });
+        $app->get('/:id/inbox', function ($id) use ($app) {
+            $app->render('notSupported.twig', array('title'=>'User Inbox'));
+        });
+        $app->get('/:id/settings', function ($id) use ($app) {
+            $app->render('notSupported.twig', array('title'=>'User Settings'));
+        });
+    });
+
+    $app->group('/api', $authenticate, function () use ($app,$authenticate) {
+        $app->group('/library', $authenticate, function () use ($app,$authenticate){
+            $app->get('/:refcode', function ($refcode){
+                print json_encode(GetLibraryRefcode($refcode));
+            });
+            $app->get('/artist/:artist', function ($artist) use ($app) {
+                print json_encode(GetLibraryfull($artist));
+            });
+            $app->get('/:artist/:album', function ($artist,$album) use ($app) {
+                print json_encode(GetLibraryfull($artist,$album));
+            });
+            $app->get('/', $authenticate, function () {
+                print json_encode(ListLibrary());
+            });
+        });
+        $app->group('/episode', $authenticate, function() use ($app,$authenticate){
+            $app->get('/recent', $authenticate, function () use ($app){
+                global $mysqli;
+                $response = array(
+                    "cols"=>array(
+                        array(
+                            "id"=>"Room",
+                            "label"=>"Room",
+                            "type"=>"string",
+                            "pattern"=>"",
+                        ),
+                        array(
+                            "id"=>"Name",
+                            "label"=>"Name",
+                            "type"=>"string",
+                            "pattern"=>"",
+                        ),
+                        array(
+                            "id"=>"Start",
+                            "label"=>"Start",
+                            "type"=>"date",
+                        ),
+                        array(
+                            "id"=>"End",
+                            "label"=>"End",
+                            "type"=>"date",
+
+                        ),
+                    ),
+                    "rows"=>array()
+                );
+                $sql_episode="SELECT concat(DATE_FORMAT(date, '%Y:%m:%d'),\" \",DATE_FORMAT(starttime, '%H:%i:%s')) AS start, concat(DATE_FORMAT(date, '%Y:%m:%d'),\" \",DATE_FORMAT(endtime, '%H:%i:%s')) AS end, programname, date, Type FROM episode WHERE DATE(date)>DATE_ADD(CURDATE(), INTERVAL -2 DAY) and DATE(date)<=CURDATE() and endtime > starttime and Type = 0 order by start";
+                $results = $mysqli->query($sql_episode) or trigger_error($mysqli->error."[$sql_episode]");
+                while($row = $results->fetch_array()){
+                    $response['rows'][]=array(
+                        "c"=>[
+                            array('v'=>"Logged"),
+                            array('v'=>$row['programname']),
+                            array('v'=>"Date(".date("Y,m,d,H,i,s",strtotime($row['start'])).")"),
+                            array('v'=>"Date(".date("Y,m,d,H,i,s",strtotime($row['end'])).")"),
+                            ]
+                        );
+                }
+                print json_encode($response);
+            });
+            $app->get('/prerecords/pending', $authenticate, function () use ($app){
+                global $mysqli;
+                $response = array(
+                    "cols"=>array(
+                        array(
+                            "id"=>"Room",
+                            "label"=>"Room",
+                            "type"=>"string",
+                            "pattern"=>"",
+                        ),
+                        array(
+                            "id"=>"Name",
+                            "label"=>"Name",
+                            "type"=>"string",
+                            "pattern"=>"",
+                        ),
+                        array(
+                            "id"=>"Start",
+                            "label"=>"Start",
+                            "type"=>"date",
+                        ),
+                        array(
+                            "id"=>"End",
+                            "label"=>"End",
+                            "type"=>"date",
+
+                        ),
+                    ),
+                    "rows"=>array()
+                );
+                $sql_prerecord="SELECT concat(DATE_FORMAT(date, '%Y:%m:%d'),\" \",DATE_FORMAT(starttime, '%H:%i:%s')) AS start, concat(DATE_FORMAT(date, '%Y:%m:%d'),\" \",DATE_FORMAT(endtime, '%H:%i:%s')) AS end, programname, date, Type FROM episode WHERE DATE(date)<DATE_ADD(CURDATE(), INTERVAL +30 DAY) and DATE(date)>=CURDATE() and (Type = 1 or prerecorddate is not null) and endtime IS NOT NULL order by start";$sql_episode="SELECT concat(DATE_FORMAT(date, '%Y:%m:%d'),\" \",DATE_FORMAT(starttime, '%H:%i:%s')) AS start, concat(DATE_FORMAT(date, '%Y:%m:%d'),\" \",DATE_FORMAT(endtime, '%H:%i:%s')) AS end, programname, date, Type FROM episode WHERE DATE(date)>DATE_ADD(CURDATE(), INTERVAL -2 DAY) and DATE(date)<=CURDATE() and endtime > starttime and Type = 0 order by start";
+                $results = $mysqli->query($sql_prerecord) or trigger_error($mysqli->error."[$sql_episode]");
+                while($row = $results->fetch_array()){
+                    $response['rows'][]=array(
+                        "c"=>[
+                            array('v'=>"Logged"),
+                            array('v'=>$row['programname']." (".$row['date'].")"),
+                            array('v'=>"Date(".date("Y,m,d,H,i,s",strtotime($row['start'])).")"),
+                            array('v'=>"Date(".date("Y,m,d,H,i,s",strtotime($row['end'])).")"),
+                            ]
+                        );
+                }
+                print json_encode($response);
+            });
+        });
+        $app->get('/', function() use ($app){
+            $app->render('error.html.twig',
+                    array(
+                        'title'=>'API Access',
+                        'message'=>'please query against a supported API section',
+                        'details'=>array(
+                            'for more information please see our wiki on '
+                        . '<a href="https://github.com/TDXDigital/TPS/wiki/API-Documentation">'
+                        . 'GitHub</a>'),
+                        ));
+        });
+
+    });
 }
-// user group
-$app->group('/user', $authenticate, function () use ($app) {
-    // Get book with ID
-    $app->get('/:id', function ($id) use ($app) {
-        $app->render('notSupported.twig',array('title'=>'User Profile'));
-    });
-    $app->get('/:id/inbox', function ($id) use ($app) {
-        $app->render('notSupported.twig', array('title'=>'User Inbox'));
-    });
-    $app->get('/:id/settings', function ($id) use ($app) {
-        $app->render('notSupported.twig', array('title'=>'User Settings'));
-    });
-});
-
-$app->group('/api', $authenticate, function () use ($app,$authenticate) {
-    $app->group('/library', $authenticate, function () use ($app,$authenticate){
-        $app->get('/:refcode', function ($refcode){
-            print json_encode(GetLibraryRefcode($refcode));
-        });
-        $app->get('/artist/:artist', function ($artist) use ($app) {
-            print json_encode(GetLibraryfull($artist));
-        });
-        $app->get('/:artist/:album', function ($artist,$album) use ($app) {
-            print json_encode(GetLibraryfull($artist,$album));
-        });
-        $app->get('/', $authenticate, function () {
-            print json_encode(ListLibrary());
-        });
-    });
-    $app->get('/', function() use ($app){
-        $app->render('error.html.twig',
-                array(
-                    'title'=>'API Access',
-                    'message'=>'please query against a supported API section',
-                    'details'=>array(
-                        'for more information please see our wiki on '
-                    . '<a href="https://github.com/TDXDigital/TPS/wiki/API-Documentation">'
-                    . 'GitHub</a>'),
-                    ));
-    });
-    
-});
-
 $app->run();
