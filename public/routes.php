@@ -189,7 +189,21 @@ if(isset($_SESSION["DBHOST"])){
     require_once 'TPSBIN'.DIRECTORY_SEPARATOR.'functions.php';
     require_once 'TPSBIN'.DIRECTORY_SEPARATOR.'db_connect.php';
     require_once 'lib_api'.DIRECTORY_SEPARATOR.'LibraryAPI.php';
-
+    $app->get('/updates', $authenticate, function () use ($app) {
+        $updates = scandir("./Update/proc/");
+        $updateList=array();
+        $update_JSON = array();
+        foreach ($updates as $update){
+            if(strtolower(substr($update,-5))==='.json'){
+                $update_JSON[$update]=json_decode(file_get_contents('./Update/proc/'.$update),true);
+                $updateList[$update]=$update_JSON[$update]['TPS_Errno'];
+            }
+        }
+        #var_dump($update_JSON);
+        #$app->stop();
+        $params = array('updateList'=>json_encode($updateList),'updates'=>$update_JSON);
+        $app->render('update.twig',$params);
+    });
     // user group
     $app->group('/user', $authenticate, function () use ($app) {
         // Get book with ID

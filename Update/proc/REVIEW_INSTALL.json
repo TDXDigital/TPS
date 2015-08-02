@@ -6,9 +6,14 @@
         "TEST": "SHOW COLUMNS FROM `review` LIKE 'id%';",
         "RESULT" : {
             "Field" : [
+                "id"
+            ],
+            "Null":[
+                "NO"
             ]
         },
         "Negate": 0,
+        "createMode": 1,
         "UPDATE_TYPE" : "FILE",
         "UPDATE" : "REVIEW_INSTALL.sql"
     }

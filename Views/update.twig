@@ -1,0 +1,107 @@
+{% extends 'baseAdmin.twig' %}
+{% block content %}
+<table class='table table-bordered table-hover' >
+    <thead>
+        <th>#</th>
+        <th>Type</th>
+        <th>Update Status 
+            <button type='button' onclick='RefreshUpdates()'>
+                <span class='glyphicon glyphicon-refresh'></span>
+            </button>
+        </th>
+        <th>Apply Update</th>
+    </thead>
+    <tbody>
+        {% for file,update in updates %}
+            <tr>
+                <td>{{update.TPS_Errno}}</td>
+                <td>{{update.type}}</td>
+                <td id="{{update.TPS_Errno}}"><span id="{{file}}" class="fa fa-refresh" aria-hidden="true">&nbsp;Checking...</span></td>
+                <td><button id='{{update.TPS_Errno}}-Btn' type='button' disabled='disabled' onclick='javascript: ApplyUpdate("{{file}}","{{update.TPS_Errno}}")' class='btn btn-danger'><span class='glyphicon glyphicon-save' aria-hidden='true'><span>&nbsp;Apply Update</span></button>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+{% block lastScripts %}
+<script type="text/javascript">
+    list = {{updateList|default('{}')|raw}}
+    
+    function ApplyUpdate(Update,ID){    
+        $.ajax({
+            url : "Update/",
+            method: "POST",
+            data:{q:"a",f:Update},
+            beforeSend: function(){
+              $("#"+ID).html("<div class='alert alert-info' role='alert'><span class='glyphicon glyphicon-screenshot' aria-hidden=true></span>&nbspProcessing...</div>");  
+            },
+            statusCode:{
+                200 : function(data){
+                    result = $.parseJSON(data);
+                    if(result.Status===true){
+                        CheckUpdate(Update,ID);
+                    }
+                    else{
+                        $("#"+ID).html("<div class='alert alert-critical' role='alert'><span class='glyphicon glyphicon-ban-circle' aria-hidden=true></span>&nbspUpdate Failed</div>");  
+                    }
+                    console.log("update complete" + data);
+                },
+                400 : function(data){
+                    result = $.parseJSON(data);
+                    //console.log("Update failed" + data)
+                    $("#"+ID).html("<div class='alert alert-critical' role='alert'><span class='glyphicon glyphicon-ban-circle' aria-hidden=true></span>&nbspUpdate Failed</div>");  
+                }
+            }
+        });
+    }
+    
+    function CheckUpdate(file,ID){
+        $.ajax({
+            url: "Update/",
+            method: "POST",
+            data: {q:"c",f:file},
+            beforeSend: function(){
+                $("#"+ID).html("<div class='alert alert-info' role='alert'><span class='glyphicon glyphicon-ok-circle' aria-hidden=true></span>&nbspProcessing...</div>");
+                $("#"+ID+"-Btn").attr('disabled','disabled');
+            },
+            statusCode:{
+                200 : function(data){
+                    result = $.parseJSON(data);
+                    if(result.Status===true){
+                        $("#"+ID).html("<div class='alert alert-success' role='alert'><span class='glyphicon glyphicon-ok-circle' aria-hidden=true></span>&nbspStatus OK</div>");
+                    }
+                    else{
+                        $("#"+ID).html("<div class='alert alert-warning' role='alert'><span class='glyphicon glyphicon-info-sign' aria-hidden=true></span>&nbspUpdate Required!</div>");
+                        $("#"+ID+"-Btn").removeAttr('disabled');
+                    }
+                },
+                400 : function(){
+                    alert("Update package could not be verified [Malformed Package]");
+                },
+                403 : function(){
+                    alert("Unauthorized update package. contains security violation");
+                },
+                404 : function(){
+                    alert("Update invalid, could not find file / incomplete request");
+                },
+                500 : function(){
+                    alert("Cannot verify update integrity");
+                }
+            }
+        });//.done(function( msg ) {
+            //alert( "Data Saved: " + msg );
+        //});
+    }
+    
+    function RefreshUpdates(){
+        $.each(list,function(index,value){
+            CheckUpdate(index,value);
+        });
+    }
+    
+    //$jQuery(function($){
+        RefreshUpdates();
+    //})(jQuery);
+</script>
+{% endblock %}
