@@ -9,13 +9,7 @@ $twig_path = $basepath."lib".DIRECTORY_SEPARATOR."Twig".DIRECTORY_SEPARATOR
         ."Autoloader.php";
 $slim_path = $basepath."lib".DIRECTORY_SEPARATOR."Slim".DIRECTORY_SEPARATOR
         ."Slim.php";
-#$Views_path = $basepath.DIRECTORY_SEPARATOR."Views";
-/*$UserViews_path = $basepath.DIRECTORY_SEPARATOR."Views"
-        .DIRECTORY_SEPARATOR."User";
-$SystemViews_path = $basepath.DIRECTORY_SEPARATOR."Views"
-        .DIRECTORY_SEPARATOR."System";*/
 $views_path = $basepath."Views";
-#$temp_path = $basepath."temp";
 $temp_path = false;
 
 require_once 'header.php';
@@ -42,10 +36,15 @@ $authenticate = function ($app,$access=0) {
 
 $app->hook('slim.before.dispatch', function() use ($app) { 
    $user = null;
-   if (isset($_SESSION['usr'])) {
-      $user = $_SESSION['usr'];
+   if (isset($_SESSION['fname'])) {
+      $user = $_SESSION['fname'];
    }
-   $app->view()->setData('usr', $user);
+   $uid = null;
+   if (isset($_SESSION['user'])) {
+      $uid = $_SESSION['user'];
+   }
+   $app->view()->setData('userName',$user);
+   $app->view()->setData('userId',$uid);
 });
 require_once 'routes.php';
 

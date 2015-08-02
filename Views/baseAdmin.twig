@@ -106,16 +106,16 @@
                 <!-- User Menu -->
                 {% block userMenu %}
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{user.name|default('Unknown User')|title}}<b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{userName|default('Unknown User')|title}}<b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="/user/{{user.id|default(0)}}"><i class="fa fa-fw fa-user"></i> Profile</a>
+                            <a href="/user/{{userId|default(0)}}"><i class="fa fa-fw fa-user"></i> Profile</a>
                         </li>
                         <li>
-                            <a href="/user/{{user.id|default(0)}}/inbox"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
+                            <a href="/user/{{userId|default(0)}}/inbox"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
                         </li>
                         <li>
-                            <a href="/user/{{user.id|default(0)}}/settings"><i class="fa fa-fw fa-gear"></i> Settings</a>
+                            <a href="/user/{{userId|default(0)}}/settings"><i class="fa fa-fw fa-gear"></i> Settings</a>
                         </li>
                         <li class="divider"></li>
                         <li>

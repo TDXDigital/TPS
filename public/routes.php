@@ -190,8 +190,8 @@ $app->get("/logout", function () use ($app) {
 if(isset($_SESSION["DBHOST"])){
     require_once 'TPSBIN'.DIRECTORY_SEPARATOR.'functions.php';
     require_once 'TPSBIN'.DIRECTORY_SEPARATOR.'db_connect.php';
+    require_once 'lib_api'.DIRECTORY_SEPARATOR.'LibraryAPI.php';
 }
-require_once 'lib_api'.DIRECTORY_SEPARATOR.'LibraryAPI.php';
 // user group
 $app->group('/user', $authenticate, function () use ($app) {
     // Get book with ID

@@ -43,7 +43,11 @@ $app = new \Slim\Slim(array(
     'view' => new \Slim\Views\Twig(),
 ));
 
-$app->add(new \Slim\Middleware\SessionCookie(array('secret' => '67Hj4s3')));
+$app->add(new \Slim\Middleware\SessionCookie(array(
+    'expires'=>'20minutes',
+    'name'=>'SlimSession',
+    'secret' => '67Hj4s3',
+)));
 
 $env = $app->environment;
 $app->config(array(
