@@ -199,9 +199,12 @@ if(isset($_SESSION["DBHOST"])){
                 $updateList[$update]=$update_JSON[$update]['TPS_Errno'];
             }
         }
-        #var_dump($update_JSON);
-        #$app->stop();
-        $params = array('updateList'=>json_encode($updateList),'updates'=>$update_JSON);
+        $params = array(
+            'updateList'=>json_encode($updateList),
+            'updates'=>$update_JSON,
+            'title'=>'System Updates',
+            
+            );
         $app->render('update.twig',$params);
     });
     // user group

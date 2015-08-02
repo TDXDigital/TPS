@@ -13,8 +13,9 @@
 /README.txt
 /robots.txt
 /Thumbs.db
-/web.config
-/web.config.txt
+# this is now a required file for Slim
+# /web.config
+# /web.config.txt
 /index.html
 /metaupdate/save.txt
 /metaupdate/Now_Playing.txt
