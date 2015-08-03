@@ -1,0 +1,37 @@
+{% extends 'baseAdmin.twig' %}
+
+{% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+    </li>
+    <li class="active">
+        <i class="fa fa-tasks"></i> Reviews
+    </li>
+</ol>
+{% endblock %}
+{% block content %}
+    <table class='table table-bordered table-hover' >
+        <thead>
+            <th>RefCode</th>
+            <th>Date In</th>
+            <th>Artist</th>
+            <th>Album</th>
+            <th>Year</th>
+            <th>Review</th>
+        </thead>
+        <tbody>
+            {% for RefCode,album in albums %}
+                <tr>
+                    <td>{{RefCode}}</td>
+                    <td>{{album.datein}}</td>
+                    <td>{{album.artist}}</td>
+                    <td>{{album.album}}</td>
+                    <td>{{album.year}}</td>
+                    <td><a href="/review/{{RefCode}}">review album</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
