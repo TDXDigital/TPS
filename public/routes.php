@@ -256,6 +256,45 @@ if(isset($_SESSION["DBHOST"])){
                 $app->render('reviewList.twig',$params);
             });
             $app->group('/album', $authenticate, function () use ($app,$authenticate){
+                $app->post('/:refcode', $authenticate, function ($RefCode) use ($app){
+                    global $mysqli;
+                    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+                        $ip_raw = $_SERVER['HTTP_CLIENT_IP'];
+                    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                        $ip_raw = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                    } else {
+                        $ip_raw = $_SERVER['REMOTE_ADDR']?:NULL;
+                    }
+                    if(isset($ip_raw) && filter_var($ip_raw, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)){
+                        $ip = ip2long($ip_raw);
+                    }
+                    else{
+                        $ip=NULL;
+                    }
+                    $description = $app->request()->post('description');
+                    $notes = $app->request()->post('notes');
+                    $reviewer = $app->request()->post('reviewer');
+                    $hometown = $app->request()->post('hometown');
+                    $subgenres = $app->request()->post('subgenres');
+                    $recommend = $app->request()->post('recommend');
+                    $femcon = $app->request()->post('femcon');
+                    $newReviewSql = "INSERT INTO review (RefCode,reviewer,femcon,hometown,subgenre,ip,description,recommendations,notes) "
+                            . "VALUES (?,?,?,?,?,?,?,?,?)";
+                    if($stmt = $mysqli->prepare($newReviewSql)){
+                        $stmt->bind_param('isissssss',$RefCode,$reviewer,$femcon,$hometown,
+                                $subgenres,$ip,$description,$recommend,$notes);
+                        if($stmt->execute()){
+                            $app->flash('success',"Review submitted for album #$RefCode");
+                        }
+                        else{
+                            $app->flash('error','Review could not be stored, '.$mysqli->error);
+                        }
+                    }
+                    else{
+                        $app->flash('error',$mysqli->error);
+                    }
+                    $app->redirect('/review');
+                });
                 $app->get('/:refcode/new', $authenticate, function ($term) use ($app){
                     // Create new Album Review
                     global $mysqli;

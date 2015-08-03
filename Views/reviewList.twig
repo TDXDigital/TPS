@@ -12,6 +12,20 @@
 </ol>
 {% endblock %}
 {% block content %}
+    {% if flash.error %}
+        <div class="row">
+            <div class="alert alert-danger">
+                <strong>Error</strong> {{flash.error}}
+            </div>
+        </div>
+    {% endif %}
+    {% if flash.success %}
+        <div class="row">
+            <div class="alert alert-success">
+                <strong>Success</strong> {{flash.success}}
+            </div>
+        </div>
+    {% endif %}
     <table class='table table-bordered table-hover' >
         <thead>
             <th>RefCode</th>

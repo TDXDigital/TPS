@@ -44,7 +44,7 @@ $app = new \Slim\Slim(array(
 ));
 
 $app->add(new \Slim\Middleware\SessionCookie(array(
-    'expires'=>'20minutes',
+    'expires'=>'70minutes',
     'name'=>'SlimSession',
     'secret' => '67Hj4s3',
 )));
