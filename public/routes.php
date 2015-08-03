@@ -255,60 +255,109 @@ if(isset($_SESSION["DBHOST"])){
                     );
                 $app->render('reviewList.twig',$params);
             });
-            $app->get('/album/:refcode', $authenticate, function ($term) use ($app){
-                global $mysqli;
-                $maxResult = 100;
-                $select = "Select library.RefCode, if(recordlabel.name_alias_duplicate is NULL, recordlabel.Name, "
-                        . "(SELECT Name from recordlabel where LabelNumber = recordlabel.name_alias_duplicate) ) as recordLabel, "
-                        . "if(review.id is NULL,0,1) as reviewed, library.labelid, library.Locale, library.variousartists, library.format, library.year, library.album, "
-                        . "library.artist, library.CanCon, library.datein, library.playlist_flag, library.genre, "
-                        . "review.reviewer, review.ts, review.approved, review.femcon, review.hometown, review.subgenre, review.description, review.recommendations, review.id "
-                        . "from library left join review on library.RefCode = review.RefCode left join recordlabel on library.labelid = recordlabel.LabelNumber where "
-                        . "library.refcode = ? order by library.datein asc limit ?;";
-                $params = array();
-                if($stmt = $mysqli->prepare($select)){
-                    $stmt->bind_param('si',$term,$maxResult);
-                    $stmt->execute();
-                    $stmt->bind_result($RefCode,$recordLabel,$reviewed,$labelid,$locale,$variousArtists,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre,
-                            $reviewer,$timestamp,$approved,$femcon,$hometown,$subgenre,$description,$recommends,$reviewID);
-                    while($stmt->fetch()){
-                        $params[$reviewID] = array( // this is ok as if the review ID is null there will also be no other entries as ID is a PK
-                                "RefCode"=>$RefCode,
-                                "hasReview"=>$reviewed,
-                                "format"=>$format,
-                                "year"=>$year,
-                                "album"=>$album,
-                                "artist"=>$artist,
-                                "CanCon"=>$canCon,
-                                "datein"=>$datein,
-                                "playlist"=>$playlist_flag,
-                                "genre"=>$genre,
-                                "locale"=>$locale,
-                                "variousArtists"=>$variousArtists,
-                                "label"=>array(
-                                    "Name"=>$recordLabel,
-                                    "Id"=>$labelid,
-                                ),
-                                "review"=>array(
-                                    "reviewer"=>$reviewer,
-                                    "timestamp"=>$timestamp,
-                                    "approved"=>$approved,
-                                    "femcon"=>$femcon,
-                                    "hometown"=>$hometown,
-                                    "subgenre"=>$subgenre,
-                                    "description"=>$description,
-                                    "recommendations"=>$recommends,
-                                )
-                            );
+            $app->group('/album', $authenticate, function () use ($app,$authenticate){
+                $app->get('/:refcode/new', $authenticate, function ($term) use ($app){
+                    // Create new Album Review
+                    global $mysqli;
+                    $maxResult = 100;
+                    $select = "Select library.RefCode, if(recordlabel.name_alias_duplicate is NULL, recordlabel.Name, "
+                            . "(SELECT Name from recordlabel where LabelNumber = recordlabel.name_alias_duplicate) ) as recordLabel, "
+                            . "if(review.id is NULL,0,1) as reviewed, library.labelid, library.Locale, library.variousartists, library.format, library.year, library.album, "
+                            . "library.artist, library.CanCon, library.datein, library.playlist_flag, library.genre, "
+                            . "review.reviewer, review.ts, review.approved, review.femcon, review.hometown, review.subgenre, review.description, review.recommendations, review.id "
+                            . "from library left join review on library.RefCode = review.RefCode left join recordlabel on library.labelid = recordlabel.LabelNumber where "
+                            . "library.refcode = ? order by library.datein asc limit ?;";
+                    $params = array();
+                    if($stmt = $mysqli->prepare($select)){
+                        $stmt->bind_param('si',$term,$maxResult);
+                        $stmt->execute();
+                        $stmt->bind_result($RefCode,$recordLabel,$reviewed,$labelid,$locale,$variousArtists,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre,
+                                $reviewer,$timestamp,$approved,$femcon,$hometown,$subgenre,$description,$recommends,$reviewID);
+                        while($stmt->fetch()){
+                            $params['album'] = array( // this is ok as if the review ID is null there will also be no other entries as ID is a PK
+                                    "RefCode"=>$RefCode,
+                                    "hasReview"=>$reviewed,
+                                    "format"=>$format,
+                                    "year"=>$year,
+                                    "album"=>$album,
+                                    "artist"=>$artist,
+                                    "CanCon"=>$canCon,
+                                    "datein"=>$datein,
+                                    "playlist"=>$playlist_flag,
+                                    "genre"=>$genre,
+                                    "locale"=>$locale,
+                                    "variousArtists"=>$variousArtists,
+                                    "label"=>array(
+                                        "Name"=>$recordLabel,
+                                        "Id"=>$labelid,
+                                    ),
+                                );
+                        }
+                        $stmt->close();
                     }
-                    $stmt->close();
-                }
-                else{
-                    $params['error']=$mysqli->error;
-                }
-                $app->render('reviewList.twig',$params);
-            });
-            $app->get('/:refcode', $authenticate, function ($term) use ($app){
+                    else{
+                        $params['error']=$mysqli->error;
+                    }
+                    $app->render('review.twig',$params);
+                });
+                $app->get('/:refcode', $authenticate, function ($term) use ($app){
+                    // Get Album Reviews
+                    global $mysqli;
+                    $maxResult = 100;
+                    $select = "Select library.RefCode, if(recordlabel.name_alias_duplicate is NULL, recordlabel.Name, "
+                            . "(SELECT Name from recordlabel where LabelNumber = recordlabel.name_alias_duplicate) ) as recordLabel, "
+                            . "if(review.id is NULL,0,1) as reviewed, library.labelid, library.Locale, library.variousartists, library.format, library.year, library.album, "
+                            . "library.artist, library.CanCon, library.datein, library.playlist_flag, library.genre, "
+                            . "review.reviewer, review.ts, review.approved, review.femcon, review.hometown, review.subgenre, review.description, review.recommendations, review.id "
+                            . "from library left join review on library.RefCode = review.RefCode left join recordlabel on library.labelid = recordlabel.LabelNumber where "
+                            . "library.refcode = ? order by library.datein asc limit ?;";
+                    $params = array();
+                    if($stmt = $mysqli->prepare($select)){
+                        $stmt->bind_param('si',$term,$maxResult);
+                        $stmt->execute();
+                        $stmt->bind_result($RefCode,$recordLabel,$reviewed,$labelid,$locale,$variousArtists,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre,
+                                $reviewer,$timestamp,$approved,$femcon,$hometown,$subgenre,$description,$recommends,$reviewID);
+                        while($stmt->fetch()){
+                            $params[$reviewID] = array( // this is ok as if the review ID is null there will also be no other entries as ID is a PK
+                                    "RefCode"=>$RefCode,
+                                    "hasReview"=>$reviewed,
+                                    "format"=>$format,
+                                    "year"=>$year,
+                                    "album"=>$album,
+                                    "artist"=>$artist,
+                                    "CanCon"=>$canCon,
+                                    "datein"=>$datein,
+                                    "playlist"=>$playlist_flag,
+                                    "genre"=>$genre,
+                                    "locale"=>$locale,
+                                    "variousArtists"=>$variousArtists,
+                                    "label"=>array(
+                                        "Name"=>$recordLabel,
+                                        "Id"=>$labelid,
+                                    ),
+                                    "review"=>array(
+                                        "reviewer"=>$reviewer,
+                                        "timestamp"=>$timestamp,
+                                        "approved"=>$approved,
+                                        "femcon"=>$femcon,
+                                        "hometown"=>$hometown,
+                                        "subgenre"=>$subgenre,
+                                        "description"=>$description,
+                                        "recommendations"=>$recommends,
+                                    )
+                                );
+                        }
+                        $stmt->close();
+                    }
+                    else{
+                        $params['error']=$mysqli->error;
+                    }
+                    $app->render('reviewList.twig',$params);
+                });
+            }); // end album group
+            $app->get('/:id', $authenticate, function ($id) use ($app){
+                // Get review based on id
+                
                 global $mysqli;
                 $maxResult = 100;
                 $select = "Select library.RefCode, if(recordlabel.name_alias_duplicate is NULL, recordlabel.Name, "
@@ -318,14 +367,24 @@ if(isset($_SESSION["DBHOST"])){
                         . "review.reviewer, review.ts, review.approved, review.femcon, review.hometown, review.subgenre, review.description, review.recommendations, review.id "
                         . "from library left join review on library.RefCode = review.RefCode left join recordlabel on library.labelid = recordlabel.LabelNumber where "
                         . "review.id = ? order by library.datein asc limit ?;";
-                $params = array();
+                if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+                    $ip = $_SERVER['HTTP_CLIENT_IP'];
+                } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                } else {
+                    $ip = $_SERVER['REMOTE_ADDR'];
+                }
+                $params = array(
+                    "title"=>"Album Reviews",
+                    "ip"=>$ip
+                );
                 if($stmt = $mysqli->prepare($select)){
-                    $stmt->bind_param('si',$term,$maxResult);
+                    $stmt->bind_param('si',$id,$maxResult);
                     $stmt->execute();
                     $stmt->bind_result($RefCode,$recordLabel,$reviewed,$labelid,$locale,$variousArtists,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre,
                             $reviewer,$timestamp,$approved,$femcon,$hometown,$subgenre,$description,$recommends,$reviewID);
                     while($stmt->fetch()){
-                        $params = array(
+                        $album = array(
                                 "RefCode"=>$RefCode,
                                 "hasReview"=>$reviewed,
                                 "format"=>$format,
@@ -361,7 +420,7 @@ if(isset($_SESSION["DBHOST"])){
                     print $mysqli->error;
                 }
                 #$app->render('reviewList.twig',$params);
-                $app->render('notSupported.twig');
+                $app->render('notSupported.twig',$params);
             });
             $app->get('/search/:term', $authenticate, function ($term) use ($app){
                 global $mysqli;

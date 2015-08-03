@@ -1,0 +1,171 @@
+{% extends 'baseAdmin.twig' %}
+
+{% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+    </li>
+    <li class="active">
+        <i class="fa fa-tasks"></i> <a href="/review/">Reviews</a>
+    </li>
+    <li class="active">
+        <i class="fa fa-edit"></i> {{album.RefCode}}
+    </li>
+</ol>
+{% endblock %}
+{% block content %}
+    <form role="form" method="POST">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Artist</label>
+                    <p class="form-control-static">{{album.artist}}</p>
+                </div>
+                <div class="form-group">
+                    <label>Date received</label>
+                    <p class="form-control-static">{% if album.datein < album.year-1 %}
+                        <span style="color: #c00;" title="the release year is after the received date, this is possible but could signify a problem">
+                            <i class="fa fa-warning"></i>
+                            {{album.datein}}
+                        </span>
+                        {% else %}
+                            {{album.datein}}
+                        {% endif %}</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Album</label>
+                    <p class="form-control-static">{{album.album}}</p>
+                </div>
+                <div class="form-group">
+                    <label>Label</label>
+                    <p class="form-control-static">{{album.label.Name}}</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Origin</label>
+                    <p class="form-control-static">{{album.locale}}</p>
+                </div>
+                <div class="form-group">
+                    <label>Genre</label>
+                    <p class="form-control-static">{{album.genre|default('<span style="color: #d48c00;">Unknown</span>')|raw}}</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Various Artists</label>
+                    <p class="form-control-static">{{album.variousArtists|default('No or Unknown')}}</p>
+                </div>
+                <div class="form-group">
+                    <label>Release year</label>
+                    {% if album.year == 0 %}
+                        <p class="form-control-static" title="the release year is unknown for this album">
+                            <span style="color: #d48c00;">
+                                <i class="fa fa-warning"></i> Unknown
+                            </span>
+                        </p>
+                    {% else %}
+                        <p class="form-control-static">
+                            {{album.year}}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for='rname'>Reviewer Name</label>
+                    <input id='rname' name="reviewer" class="form-control" required type="text"/>
+                </div>
+                <div class="form-group">
+                    <label for='hometown'>Band Hometown</label>
+                    <input id='hometown' name="hometown" class="form-control" type="text"/>
+                </div>
+                <div class="form-group">
+                    <label for='subgenres'><i class="fa fa-language" title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: ,"></i> Additional SubGenres</label>
+                    <input id='subgenres' name="subgenres" class="form-control" type="text" pattern="[a-zA-Z0-9\s\,]+" />
+                </div>
+                <div class="form-group">
+                    <label for='RIYL'><i class="fa fa-language" title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: (,!.:)"></i> Recommended if you like:</label>
+                    <input id='RIYL' name="recommend" class="form-control" type="text" pattern="[a-zA-Z0-9\s\,\!\.\:\)\(]+" />
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="description"><i class="fa fa-language"  title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: (,!.:#)"></i> Description</label>
+                    <textarea id="description" class="form-control" required rows="5" maxlength="500" 
+                              placeholder="Use this space to describe the album, please also list any tracks with profanity or obscenity" name="description" 
+                              pattern="[a-zA-Z0-9\s\,\!\.\:\)\(\#]+" ></textarea>
+                    <h6 class="pull-right" id="count_message"></h6>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="notes"><i class="fa fa-language"  title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: (,!.:)"></i> Notes</label>
+                    <textarea id="notes" class="form-control" rows="2" maxlength="200" placeholder="additional notes" name="notes" 
+                              pattern="[a-zA-Z0-9\s\,\!\.\:\)\(]+" ></textarea>
+                    <h6 class="pull-right" id="count_message_notes"></h6>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="form-group pull-right">
+                <button type="submit" class="btn btn-success">Submit</button>
+                <button type="reset" class="btn btn-warning">Reset</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    
+    <!--<table class='table table-bordered table-hover' >
+        <thead>
+            <th>RefCode</th>
+            <th>Date In</th>
+            <th>Artist</th>
+            <th>Album</th>
+            <th>Year</th>
+            <th>Review</th>
+        </thead>
+        <tbody>
+            {% for RefCode,album in albums %}
+                <tr>
+                    <td>{{RefCode}}</td>
+                    <td>{{album.datein}}</td>
+                    <td>{{album.artist}}</td>
+                    <td>{{album.album}}</td>
+                    <td>{{album.year}}</td>
+                    <td><a href="/review/{{RefCode}}">review album</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>-->
+{% endblock %}
+{% block lastScripts %}
+    <script>
+        var text_max = 500;
+        $('#count_message').html(text_max + ' remaining');
+
+        $('#description').keyup(function() {
+          var text_length = $('#description').val().length;
+          var text_remaining = text_max - text_length;
+
+          $('#count_message').html(text_remaining + ' remaining');
+        });
+        var text_max_notes = 200;
+        $('#count_message_notes').html(text_max_notes + ' remaining');
+
+        $('#notes').keyup(function() {
+          var text_length = $('#notes').val().length;
+          var text_remaining = text_max_notes - text_length;
+
+          $('#count_message_notes').html(text_remaining + ' remaining');
+        });
+    </script>
+{% endblock %}
