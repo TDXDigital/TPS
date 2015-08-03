@@ -7,7 +7,14 @@
         <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
     </li>
     <li class="active">
-        <i class="fa fa-tasks"></i> Reviews
+        <i class="fa fa-tasks"></i>{% if search %}
+        <a href="/review">Reviews</a>
+    </li>
+    <li>
+        <i class="fa fa-search"></i> Search
+        {% else %}
+            Reviews
+        {% endif %}
     </li>
 </ol>
 {% endblock %}
@@ -26,6 +33,17 @@
             </div>
         </div>
     {% endif %}
+    <form role="form" method="POST" action="/review/search/album">
+        <div class="row">
+            <div class="form-group input-group">
+                <input type="text" class="form-control" name="q" 
+                       {% if search %}
+                           value="{{search}}"
+                       {% endif %}>
+                <span class="input-group-btn"><button class="btn btn-default" type="button"><i class="fa fa-search"></i></button></span>
+            </div>
+        </div>
+    </form>
     <table class='table table-bordered table-hover' >
         <thead>
             <th>RefCode</th>
@@ -33,6 +51,9 @@
             <th>Artist</th>
             <th>Album</th>
             <th>Year</th>
+            {% if albums|first.reviewed %}
+            <th>Reviewed</th>
+            {% endif %}
             <th>Review</th>
         </thead>
         <tbody>
@@ -43,6 +64,9 @@
                     <td>{{album.artist}}</td>
                     <td>{{album.album}}</td>
                     <td>{{album.year}}</td>
+                    {% if album.reviewed %}
+                    <td>{{album.reviewed}}</td>
+                    {% endif %}
                     <td><a href="/review/album/{{RefCode}}/new">review album</a></td>
                 </tr>
             {% endfor %}

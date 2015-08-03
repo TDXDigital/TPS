@@ -62,8 +62,8 @@
                                     <div class="media-body">
                                         <h5 class="media-heading"><strong>{{user.name}}</strong>
                                         </h5>
-                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
-                                        <p>Lorem ipsum dolor sit amet, consectetur...</p>
+                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> {{"now"|date('Y-m-d H:m')}} UTC</p>
+                                        <p>No Messages</p>
                                     </div>
                                 </div>
                             </a>
@@ -80,6 +80,9 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i> <b class="caret"></b></a>
                     <ul class="dropdown-menu alert-dropdown">
                         <li>
+                            <a href="#">No Alerts <span class="label label-default">Beta 0.6</span></a>
+                        </li>
+                        <!--<li>
                             <a href="#">Alert Name <span class="label label-default">Alert Badge</span></a>
                         </li>
                         <li>
@@ -96,7 +99,7 @@
                         </li>
                         <li>
                             <a href="#">Alert Name <span class="label label-danger">Alert Badge</span></a>
-                        </li>
+                        </li>-->
                         <li class="divider"></li>
                         <li>
                             <a href="#">View All</a>
@@ -144,7 +147,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Dashboard <small>{{title|default('Statistics Overview')}}</small>
+                            {{area|default('Dashboard')}} <small>{{title|default('Statistics Overview')}}</small>
                         </h1>
                         {% block breadcrumb %}
                         <ol class="breadcrumb">

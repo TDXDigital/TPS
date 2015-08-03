@@ -461,19 +461,59 @@ if(isset($_SESSION["DBHOST"])){
                 #$app->render('reviewList.twig',$params);
                 $app->render('notSupported.twig',$params);
             });
+            $app->post('/search/album', $authenticate, function () use ($app){
+                global $mysqli;
+                $term = $app->request()->post('q');
+                $orig_term = $term;
+                $term = "%".$term."%";
+                $maxResult = 100;
+                $select = "Select library.RefCode, if(review.id is NULL,'No', 'Yes') as reviewed, library.format, library.year, library.album,library.artist, library.CanCon, library.datein, library.playlist_flag, library.genre from library left join review on library.RefCode = review.RefCode where (library.refcode like ? or library.year like ? or library.album like ? or library.artist like ? or library.datein like ?) order by library.datein asc limit ?;";
+                $params = array();
+                $albums = array();
+                if($stmt = $mysqli->prepare($select)){
+                    $stmt->bind_param('sssssi',$term,$term,$term,$term,$term,$maxResult);
+                    $stmt->execute();
+                    $stmt->bind_result($RefCode,$reviewed, $format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre);
+                    while($stmt->fetch()){
+                        $albums[$RefCode] = array(
+                                "format"=>$format,
+                                "reviewed"=>$reviewed,
+                                "year"=>$year,
+                                "album"=>$album,
+                                "artist"=>$artist,
+                                "CanCon"=>$canCon,
+                                "datein"=>$datein,
+                                "playlist"=>$playlist_flag,
+                                "genre"=>$genre,
+                            );
+                    }
+                    $stmt->close();
+                }
+                else{
+                    print $mysqli->error;
+                }
+                $params=array(
+                    'albums'=>$albums,
+                    'search'=>$orig_term,
+                    'area'=>'Search',
+                    'title'=>'Available Reviews'
+                    );
+                $app->render('reviewList.twig',$params);
+            });
             $app->get('/search/:term', $authenticate, function ($term) use ($app){
                 global $mysqli;
                 $term = "%".$term."%";
                 $maxResult = 100;
-                $select = "Select library.RefCode, library.format, library.year, library.album,library.artist, library.CanCon, library.datein, library.playlist_flag, library.genre from library left join review on library.RefCode = review.RefCode where review.id is NULL and (library.refcode like ? or library.year like ? or library.album like ? or library.artist like ? or library.datein like ?) order by library.datein asc limit ?;";
+                $select = "Select library.RefCode, if(review.id is NULL,'No', 'Yes') as reviewed, library.format, library.year, library.album,library.artist, library.CanCon, library.datein, library.playlist_flag, library.genre from library left join review on library.RefCode = review.RefCode where review.id is NULL and (library.refcode like ? or library.year like ? or library.album like ? or library.artist like ? or library.datein like ?) order by library.datein asc limit ?;";
                 $params = array();
                 if($stmt = $mysqli->prepare($select)){
                     $stmt->bind_param('sssssi',$term,$term,$term,$term,$term,$maxResult);
                     $stmt->execute();
-                    $stmt->bind_result($RefCode,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre);
+                    $stmt->bind_result($RefCode,$reviewed, $format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre);
                     while($stmt->fetch()){
                         $params[$RefCode] = array(
                                 "format"=>$format,
+                                "reviewed"=>$reviewed,
                                 "year"=>$year,
                                 "album"=>$album,
                                 "artist"=>$artist,
