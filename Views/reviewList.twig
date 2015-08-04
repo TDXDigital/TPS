@@ -68,6 +68,7 @@
                     {% if album.reviewed %}
                     <td>{{album.reviewed}}</td>
                     {% endif %}
+                    <td>{{album.hasWebsite}}</td>
                     <td><a href="/review/album/{{RefCode}}/new">review album</a></td>
                 </tr>
             {% endfor %}
