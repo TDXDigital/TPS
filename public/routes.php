@@ -225,15 +225,16 @@ if(isset($_SESSION["DBHOST"])){
             $app->get('/', $authenticate, function () use ($app){
                 global $mysqli;
                 $maxResult = 100;
-                $select = "Select library.RefCode, library.format, library.year, library.album,library.artist, library.CanCon, library.datein, library.playlist_flag, library.genre from library left join review on library.RefCode = review.RefCode where review.id is NULL order by library.datein asc limit ?;";
+                $select = "Select library.RefCode, if(band_websites.ID is NULL,0,1) as hasWebsite, library.format, library.year, library.album,library.artist, library.CanCon, library.datein, library.playlist_flag, library.genre from library left join review on library.RefCode = review.RefCode left join band_websites on library.RefCode=band_websites.ID where review.id is NULL order by library.datein asc limit ?;";
                 $params = array();
                 if($stmt = $mysqli->prepare($select)){
                     $stmt->bind_param('i',$maxResult);
                     $stmt->execute();
-                    $stmt->bind_result($RefCode,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre);
+                    $stmt->bind_result($RefCode,$hasWebsite,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre);
                     while($stmt->fetch()){
                         $albums[$RefCode] = array(
                                 "format"=>$format,
+                                "hasWebsite"=>$hasWebsite,
                                 "year"=>$year,
                                 "album"=>$album,
                                 "artist"=>$artist,
