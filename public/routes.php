@@ -316,7 +316,7 @@ if(isset($_SESSION["DBHOST"])){
                         while($stmt->fetch()){
                             $params['album'] = array( // this is ok as if the review ID is null there will also be no other entries as ID is a PK
                                     "RefCode"=>$RefCode,
-                                    "hasWebsite"=>$hasWebsite
+                                    "hasWebsite"=>$hasWebsite,
                                     "hasReview"=>$reviewed,
                                     "format"=>$format,
                                     "year"=>$year,
