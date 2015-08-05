@@ -50,6 +50,7 @@
             <th>Date In</th>
             <th>Artist</th>
             <th>Album</th>
+            <th>Genre</th>
             <th>Year</th>
             {% if albums|first.reviewed %}
             <th>Reviewed</th>
@@ -64,6 +65,7 @@
                     <td>{{album.datein}}</td>
                     <td>{{album.artist}}</td>
                     <td>{{album.album}}</td>
+                    <td>{{album.genre}}</td>
                     <td>{{album.year}}</td>
                     {% if album.reviewed %}
                     <td>{{album.reviewed}}</td>

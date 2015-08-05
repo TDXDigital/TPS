@@ -17,6 +17,12 @@
 {% block content %}
     <form role="form" method="POST" action="../{{album.RefCode}}">
         <div class="row">
+            <div class="col-lg-12">
+                <span class="pull-right text-muted"><i class="fa fa-language" title="Form input is restricted to alphanumeric (a-Z,0-9) and the following special characters: ,">
+                        &nbsp;input is restricted to alphanumeric (a-Z,0-9) entry</i></span><br>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-lg-3">
                 <div class="form-group">
                     <label>Artist</label>
@@ -80,19 +86,19 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     <label for='rname'>Reviewer Name</label>
-                    <input id='rname' name="reviewer" class="form-control" required type="text"/>
+                    <input id='rname' name="reviewer" class="form-control" required type="text" placeholder="Your first and last name (eg. Joe Swanson)"/>
                 </div>
                 <div class="form-group">
                     <label for='hometown'>Band Hometown</label>
-                    <input id='hometown' name="hometown" class="form-control" type="text"/>
+                    <input id='hometown' name="hometown" class="form-control" type="text" placeholder="Please list city, abbreviated province/state (if applicable), country (eg: Toronto, ON, Canada)" />
                 </div>
                 <div class="form-group">
                     <label for='subgenres'><i class="fa fa-language" title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: ,"></i> Additional SubGenres</label>
-                    <input id='subgenres' name="subgenres" class="form-control" type="text" pattern="[a-zA-Z0-9\s\,]+" />
+                    <input id='subgenres' name="subgenres" class="form-control" type="text" pattern="[a-zA-Z0-9\s\,]+" placeholder="List distinct genre crossovers or more specific ones (eg: Punk-rock, gypsy-punk, cow-punk)" />
                 </div>
                 <div class="form-group">
                     <label for='RIYL'><i class="fa fa-language" title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: (,!.:)"></i> Recommended if you like:</label>
-                    <input id='RIYL' name="recommend" class="form-control" type="text" pattern="[a-zA-Z0-9\s\,\!\.\:\)\(]+" />
+                    <input id='RIYL' name="recommend" class="form-control" type="text" pattern="[a-zA-Z0-9\s\,\!\.\:\)\(]+" placeholder="Name a couple additional artists they sound like (eg: Arcade Fire, Metric, Broken Social Scene)" />
                 </div>
                 <div class="form-group">
                                 <label for="femcon">FemCon</label>
@@ -106,7 +112,7 @@
                 <div class="form-group">
                     <label for="description"><i class="fa fa-language"  title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: (,!.:#)"></i> Description</label>
                     <textarea id="description" class="form-control" required rows="5" maxlength="500" 
-                              placeholder="Use this space to describe the album, please also list any tracks with profanity or obscenity" name="description" 
+                              placeholder="A brief and relatively objective description of relevant facts about album, artist, collaborations, and sound" name="description" 
                               pattern="[a-zA-Z0-9\s\,\!\.\:\)\(\#]+" ></textarea>
                     <h6 class="pull-right" id="count_message"></h6>
                 </div>
@@ -114,7 +120,7 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     <label for="notes"><i class="fa fa-language"  title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: (,!.:)"></i> Notes</label>
-                    <textarea id="notes" class="form-control" rows="2" maxlength="200" placeholder="additional notes" name="notes" 
+                    <textarea id="notes" class="form-control" rows="2" maxlength="200" placeholder="additional relevant information, please also list any tracks with profanity or obscenity" name="notes" 
                               pattern="[a-zA-Z0-9\s\,\!\.\:\)\(]+" ></textarea>
                     <h6 class="pull-right" id="count_message_notes"></h6>
                 </div>
