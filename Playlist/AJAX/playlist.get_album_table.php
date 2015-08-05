@@ -28,14 +28,12 @@ $result=$mysqli->query($query_artist);
 if($mysqli->error){
     die($mysqli->error);
 }
-echo "<table class=\"table table-striped table-condensed\"><th>#</th><th>Date-In</th><th>Artist</th><th>Album</th><th>Genre</th><th>Label Name</th><th>Status</th>";
+echo "<table class=\"table table-condensed table-hover\"><th>#</th><th>Date-In</th><th>Artist</th><th>Album</th><th>Genre</th><th>Label Name</th><th>Status</th>";
 $i=1;
 while($row = $result->fetch_array(MYSQLI_ASSOC)){
     //echo $row['artist'] ."<br/>";
     //array_push($json_arr,$row['artist']);
-    echo"<tr><td>".$row['RefCode']."<br><button type=\"button\" onclick='edit(".$row['RefCode'].")' class=\"btn btn-default btn-xs\">
-  <span class=\"glyphicon glyphicon-pencil\" aria-hidden=\"true\"></span> Edit
-</button>
+    echo"<tr><td><button type=\"button\" onclick='edit(".$row['RefCode'].")' class=\"btn btn-default btn-xs\">".$row['RefCode']." <i class=\"fa fa-edit\" aria-hidden=\"true\"></i></button>
 </td><td>".$row['datein']."</td><td>".$row['artist']."</td><td>".$row['album']."</td><td>".$row['genre']."</td><td>".$row['label_name']."</td><td>".$row['status']."</td></tr>
         ";
     $i++;

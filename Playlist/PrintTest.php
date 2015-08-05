@@ -1,6 +1,6 @@
 <!doctype html>
 <?php
-    error_reporting(E_ALL);
+    error_reporting(E_ERROR);
     include_once '../TPSBIN/functions.php';
     include_once '../TPSBIN/db_connect.php';
     //include_once 'barcode/barcode.php';

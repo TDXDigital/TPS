@@ -101,8 +101,10 @@ function DatabaseUpdateCheck($Update_PKG){
                 }
                 else{
                     // FAIL, due to empty string or mismatch size
-                    //echo sizeof($key_only)." : ".sizeof($match);
-                    http_response_code(500);
+                    error_log("FAIL, due to empty string or mismatch size (".sizeof($key_only)." : ".sizeof($match).")");
+                    if(sizeof($match)>0){
+                        http_response_code(500);
+                    }
                     $Pass = FALSE;
                 }
                 $final = array("Status"=>$Pass,"Result"=>$return);
@@ -114,10 +116,10 @@ function DatabaseUpdateCheck($Update_PKG){
                 var_dump($diff);*/
             }
             else{
-                if(isset($Update_PKG['SQL_QRY']['createMode'])){
-                    if($Update_PKG['SQL_QRY']['createMode']==1 /*&& $mysqli->errno==1146*/){
+                if(isset($Update_PKG['SQL_QRY']['createMode'])&&$Update_PKG['SQL_QRY']['createMode']==1){
+                    //if($Update_PKG['SQL_QRY']['createMode']==1 /*&& $mysqli->errno==1146*/){
                         return json_encode(array("Status"=>False,"Result"=>array()));
-                    }
+                    //}
                 }
                 else{
                     http_response_code(500);

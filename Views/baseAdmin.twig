@@ -22,6 +22,8 @@
     <!-- Custom Fonts -->
     <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
+    {% block headScripts %}
+    {% endblock %}
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -184,13 +186,16 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="/js/bootstrap.min.js"></script>
-
-    <!-- Morris Charts JavaScript -->
-    <script src="js/plugins/morris/raphael.min.js"></script>
-    <script src="js/plugins/morris/morris.min.js"></script>
-    <script src="js/plugins/morris/morris-data.js"></script>
+    
+    <!-- template specific JavaScript -->
     {% block lastScripts %}
     {% endblock %}
+    
+    <!-- Morris Charts JavaScript -->
+    <script src="{{siteUrl}}/js/plugins/morris/raphael.min.js"></script>
+    <script src="{{siteUrl}}/js/plugins/morris/morris.min.js"></script>
+    <script src="{{siteUrl}}/js/plugins/morris/morris-data.js"></script>
+    
 </body>
 
 </html>

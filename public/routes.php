@@ -13,6 +13,9 @@ $app->get('/', $authenticate($app), function() use ($app){
     
     $app->render('dashboard.twig');
 });
+$app->post('/', $authenticate($app), function() use ($app){
+    $app->render('dashboard.twig');
+});
 
 /*$app->get('/login', function() use ($app){
     $app->render('login.html.twig');
@@ -220,7 +223,66 @@ if(isset($_SESSION["DBHOST"])){
             $app->render('notSupported.twig', array('title'=>'User Settings'));
         });
     });
-    
+    // Library
+    $app->group('/library', $authenticate, function () use ($app,$authenticate){
+        $app->get('/', $authenticate, function () use ($app){
+            $params = array(
+                #"PRINTID"=>$_SESSION['PRINTID'],
+                "govCats"=>array(
+                    // CRTC Categories http://www.crtc.gc.ca/eng/archive/2010/2010-819.HTM
+                    "11" => "News",
+                    "12" => "Spoken word-other",
+                    "21" => "Pop, rock and dance",
+                    "22" => "Country and country-oriented",
+                    "23" => "Acoustic",
+                    "24" => "Easy listening",
+                    "31" => "Concert",
+                    "32" => "Folk and folk-oriented",
+                    "33" => "World beat and international",
+                    "34" => "Jazz and blues",
+                    "35" => "Non-classic religious",
+                    "36" => "Experimental Music",
+                    "41" => "Musical themes, bridges and stingers",
+                    "42" => "Technical tests",
+                    "43" => "Musical station identification",
+                    "44" => "Musical identification of announcers, programs",
+                    "45" => "Musical promotion of announcers, programs",
+                    "51" => "Commercial announcement",
+                    "52" => "Sponsor Identification",
+                    "53" => "Promotion with sponsor mention",
+                ),
+                "genres"=>array(
+                    "RK-P" => "Rock/Pop",
+                    "FO-R" => "Folk/Roots",
+                    "EL"   => "Electronic",
+                    "EX"   => "Experimental",
+                    "JZ-C" => "Jazz/Classical",
+                    "HH"   => "Hip-Hop",
+                    "HM"   => "Heavy/Punk/Metal",
+                    "WLD"  => "World",
+                ),
+                "format"=>array(
+                    "CD" => "Compact Disc",
+                    "Digital"=>"Digital",
+                    "12in" => "12\"",
+                    "7in" => "7\"",
+                    "Cass" => "Cassette",
+                    "Cart"=>"Fidelipac (cart)",
+                    "MD" => "Mini Disc",
+                    "Other"=>"Other"
+                ),
+                "scheduleBlock"=>array(
+                    "D1" => "Daytime1  [06:00-12:00]",
+                    "D2" => "Daytime2  [12:00-18:00]",
+                    "E0" => "Evening   [18:00-00:00]",
+                    "LN" => "Nighttime [00:00-06:00]",
+                ),
+                "title"=>"Receiving",
+            );
+            $app->render('libraryInduct.twig',$params);
+        });
+    });
+    // Review(s)
     $app->group('/review', $authenticate, function () use ($app,$authenticate){
             $app->get('/', $authenticate, function () use ($app){
                 global $mysqli;
