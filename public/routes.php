@@ -513,10 +513,13 @@ if(isset($_SESSION["DBHOST"])){
                 );
                 $app->render('reviewListCompleted.twig',$params);
             });
-            $app->put('/:id', $authenticate, function ($id) use ($app){
+            $app->put('/:id', $authenticate, function ($id) use ($app){ // Update
                 $app->render('notSupported.twig');
             });
-            $app->get('/:id', $authenticate, function ($id) use ($app){
+            $app->post('/:id',$authenticate, function ($id) use ($app){ // Create (not allowed)
+                $app->render('notSupported.twig');
+            });
+            $app->get('/:id', $authenticate, function ($id) use ($app){ // Query
                 // Create new Album Review
                 global $mysqli;
                 $maxResult = 100;

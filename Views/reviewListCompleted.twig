@@ -63,4 +63,33 @@
             {% endfor %}
         </tbody>
     </table>
+<div id="printModal" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Edit/Approve review #<span id="modal-title-name"></span></h4>
+            </div>
+            <div class="modal-body">
+                
+                <!--<p>Please choose your media</p>
+                <p class="text-warning"><small>... small text ... </small></p>-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="SubmitReview()">Submit</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block lastScripts %}
+<script type="text/javascript">
+function review(printer){
+    $("#printModal").modal({
+        show: 'true'
+    });
+    //window.open('printtest.php', '  printwindow');
+}
+</script>
 {% endblock %}
