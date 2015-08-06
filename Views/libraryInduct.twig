@@ -83,10 +83,13 @@
                     <div id="gen_group" class="form-group input-group">
                         <label for="schedule" class="input-group-addon">Schedule</label>
                         <select id="schedule" class="form-control" name="schedule" data-placeholder="Schedule Block" style="min-width: 150px;">
-                            <option value="null">Schedule Block</option>
-                            {% for key,value in scheduleBlock %}
-                                <option value='{{key}}'>{{value|default('Unknown block')}}</option>
-                            {% endfor %}
+                            {% if scheduleBlock is null %}
+                                <option value="null">No Schedule Blocks</option>
+                            {% else %}
+                                {% for key,value in scheduleBlock %}
+                                    <option value='{{key}}'>{{value|default('Unknown block')}}</option>
+                                {% endfor %}
+                            {% endif %}
                         </select>
                         <br>
                     </div>
