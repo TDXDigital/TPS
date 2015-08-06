@@ -82,13 +82,11 @@
             </div>
         </div>
         {% if websites is not null %}
-        <hr>
         <div class="row">
             {% for service,serviceAttr in websites %}
             <div class="col-lg-3">
                 <div class="form-group">
-                    <label title="Opens in separate tab">{{service|upper}} <a href="{{serviceAttr.url}}" target="_externalLink"><i class="fa fa-external-link"></i></a></label>
-                    <p class="form-control-static"><a href="{{serviceAttr.url}}" target="_externalLink">{{serviceAttr.url|lower|striptags}}</a></p>
+                    <label title="{{serviceAttr.url|lower|striptags}}"><a href="{{serviceAttr.url}}" target="_externalLink">{{service|upper}} <i class="fa fa-external-link"></i></a></label>
                 </div>
             </div>
             {% endfor %}
