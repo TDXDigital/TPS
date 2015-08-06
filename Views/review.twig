@@ -15,9 +15,25 @@
 </ol>
 {% endblock %}
 {% block content %}
-    <form role="form" method="POST" action="../{{album.RefCode}}">
+    <form role="form" {% if review.ReviewID is null %}
+          method="POST" action="../{{album.RefCode}}">
+        {% else %}
+            method="POST" action="./{{review.ReviewID}}" > <!-- PUT NOT YET SUPPORTED BY BROWSER -->
+        {% endif %}
         <div class="row">
             <div class="col-lg-12">
+                {% if permissions > 1 %}
+                    <span class="pull-left {% if review.accepted is null %}
+                          text-warning"><i class="fa fa-warning"></i> REVIEW PENDING APPROVAL
+                    {% elseif review.accepted == 1 %}
+                        text-success"><i class="fa fa-check-square-o"></i> REVIEW APPROVED
+                    {% elseif review.accepted == 0 %}
+                        text-danger"><i class="fa fa-warning"></i> REVIEW REJECTED
+                    {% else %}
+                        text-danger"><i class="fa fa-exclamation-triangle"></i>****** UNKNOWN STATUS / ERROR *******
+                    {% endif %}
+                    </span>
+                {% endif %}
                 <span class="pull-right text-muted"><i class="fa fa-language" title="Form input is restricted to alphanumeric (a-Z,0-9) and the following special characters: ,">
                         &nbsp;input is restricted to alphanumeric (a-Z,0-9) entry</i></span><br>
             </div>
@@ -63,7 +79,14 @@
             <div class="col-lg-3">
                 <div class="form-group">
                     <label>Various Artists</label>
-                    <p class="form-control-static">{{album.variousArtists|default('No or Unknown')}}</p>
+                    <p class="form-control-static">{% if album.variousArtists == 0 %}
+                                No
+                            {% elseif album.variousArtists == 1 %}
+                                Yes
+                            {% else %}
+                                Unknown/Undefined
+                        {% endif %}
+                    </p>
                 </div>
                 <div class="form-group">
                     <label>Release year</label>
@@ -97,25 +120,43 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     <label for='rname'>Reviewer Name</label>
-                    <input id='rname' name="reviewer" class="form-control" required type="text" placeholder="Your first and last name (eg. Joe Swanson)"/>
+                    <input id='rname' name="reviewer" class="form-control" required type="text" 
+                           {% if review.reviewer is not null %}
+                               value="{{review.reviewer}}" 
+                            {% endif %}
+                           placeholder="Your first and last name (eg. Joe Swanson)"/>
                 </div>
                 <div class="form-group">
                     <label for='hometown'>Band Hometown</label>
-                    <input id='hometown' name="hometown" class="form-control" type="text" placeholder="Please list city, abbreviated province/state (if applicable), country (eg: Toronto, ON, Canada)" />
+                    <input id='hometown' name="hometown" class="form-control" type="text" 
+                           {% if review.hometown is not null %}
+                               value="{{review.hometown}}" 
+                            {% endif %}
+                            placeholder="Please list city, abbreviated province/state (if applicable), country (eg: Toronto, ON, Canada)" />
                 </div>
                 <div class="form-group">
                     <label for='subgenres'><i class="fa fa-language" title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: ,"></i> Additional SubGenres</label>
-                    <input id='subgenres' name="subgenres" class="form-control" type="text" pattern="[a-zA-Z0-9\s\,]+" placeholder="List distinct genre crossovers or more specific ones (eg: Punk-rock, gypsy-punk, cow-punk)" />
+                    <input id='subgenres' name="subgenres" class="form-control" type="text" pattern="[a-zA-Z0-9\s\,]+" 
+                           {% if review.subGenre is not null %}
+                               value="{{review.subGenre}}" 
+                            {% endif %}
+                            placeholder="List distinct genre crossovers or more specific ones (eg: Punk-rock, gypsy-punk, cow-punk)" />
                 </div>
                 <div class="form-group">
                     <label for='RIYL'><i class="fa fa-language" title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: (,!.:)"></i> Recommended if you like:</label>
-                    <input id='RIYL' name="recommend" class="form-control" type="text" pattern="[a-zA-Z0-9\s\,\!\.\:\)\(]+" placeholder="Name a couple additional artists they sound like (eg: Arcade Fire, Metric, Broken Social Scene)" />
+                    <input id='RIYL' name="recommend" class="form-control" type="text" pattern="[a-zA-Z0-9\s\,\!\.\:\)\(]+" 
+                           {% if review.recommends is not null %}
+                               value="{{review.recommends}}" 
+                            {% endif %}
+                           placeholder="Name a couple additional artists they sound like (eg: Arcade Fire, Metric, Broken Social Scene)" />
                 </div>
                 <div class="form-group">
                                 <label for="femcon">FemCon</label>
                                 <select id=femcon" name="femcon" class="form-control">
-                                    <option selected value="0">No / Unknown</option>
-                                    <option value="1">Yes</option>
+                                    <option {% if review.femcon is null or review.femcon == 0 %}
+                                        selected 
+                                        {% endif %} value="0">No / Unknown</option>
+                                    <option {% if review.femcon == 1%} selected {% endif %} value="1">Yes</option>
                                 </select>
                             </div>
             </div>
@@ -124,7 +165,7 @@
                     <label for="description"><i class="fa fa-language"  title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: (,!.:#)"></i> Description</label>
                     <textarea id="description" class="form-control" required rows="5" maxlength="500" 
                               placeholder="A brief and relatively objective description of relevant facts about album, artist, collaborations, and sound" name="description" 
-                              pattern="[a-zA-Z0-9\s\,\!\.\:\)\(\#]+" ></textarea>
+                              pattern="[a-zA-Z0-9\s\,\!\.\:\)\(\#]+" >{% if review.description is not null %}{{review.description}}{% endif %}</textarea>
                     <h6 class="pull-right" id="count_message"></h6>
                 </div>
             </div>
@@ -132,13 +173,16 @@
                 <div class="form-group">
                     <label for="notes"><i class="fa fa-language"  title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: (,!.:)"></i> Notes</label>
                     <textarea id="notes" class="form-control" rows="2" maxlength="200" placeholder="additional relevant information, please also list any tracks with profanity or obscenity" name="notes" 
-                              pattern="[a-zA-Z0-9\s\,\!\.\:\)\(]+" ></textarea>
+                              pattern="[a-zA-Z0-9\s\,\!\.\:\)\(]+" >{% if review.notes is not null %}{{review.notes}}{% endif %}</textarea>
                     <h6 class="pull-right" id="count_message_notes"></h6>
                 </div>
             </div>
             <div class="col-lg-6">
                 <hr>
                 <div class="form-group pull-right">
+                    {% if review.ReviewID is not null %}
+                        <input type="hidden" name="_METHOD" value="PUT"/>
+                    {% endif %}
                 <button type="submit" class="btn btn-success">Submit</button>
                 <button type="reset" class="btn btn-warning">Reset</button>
                 </div>
