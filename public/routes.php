@@ -230,9 +230,9 @@ if(isset($_SESSION["DBHOST"])){
                 "PRINTID"=>json_encode($_SESSION['PRINTID']),
                 "govCats"=>array(
                     // CRTC Categories http://www.crtc.gc.ca/eng/archive/2010/2010-819.HTM
+                    "21" => "Pop, rock and dance",
                     "11" => "News",
                     "12" => "Spoken word-other",
-                    "21" => "Pop, rock and dance",
                     "22" => "Country and country-oriented",
                     "23" => "Acoustic",
                     "24" => "Easy listening",
@@ -265,6 +265,7 @@ if(isset($_SESSION["DBHOST"])){
                     "CD" => "Compact Disc",
                     "Digital"=>"Digital",
                     "12in" => "12\"",
+                    "10in" => "10\"",
                     "7in" => "7\"",
                     "Cass" => "Cassette",
                     "Cart"=>"Fidelipac (cart)",
