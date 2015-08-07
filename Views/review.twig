@@ -23,7 +23,7 @@
         <div class="row">
             <div class="col-lg-12">
                 {% if permissions > 1 %}
-                    <span class="pull-left {% if review.accepted is null %}
+                    <span class="pull-left {% if review.accepted is null and review.ReviewID is not null%}
                           text-warning"><i class="fa fa-warning"></i> REVIEW PENDING APPROVAL
                     {% elseif review.accepted == 1 %}
                         text-success"><i class="fa fa-check-square-o"></i> REVIEW APPROVED

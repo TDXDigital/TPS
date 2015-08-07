@@ -15,9 +15,10 @@
         Library Management
     </li>
 </ol>
+    <!--<span>SUCCESS: {{success}}, ERROR: {{error}}, ID: {{PRINTID}}| {% for id in PRINTID %}{{id}},{% endfor %}</span>-->
 {% endblock %}
 {% block content %}
-<form role="form" action="/Playlist/playlist.induct.php" method="post">
+<form role="form"  method="post"> <!-- action="/Playlist/playlist.induct.php" -->
     <div class="row">
         <div class="col-lg-6">
             <fieldset>
@@ -48,7 +49,7 @@
                     <div id="gen_group" class="form-group input-group">
                         <label for="genre" class="input-group-addon">Genre&nbsp;</label>
                         <select id="genre" class="form-control" name="genre" data-placeholder="Album Genre" style="min-width: 150px;">
-                            <option value="null">Genre</option>
+                            <!--<option value="null">Genre</option>-->
                             {% for key,value in genres %}
                                 <option value='{{key}}'>{{value|default('Unknown Genre')}}</option>
                             {% endfor %}
@@ -411,7 +412,7 @@
         print_start = $("#start").val();
         media_type = $("#media-type").val();
         outline = $("#outline").is(':checked');
-        window.open('/Playlist/printtest.php?type='+media_type+'&start='+print_start+
+        window.open('/Playlist/PrintTest.php?type='+media_type+'&start='+print_start+
                 '&outline='+outline, '  printwindow');
     }
     

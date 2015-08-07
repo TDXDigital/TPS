@@ -227,7 +227,7 @@ if(isset($_SESSION["DBHOST"])){
     $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $app->get('/', $authenticate, function () use ($app){
             $params = array(
-                #"PRINTID"=>$_SESSION['PRINTID'],
+                "PRINTID"=>json_encode($_SESSION['PRINTID']),
                 "govCats"=>array(
                     // CRTC Categories http://www.crtc.gc.ca/eng/archive/2010/2010-819.HTM
                     "11" => "News",
@@ -272,14 +272,210 @@ if(isset($_SESSION["DBHOST"])){
                     "Other"=>"Other"
                 ),
                 "scheduleBlock"=>array(
-                    "D1" => "Daytime1  [06:00-12:00]",
-                    "D2" => "Daytime2  [12:00-18:00]",
-                    "E0" => "Evening   [18:00-00:00]",
-                    "LN" => "Nighttime [00:00-06:00]",
+                    NULL => "Select",
+                    "M" => "Daytime1  [06:00-12:00]",
+                    "D" => "Daytime2  [12:00-18:00]",
+                    "E" => "Evening   [18:00-00:00]",
+                    "N" => "Nighttime [00:00-06:00]",
                 ),
                 "title"=>"Receiving",
             );
             $app->render('libraryInduct.twig',$params);
+        });
+        $app->post('/', $authenticate , function () use ($app){
+            global $mysqli;
+            /* @var $artist Contains the artist name */
+            $artist = filter_input(INPUT_POST, "artist");
+            $album = filter_input(INPUT_POST,"album");
+            $genre = filter_input(INPUT_POST,"genre")?:NULL;
+            $datein = filter_input(INPUT_POST, "indate")?:NULL;
+            $label = filter_input(INPUT_POST, "label")?:NULL;
+            $format = filter_input(INPUT_POST, "format")?:NULL;
+            $governmentCategory = filter_input(INPUT_POST, "category")?:NULL;
+            $schedule = filter_input(INPUT_POST, "schedule")?:NULL;
+            $playlist = filter_input(INPUT_POST, "playlist")?:FALSE;
+            $print = filter_input(INPUT_POST, "print")? : 0;
+            $accepted = filter_input(INPUT_POST, "accepted")? :0;
+            $variousartists = filter_input(INPUT_POST, "va")? :0;
+            $label_size = filter_input(INPUT_POST, "Label_Size")? : 1;
+            $locale = filter_input(INPUT_POST, "locale")? :"international";
+            $release_date = filter_input(INPUT_POST,'rel_date')?:NULL;
+            $note = filter_input(INPUT_POST, "notes")?:NULL;
+
+            if($locale=="International"){
+                $CanCon=0;
+            }
+            else{
+                $CanCon=1;
+            }
+
+            if($accepted<>0){
+                $accepted = 1;
+            }
+            $labelNum = NULL;
+
+            // Get label number if exists
+            $stmt1 = $mysqli->prepare("SELECT labelNumber FROM recordlabel where Name=? limit 1");
+            $stmt1->bind_param("s",$label);
+            if(!$stmt1->execute()){
+                $stmt1->close();
+                $app->flash('error',$mysqli->error);
+                $app->redirect('./');
+            }
+            $stmt1->bind_result($labelNum);
+            $stmt1->fetch();
+            $stmt1->close();
+
+            //if does not exist create label
+            if(is_null($labelNum)){
+                $stmt2 = $mysqli->prepare("INSERT INTO recordlabel(Name,size) VALUES (?,?)");
+                $stmt2->bind_param("si",$label,$label_size);
+                if(!$stmt2->execute()){
+                    $stmt2->close();
+                    #header("location: ../library/?q=new&e=".$mysqli->errno."&s=2");
+                    $app->flash('error',$mysqli->error);
+                    $app->redirect('./');
+                    //echo "ERROR: " .    $mysqli->error;
+                }
+                else{
+                    $labelNum=$stmt2->insert_id;
+                    //echo "created recordlabel #".$labelNum;
+                }
+                $stmt2->close();
+            }
+            else{
+                //echo $labelNum ? : " NULL ";
+            }
+            //echo "creating album...";
+            if($genre=="null"){
+                $genre=NULL;
+            }
+            if(is_null($labelNum)||$labelNum=="null"){
+                #header("location: ../library/?q=new&e=9999&s=3");
+                $app->flash('error','label is required but was not proveded or was invalid. could not recieve album');
+                $app->redirect('./');
+            }
+
+            if($playlist===FALSE){
+                // check if entry exists in playlist table
+
+                // if so, report error
+
+                // else lleave set to FALSE
+                $playlist=1;
+            }
+            else{
+                // check if entriy exists in 'playlist' table
+
+                // if rejected, it cannot go to playlist by definition.
+                // set to FALSE in that case (1)
+                if(!$accepted){
+                    $playlist = 1;
+                }
+                else{
+                    // if not set to 'PENDING'
+                    $playlist = 0;
+
+                    // if so set to 'COMPLETE'
+                    // this should no happen unless changing back to already set value??
+                }
+            }
+
+            if(!$stmt3 = $mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,
+                format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
+                governmentCategory,scheduleCode)
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
+                $stmt3->close();
+                header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
+            }
+            if(!is_null($release_date)){
+                $year = date('Y',strtotime($release_date));
+            }
+            else{
+                $year = NULL;
+            }
+            if(!$stmt3->bind_param(
+                    "sssissiisisssiss",
+                    $datein,
+                    $artist,
+                    $album,
+                    $variousartists,
+                    $format,
+                    $genre,
+                    $accepted,
+                    $labelNum,
+                    $locale,
+                    $CanCon,
+                    $release_date,
+                    $year,
+                    $note,
+                    $playlist,
+                    $governmentCategory,
+                    $schedule
+                    )){
+                $stmt3->close();    
+                $app->flash('error',$mysqli->error);
+                $app->redirect('./');
+                #header("location: ../library/?q=new&e=".$mysqli->errno."&s=3_b&m=".$mysqli->error);
+            }
+
+            if(!$stmt3->execute()){
+                error_log("SQL-STMT Error (SEG-3):[".$mysqli->errno."] ".$mysqli->error);
+                $error = [$mysqli->errno,$mysqli->error];
+                $stmt3->close();
+                #header("location: /library/?q=new&e=".$error[0]."&s=3&m=".$error[1]);
+                $app->flash('error',$mysqli->error);
+                $app->redirect('./');
+                //echo "ERROR #".$mysqli->errno . "  " .    $mysqli->error;
+            }
+            else{
+                $id_last = $stmt3->insert_id;
+                $stmt3->close();
+                if($stmt4=$mysqli->prepare("INSERT INTO band_websites (ID,URL,Service) VALUES (?,?,?)")){
+                    $stmt4->bind_param("iss",$id_last,$url,$service);
+                    $services=[
+                        "twitter"=>filter_input(INPUT_POST, 'twitter',FILTER_SANITIZE_URL),
+                        "facebook"=>filter_input(INPUT_POST, 'facebook',FILTER_SANITIZE_URL),
+                        "bandcamp"=>filter_input(INPUT_POST, 'bandcamp',FILTER_SANITIZE_URL),
+                        "soundcloud"=>filter_input(INPUT_POST, 'soundcloud',FILTER_SANITIZE_URL),
+                        "website"=>filter_input(INPUT_POST, 'website',FILTER_SANITIZE_URL)
+                    ];
+                    if(strpos($services["bandcamp"], "soundcloud.com")&&(is_null($services['soundcloud'])||$service['soundcloud']==''))
+                    {
+                        // if soundcloud is in the bandcamp URL, reassign it to soundcloud
+                        $services["soundcloud"] = $services["bandcamp"];
+                        $services["bandcamp"] = NULL;
+                    }
+                    foreach($services as $key=>$value){
+                        $url=$value;
+                        $service=$key;
+                        if($value!=""&&!is_null($value)){
+                            /*if(!$stmt4->execute())
+                            {
+                                $webresult .= $mysqli->error;
+                            }*/
+                            $stmt4->execute();
+                        }
+                    }
+                }
+                /*else{
+                    $webresult .= $mysqli->error;
+                }*/
+
+                if(strtolower(substr($artist,-1))!='s'){
+                    $s = "s";
+                }
+                else{
+                    $s="";
+                }
+                if($print==1){
+                    $_SESSION['PRINTID'][]=$id_last;
+                }
+            }
+            #header("location: /library/?q=new&m=$artist'$s%20new%20album%20entered ($id_last)");
+            $app->flash('Success',"Album Recieved");
+            #var_dump($_SESSION);
+            $app->redirect('./');
         });
     });
     // Review(s)
