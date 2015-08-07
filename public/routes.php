@@ -260,6 +260,7 @@ if(isset($_SESSION["DBHOST"])){
                     "HH" => "Hip-Hop",
                     "HM" => "Heavy/Punk/Metal",
                     "WD" => "World",
+                    "OT" => "World",
                 ),
                 "format"=>array(
                     "CD" => "Compact Disc",
