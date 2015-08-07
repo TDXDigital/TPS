@@ -227,7 +227,6 @@ if(isset($_SESSION["DBHOST"])){
     $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $app->get('/', $authenticate, function () use ($app){
             $params = array(
-                "PRINTID"=>json_encode($_SESSION['PRINTID']),
                 "govCats"=>array(
                     // CRTC Categories http://www.crtc.gc.ca/eng/archive/2010/2010-819.HTM
                     "21" => "Pop, rock and dance",
@@ -282,6 +281,9 @@ if(isset($_SESSION["DBHOST"])){
                 ),
                 "title"=>"Receiving",
             );
+            if(isset($_SESSION['PRINTID'])){
+                $params["PRINTID"]=json_encode($_SESSION['PRINTID']);
+            }
             $app->render('libraryInduct.twig',$params);
         });
         $app->post('/', $authenticate , function () use ($app){
