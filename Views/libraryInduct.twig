@@ -97,13 +97,13 @@
                 <div class="col-lg-6">
                     <div id="ind_group" class="form-group input-group">
                         <label for="label" class="input-group-addon">Label</label>
-                        <input id="label" type="text" class="form-control" required="required" list="labels" name="label" tabindex="6" placeholder="Proper Record Label Name"/>
+                        <input id="label" type="text" class="form-control" required="required" list="labels" name="label" placeholder="Proper Record Label Name"/>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div id="format" class="form-group input-group">
                         <label for="label" class="input-group-addon">Format</label>
-                        <select class="form-control" name="format" tabindex="7">
+                        <select class="form-control" name="format">
                             {% for key,value in format %}
                                 <option value='{{key}}'>{{value|default('Unknown format')}}</option>
                             {% endfor %}
@@ -113,32 +113,32 @@
                 <div class="col-lg-6">
                     <div id="ind_group" class="form-group input-group">
                         <label for="indate" class="input-group-addon">Date In</label>
-                        <input id="indate" type="text" class="form-control" value="{{"now"|date("Y-m-d")}}" name="indate" tabindex="13"/>
+                        <input id="indate" type="text" class="form-control" value="{{"now"|date("Y-m-d")}}" name="indate" />
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div id="ind_group" class="form-group input-group">
                         <label for="reldate" class="input-group-addon">Release Date</label>
-                        <input id="reldate" type="text" class="form-control" value="{{"now"|date("Y-m-d")}}" name="rel_date" tabindex="12"/>
+                        <input id="reldate" type="text" class="form-control" value="{{"now"|date("Y-m-d")}}" name="rel_date" />
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div id="ind_group" class="form-group input-group">
                         <label for="notes" class="input-group-addon">Notes</label>
-                        <input id="notes" type="text" class="form-control" name="notes" tabindex="15" placeholder="optional"/>
+                        <input id="notes" type="text" class="form-control" name="notes" placeholder="optional"/>
                     </div>
                 </div>
                 <div class="col-lg-3">
-                    <input type="checkbox" id="va_checkbox" data-label-prepend="VA" class="style3" name="print" value="1" tabindex="8">
+                    <input type="checkbox" id="va_checkbox" data-label-prepend="VA" class="style3" name="print" value="1" />
                 </div>
                 <div class="col-lg-3">
-                    <input type="checkbox" data-label-prepend="Keep" class="style3" name="accept" checked="checked" value="1" tabindex="9">
+                    <input type="checkbox" data-label-prepend="Keep" class="style3" name="accept" checked="checked" value="1"/>
                 </div>
                 <div class="col-lg-3">
-                    <input type="checkbox" data-label-prepend="Print" class="style3" name="print" checked="checked" value="1" tabindex="10">
+                    <input type="checkbox" data-label-prepend="Print" class="style3" name="print" checked="checked" value="1" />
                 </div>
                 <div class="col-lg-3">
-                    <input type="checkbox" data-label-prepend="PL" class="style3" name="playlist" checked="checked" value="0" tabindex="11">
+                    <input type="checkbox" data-label-prepend="PL" class="style3" name="playlist" checked="checked" value="0" />
                 </div>
             </div>
         </div>
@@ -149,25 +149,25 @@
             <div class="col-md-6">
                 <div id="web_group" class="input-group form-group">
                     <label for="website" class="input-group-addon" title="Band Website"><span class="fa fa-link"></span></label>
-                    <input id="website" type="url" class="form-control" name="website" tabindex="23" placeholder="http://www.bandwebsite.com"/>
+                    <input id="website" type="url" class="form-control" name="website" placeholder="http://www.bandwebsite.com"/>
                 </div>
             </div>
             <div class="col-md-6">
                 <div id="bnc_group" class="input-group form-group">
                     <label for="bandcamp" class="input-group-addon" title="Soundcloud / Bandcamp URL"><i class="fa fa-soundcloud"></i></label>
-                    <input id="bandcamp" type="url" class="form-control"  name="bandcamp" tabindex="24" placeholder="Soundcloud / Bandcamp"/>
+                    <input id="bandcamp" type="url" class="form-control"  name="bandcamp" placeholder="Soundcloud / Bandcamp"/>
                 </div>
             </div>
             <div class="col-md-6">
                 <div id="bnc_group" class="input-group form-group">
                     <label for="fb" class="input-group-addon" title="Facebook URL"><i class="fa fa-facebook-f"></i></label>
-                    <input id="fb" type="url" class="form-control" name="facebook"tabindex="25" placeholder="http://www.facebook.com"/>
+                    <input id="fb" type="url" class="form-control" name="facebook" placeholder="http://www.facebook.com"/>
                 </div>
             </div>
             <div class="col-md-6">
                 <div id="bnc_group" class="input-group form-group">
                     <label for="tw" class="input-group-addon" title="Twitter URL"><i class="fa fa-twitter"></i></label>
-                    <input id="tw" type="url" class="form-control" name="twitter" tabindex="26" placeholder="http://www.twitter.com"/>
+                    <input id="tw" type="url" class="form-control" name="twitter" placeholder="http://www.twitter.com"/>
                 </div>
             </div>
         </div>
@@ -312,7 +312,7 @@
                         <div class="form-group col-sm-4">
                             <div id="format" class="input-group">
                                 <label for="label" class="input-group-addon">Region</label>
-                                <select id="e_locale" class="form-control" name="locale" tabindex="5">
+                                <select id="e_locale" class="form-control" name="locale">
                                     <option value="International">International</option>
                                     <option value="Country">Country</option>
                                     <option value="Province">Province</option>
