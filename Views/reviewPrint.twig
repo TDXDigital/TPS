@@ -1,0 +1,95 @@
+{% extends 'baseAdmin.twig' %}
+
+{% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+    </li>
+    <li class="active">
+        <i class="fa fa-comments-o"></i>
+        <a href="/review">Reviews</a>
+    </li>
+    <li>
+        <i class="fa fa-check-square-o"></i> Completed
+    </li>
+</ol>
+{% endblock %}
+{% block content %}
+    {% if flash.error %}
+        <div class="row">
+            <div class="alert alert-danger">
+                <strong>Error</strong> {{flash.error}}
+            </div>
+        </div>
+    {% endif %}
+    {% if flash.success %}
+        <div class="row">
+            <div class="alert alert-success">
+                <strong>Success</strong> {{flash.success}}
+            </div>
+        </div>
+    {% endif %}
+    <!--<form role="form" method="POST" action="/review/search/">
+        <div class="row">
+            <div class="form-group input-group">
+                <input type="text" class="form-control" name="q" 
+                       {% if search %}
+                           value="{{search}}"
+                       {% endif %}>
+                <span class="input-group-btn"><button class="btn btn-default" type="button"><i class="fa fa-search"></i></button></span>
+            </div>
+        </div>
+    </form>-->
+    <table class='table table-bordered table-hover' >
+        <thead>
+            <th>Reviewer</th>
+            <th>Album</th>
+            <th>Artist</th>
+            <th>Date</th>
+            <th>View</th>
+            <th>Review</th>
+        </thead>
+        <tbody>
+            {% for id,review in reviews %}
+                <tr>
+                    <td>{{review.reviewer}}</td>
+                    <td>{{review.artist}}</td>
+                    <td>{{review.album}}</td>
+                    <td>{{review.date|date('d M, Y H:m')}}</td>
+                    <td><a href="/review/{{id}}"><i class="fa fa-desktop"> View</i></a></td>
+                    <td><a href="javascript: review({{id}})"><i class="fa fa-edit"> Edit/Approve</i></a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+<div id="printModal" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Edit/Approve review #<span id="modal-title-name"></span></h4>
+            </div>
+            <div class="modal-body">
+                
+                <!--<p>Please choose your media</p>
+                <p class="text-warning"><small>... small text ... </small></p>-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="SubmitReview()">Submit</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block lastScripts %}
+<script type="text/javascript">
+function review(printer){
+    $("#printModal").modal({
+        show: 'true'
+    });
+    //window.open('printtest.php', '  printwindow');
+}
+</script>
+{% endblock %}

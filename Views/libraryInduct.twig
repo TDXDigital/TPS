@@ -18,20 +18,26 @@
     <!--<span>SUCCESS: {{success}}, ERROR: {{error}}, ID: {{PRINTID}}| {% for id in PRINTID %}{{id}},{% endfor %}</span>-->
 {% endblock %}
 {% block content %}
-<form role="form"  method="post"> <!-- action="/Playlist/playlist.induct.php" -->
+<form role="form" method="post"> <!-- action="/Playlist/playlist.induct.php" -->
+    {% if album.name is not null %}
+    {% endif %}
     <div class="row">
         <div class="col-lg-6">
             <fieldset>
                 <div id="art-group" class="form-group input-group">
                     <label class="input-group-addon" for="art_field">Artist&nbsp;<span style="color:red">&nbsp;*</span></label>
-                    <input name="artist" id="art_field" type="text" required list="artists" placeholder="Start typing artist name to retrieve list" autocomplete="on" class="form-control" autofocus="autofocus" onkeyup="catch_enter(event);">
+                    <input name="artist" id="art_field" type="text" required list="artists" 
+                           {% if album.artist is not null %} value="{{album.artist}}" {% endif %}
+                           placeholder="Start typing artist name to retrieve list" autocomplete="on" class="form-control" autofocus="autofocus" onkeyup="catch_enter(event);">
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="button" onclick="get_albums();return true;"><i class="fa fa-search"></i></button>
                     </span>
                 </div>
                 <div id="alb_group" class="form-group input-group">
                     <label class="input-group-addon" for="alb_field">Album<span style="color:red">*</span></label>
-                    <input name="album" id="alb_field" type="text" required placeholder="Start typing album name to retrieve list" autocomplete="on" class="form-control">
+                    <input name="album" id="alb_field" type="text" required 
+                           {% if album.album is not null %} value="{{album.album}}" {% endif %}
+                           placeholder="Start typing album name to retrieve list" autocomplete="on" class="form-control">
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="button" onclick="get_albums();return true;"><i class="fa fa-search"></i></button>
                     </span>
@@ -51,7 +57,9 @@
                         <select id="genre" class="form-control" name="genre" data-placeholder="Album Genre" style="min-width: 150px;">
                             <!--<option value="null">Genre</option>-->
                             {% for key,value in genres %}
-                                <option value='{{key}}'>{{value|default('Unknown Genre')}}</option>
+                                <option value='{{key}}' 
+                                        {% if album.genre == key %} selected {% endif %}
+                                        >{{value|default('Unknown Genre')}}</option>
                             {% endfor %}
                         </select>
                         <br>
@@ -62,7 +70,9 @@
                         <label for="category" class="input-group-addon">Category</label>
                         <select id="category" class="form-control" name="category" data-placeholder="Government Category" style="min-width: 150px;">
                             {% for key,value in govCats %}
-                                <option value='{{key}}'>{{key}} {{value|default('Unknown Category')}}</option>
+                                <option value='{{key}}' 
+                                        {% if album.governmentCategory == key %} selected {% endif %}
+                                        >{{key}} {{value|default('Unknown Category')}}</option>
                             {% endfor %}
                         </select>
                         <br>
@@ -72,10 +82,17 @@
                     <div id="ind_group" class="form-group input-group">
                         <label for="locale" class="input-group-addon">Region</label>
                         <select id="locale" class="form-control" name="locale">
+                            {% set locale=locale?:["International","Country","Province","Local"] %}
+                            {% for key in locale %}
+                                <option value='{{key}}' 
+                                        {% if album.Locale == key %} selected {% endif %}
+                                        > {{key|default('Unknown Category')}}</option>
+                            {% endfor %}
+                            <!--
                             <option value="International">International</option>
                             <option value="Country">Country</option>
                             <option value="Province">Province</option>
-                            <option value="Local">Local</option>
+                            <option value="Local">Local</option>-->
                         </select>
                     </div>
                 </div>
@@ -87,7 +104,9 @@
                                 <option value="null">No Schedule Blocks</option>
                             {% else %}
                                 {% for key,value in scheduleBlock %}
-                                    <option value='{{key}}'>{{value|default('Unknown block')}}</option>
+                                    <option value='{{key}}'
+                                            {% if key == album.scheduleCode %} selected {% endif %}
+                                            >{{value|default('Unknown block')}}</option>
                                 {% endfor %}
                             {% endif %}
                         </select>
@@ -97,7 +116,9 @@
                 <div class="col-lg-6">
                     <div id="ind_group" class="form-group input-group">
                         <label for="label" class="input-group-addon">Label</label>
-                        <input id="label" type="text" class="form-control" required="required" list="labels" name="label" placeholder="Proper Record Label Name"/>
+                        <input id="label" type="text" class="form-control" 
+                               {% if album.label.name is not null %} value="{{album.label.name}}" {% endif %}
+                               required="required" list="labels" name="label" placeholder="Proper Record Label Name"/>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -105,7 +126,9 @@
                         <label for="label" class="input-group-addon">Format</label>
                         <select class="form-control" name="format">
                             {% for key,value in format %}
-                                <option value='{{key}}'>{{value|default('Unknown format')}}</option>
+                                <option value='{{key}}'
+                                        {% if key == album.format %} selected {% endif %}
+                                        >{{value|default('Unknown format')}}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -113,33 +136,58 @@
                 <div class="col-lg-6">
                     <div id="ind_group" class="form-group input-group">
                         <label for="indate" class="input-group-addon">Date In</label>
-                        <input id="indate" type="text" class="form-control" value="{{"now"|date("Y-m-d")}}" name="indate" />
+                        <input id="indate" type="text" class="form-control" {% if album.datein is not null %} value="{{album.datein|date("Y-m-d")}}" {% else %} value="{{"now"|date("Y-m-d")}}" {% endif %}name="indate" />
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div id="ind_group" class="form-group input-group">
                         <label for="reldate" class="input-group-addon">Release Date</label>
-                        <input id="reldate" type="text" class="form-control" value="{{"now"|date("Y-m-d")}}" name="rel_date" />
+                        <input id="reldate" type="text" class="form-control" {% if album.release_date is not null %} value="{{album.release_date|date("Y-m-d")}}" {% else %} value="{{"now"|date("Y-m-d")}}" {% endif %} name="rel_date" />
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div id="ind_group" class="form-group input-group">
                         <label for="notes" class="input-group-addon">Notes</label>
-                        <input id="notes" type="text" class="form-control" name="notes" placeholder="optional"/>
+                        <input id="notes" type="text" 
+                               {% if album.note is not null %} value="{{album.note}}" {% endif %}
+                               class="form-control" name="notes" placeholder="optional"/>
                     </div>
                 </div>
                 <div class="col-lg-3">
-                    <input type="checkbox" id="va_checkbox" data-label-prepend="VA" class="style3" name="print" value="1" />
+                    <input type="checkbox" id="va_checkbox"
+                           {% if album.variousartists == 1 %} checked="checked" {% endif %}
+                           data-label-prepend="VA" class="style3" name="print" value="1" />
                 </div>
                 <div class="col-lg-3">
-                    <input type="checkbox" data-label-prepend="Keep" class="style3" name="accept" checked="checked" value="1"/>
+                    <input type="checkbox" data-label-prepend="Keep" 
+                           {% if album.status == 1 or album.status is null %} checked="checked" {% endif %}
+                           class="style3" name="accept" value="1"/>
                 </div>
+                {% if album.status is null %}
                 <div class="col-lg-3">
                     <input type="checkbox" data-label-prepend="Print" class="style3" name="print" checked="checked" value="1" />
                 </div>
                 <div class="col-lg-3">
                     <input type="checkbox" data-label-prepend="PL" class="style3" name="playlist" checked="checked" value="0" />
                 </div>
+                {% else %}
+                <div class="col-lg-3">
+                    <input type="checkbox" data-label-prepend="Print" class="style3" name="print" value="1" />
+                </div>
+                <div class="col-lg-3">
+                    {% set playlist = playlist?:['FALSE','PENDING','COMPLETE'] %}
+                    <div id="format" class="form-group input-group">
+                        <label for="label" class="input-group-addon">PL</label>
+                        <select class="form-control">
+                            {% for entry in playlist %}
+                                <option value="{{entry}}"
+                                        {% if entry == album.playlist_flag %} selected {% endif %}
+                                        >{{entry}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>    
+                {% endif %}
             </div>
         </div>
     </div>
@@ -149,25 +197,33 @@
             <div class="col-md-6">
                 <div id="web_group" class="input-group form-group">
                     <label for="website" class="input-group-addon" title="Band Website"><span class="fa fa-link"></span></label>
-                    <input id="website" type="url" class="form-control" name="website" placeholder="http://www.bandwebsite.com"/>
+                    <input id="website" type="url" 
+                           {% if album.websites.website is not null %} value="{{album.websites.website.url}}" {% endif %}
+                           class="form-control" name="website" placeholder="http://www.bandwebsite.com"/>
                 </div>
             </div>
             <div class="col-md-6">
                 <div id="bnc_group" class="input-group form-group">
                     <label for="bandcamp" class="input-group-addon" title="Soundcloud / Bandcamp URL"><i class="fa fa-soundcloud"></i></label>
-                    <input id="bandcamp" type="url" class="form-control"  name="bandcamp" placeholder="Soundcloud / Bandcamp"/>
+                    <input id="bandcamp" 
+                           {% if album.websites.bandcamp is not null %} value="{{album.websites.bandcamp.url}}" {% elseif album.websites.soundcloud is not null %} value="{{album.websites.soundcloud.url}}" {% endif %}
+                           type="url" class="form-control"  name="bandcamp" placeholder="Soundcloud / Bandcamp"/>
                 </div>
             </div>
             <div class="col-md-6">
                 <div id="bnc_group" class="input-group form-group">
                     <label for="fb" class="input-group-addon" title="Facebook URL"><i class="fa fa-facebook-f"></i></label>
-                    <input id="fb" type="url" class="form-control" name="facebook" placeholder="http://www.facebook.com"/>
+                    <input id="fb" type="url" 
+                           {% if album.websites.facebook is not null %} value="{{album.websites.facebook.url}}" {% endif %}
+                           class="form-control" name="facebook" placeholder="http://www.facebook.com"/>
                 </div>
             </div>
             <div class="col-md-6">
                 <div id="bnc_group" class="input-group form-group">
                     <label for="tw" class="input-group-addon" title="Twitter URL"><i class="fa fa-twitter"></i></label>
-                    <input id="tw" type="url" class="form-control" name="twitter" placeholder="http://www.twitter.com"/>
+                    <input id="tw" type="url" 
+                           {% if album.websites.twitter is not null %} value="{{album.websites.twitter.url}}" {% endif %}
+                           class="form-control" name="twitter" placeholder="http://www.twitter.com"/>
                 </div>
             </div>
         </div>
@@ -180,6 +236,9 @@
     </div>
     <div class="col-lg-6">
         <div class="pull-right">
+            {% if review.ReviewID is not null %}
+                <input type="hidden" name="_METHOD" value="PUT"/>
+            {% endif %}
             <input class="btn btn-primary" type="submit" >
             <input id="print_btn" class="btn btn-success" onclick="PrintModal();"
             {% if PRINTID is null %}
@@ -247,7 +306,7 @@
                 <h4 class="modal-title">Edit: <span id="modal-title"></span></h4>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal">
+                <form for="form2" class="form-horizontal">
                     <div class="form-inline">
                         <div class="form-group">
                             <label for="template" class="col-sm-2 control-label">Album</label>
@@ -363,7 +422,7 @@
         //window.open('printtest.php', '  printwindow');
     }
     
-    function edit(id){
+/*    function edit(id){
         $("#edit").modal({
             show: 'true'
         });
@@ -397,7 +456,7 @@
                             alert('select not defined');
                         }
                     }
-                    console.log(k+":"+v);
+                    console.log(k+"=>"+v);
                 })
             },
             complete: function(){
@@ -405,6 +464,9 @@
             }
         })
         //window.open('printtest.php', '  printwindow');
+    }*/
+    function edit(id){
+        window.open('{{siteUrl}}/library/'+id);
     }
     
     function PrintLabels(){

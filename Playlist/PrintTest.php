@@ -75,7 +75,8 @@
             $stmt->execute();
             $stmt->bind_result($artist,$album,$format,$genre,$CanCon,$locale);
             $stmt->fetch();
-            $padded=str_pad($BCD, 11, "0", STR_PAD_LEFT);
+            $prefix = 0;
+            $padded= join('', array($prefix,str_pad($BCD, 10, "0", STR_PAD_LEFT)));
             
             //echo "<img src='barcode/createBarcode.php?bcd=$BCD'/>";
             echo "<div class=\"label\"><span ><img style='float:left; margin:0px;' src='./barcode/barcode.php?bcd=$padded' alt='$padded'/>";
