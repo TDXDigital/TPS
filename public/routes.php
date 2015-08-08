@@ -207,7 +207,7 @@ if(isset($_SESSION["DBHOST"])){
     });
     // user group
     $app->group('/user', $authenticate, function () use ($app) {
-        // Get book with ID
+        // User page
         $app->get('/:id', function ($id) use ($app) {
             $app->render('notSupported.twig',array('title'=>'User Profile'));
         });
@@ -475,6 +475,9 @@ if(isset($_SESSION["DBHOST"])){
             $app->flash('Success',"Album Recieved");
             #var_dump($_SESSION);
             $app->redirect('./');
+        });
+        $app->put('/', $authenticate, function () use ($app){
+            // PUT SHIT HERE...
         });
     });
     // Review(s)
