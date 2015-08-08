@@ -10,7 +10,10 @@
         <i class="fa fa-tasks"></i> <a href="/review/">Reviews</a>
     </li>
     <li class="active">
-        <i class="fa fa-edit"></i> {{album.RefCode}}
+        <a href="/review/search/album/{{album.RefCode}}"><i class="fa fa-barcode"></i> {{album.RefCode}}</a>
+    </li>
+    <li class="active">
+        <i class="fa fa-edit"></i> {{review.ReviewID}}
     </li>
 </ol>
 {% endblock %}
@@ -19,10 +22,33 @@
           method="POST" action="../{{album.RefCode}}">
         {% else %}
             method="POST" action="./{{review.ReviewID}}" > <!-- PUT NOT YET SUPPORTED BY BROWSER -->
+            <input type="hidden" value="{{review.ReviewID}}" name="id" />
         {% endif %}
         <div class="row">
             <div class="col-lg-12">
                 {% if permissions > 1 %}
+                        <div class="pull-left form-group col-lg-3">
+                            {% if review.ReviewID is not null %}
+                                <label>Review Status</label>
+                                <select name="accepted" class="form-control">
+                                    <option value="null"  
+                                {% if review.approved is null%}
+                                    selected="selected" 
+                                {% endif %}
+                                /> Pending Approval</option>
+                                <option value="1" 
+                                {% if review.approved == 1 %}
+                                    selected="selected" 
+                                {% endif %}/> Approved</option>
+                                <option value="0" 
+                                {% if review.approved == 0 and not review.approved is null %}
+                                    selected="selected" 
+                                {% endif %}
+                                /> Rejected</option>
+                                </select>
+                            {% endif %}
+                        </div>
+                    {% else %}
                     <span class="pull-left {% if review.ReviewID is not null %}
                           {% if review.accepted is null%}
                             text-warning"><i class="fa fa-warning"></i> REVIEW PENDING APPROVAL
@@ -36,8 +62,8 @@
                     {% endif %}
                     </span>
                 {% endif %}
-                <span class="pull-right text-muted"><i class="fa fa-language" title="Form input is restricted to alphanumeric (a-Z,0-9) and the following special characters: ,">
-                        &nbsp;input is restricted to alphanumeric (a-Z,0-9) entry</i></span><br>
+                    <div class="pull-right text-muted"><span class="pull-right"><i class="fa fa-language" title="Form input is restricted to alphanumeric (a-Z,0-9) and the following special characters: ,">
+                                &nbsp;input is restricted to alphanumeric (a-Z,0-9) entry</i></span><br><span class='text-muted pull-right'>Last update {{ review.ts|date('H:m d-M-Y') }} UTC</span></div>
             </div>
         </div>
         <div class="row">

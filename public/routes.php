@@ -477,7 +477,12 @@ if(isset($_SESSION["DBHOST"])){
             $app->redirect('./');
         });
         $app->put('/', $authenticate, function () use ($app){
-            // PUT SHIT HERE...
+            if($_SESSION['access']<2){
+                $app->render('error.html.twig');
+            }
+            else{
+                $app->render('notSupported.twig');
+            }
         });
     });
     // Review(s)
@@ -712,7 +717,46 @@ if(isset($_SESSION["DBHOST"])){
                 $app->render('reviewListCompleted.twig',$params);
             });
             $app->put('/:id', $authenticate, function ($id) use ($app){ // Update
-                $app->render('notSupported.twig');
+                if($_SESSION['access']<2){
+                    $app->render('error.html.twig',array("status"=>403,"title"=>"Error 403","details"=>array("permission denied")));
+                }
+                else{
+                    #$app->render('notSupported.twig');
+                    $description = $app->request()->post('description');
+                    $notes = $app->request()->post('notes');
+                    $reviewer = $app->request()->post('reviewer');
+                    $hometown = $app->request()->post('hometown');
+                    $subgenres = $app->request()->post('subgenres');
+                    $recommend = $app->request()->post('recommend');
+                    $femcon = $app->request()->post('femcon');
+                    $approved = $app->request()->post('accepted')?:NULL;
+                    $id_post = $app->request()->post('id')?:NULL;
+                    if($id_post != $id){
+                        var_dump($_POST);
+                        die("ID mismatch");
+                    }
+                    global $mysqli;
+                    $update = "UPDATE review SET approved=?, femcon=?, reviewer=?,"
+                            . "hometown=?, subgenre=?, description=?, recommendations=?,"
+                            . "notes=? where id=?";
+                    $albums = array();
+                    $params = array();
+                    if($stmt = $mysqli->prepare($update)){
+                        $stmt->bind_param('iissssssi',
+                                $approved,$femcon,$reviewer,$hometown,$subgenres,
+                                $description,$recommend,$notes,$id);
+                        if($stmt->execute()){
+                            $stmt->close();
+                            $app->flash('success',"$id updated succesfully");
+                            $app->redirect('./complete');
+                        }
+                        $stmt->close();
+                    }
+                    else{
+                        print $mysqli->error;
+                    }
+                }
+                
             });
             $app->post('/:id',$authenticate, function ($id) use ($app){ // Create (not allowed)
                 $app->render('notSupported.twig');
