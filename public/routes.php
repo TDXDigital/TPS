@@ -17,11 +17,6 @@ $app->post('/', $authenticate($app), function() use ($app){
     $app->render('dashboard.twig');
 });
 
-/*$app->get('/login', function() use ($app){
-    $app->render('login.html.twig');
-    //$app->redirect('/Security/login.html');
-);*/
-
 $app->get("/login", function () use ($app) {
    $flash = $app->view()->getData('flash');
    $error = '';
