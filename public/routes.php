@@ -291,8 +291,8 @@ if(isset($_SESSION["DBHOST"])){
             $label = filter_input(INPUT_POST, "label")?:NULL;
             $format = filter_input(INPUT_POST, "format")?:NULL;
             $governmentCategory = filter_input(INPUT_POST, "category")?:NULL;
-            $schedule = filter_input(INPUT_POST, "schedule")?:NULL;
-            $playlist = filter_input(INPUT_POST, "playlist")?:FALSE;
+            $schedule = filter_input(INPUT_POST, "schedule")?:2;
+            $playlist = filter_input(INPUT_POST, "playlist")?:1;
             $print = filter_input(INPUT_POST, "print")? : 0;
             $accepted = filter_input(INPUT_POST, "accept")? :0;
             $variousartists = filter_input(INPUT_POST, "va")? :0;
@@ -310,10 +310,11 @@ if(isset($_SESSION["DBHOST"])){
 
             if($accepted<>0){
                 $accepted = 1;
+                
             }
             else{
                 $print=0;
-                $playlist=FALSE;
+                $playlist=2;
             }
             $labelNum = NULL;
 
@@ -359,30 +360,24 @@ if(isset($_SESSION["DBHOST"])){
                 $app->redirect('./');
             }
 
-            if($playlist===FALSE){
+            /*if($playlist==FALSE){
+                $playlist=NULL;
                 // check if entry exists in playlist table
 
                 // if so, report error
 
                 // else lleave set to FALSE
-                $playlist=1;
+                //$playlist=1;
             }
-            else{
-                // check if entriy exists in 'playlist' table
+            else{*/
+            // check if entriy exists in 'playlist' table
 
-                // if rejected, it cannot go to playlist by definition.
-                // set to FALSE in that case (1)
-                if(!$accepted){
-                    $playlist = 1;
-                }
-                else{
-                    // if not set to 'PENDING'
-                    $playlist = 0;
-
-                    // if so set to 'COMPLETE'
-                    // this should no happen unless changing back to already set value??
-                }
+            // if rejected, it cannot go to playlist by definition.
+            // set to FALSE in that case (1)
+            if(!$accepted){
+                $playlist=2;
             }
+            
 
             if(!$stmt3 = $mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,
                 format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
