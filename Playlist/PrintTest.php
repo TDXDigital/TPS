@@ -96,7 +96,7 @@
             else{
                 $artpost = "";
             }
-            if(strlen($albpost)>20){
+            if(strlen($album)>20){
                 $albpost = "...";
             }
             else{
