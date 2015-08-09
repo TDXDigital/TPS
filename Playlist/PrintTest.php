@@ -89,7 +89,20 @@
             else if ($locale=="Local"){
                 echo "<img style='float: right; margin: 0px;' width='25px' src='./pointer.png' alt='PRO'/>";
             }
-            echo "</span><br style='clear: both'><strong style='float: left'>$artist</strong><br><i style='float:left'>$album</i><span style='float:right;'>$genre</span><br style='clear: both'/></div>";
+            substr("abcdef", -1);
+            if(strlen($artist)>16){
+                $artpost = "...";
+            }
+            else{
+                $artpost = "";
+            }
+            if(strlen($albpost)>18){
+                $albpost = "...";
+            }
+            else{
+                $albpost = "";
+            }
+            echo "</span><br style='clear: both'><strong style='float: left'>".substr($artist,0,16).$artpost."</strong><br><i style='float:left'>."substr($album,0,18).$albpost."</i><span style='float:right;'>$genre</span><br style='clear: both'/></div>";
         }
     }
     else{
