@@ -102,7 +102,7 @@
             else{
                 $albpost = "";
             }
-            echo "</span><br style='clear: both'><strong style='float: left'>".substr($artist,0,16).$artpost."</strong><br><i style='float:left'>."substr($album,0,18).$albpost."</i><span style='float:right;'>$genre</span><br style='clear: both'/></div>";
+            echo "</span><br style='clear: both'><strong style='float: left'>".substr($artist,0,16).$artpost."</strong><br><i style='float:left'>".substr($album,0,18).$albpost."</i><span style='float:right;'>$genre</span><br style='clear: both'/></div>";
         }
     }
     else{
