@@ -90,7 +90,7 @@
                 echo "<img style='float: right; margin: 0px;' width='25px' src='./pointer.png' alt='PRO'/>";
             }
             substr("abcdef", -1);
-            if(strlen($artist)>23){
+            if(strlen($artist)>20){
                 $artpost = "...";
             }
             else{
@@ -102,7 +102,7 @@
             else{
                 $albpost = "";
             }
-            echo "</span><br style='clear: both'><strong style='float: left'>".substr($artist,0,23).$artpost."</strong><br><i style='float:left'>".substr($album,0,20).$albpost."</i><span style='float:right;'>$genre</span><br style='clear: both'/></div>";
+            echo "</span><br style='clear: both'><strong style='float: left'>".substr($artist,0,20).$artpost."</strong><br><i style='float:left'>".substr($album,0,20).$albpost."</i><span style='float:right;'>$genre</span><br style='clear: both'/></div>";
         }
     }
     else{
