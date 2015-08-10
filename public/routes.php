@@ -782,11 +782,11 @@ if(isset($_SESSION["DBHOST"])){
                         $s="";
                     }
                     if($print==1){
-                        $_SESSION['PRINTID'][]=$id_last;
+                        $_SESSION['PRINTID'][]=$RefCode;
                     }
                 }
                 #header("location: /library/?q=new&m=$artist'$s%20new%20album%20entered ($id_last)");
-                $app->flash('Success',"Album Updated");
+                $app->flash('success',"Album Updated");
                 #var_dump($_SESSION);
                 $app->redirect("./$RefCode");
             }

@@ -15,6 +15,13 @@
         Library Management
     </li>
 </ol>
+{% if success is not null %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="alert alert-success" role="alert">{{success}}</div>
+        </div>
+    </div>
+    {% endif %}
     <!--<span>SUCCESS: {{success}}, ERROR: {{error}}, ID: {{PRINTID}}| {% for id in PRINTID %}{{id}},{% endfor %}</span>-->
 {% endblock %}
 {% block content %}
