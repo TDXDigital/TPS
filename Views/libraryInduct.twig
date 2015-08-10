@@ -178,7 +178,7 @@
                     {% set playlist = playlist?:['FALSE','PENDING','COMPLETE'] %}
                     <div id="format" class="form-group input-group">
                         <label for="label" class="input-group-addon">PL</label>
-                        <select class="form-control">
+                        <select class="form-control" name="playlist">
                             {% for entry in playlist %}
                                 <option value="{{entry}}"
                                         {% if entry == album.playlist_flag %} selected {% endif %}
@@ -236,7 +236,7 @@
     </div>
     <div class="col-lg-6">
         <div class="pull-right">
-            {% if review.ReviewID is not null %}
+            {% if album.artist is not null %}
                 <input type="hidden" name="_METHOD" value="PUT"/>
             {% endif %}
             <input class="btn btn-primary" type="submit" >

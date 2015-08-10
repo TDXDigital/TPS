@@ -448,17 +448,15 @@ if(isset($_SESSION["DBHOST"])){
                         $url=$value;
                         $service=$key;
                         if($value!=""&&!is_null($value)){
-                            /*if(!$stmt4->execute())
-                            {
-                                $webresult .= $mysqli->error;
-                            }*/
-                            $stmt4->execute();
+                            if(!$stmt4->execute()){
+                                error_log($mysqli->error);
+                            }
                         }
                     }
                 }
-                /*else{
-                    $webresult .= $mysqli->error;
-                }*/
+                else{
+                    error_log($mysqli->error);
+                }
 
                 if(strtolower(substr($artist,-1))!='s'){
                     $s = "s";
@@ -559,7 +557,7 @@ if(isset($_SESSION["DBHOST"])){
                 $schedule = filter_input(INPUT_POST, "schedule")?:NULL;
                 $playlist = filter_input(INPUT_POST, "playlist")?:FALSE;
                 $print = filter_input(INPUT_POST, "print")? : 0;
-                $accepted = filter_input(INPUT_POST, "accepted")? :0;
+                $accepted = filter_input(INPUT_POST, "accept")? :0;
                 $variousartists = filter_input(INPUT_POST, "va")? :0;
                 $label_size = filter_input(INPUT_POST, "Label_Size")? : 1;
                 $locale = filter_input(INPUT_POST, "locale")? :"international";
@@ -626,31 +624,34 @@ if(isset($_SESSION["DBHOST"])){
                     // if so, report error
 
                     // else lleave set to FALSE
-                    $playlist=1;
+                    $playlist=2;
                 }
                 else{
-                    // check if entriy exists in 'playlist' table
-
-                    // if rejected, it cannot go to playlist by definition.
-                    // set to FALSE in that case (1)
-                    if(!$accepted){
-                        $playlist = 1;
+                    if($playlist=="FALSE"){
+                        $playlist=2;
+                    }
+                    elseif($playlist=="PENDING"){
+                        $playlist=1;
+                    }
+                    else{
+                        $playlist=3;
+                    }
+                    /*if(!$accepted){
+                        $playlist = 2;
                     }
                     else{
                         // if not set to 'PENDING'
-                        $playlist = 0;
+                        $playlist = 1;
 
                         // if so set to 'COMPLETE'
                         // this should no happen unless changing back to already set value??
-                    }
+                    }*/
                 }
 
-                if(!$stmt3 = $mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,
-                    format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
-                    governmentCategory,scheduleCode)
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
-                    $stmt3->close();
-                    header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
+                if(!$stmt3 = $mysqli->prepare("UPDATE library SET datein=?, artist=?, album=?, variousartists=?,
+                    format=?,genre=?,status=?,labelid=?,Locale=?,CanCon=?,release_date=?,year=?,note=?,playlist_flag=?,
+                    governmentCategory=?,scheduleCode=? WHERE RefCode=?")){
+                    header("location: ./?q=new&e=".$mysqli->errno."&s=3&m=".$mysqli->error);
                 }
                 if(!is_null($release_date)){
                     $year = date('Y',strtotime($release_date));
@@ -659,7 +660,7 @@ if(isset($_SESSION["DBHOST"])){
                     $year = NULL;
                 }
                 if(!$stmt3->bind_param(
-                        "sssissiisisssiss",
+                        "sssissiisisssissi",
                         $datein,
                         $artist,
                         $album,
@@ -675,7 +676,8 @@ if(isset($_SESSION["DBHOST"])){
                         $note,
                         $playlist,
                         $governmentCategory,
-                        $schedule
+                        $schedule,
+                        $RefCode
                         )){
                     $stmt3->close();    
                     $app->flash('error',$mysqli->error);
@@ -695,36 +697,83 @@ if(isset($_SESSION["DBHOST"])){
                 else{
                     $id_last = $stmt3->insert_id;
                     $stmt3->close();
-                    if($stmt4=$mysqli->prepare("INSERT INTO band_websites (ID,URL,Service) VALUES (?,?,?)")){
-                        $stmt4->bind_param("iss",$id_last,$url,$service);
-                        $services=[
-                            "twitter"=>filter_input(INPUT_POST, 'twitter',FILTER_SANITIZE_URL),
-                            "facebook"=>filter_input(INPUT_POST, 'facebook',FILTER_SANITIZE_URL),
-                            "bandcamp"=>filter_input(INPUT_POST, 'bandcamp',FILTER_SANITIZE_URL),
-                            "soundcloud"=>filter_input(INPUT_POST, 'soundcloud',FILTER_SANITIZE_URL),
-                            "website"=>filter_input(INPUT_POST, 'website',FILTER_SANITIZE_URL)
-                        ];
-                        if(strpos($services["bandcamp"], "soundcloud.com")&&(is_null($services['soundcloud'])||$service['soundcloud']==''))
+                    $services_add=[
+                        "twitter"=>filter_input(INPUT_POST, 'twitter',FILTER_SANITIZE_URL),
+                        "facebook"=>filter_input(INPUT_POST, 'facebook',FILTER_SANITIZE_URL),
+                        "bandcamp"=>filter_input(INPUT_POST, 'bandcamp',FILTER_SANITIZE_URL),
+                        "soundcloud"=>filter_input(INPUT_POST, 'soundcloud',FILTER_SANITIZE_URL),
+                        "website"=>filter_input(INPUT_POST, 'website',FILTER_SANITIZE_URL)
+                    ];
+                    if(strpos($services_add["bandcamp"], "soundcloud.com")&&(is_null($services_add['soundcloud'])))
+                    {
+                        // if soundcloud is in the bandcamp URL, reassign it to soundcloud
+                        $services_add["soundcloud"] = $services_add["bandcamp"];
+                        $services_add["bandcamp"] = NULL;
+                    }
+                    $services_update=array();
+                    $services_delete=array();
+                    $band_websites = GetWebsitesbyRefCode($RefCode);
+                    error_log("PRE:".json_encode(array("add"=>$services_add,"delete"=>$services_delete,"update"=>$services_update)));
+                    foreach ($band_websites as $serviceKey => $data){
+                        if(array_key_exists($serviceKey, $services_add)&&
+                                ($services_add[$serviceKey]!=''||!is_null($services_add[$serviceKey]))){
+                            if($services_add[$serviceKey]!=''){
+                                $services_update[$serviceKey]=$services_add[$serviceKey];
+                                $services_add[$serviceKey]=NULL;
+                            }
+                            else{
+                                $services_delete[]=$serviceKey;
+                            }
+                        }
+                        else{
+                            //$services_add[$serviceKey]=$serviceKey;
+                        }
+                    }
+                    error_log(json_encode(array("add"=>$services_add,"delete"=>$services_delete,"update"=>$services_update)));
+                    if($stmt4=$mysqli->prepare("UPDATE band_websites SET URL=? WHERE Service=? and ID=?")){
+                        $service='';
+                        $stmt4->bind_param("ssi",$url,$service,$RefCode);
+                        /*if(strpos($services_update["bandcamp"], "soundcloud.com")&&(is_null($services_update['soundcloud'])||$service['soundcloud']==''))
+                        {
+                            // if soundcloud is in the bandcamp URL, reassign it to soundcloud
+                            $services_update["soundcloud"] = $services_update["bandcamp"];
+                            $services_update["bandcamp"] = NULL;
+                        }*/
+                        foreach($services_update as $key=>$value){
+                            $url=$value;
+                            $service=$key;
+                            $stmt4->execute();
+                        }
+                        $stmt4->close();
+                    }
+                    if($stmt_del=$mysqli->prepare("DELETE FROM band_websites WHERE Service=? and ID=?")){
+                        $stmt_del->bind_param("si",$service,$RefCode);
+                        foreach($services_delete as $key){
+                            $service=$key;
+                            $stmt_del->execute();
+                        }
+                        $stmt_del->close();
+                    }
+                                        if($stmt_add=$mysqli->prepare("INSERT INTO band_websites (URL,Service,ID) VALUES (?,?,?) ")){
+                        $stmt_add->bind_param("ssi",$url,$service,$RefCode);
+                        /*if(strpos($services_add["bandcamp"], "soundcloud.com")&&(is_null($services_add['soundcloud'])||$service_add['soundcloud']==''))
                         {
                             // if soundcloud is in the bandcamp URL, reassign it to soundcloud
                             $services["soundcloud"] = $services["bandcamp"];
                             $services["bandcamp"] = NULL;
-                        }
-                        foreach($services as $key=>$value){
+                        }*/
+                        foreach($services_add as $key=>$value){
                             $url=$value;
                             $service=$key;
                             if($value!=""&&!is_null($value)){
-                                /*if(!$stmt4->execute())
-                                {
-                                    $webresult .= $mysqli->error;
-                                }*/
-                                $stmt4->execute();
+                                $stmt_add->execute();
                             }
                         }
+                        $stmt_add->close();
                     }
-                    /*else{
-                        $webresult .= $mysqli->error;
-                    }*/
+                    else{
+                        error_log($mysqli->error);
+                    }
 
                     if(strtolower(substr($artist,-1))!='s'){
                         $s = "s";
@@ -737,9 +786,9 @@ if(isset($_SESSION["DBHOST"])){
                     }
                 }
                 #header("location: /library/?q=new&m=$artist'$s%20new%20album%20entered ($id_last)");
-                $app->flash('Success',"Album Recieved");
+                $app->flash('Success',"Album Updated");
                 #var_dump($_SESSION);
-                $app->redirect('./');
+                $app->redirect("./$RefCode");
             }
         });
     });
@@ -748,7 +797,7 @@ if(isset($_SESSION["DBHOST"])){
             $app->get('/', $authenticate, function () use ($app){
                 global $mysqli;
                 $maxResult = 100;
-                $select = "Select library.RefCode, if(band_websites.ID is NULL,'No','Yes') as hasWebsite, library.format, library.year, library.album,library.artist, library.CanCon, library.datein, library.playlist_flag, library.genre from library left join (SELECT * from review where (approved = 1 or approved is null) ) b on library.RefCode = b.RefCode left join band_websites on library.RefCode=band_websites.ID where b.id is NULL order by library.datein asc limit ?;";
+                $select = "Select library.RefCode, if(band_websites.ID is NULL,'No','Yes') as hasWebsite, library.format, library.year, library.album,library.artist, library.CanCon, library.datein, library.playlist_flag, library.genre from library left join (SELECT * from review where (approved = 1 or approved is null) ) b on library.RefCode = b.RefCode left join band_websites on library.RefCode=band_websites.ID where b.id is NULL and library.status=1 order by library.datein asc limit ?;";
                 $albums = array();
                 $params = array();
                 if($stmt = $mysqli->prepare($select)){
