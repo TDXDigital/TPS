@@ -1,5 +1,11 @@
 <?php
-$fp = fsockopen("ckxu3400lg.local.ckxu.com", 23, $errno, $errstr, 30);
+date_default_timezone_set('UTC');
+require_once('..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'CONFIG.php');
+if(!$switch_enabled){
+    echo('switch disabled');
+}
+$fp = fsockopen($switch, 23, $errno, $errstr, 30);
+$res = '';
 if (!$fp) {
     echo "$errstr ($errno)<br />\n";
 } else {
