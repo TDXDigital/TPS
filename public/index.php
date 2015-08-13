@@ -34,6 +34,12 @@ $authenticate = function ($app,$access=0) {
     };
 };
 
+$requiresHttps = function () use ($app) {
+    if ($app->environment['slim.url_scheme'] !== 'https' ) {
+        $app->redirect('/requiressl');    // or render response and $app->stop();
+     }
+};
+
 $app->hook('slim.before.dispatch', function() use ($app) { 
    $user = null;
    if (isset($_SESSION['fname'])) {
