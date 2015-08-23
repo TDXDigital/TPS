@@ -14,6 +14,8 @@ $genre = filter_input(INPUT_POST,"genre")?:NULL;
 $datein = filter_input(INPUT_POST, "indate")?:NULL;
 $label = filter_input(INPUT_POST, "label")?:NULL;
 $format = filter_input(INPUT_POST, "format")?:NULL;
+$governmentCategory = filter_input(INPUT_POST, "category")?:NULL;
+$schedule = filter_input(INPUT_POST, "schedule")?:NULL;
 $playlist = filter_input(INPUT_POST, "playlist")?:FALSE;
 $print = filter_input(INPUT_POST, "print")? : 0;
 $accepted = filter_input(INPUT_POST, "accepted")? :0;
@@ -40,7 +42,7 @@ $stmt1 = $mysqli->prepare("SELECT labelNumber FROM recordlabel where Name=? limi
 $stmt1->bind_param("s",$label);
 if(!$stmt1->execute()){
     $stmt1->close();
-    header("location: ../Playlist/?q=new&e=".$mysqli->errno."&s=1");
+    header("location: ../library/?q=new&e=".$mysqli->errno."&s=1");
 }
 $stmt1->bind_result($labelNum);
 $stmt1->fetch();
@@ -52,7 +54,7 @@ if(is_null($labelNum)){
     $stmt2->bind_param("si",$label,$label_size);
     if(!$stmt2->execute()){
         $stmt2->close();
-        header("location: ../Playlist/?q=new&e=".$mysqli->errno."&s=2");
+        header("location: ../library/?q=new&e=".$mysqli->errno."&s=2");
         //echo "ERROR: " .    $mysqli->error;
     }
     else{
@@ -69,7 +71,7 @@ if($genre=="null"){
     $genre=NULL;
 }
 if(is_null($labelNum)||$labelNul=="null"){
-    header("location: ../Playlist/?q=new&e=9999&s=3");
+    header("location: ../library/?q=new&e=9999&s=3");
 }
 
 if($playlist===FALSE){
@@ -97,10 +99,12 @@ else{
     }
 }
 
-if(!$stmt3 = $mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
+if(!$stmt3 = $mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,
+    format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
+    governmentCategory,scheduleCode)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
     $stmt3->close();
-    header("location: ../Playlist/?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
+    header("location: ../library/?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
 }
 if(!is_null($release_date)){
     $year = date('Y',strtotime($release_date));
@@ -109,7 +113,7 @@ else{
     $year = NULL;
 }
 if(!$stmt3->bind_param(
-        "sssissiisisssi",
+        "sssissiisisssiss",
         $datein,
         $artist,
         $album,
@@ -123,17 +127,19 @@ if(!$stmt3->bind_param(
         $release_date,
         $year,
         $note,
-        $playlist
+        $playlist,
+        $governmentCategory,
+        $schedule
         )){
     $stmt3->close();    
-    header("location: ../Playlist/?q=new&e=".$mysqli->errno."&s=3_b&m=".$mysqli->error);
+    header("location: ../library/?q=new&e=".$mysqli->errno."&s=3_b&m=".$mysqli->error);
 }
 
 if(!$stmt3->execute()){
     error_log("SQL-STMT Error (SEG-3):[".$mysqli->errno."] ".$mysqli->error);
     $error = [$mysqli->errno,$mysqli->error];
     $stmt3->close();
-    header("location: ../Playlist/?q=new&e=".$error[0]."&s=3&m=".$error[1]);
+    header("location: /library/?q=new&e=".$error[0]."&s=3&m=".$error[1]);
     //echo "ERROR #".$mysqli->errno . "  " .    $mysqli->error;
 }
 else{
@@ -145,8 +151,15 @@ else{
             "twitter"=>filter_input(INPUT_POST, 'twitter',FILTER_SANITIZE_URL),
             "facebook"=>filter_input(INPUT_POST, 'facebook',FILTER_SANITIZE_URL),
             "bandcamp"=>filter_input(INPUT_POST, 'bandcamp',FILTER_SANITIZE_URL),
+            "soundcloud"=>filter_input(INPUT_POST, 'soundcloud',FILTER_SANITIZE_URL),
             "website"=>filter_input(INPUT_POST, 'website',FILTER_SANITIZE_URL)
         ];
+        if(strpos($services["bandcamp"], "soundcloud.com")&&(is_null($services['soundcloud'])||$service['soundcloud']==''))
+        {
+            // if soundcloud is in the bandcamp URL, reassign it to soundcloud
+            $services["soundcloud"] = $services["bandcamp"];
+            $services["bandcamp"] = NULL;
+        }
         foreach($services as $key=>$value){
             $url=$value;
             $service=$key;
@@ -172,5 +185,5 @@ else{
     if($print==1){
         $_SESSION['PRINTID'][]=$id_last;
     }
-    header("location: ../Playlist/?q=new&m=$artist'$s%20new%20album%20entered ($id_last)");
+    header("location: /library/?q=new&m=$artist'$s%20new%20album%20entered ($id_last)");
 }

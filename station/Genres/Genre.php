@@ -1,7 +1,9 @@
 <?php
-
-require '../../TPSBIN/functions.php';
-require '../../TPSBIN/db_connect.php';
+date_default_timezone_set('UTC');
+include_once dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR."TPSBIN".
+        DIRECTORY_SEPARATOR."functions.php";
+include_once dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR."TPSBIN".
+                DIRECTORY_SEPARATOR."db_connect.php";
     //session_start();
     //$con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
     $ERR[] = NULL;
@@ -194,11 +196,11 @@ require '../../TPSBIN/db_connect.php';
                             ?>
                         </tbody>
                     </table>
-                    <div class="left">
+                    <footer class="right">
                         <input type="submit" value="Save Changes" />
                         <input type="reset"/>
-                        <input type="button" value="Cancel" onclick="window.location.href='../../masterpage.php'"/>
-                    </div>
+                        <input type="button" value="Cancel" onclick="window.location.href='../../'"/>
+                    </footer>
                     </form>
                  </div>
             </div>

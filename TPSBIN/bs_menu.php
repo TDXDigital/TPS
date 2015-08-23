@@ -175,7 +175,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
             <!-- User access to Dashboard is required. can not remove permission-->
-            <li><a <?php echo "href=\"".$base."\"" ?> >Dashboard</a></li>
+            <li><a <?php echo "href=\"".$base."/\"" ?> >Dashboard</a></li>
             <?php   
                 // determine permission for menu
                 $station_permission=max($permissions['Station_Settings_View'],$permissions['Station_Settings_Edit']);

@@ -1,7 +1,5 @@
-*php_errors.log
-
 /aspnet_client
-/cache
+/cache/*
 /cli
 /components
 /language
@@ -10,28 +8,29 @@
 /media
 /modules
 /plugins
-/templates
 /tmp
 /configuration.php
 /README.txt
 /robots.txt
 /Thumbs.db
-/web.config
-/web.config.txt
+# this is now a required file for Slim
+# /web.config
+# /web.config.txt
 /index.html
 /metaupdate/save.txt
 /metaupdate/Now_Playing.txt
 /TPSBIN/lame
 /nbproject/private/
 /TPSBIN/XML/DBSETTINGS.xml
-images/sampledata/parks/animals/Thumbs.db
-images/sampledata/parks/landscape/Thumbs.db
-/Security/php_errors.log
-/php_errors.log
-/Security/SecureLogin/php_errors.log
-/TPSBIN/php_errors.log
-*php_errors.log
-*Thumbs.db
-
+composer.lock
+Thumbs.db
 error_log
 php_errors.log
+/temp
+/vendor/
+!vendor/TPS/*
+!*vendor/TPS/*
+!vendor/TPS/*/
+!vendor/TPS/
+/public/slimConfig.php
+.forcetwig

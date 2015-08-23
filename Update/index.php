@@ -101,8 +101,10 @@ function DatabaseUpdateCheck($Update_PKG){
                 }
                 else{
                     // FAIL, due to empty string or mismatch size
-                    //echo sizeof($key_only)." : ".sizeof($match);
-                    http_response_code(500);
+                    error_log("FAIL, due to empty string or mismatch size (".sizeof($key_only)." : ".sizeof($match).")");
+                    if(sizeof($match)>0){
+                        http_response_code(500);
+                    }
                     $Pass = FALSE;
                 }
                 $final = array("Status"=>$Pass,"Result"=>$return);
@@ -114,8 +116,15 @@ function DatabaseUpdateCheck($Update_PKG){
                 var_dump($diff);*/
             }
             else{
-                http_response_code(500);
-                return json_encode(array("Status"=>FALSE,"Result"=>array($mysqli->errno,$mysqli->error)));
+                if(isset($Update_PKG['SQL_QRY']['createMode'])&&$Update_PKG['SQL_QRY']['createMode']==1){
+                    //if($Update_PKG['SQL_QRY']['createMode']==1 /*&& $mysqli->errno==1146*/){
+                        return json_encode(array("Status"=>False,"Result"=>array()));
+                    //}
+                }
+                else{
+                    http_response_code(500);
+                    return json_encode(array("Status"=>FALSE,"Result"=>array($mysqli->errno,$mysqli->error)));
+                }
             }
         }
     }
@@ -149,7 +158,10 @@ function DatabaseUpdateApply($Update_PKG,$path){
                 $sql_file = $Update_PKG['SQL_QRY']['UPDATE'];
                 if(strtolower(substr($sql_file,-4))==='.sql'){
                     // load SQL file
-                    if(!$sql = file_get_contents($path.$sql_file)){
+                    if(!$sql = file_get_contents(__DIR__.DIRECTORY_SEPARATOR.
+                            'proc'.DIRECTORY_SEPARATOR.$sql_file)){
+                        error_log("could not open ".__DIR__.DIRECTORY_SEPARATOR.
+                            'proc'.DIRECTORY_SEPARATOR.$sql_file);#$path.$sql_file");
                         http_response_code(400);
                     }
                     else{
@@ -201,7 +213,8 @@ function ApplyUpdate($file,$path) {
             print DatabaseUpdateApply($Update_PKG,$path);
             break;
         default :
-            http_response_code(400);//json_encode(array("Status"=>null,"Result"=>array("ERROR")));
+            http_response_code(400);
+            json_encode(array("Status"=>null,"Result"=>array("ERROR")));
             break;
     endswitch;
 }

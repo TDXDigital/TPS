@@ -13,7 +13,12 @@ if(is_session_started()===FALSE) { session_start(); }
  * @author James Oliver
  */
 
-$PAGES = $_SESSION['PAGES'];
+if(isset($_SESSION['PAGES'])){
+    $PAGES = $_SESSION['PAGES'];
+}
+else{
+    $PAGES = [];
+}
 
 // Welcome
 /* @var $max_page_usr type */

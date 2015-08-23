@@ -1,0 +1,25 @@
+{
+    "name": "tps/slim-mvc",
+    "description": "TPS system utilities",
+    "require": {
+        "slim/views": "^0.1.3",
+        "slim/extras": "*",
+        "twig/twig": "^1.18",
+        "slim/slim": "^2.6",
+        "twbs/bootstrap": "^3.3",
+        "smarty/smarty": "^3.0"
+    },
+    "autoload":{
+        "psr-0":{
+            "TPS//": "router/",
+            "Controller//": "./"
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "James Oliver",
+            "email": "j.oliver@alumni.uleth.ca"
+        }
+    ]
+}

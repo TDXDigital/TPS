@@ -1,6 +1,6 @@
 <!doctype html>
 <?php
-    error_reporting(E_ALL);
+    error_reporting(E_ERROR);
     include_once '../TPSBIN/functions.php';
     include_once '../TPSBIN/db_connect.php';
     //include_once 'barcode/barcode.php';
@@ -75,7 +75,8 @@
             $stmt->execute();
             $stmt->bind_result($artist,$album,$format,$genre,$CanCon,$locale);
             $stmt->fetch();
-            $padded=str_pad($BCD, 11, "0", STR_PAD_LEFT);
+            $prefix = 0;
+            $padded= join('', array($prefix,str_pad($BCD, 10, "0", STR_PAD_LEFT)));
             
             //echo "<img src='barcode/createBarcode.php?bcd=$BCD'/>";
             echo "<div class=\"label\"><span ><img style='float:left; margin:0px;' src='./barcode/barcode.php?bcd=$padded' alt='$padded'/>";
@@ -88,7 +89,20 @@
             else if ($locale=="Local"){
                 echo "<img style='float: right; margin: 0px;' width='25px' src='./pointer.png' alt='PRO'/>";
             }
-            echo "</span><br style='clear: both'><strong style='float: left'>$artist</strong><br><i style='float:left'>$album</i><span style='float:right;'>$genre</span><br style='clear: both'/></div>";
+            substr("abcdef", -1);
+            if(strlen($artist)>20){
+                $artpost = "...";
+            }
+            else{
+                $artpost = "";
+            }
+            if(strlen($album)>20){
+                $albpost = "...";
+            }
+            else{
+                $albpost = "";
+            }
+            echo "</span><br style='clear: both'><strong style='float: left'>".substr($artist,0,20).$artpost."</strong><br><i style='float:left'>".substr($album,0,20).$albpost."</i><span style='float:right;'>$genre</span><br style='clear: both'/></div>";
         }
     }
     else{

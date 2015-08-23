@@ -3,6 +3,7 @@ session_start();
 if($_SESSION['access']!=2)
 {
   header('location: ../');
+  require_once '..'.DIRECTORY_SEPARATOR.'TPSBIN'.DIRECTORY_SEPARATOR."functions.php";
 }
 ?>
 <!DOCTYPE html>

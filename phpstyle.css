@@ -2,9 +2,14 @@
 
 $pad:20px; 
 
+html {
+    min-height: 100%;
+    position: relative;
+}
+
 html, body {
-text-align: center;
-height: 100%;
+    text-align: center;
+    /*height: 100%;*/
 }
 p {
         text-align: left;
@@ -303,6 +308,17 @@ color:#CCCCCC;
 * {
   box-sizing: border-box;
 }
+
+.bootstrap-footer {
+  position: absolute !important; 
+  bottom: 0 !important;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: rgba(245,245,245,.45);
+}
+
+/*
 .background-image {
   background-image: url('images/banners/sea-193803_1280.jpg');
   background-size: cover;
@@ -331,12 +347,13 @@ color:#CCCCCC;
     padding: 0 10px;
   }
   
-  .content-clear {
-    top: 10px;
-    left: 0;
-    position: fixed;
-    margin-left: 20px;
-    margin-right: 20px;
-    right: 0;
-    z-index: 2;
-  }
+.content-clear {
+  top: 10px;
+  left: 0;
+  position: fixed;
+  margin-left: 20px;
+  margin-right: 20px;
+  right: 0;
+  z-index: 2;
+}
+*/

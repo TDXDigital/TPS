@@ -1,10 +1,15 @@
 <?php
-    
+$DEBUG="<span style='color:orange'>Imported LDAPS Auth Module<br/></span>";
+ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
 if(!isset($_SESSION)){
     session_start();
 }
 function LDAP_AUTH($user, $password, $xml_server) {
-    $DEBUG="";
+    if(!extension_loaded('ldap')){
+        error_log("ldap module not installed but requested by login");
+        header($_SERVER['Login.html?err=No%20LDAP%20Support']);
+    }
+    $DEBUG="<span style='color:orange'>LOADED LDAP(S)<br/></span>";
     if((string)$xml_server->ACTIVE == '0'){
         $DEBUG .= "<p>ERROR: Selected server has been disabled by an administrator</p>";
         die("<p>Click <a href='$ORIGIN'>Here</a> to return to login");
@@ -48,11 +53,12 @@ function LDAP_AUTH($user, $password, $xml_server) {
         $DEBUG .= "<span style='color:yellow; background-color: black;'>LDAP PORT UNKNOWN:$ldap_port<br/></span>";
     }
     $DEBUG .= "<span>Attempting LDAP Connection:</span>";
-	try{
+    try{
         if($ldap = ldap_connect($ldap_host,$ldap_port)){
             $DEBUG .= "<span style='color: green;'> [Connection Established]<br/></span>";
         }
         else{
+            die("LDAP Server connection failed");
             $DEBUG .= "<span style='color: red;'> [Connection Refused]<br/></span>";
         }
     }
@@ -69,10 +75,15 @@ function LDAP_AUTH($user, $password, $xml_server) {
 
     // verify user and password
     $DEBUG .= "<span>Attempting LDAP bind with $ldap_usr_dom\\$bindUser<br/></span>";
-    $DEBUG .= "<span>Using DN:$ldap_dn<br/></span>";
+    $DEBUG .= "<span>Using CN=$bindUser,$ldap_dn<br/></span>";
+    print $DEBUG;
     try{
-        if($bind = @ldap_bind($ldap, $ldap_usr_dom . '\\' . $bindUser, $bindpassword)) {
+        ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+        //$bind = ldap_bind($ldap,"CN=$bindUser,$ldap_dn",$password);
+        $bind = ldap_bind($ldap, $ldap_usr_dom . '\\' . $bindUser, $bindpassword);
+        if($bind){
 	    $DEBUG .= "<span style='color: green;'>Bind Accepted with $ldap_usr_dom\\$bindUser<br/></span>";
+            
             // valid
             // check presence in groups
             $filter = "(sAMAccountName=" . $user . ")";
@@ -80,7 +91,8 @@ function LDAP_AUTH($user, $password, $xml_server) {
             $result = ldap_search($ldap, $ldap_dn, $filter, $attr) or exit("<span>Domain Authentication Error - Check Domain</span>");
             $entries = ldap_get_entries($ldap, $result);
             ldap_unbind($ldap);
-		    $nameLDAP = $entries[0]["displayname"];
+		    $nameLDAP = substr(
+                            ldap_explode_dn($entries[0]["dn"],0)[0],3);
 
             // check groups
             foreach($entries[0]['memberof'] as $grps) {
@@ -96,18 +108,18 @@ function LDAP_AUTH($user, $password, $xml_server) {
                 // establish session variables
                 if($access == 1){
                     echo "<br>SETTING ACCESS LEVEL 1: ".(string)$xml_server->USER."; ".easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER)."<br>";
-            	    $_SESSION['usr'] = easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER);//"program";
+            	    $_SESSION['usr'] = easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER);
                     define("USER",easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER));
-                    $_SESSION['rpw'] = easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->PASSWORD);//"pirateradio";
+                    $_SESSION['rpw'] = easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->PASSWORD);
                     define("PASSWORD",easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->PASSWORD));
                     $_SESSION['access'] = $access;
                     //$_SESSION['name'] = "UNDEFINED USER";
                 }
                 else if($access == 2){
                     echo "<br>SETTING ACCESS LEVEL 2: ".(string)$xml_server->USER."; ".easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER)."<br>";
-                    $_SESSION['usr'] = (string)easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER);//"program";
+                    $_SESSION['usr'] = (string)easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER);
                     define("USER",(string)easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->USER));
-                    $_SESSION['rpw'] = (string)easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->PASSWORD);//"pirateradio";
+                    $_SESSION['rpw'] = (string)easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->PASSWORD);
                     define("PASSWORD",(string)easy_decrypt(ENCRYPTION_KEY,(string)$xml_server->PASSWORD));
                     $_SESSION['access'] = $access;
                     //$_SESSION['name'] = "UNDEFINED ADMIN";
@@ -121,9 +133,9 @@ function LDAP_AUTH($user, $password, $xml_server) {
                     $_SESSION['DBHOST'] = (string)$xml_server->IPV4;
                 }
                 define("HOST",(string)$_SESSION['DBHOST']);
-                echo "SET HOST = " . constant('HOST');
+                #echo "SET HOST = " . constant('HOST');
                 define('DBNAME',(string)$_SESSION['DBNAME']);
-                echo "SET DBNAME = " . constant('DBNAME');
+                #echo "SET DBNAME = " . constant('DBNAME');
                 //$_SESSION['DBHOST'] = "172.22.100.25";
                 $_SESSION['SRVPOST'] = (string)$xml_server->ID;//addslashes($_POST['SID']);
                 $_SESSION['logo']=$logo;
@@ -132,23 +144,33 @@ function LDAP_AUTH($user, $password, $xml_server) {
                 $_SESSION['AutoComLimit'] = 8;
                 $_SESSION['AutoComEnable'] = TRUE;
                 $_SESSION['TimeZone']='UTC'; // this is just the default to be updated after login
-                echo $DEBUG;
+                #echo $DEBUG;
+                print $DEBUG;
                 return true;
             } else {
                 // user has no rights
 		        $DEBUG .= "Access Denied<br/>";
+                        #echo $DEBUG;
+                        print $DEBUG;
                 return false;
             }
 
         } else {
             // invalid name or password
+            if (ldap_get_option($ldap, LDAP_OPT_ERROR_STRING, $extended_error)) {
+                echo "Error Binding to LDAP: $extended_error";
+            } else {
+                echo "Error Binding to LDAP: No additional information is available.";
+            }
 	    $DEBUG .= "<span style='color: red;'>Invalid Username or password using <span style='color: blue;'>$ldap_usr_dom\\$bindUser</span> with password ".
-        isset($bindpassword)."<br/><br/></span>";
+            (isset($bindpassword)?'yes':'no')."<br/><br/></span>";
+            print $DEBUG;
             return false;
         }
     }
     catch (Exception $e){
+        error_log("Could not Bind LDAP server");
         die("could not bind to server... error thrown");
     }
 }
-?>
+

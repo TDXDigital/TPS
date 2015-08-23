@@ -1,0 +1,16 @@
+{
+    "TPS_Errno": "DBUD-007",
+    "type" : "database",
+    "execute" : "SQL",
+    "description" : "updates the length of the URL field for band websites to handle URLs up to 120 characters",
+    "SQL_QRY" : {
+        "TEST": "SHOW COLUMNS FROM `band_websites` WHERE `Field` = 'URL' and `Type` = 'varchar(120)';",
+        "RESULT" : {
+            "Field" : [
+                "URL"
+            ]
+        },
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "LIBRARY_UPDATE_7.sql"
+    }
+}

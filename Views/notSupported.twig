@@ -1,0 +1,15 @@
+{% extends 'baseAdmin.twig' %}
+
+{% block title %}{{title|default('Not Supported')}}{% endblock %}
+{% block content %}
+    <div class="col-sm-12">
+        <div class="panel panel-red">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{ title|default('Not Supported / implemented') }}</h3>
+            </div>
+            <div class="panel-body">
+                Sorry, this feature is not yet supported or implemented.
+            </div>
+        </div>
+    </div>
+{% endblock %}

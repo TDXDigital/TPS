@@ -1,0 +1,20 @@
+{
+    "TPS_Errno": "DBRV-001",
+    "type" : "database",
+    "execute" : "SQL",
+    "SQL_QRY" : {
+        "TEST": "SHOW COLUMNS FROM `review` LIKE 'id%';",
+        "RESULT" : {
+            "Field" : [
+                "id"
+            ],
+            "Null":[
+                "NO"
+            ]
+        },
+        "Negate": 0,
+        "createMode": 1,
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "REVIEW_INSTALL.sql"
+    }
+}

@@ -1,0 +1,139 @@
+<div class="collapse navbar-collapse navbar-ex1-collapse">
+    <ul class="nav navbar-nav side-nav">
+        <li class="active">
+            <a href="/"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+        </li>
+        <li>
+            <a href="javascript:;" data-toggle="collapse" data-target="#episode"><i class="fa fa-fw fa-cubes"></i> Playsheets <i class="fa fa-fw fa-caret-down"></i></a>
+            <ul id="episode" class="collapse">
+                <li>
+                    <a href="/Episode/EPV2/p1insert.php"><i class='fa fa-cube'></i> New Episode</a>
+                </li>
+                <li>
+                    <a href="/Episode/p1update.php"><i class='fa fa-edit'></i> Edit Episode</a>
+                </li>
+                {% if permissions > 1 %}
+                    <li>
+                        <a href="/drop2/"><i class='fa fa-trash'></i> Delete Episode</a>
+                    </li>
+                    <li>
+                        <a href="/drop2/"><i class='fa fa-lock'></i> Lock Episode</a>
+                    </li>
+                    <li>
+                        <a href="/drop2/"><i class='fa fa-exclamation'></i> Audit Episode</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </li>
+        {% if permissions > 1 %}
+        <li>
+            <a href="javascript:;" data-toggle="collapse" data-target="#program"><i class="fa fa-fw fa-cogs"></i> Programs <i class="fa fa-fw fa-caret-down"></i></a>
+            <ul id="program" class="collapse">
+                <li>
+                    <a href="/program/p1insert.php"><i class='fa fa-cog'></i> New Program</a>
+                </li>
+                <li>
+                    <a href="/program/p1advupdate.php"><i class='fa fa-sliders'></i> Edit Program</a>
+                </li>
+                <li>
+                    <a href="/station/genres/Genre.php"><i class='fa fa-th-list'></i> Genres</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="javascript:;" data-toggle="collapse" data-target="#hosts"><i class="fa fa-fw fa-group"></i> Hosts <i class="fa fa-fw fa-caret-down"></i></a>
+            <ul id="hosts" class="collapse">
+                <li>
+                    <a href="/dj/p1newdj.php"><i class='fa fa-user-plus'></i> New Host</a>
+                </li>
+                <li>
+                    <a href="/dj/p1updatedj.php"><i class='fa fa-user'></i> Edit Host</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="javascript:;" data-toggle="collapse" data-target="#traffic"><i class="fa fa-fw fa-usd"></i> Traffic <i class="fa fa-fw fa-caret-down"></i></a>
+            <ul id="traffic" class="collapse">
+                <li>
+                    <a href="/Advertisements/index.php?q=new"><i class='fa fa-bank'></i> New Contract</a>
+                </li>
+                <li>
+                    <a href="/Advertisements/p1update.php"><i class='fa fa-book'></i> Edit Contract</a>
+                </li>
+                <!--<li>
+                    <a href="/Advertisements/?q=clin"><i class='fa fa-plus'></i> New Client</a>
+                </li>
+                <li>
+                    <a href="/Episode/EPV2/p1insert.php"><i class='fa fa-plus'></i> Edit Client</a>
+                </li>-->
+                <li>
+                    <a href="/Advertisements/index.php?q=ver"><i class='fa fa-check-square-o'></i> Verification</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="javascript:;" data-toggle="collapse" data-target="#library"><i class="fa fa-fw fa-headphones"></i> Library <i class="fa fa-fw fa-caret-down"></i></a>
+            <ul id="library" class="collapse">
+                <li>
+                    <a href="/Reports/p1SongSearch.php"><i class='fa fa-search'></i> Search</a>
+                </li>
+                <li>
+                    <a href="/library/"><i class='fa fa-music'></i> Management</a>
+                </li>
+                <li>
+                    <a href="/Reports/PlaylistRep.php"><i class='fa fa-bar-chart-o'></i> Charts</a>
+                </li>
+                <li>
+                    <a href="/Reports/MissingLogRep.php"><i class='fa fa-crosshairs'></i> Missing Log Report</a>
+                </li>
+            </ul>
+        </li>
+        {% endif %}
+        <li>
+            <a href="javascript:;" data-toggle="collapse" data-target="#reviews"><i class="fa fa-fw fa-tags"></i> Reviews <i class="fa fa-fw fa-caret-down"></i></a>
+            <ul id="reviews" class="collapse">
+                <li>
+                    <a href="/review/"><i class='fa fa-comments-o'></i> Available Reviews</a>
+                </li>
+                {% if permissions > 1 %}
+                <li>
+                    <a href="/review/complete"><i class='fa fa-check-square'></i> Pending Approval</a>
+                </li>
+                <li>
+                    <a href="/review/print"><i class='fa fa-print'></i> Print Labels</a>
+                </li>
+                {% endif %}
+            </ul>
+        </li>
+        {% if permissions > 1 %}
+        <li>
+            <a href="javascript:;" data-toggle="collapse" data-target="#management"><i class="fa fa-fw fa-gavel"></i> Management <i class="fa fa-fw fa-caret-down"></i></a>
+            <ul id="management" class="collapse">
+                <li>
+                    <a href="/station/settings.php?old"><i class='fa fa-magic'></i> Station Settings</a>
+                </li>
+                <li>
+                    <a href="/station/Audit"><i class='fa fa-flag-o'></i> Reporting</a>
+                </li>
+                <li>
+                    <a href="/Episode/EPV3/Audit.php"><i class='fa fa-flag-checkered'></i> Audit</a>
+                </li>
+                <li>
+                    <a href="/Reports/Stats.php?w=12"><i class='fa fa-pie-chart'></i> Statistics</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="javascript:;" data-toggle="collapse" data-target="#advanced"><i class="fa fa-fw fa-terminal"></i> Advanced <i class="fa fa-fw fa-caret-down"></i></a>
+            <ul id="advanced" class="collapse">
+                <li>
+                    <a href="/Remote/index.php"><i class='fa fa-wrench'></i> Switch Control</a>
+                </li>
+                <li>
+                    <a href="/updates"><i class='fa fa-download'></i> Update</a>
+                </li>
+            </ul>
+        </li>
+        {% endif %}
+    </ul>
+</div>

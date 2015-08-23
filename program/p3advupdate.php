@@ -1,19 +1,19 @@
 <?php
-    session_start();
-    error_reporting(E_ALL);
-    
-    require '../TPSBIN/functions.php';
-    require '../TPSBIN/db_connect.php';
+date_default_timezone_set('UTC');
+include_once dirname(__DIR__).DIRECTORY_SEPARATOR."TPSBIN".
+        DIRECTORY_SEPARATOR."functions.php";
+include_once dirname(__DIR__).DIRECTORY_SEPARATOR."TPSBIN".
+                DIRECTORY_SEPARATOR."db_connect.php";
 ?>
 <!DOCTYPE HTML>
 <head>
 <link rel="stylesheet" type="text/css" href="../altstyle.css" />
-<title>DPL Administration</title>
+<title>TPS Administration</title>
 </head>
 <html>
 <body>
 	<div class="topbar">
-           Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
+           Welcome, <?php echo(strtoupper($_SESSION['fname'])); ?>
     </div>
 	<div id="header">
 		<a href="../masterpage.php"><img src="<?php print '../'.$_SESSION['logo'] ?>" alt="Logo" /></a>

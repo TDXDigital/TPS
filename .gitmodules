@@ -1,9 +1,21 @@
-[submodule "TPSBIN/Slim"]
-	path = TPSBIN/Slim
-	url = https://github.com/slimphp/Slim
-[submodule "TPSBIN/plates"]
-	path = TPSBIN/plates
-	url = https://github.com/thephpleague/plates.git
+#[submodule "TPSBIN/Slim"]
+#	path = TPSBIN/Slim
+#	url = https://github.com/slimphp/Slim.git
+#[submodule "TPSBIN/plates"]
+#	path = TPSBIN/plates
+#	url = https://github.com/thephpleague/plates.git
 [submodule "TPSBIN/waveform"]
 	path = TPSBIN/waveform
 	url = https://github.com/afreiday/php-waveform-png.git
+#[submodule "TPSBIN/twig"]
+#	path = TPSBIN/twig
+#	url = git://github.com/twigphp/Twig.git
+#[submodule "TPSBIN/slim-twig"]
+#	path = TPSBIN/slim-twig
+#	url = https://github.com/slimphp/Twig-View.git
+#[submodule "TPSBIN/pimple"]
+#	path = TPSBIN/pimple
+#	url = https://github.com/silexphp/Pimple.git
+#[submodule "TPSBIN/Slim-Views"]
+#	path = TPSBIN/Slim-Views
+#	url = https://github.com/slimphp/Slim-Views.git

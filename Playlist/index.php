@@ -12,6 +12,9 @@
             $PAGE = urldecode($_GET['q']);
         }
     }
+    if(!isset($_SESSION['BASE_REF'])){
+        $_SESSION['BASE_REF']='';
+    }
 ?>
 <html lang="en"><head>
     <meta charset="utf-8">

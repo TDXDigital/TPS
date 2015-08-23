@@ -1,20 +1,14 @@
 <?php
-    //session_start();
+        date_default_timezone_set('UTC');
 	$UPDATE = FALSE;
-	include_once "../TPSBIN/functions.php";
-	include_once "../TPSBIN/db_connect.php";
-//$con = mysql_connect(constant("HOST"),constant("USER"),constant("PASSWORD"),constant("DATABASE"));
-/*if (!$con){
-	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . $mysqli->error . ';  
+	include_once dirname(__DIR__).DIRECTORY_SEPARATOR."TPSBIN".
+                DIRECTORY_SEPARATOR."functions.php";
+	include_once dirname(__DIR__).DIRECTORY_SEPARATOR."TPSBIN".
+                DIRECTORY_SEPARATOR."db_connect.php";
 
-	username=' . $_SESSION["usr"]);
-}
-else if($con){*/
 	if(strtoupper($_SESSION['access'])<2){
 			die(http_response_code(401));
 	}
-	//if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../login.php');}
         $UPDATE = FALSE;
 		if(isset($_POST['name'])){
 			if(!$mysqli->query("Update station SET stationname='".addslashes($_POST['name'])."' where callsign='".addslashes($_POST['call'])."' ")){
@@ -124,10 +118,10 @@ else if($con){*/
 <html>
 <body>
 	<div class="topbar">
-           User: <?php echo(strtoupper($_SESSION['usr'])); ?>
+           User: <?php echo(strtoupper($_SESSION['fname'])); ?>
     </div>
 	<div id="header">
-		<a href="../masterpage.php"><img src="../images/Ckxu_logo_PNG.png" alt="CKXU" /></a>
+		<a href="../masterpage.php"><img src="<?php print "../".$_SESSION['logo']; ?>" alt="TPS Broadcast" /></a>
 	</div>
 	<div id="top">
 		<h2>Edit Settings and Information</h2>
@@ -214,14 +208,14 @@ else if($con){*/
 				<input type="button" value="Reset" onClick="document.forms[0].reset()"></td><td>
 				<form method="POST" action="../masterpage.php"><input type="submit" value="Menu"/></form>
 				</td>
-				<td width="100%" align="right"><img src="../images/mysqls.png" alt="MySQL Powered"/></td>
+				<!--<td width="100%" align="right"><img src="../images/mysqls.png" alt="MySQL Powered"/></td>-->
 			</tr>
 		</table>
 	</div>
-	<div id="content">
+	<!--<div id="content">
 			<h4>Help</h4>
 		<span>Default Settings often are not modified by users, Be Careful!</span>
 		
-	</div>
+	</div>-->
 </body>
 </html>

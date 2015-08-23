@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Twig Template</title>
+    </head>
+    <body>
+        <ul id="navigation">
+        {% for item in navigation %}
+        <li><a href="{{ item.href }}">{{ item.caption }}</a></li>
+        {% endfor %}
+        </ul>
+    <h1>Content</h1>
+        Hello {{ name }}
+        {% lipsum(40) %}
+    </body>
+</html>
