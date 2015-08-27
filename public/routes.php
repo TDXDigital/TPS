@@ -473,6 +473,27 @@ if(isset($_SESSION["DBHOST"])){
             #var_dump($_SESSION);
             $app->redirect('./');
         });
+        $app->get('/search/', $authenticate, function () use ($app){
+            global $mysqli;
+            $params = array(
+                "title"=>"Search",
+            );
+            $app->render('searchLibrary.twig',$params);
+        });
+        $app->post('/search/', $authenticate, function () use ($app){
+            $term = urlencode($app->request()->post('q'));
+            $app->redirect("/library/search/$term");
+        });
+        $app->get('/search/:value', $authenticate, function ($term) use ($app){
+            global $mysqli;
+            $result = SearchLibrary($term);
+            $params = array(
+                "title"=>"Search $term",
+                "albums"=>$result,
+                "search"=>$term,
+            );
+            $app->render('searchLibrary.twig',$params);
+        });
         $app->get('/:RefCode', $authenticate, function ($RefCode) use ($app){
             global $mysqli;
             $album=GetLibraryRefcode($RefCode)[0];

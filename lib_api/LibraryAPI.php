@@ -53,6 +53,50 @@ function GetLibraryfull($artist, $album=NULL){
     return $result;
 }
 
+function SearchLibrary($term){
+    /*
+     * Get all key library information based on 
+     * given input and return in json format
+     * all values that match the paramaters
+     */
+    global $mysqli,$exact;
+    $result = array();
+    if(!$exact){
+        $term="%{$term}%";
+    }
+    if($stmt = $mysqli->prepare("SELECT datein,dateout,RefCode,artist,album,"
+            . "`format`,variousartists,`condition`,genre,`status`,labelid,"
+            . "Locale,CanCon,updated,release_date,note,playlist_flag,year "
+            . "FROM library where "
+            . "artist like ? or album like ? or note like ? or"
+            . " Locale like ? or genre like ?")){
+        $stmt->bind_param('sssss',$term,$term,$term,$term,$term);
+        $stmt->execute();
+        $stmt->bind_result($datein,$dateout,$RefCode_q,
+                $artist_q,$album_q,$format,$variousartists,
+                $condition,$genre,$status,$labelid,
+                $Locale,$CanCon,$updated,$release_date,
+                $note,$playlist_flag,$year);
+        while($stmt->fetch()){
+            array_push($result, array(
+                'datein'=>$datein,'dateout'=>$dateout,'RefCode'=>$RefCode_q,
+                'artist'=>$artist_q,'album'=>$album_q,'format'=>$format,
+                'variousartists'=>$variousartists,
+                'condition'=>$condition,'genre'=>$genre,'status'=>$status,
+                'labelid'=>$labelid,
+                'Locale'=>$Locale,'CanCon'=>$CanCon,'updated'=>$updated,
+                'release_date'=>$release_date,
+                'note'=>$note,'playlist_flag'=>$playlist_flag,'year'=>$year,
+            ));
+        }
+        $stmt->close();
+    }
+    else{
+        $result=["error"=>$mysqli->error];
+    }
+    return $result;
+}
+
 function GetLibraryRefcode($refcode){
     global $mysqli,$exact;
     $result = array();
