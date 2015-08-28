@@ -5,6 +5,41 @@ if(isset($_SESSION["DBHOST"])){
     require_once 'TPSBIN'.DIRECTORY_SEPARATOR.'functions.php';
     require_once 'TPSBIN'.DIRECTORY_SEPARATOR.'db_connect.php';
     require_once 'lib_api'.DIRECTORY_SEPARATOR.'LibraryAPI.php';
+    $app->hook('slim.before.router', function() use ($app) { 
+        $messages = array(
+                /*array(
+                    'image'=>array(
+                        'url'=>"https://placehold.it/50x50",
+                        'alt'=>"Generic Placeholder",
+                    ),
+                    'user'=>array(
+                        'name'=>'test user',
+                    ),
+                    'time'=>date('now'),
+                    'content'=>'this is a test message',
+                ),
+                array(
+                    'image'=>array(
+                        'url'=>"https://placehold.it/50x50",
+                        'alt'=>"Generic Placeholder",
+                    ),
+                    'user'=>array(
+                        'name'=>'test user',
+                    ),
+                    'time'=>date('now'),
+                    'content'=>'this is another test message',
+                )*/
+            );
+        $app->view()->setData('messages',$messages);
+    });
+    $app->get('/', $authenticate($app), function() use ($app){
+        $params = array();
+        $app->render('dashboard.twig',$params);
+    });
+    $app->post('/', $authenticate($app), function() use ($app){
+        $app->render('dashboard.twig');
+    });
+    
     $app->get('/updates', $authenticate, function () use ($app) {
         $updates = scandir("./Update/proc/");
         $updateList=array();

@@ -9,14 +9,6 @@ $app->notFound(function() use ($app) {
     $app->render('error.html.twig',$params);
 });
 
-$app->get('/', $authenticate($app), function() use ($app){
-    
-    $app->render('dashboard.twig');
-});
-$app->post('/', $authenticate($app), function() use ($app){
-    $app->render('dashboard.twig');
-});
-
 $app->get("/login", function () use ($app) {
    $flash = $app->view()->getData('flash');
    $error = '';
