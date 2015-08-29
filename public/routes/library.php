@@ -262,8 +262,17 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $app->render('searchLibrary.twig',$params);
     });
     $app->post('/search/', $authenticate, function () use ($app){
-        $term = urlencode($app->request()->post('q'));
-        $app->redirect("/library/search/$term");
+        $term = $app->request()->post('q');
+        global $mysqli;
+        $result = SearchLibrary($term);
+        $params = array(
+            "title"=>"Search $term",
+            "albums"=>$result,
+            "search"=>$term,
+        );
+        $app->render('searchLibrary.twig',$params);
+        #$term = urlencode($app->request()->post('q'));
+        #$app->redirect("/library/search/$term");
     });
     $app->get('/search/:value', $authenticate, function ($term) use ($app){
         global $mysqli;
