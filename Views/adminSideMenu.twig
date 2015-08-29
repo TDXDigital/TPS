@@ -92,6 +92,11 @@
         <li>
             <a href="javascript:;" data-toggle="collapse" data-target="#reviews"><i class="fa fa-fw fa-tags"></i> Reviews <i class="fa fa-fw fa-caret-down"></i></a>
             <ul id="reviews" class="collapse">
+                {% if permissions > 1 %}
+                <li>
+                    <a href="/review/search/"><i class='fa fa-search'></i> Search</a>
+                </li>
+                {% endif %}
                 <li>
                     <a href="/review/"><i class='fa fa-comments-o'></i> Available Reviews</a>
                 </li>

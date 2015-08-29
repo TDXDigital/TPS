@@ -51,12 +51,12 @@
             <th>Review</th>
         </thead>
         <tbody>
-            {% for id,review in reviews %}
+            {% for id,entry in reviews %}
                 <tr>
-                    <td>{{review.reviewer}}</td>
-                    <td>{{review.artist}}</td>
-                    <td>{{review.album}}</td>
-                    <td>{{review.date|date('d M, Y H:m')}}</td>
+                    <td>{{entry.review.reviewer}}</td>
+                    <td>{{entry.artist}}</td>
+                    <td>{{entry.album}}</td>
+                    <td>{{entry.date|date('d M, Y H:m')}}</td>
                     <td><a href="/review/{{id}}"><i class="fa fa-desktop"> View</i></a></td>
                     <td><a href="javascript: review({{id}})"><i class="fa fa-edit"> Edit/Approve</i></a></td>
                 </tr>
