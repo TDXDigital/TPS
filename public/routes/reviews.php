@@ -4,7 +4,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
     $app->get('/', $authenticate, function () use ($app){
         $p = $app->request()->get('p');
         $l = $app->request()->get('l');
-        $reviews = new reviews();
+        $reviews = new \TPS\reviews();
         $albums = $reviews->getAvailableReviews($p,$l);
         $params=array(
             'albums'=>$albums,
@@ -14,42 +14,8 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
     });
     $app->group('/album', $authenticate, function () use ($app,$authenticate){
         $app->post('/:refcode', $authenticate, function ($RefCode) use ($app){
-            global $mysqli;
-            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-                $ip_raw = $_SERVER['HTTP_CLIENT_IP'];
-            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $ip_raw = $_SERVER['HTTP_X_FORWARDED_FOR'];
-            } else {
-                $ip_raw = $_SERVER['REMOTE_ADDR']?:NULL;
-            }
-            if(isset($ip_raw) && filter_var($ip_raw, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)){
-                $ip = ip2long($ip_raw);
-            }
-            else{
-                $ip=NULL;
-            }
-            $description = $app->request()->post('description');
-            $notes = $app->request()->post('notes');
-            $reviewer = $app->request()->post('reviewer');
-            $hometown = $app->request()->post('hometown');
-            $subgenres = $app->request()->post('subgenres');
-            $recommend = $app->request()->post('recommend');
-            $femcon = $app->request()->post('femcon');
-            $newReviewSql = "INSERT INTO review (RefCode,reviewer,femcon,hometown,subgenre,ip,description,recommendations,notes) "
-                    . "VALUES (?,?,?,?,?,?,?,?,?)";
-            if($stmt = $mysqli->prepare($newReviewSql)){
-                $stmt->bind_param('isissssss',$RefCode,$reviewer,$femcon,$hometown,
-                        $subgenres,$ip,$description,$recommend,$notes);
-                if($stmt->execute()){
-                    $app->flash('success',"Review submitted for album #$RefCode");
-                }
-                else{
-                    $app->flash('error','Review could not be stored, '.$mysqli->error);
-                }
-            }
-            else{
-                $app->flash('error',$mysqli->error);
-            }
+            $reviews = new \TPS\reviews();
+            $reviews->createReview($app, $RefCode);
             $app->redirect('/review');
         });
         $app->get('/:refcode/new', $authenticate, function ($term) use ($app){
@@ -122,7 +88,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
             $params = array(
                 "title" => "Completed Reviews for $term",
             );
-            $reviews = new reviews();
+            $reviews = new \TPS\reviews();
             $reviews = $reviews->getReviewsByAlbum($term);
             $params['reviews']=$reviews;
             $app->render('reviewListCompleted.twig',$params);
@@ -143,14 +109,17 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
                     "refCode"=>$refcode,
                     "artist"=>$artist,
                     "album"=>$album,
-                    "reviewer"=>$reviewer,
+                    "review"=>array(
+                        "reviewer"=>$reviewer,
+                        ),
                     "timestamp"=>$timestamp,
                     "notes"=>$notes,
                 );
             }
         }
         $params = array(
-            "title" => "Print",
+            "area" => "Reviews",
+            "title" => "Approved",
             "reviews" => $reviews,
         );
         $app->render('reviewPrint.twig',$params);
@@ -317,7 +286,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
         $app->get('/album/', $authenticate, function () use ($app){
             $term = NULL;
             $orig_term = $term;
-            $review = new reviews();
+            $review = new \TPS\reviews();
             $albums = $review->getAlbumReviews($term);
             $params=array(
                 'albums'=>$albums,
@@ -328,7 +297,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
             $app->render('reviewList.twig',$params);
         });
         $app->get('/album/:term', $authenticate, function ($term) use ($app){
-            $review = new reviews();
+            $review = new \TPS\reviews();
             $albums = $review->getAlbumReviews($term);
             $params=array(
                 'albums'=>$albums,
@@ -339,7 +308,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
             $app->render('reviewList.twig',$params);
         });
         $app->get('/:term', $authenticate, function ($term) use ($app){
-            $reviews = new reviews();
+            $reviews = new \TPS\reviews();
             $reviewList = $reviews->getReview($term);
             $params=array(
                 'search'=>$term,

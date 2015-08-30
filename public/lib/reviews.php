@@ -1,10 +1,28 @@
 <?php
-
+namespace TPS;
+/** 
+ * @abstract contains all functions and methods related to reviews
+ * @version 1.0
+ * @author James Oliver <support@ckxu.com>
+ * @license https://raw.githubusercontent.com/TDXDigital/TPS/master/LICENSE MIT
+ */
 class reviews{
+    /**
+     * 
+     * @global type $mysqli
+     * @version 1.0
+     */
     public function __construct() {
         global $mysqli;
     }
     
+    protected $error;
+
+    /**
+     * @access private
+     * @param int $pagination current page index
+     * @param int $maxResult number of items to in response
+     */
     private function sanitizePagination(&$pagination,&$maxResult){
         if( !is_int($maxResult) || $maxResult > 1000):
             $maxResult = 1000;
@@ -25,17 +43,18 @@ class reviews{
         $maxResult = $ceil;
     }
     
+    /**
+     * 
+     * @abstract returns an array of Albums
+     * @global type $mysqli
+     * @access public
+     * @version 1.0
+     * @author James Oliver <support@ckxu.com>
+     * @param int $pagination current page index
+     * @param int $maxResult number of items to in response
+     * @return array list of albums, False on error
+     */
     public function getAlbumList($pagination=1,$maxResult=25){
-        /**
-         * inline tags demonstration
-         * 
-         * @return list returns list if found, False otherwise
-         * @author James Oliver
-         * @version 1.0
-         * @access public
-         * @param int $pagination PageIncrement
-         * @package int $maxResult number of results
-         */
         global $mysqli;
         $this->sanitizePagination($pagination,$maxResult);
         //print ($floor.":".$ceil);
@@ -66,6 +85,17 @@ class reviews{
         }
         return $albums;
     }
+    
+    /**
+     * @access public
+     * @version 1.0
+     * @author James Oliver <support@ckxu.com>
+     * @global type $mysqli
+     * @param type $RefCode Album RefCode
+     * @param type $pagination page index
+     * @param type $maxResult max number of items to return
+     * @return array false if error, array of reviews otherwise
+     */
     public function getReviewsByAlbum($RefCode, $pagination=1,$maxResult=25) {
         global $mysqli;
         $this->sanitizePagination($pagination,$maxResult);
@@ -125,6 +155,16 @@ class reviews{
         }
         return $params;
     }
+    
+    /**
+     * 
+     * @global type $mysqli
+     * @param type $term
+     * @param type $pagination
+     * @param type $maxResult
+     * @param type $exactSearch provide true to prevent wildcard search
+     * @return array reviews based on search term, false on error
+     */
     public function getAlbumReviews($term,$pagination=1,$maxResult=25,$exactSearch=FALSE){
         global $mysqli;
         $orig_term = $term;
@@ -161,10 +201,16 @@ class reviews{
         }
         return $albums;
     }
+    
+    /**
+     * 
+     * @todo Needs rebuilt
+     * @global type $mysqli
+     * @param string $term search term
+     * @param type $exact removes wildcard search
+     * @return array
+     */
     public function getReview($term,$exact=TRUE){
-        /**
-         * @todo Needs rebuilt
-         */
         global $mysqli;
         if(!$exact):
             $term = "%".$term."%";            
@@ -196,6 +242,14 @@ class reviews{
         }
         return $params;
     }
+    
+    /**
+     * 
+     * @global type $mysqli
+     * @param type $pagination
+     * @param type $maxResult
+     * @return array albums without reviews
+     */
     public function getAvailableReviews($pagination=1,$maxResult=25){
         global $mysqli;
         $this->sanitizePagination($pagination, $maxResult);
@@ -225,5 +279,56 @@ class reviews{
             return FALSE;
         }
         return $albums;
+    }
+
+    /**
+     * @author James Oliver <support@ckxu.com>
+     * @abstract expects post to contain 'description', 'femcon'\
+     *  'notes', 'reviewer', 'hometown', 'subgenres', 'recommend'
+     * @param slim $app Slim application with request()
+     * @param int $RefCode required integer of album
+     * @return boolean False on error
+     */
+    public function createReview(&$app,$RefCode){
+        global $mysqli;
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $ip_raw = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip_raw = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip_raw = $_SERVER['REMOTE_ADDR']?:NULL;
+        }
+        if(isset($ip_raw) && filter_var($ip_raw, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)){
+            $ip = ip2long($ip_raw);
+        }
+        else{
+            $ip=NULL;
+        }
+        $description = $app->request()->post('description');
+        $notes = $app->request()->post('notes');
+        $reviewer = $app->request()->post('reviewer');
+        $hometown = $app->request()->post('hometown');
+        $subgenres = $app->request()->post('subgenres');
+        $recommend = $app->request()->post('recommend');
+        $femcon = $app->request()->post('femcon');
+        $newReviewSql = "INSERT INTO review (RefCode,reviewer,femcon,hometown,subgenre,ip,description,recommendations,notes) "
+                . "VALUES (?,?,?,?,?,?,?,?,?)";
+        if($stmt = $mysqli->prepare($newReviewSql)){
+            $stmt->bind_param('isissssss',$RefCode,$reviewer,$femcon,$hometown,
+                    $subgenres,$ip,$description,$recommend,$notes);
+            if($stmt->execute()){
+                $app->flash('success',"Review submitted for album #$RefCode");
+                return TRUE;
+            }
+            else{
+                $app->flash('error','Review could not be stored, '.$mysqli->error);
+                return FALSE;
+            }
+        }
+        else{
+            $app->flash('error',$mysqli->error);
+            return FALSE;
+        }
+        return FALSE; #should not be needed
     }
 }

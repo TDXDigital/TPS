@@ -8,7 +8,6 @@
 
 $app->group('/api', $authenticate, function () use ($app,$authenticate) {
     $app->group('/review', $authenticate, function () use ($app,$authenticate){
-        require_once dirname(__DIR__).DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'reviews.php';
         $app->get('/', $authenticate, function () use ($app){
             $l = $app->request()->get('l')?:25;
             $p = $app->request()->get('p')?:1;
