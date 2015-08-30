@@ -54,6 +54,7 @@ function GetLibraryfull($artist, $album=NULL){
 }
 
 function SearchLibrary($term){
+    throw new Exception('Deprecated, use library');
     /*
      * Get all key library information based on 
      * given input and return in json format
@@ -156,6 +157,7 @@ function ListLibrary(){
 }
 
 function GetLabelbyId($labelid){
+    throw new Exception('Function Deprecated, Use new library');
     global $mysqli;
     $result = array();
     /*elseif(!$exact){
@@ -182,6 +184,7 @@ function GetLabelbyId($labelid){
     return $result;
 }
 function GetWebsitesbyRefCode($id){
+    throw new Exception('Fucntion Deprecated Use new library');
     global $mysqli;
     $result = array();
     /*elseif(!$exact){

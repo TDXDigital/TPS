@@ -2,59 +2,12 @@
 // Library
 $app->group('/library', $authenticate, function () use ($app,$authenticate){
     $app->get('/', $authenticate, function () use ($app){
+        $library = new \TPS\library();
         $params = array(
-            "govCats"=>array(
-                // CRTC Categories http://www.crtc.gc.ca/eng/archive/2010/2010-819.HTM
-                "21" => "Pop, rock and dance",
-                "11" => "News",
-                "12" => "Spoken word-other",
-                "22" => "Country and country-oriented",
-                "23" => "Acoustic",
-                "24" => "Easy listening",
-                "31" => "Concert",
-                "32" => "Folk and folk-oriented",
-                "33" => "World beat and international",
-                "34" => "Jazz and blues",
-                "35" => "Non-classic religious",
-                "36" => "Experimental Music",
-                "41" => "Musical themes, bridges and stingers",
-                "42" => "Technical tests",
-                "43" => "Musical station identification",
-                "44" => "Musical identification of announcers, programs",
-                "45" => "Musical promotion of announcers, programs",
-                "51" => "Commercial announcement",
-                "52" => "Sponsor Identification",
-                "53" => "Promotion with sponsor mention",
-            ),
-            "genres"=>array(
-                "RP" => "Rock/Pop",
-                "FR" => "Folk/Roots",
-                "EL" => "Electronic",
-                "EX" => "Experimental",
-                "JC" => "Jazz/Classical",
-                "HH" => "Hip-Hop",
-                "HM" => "Heavy/Punk/Metal",
-                "WD" => "World",
-                "OT" => "Other",
-            ),
-            "format"=>array(
-                "CD" => "Compact Disc",
-                "Digital"=>"Digital",
-                "12in" => "12\"",
-                "10in" => "10\"",
-                "7in" => "7\"",
-                "Cass" => "Cassette",
-                "Cart"=>"Fidelipac (cart)",
-                "MD" => "Mini Disc",
-                "Other"=>"Other"
-            ),
-            "scheduleBlock"=>array(
-                NULL => "Select",
-                "M" => "Daytime1  [06:00-12:00]",
-                "D" => "Daytime2  [12:00-18:00]",
-                "E" => "Evening   [18:00-00:00]",
-                "N" => "Nighttime [00:00-06:00]",
-            ),
+            "govCats"=>$library->getGovernmentCodes(),
+            "genres"=>$library->getLibraryGenres(),
+            "format"=>$library->getMediaFormats(),
+            "scheduleBlock"=>$library->getScheduleBlocks(),
             "title"=>"Receiving",
         );
         if(isset($_SESSION['PRINTID'])){
@@ -255,7 +208,6 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $app->redirect('./');
     });
     $app->get('/search/', $authenticate, function () use ($app){
-        global $mysqli;
         $params = array(
             "title"=>"Search",
         );
@@ -263,8 +215,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
     });
     $app->post('/search/', $authenticate, function () use ($app){
         $term = $app->request()->post('q');
-        global $mysqli;
-        $result = SearchLibrary($term);
+        $library = new \TPS\library();
+        $result = $library->SearchLibrary($term);
         $params = array(
             "title"=>"Search $term",
             "albums"=>$result,
@@ -275,8 +227,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         #$app->redirect("/library/search/$term");
     });
     $app->get('/search/:value', $authenticate, function ($term) use ($app){
-        global $mysqli;
-        $result = SearchLibrary($term);
+        $library = new \TPS\library();
+        $result = $library->SearchLibrary($term);
         $params = array(
             "title"=>"Search $term",
             "albums"=>$result,
@@ -285,70 +237,23 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $app->render('searchLibrary.twig',$params);
     });
     $app->get('/:RefCode', $authenticate, function ($RefCode) use ($app){
-        global $mysqli;
-        $album=GetLibraryRefcode($RefCode)[0];
-        $album['label']=GetLabelbyId($album['labelid'])[0];
-        $album['websites']=GetWebsitesbyRefCode($RefCode);
+        $library = new \TPS\library();
+        //global $mysqli;
+        $album=$library->GetLibraryRefcode($RefCode)[0];
+        $album['label']=$library->GetLabelbyId($album['labelid'])[0];
+        $album['websites']=$library->getWebsitesByRefCode($RefCode);
+        
         $params = array(
             "album"=>$album,
-            "govCats"=>array(
-                // CRTC Categories http://www.crtc.gc.ca/eng/archive/2010/2010-819.HTM
-                "21" => "Pop, rock and dance",
-                "11" => "News",
-                "12" => "Spoken word-other",
-                "22" => "Country and country-oriented",
-                "23" => "Acoustic",
-                "24" => "Easy listening",
-                "31" => "Concert",
-                "32" => "Folk and folk-oriented",
-                "33" => "World beat and international",
-                "34" => "Jazz and blues",
-                "35" => "Non-classic religious",
-                "36" => "Experimental Music",
-                "41" => "Musical themes, bridges and stingers",
-                "42" => "Technical tests",
-                "43" => "Musical station identification",
-                "44" => "Musical identification of announcers, programs",
-                "45" => "Musical promotion of announcers, programs",
-                "51" => "Commercial announcement",
-                "52" => "Sponsor Identification",
-                "53" => "Promotion with sponsor mention",
-            ),
-            "genres"=>array(
-                "RP" => "Rock/Pop",
-                "FR" => "Folk/Roots",
-                "EL" => "Electronic",
-                "EX" => "Experimental",
-                "JC" => "Jazz/Classical",
-                "HH" => "Hip-Hop",
-                "HM" => "Heavy/Punk/Metal",
-                "WD" => "World",
-                "OT" => "Other",
-            ),
-            "format"=>array(
-                "CD" => "Compact Disc",
-                "Digital"=>"Digital",
-                "12in" => "12\"",
-                "10in" => "10\"",
-                "7in" => "7\"",
-                "Cass" => "Cassette",
-                "Cart"=>"Fidelipac (cart)",
-                "MD" => "Mini Disc",
-                "Other"=>"Other"
-            ),
-            "scheduleBlock"=>array(
-                NULL => "Select",
-                "M" => "Daytime1  [06:00-12:00]",
-                "D" => "Daytime2  [12:00-18:00]",
-                "E" => "Evening   [18:00-00:00]",
-                "N" => "Nighttime [00:00-06:00]",
-            ),
+            "govCats"=>$library->getGovernmentCodes(),
+            "genres"=>$library->getLibraryGenres(),
+            "format"=>$library->getMediaFormats(),
+            "scheduleBlock"=>$library->getScheduleBlocks(),
             "title"=>"Receiving",
         );
         if(isset($_SESSION['PRINTID'])){
             $params["PRINTID"]=json_encode($_SESSION['PRINTID']);
         }
-        //var_dump($params);
         $app->render('libraryInduct.twig',$params);
     });
     $app->put('/:RefCode', $authenticate, function ($RefCode) use ($app){
@@ -356,6 +261,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $app->render('error.html.twig');
         }
         else{
+            $library = new \TPS\library();
             global $mysqli;
             /* @var $artist Contains the artist name */
             $artist = filter_input(INPUT_POST, "artist");
@@ -523,7 +429,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 }
                 $services_update=array();
                 $services_delete=array();
-                $band_websites = GetWebsitesbyRefCode($RefCode);
+                $band_websites = $library->getWebsitesByRefCode($RefCode);
                 error_log("PRE:".json_encode(array("add"=>$services_add,"delete"=>$services_delete,"update"=>$services_update)));
                 foreach ($band_websites as $serviceKey => $data){
                     if(array_key_exists($serviceKey, $services_add)&&

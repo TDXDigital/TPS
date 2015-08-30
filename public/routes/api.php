@@ -108,9 +108,11 @@ $app->group('/api', $authenticate, function () use ($app,$authenticate) {
     });
     $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $app->get('/:refcode', function ($refcode){
-            print json_encode(GetLibraryRefcode($refcode));
+            $library = new \TPS\library();
+            print json_encode($library->GetLibraryRefcode($refcode));
         });
         $app->get('/artist/:artist', function ($artist) use ($app) {
+            $library = new \TPS\library();
             print json_encode(GetLibraryfull($artist));
         });
         $app->get('/:artist/:album', function ($artist,$album) use ($app) {
