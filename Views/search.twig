@@ -1,0 +1,79 @@
+    {% extends 'baseAdmin.twig' %}
+
+{% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+    </li>
+    <li class="active">
+        <i class="fa fa-tasks"></i>{% if search %}
+        <a href="/review">Reviews</a>
+    </li>
+    <li>
+        <i class="fa fa-search"></i> Search
+        {% else %}
+            Reviews
+        {% endif %}
+    </li>
+</ol>
+{% endblock %}
+{% block content %}
+    {% if flash.error %}
+        <div class="row">
+            <div class="alert alert-danger">
+                <strong>Error</strong> {{flash.error}}
+            </div>
+        </div>
+    {% endif %}
+    {% if flash.success %}
+        <div class="row">
+            <div class="alert alert-success">
+                <strong>Success</strong> {{flash.success}}
+            </div>
+        </div>
+    {% endif %}
+    <form role="form" method="POST" action="/review/search/album">
+        <div class="row">
+            <div class="form-group input-group">
+                <input type="text" class="form-control" name="q" 
+                       {% if search %}
+                           value="{{search}}"
+                       {% endif %}>
+                <span class="input-group-btn"><button class="btn btn-default" type="button"><i class="fa fa-search"></i></button></span>
+            </div>
+        </div>
+    </form>
+    <table class='table table-bordered table-hover' >
+        <thead>
+            <th>RefCode</th>
+            <th>Date In</th>
+            <th>Artist</th>
+            <th>Album</th>
+            <th>Genre</th>
+            <th>Year</th>
+            {% if albums|first.reviewed %}
+            <th>Reviewed</th>
+            {% endif %}
+            <th>Website</th>
+            <th>Review</th>
+        </thead>
+        <tbody>
+            {% for RefCode,album in albums %}
+                <tr>
+                    <td>{{RefCode}}</td>
+                    <td>{{album.datein}}</td>
+                    <td>{{album.artist}}</td>
+                    <td>{{album.album}}</td>
+                    <td>{{album.genre}}</td>
+                    <td>{{album.year}}</td>
+                    {% if album.reviewed %}
+                    <td>{{album.reviewed}}</td>
+                    {% endif %}
+                    <td>{{album.hasWebsite}}</td>
+                    <td><a href="/review/album/{{RefCode}}/new">review album</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
