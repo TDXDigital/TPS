@@ -119,6 +119,24 @@ $app->group('/api', $authenticate, function () use ($app,$authenticate) {
             $library = new \TPS\library();
             print json_encode($library->searchLibraryWithAlbum($artist,$album));
         });
+        $app->group('/print', $authenticate, function() use ($app,$authenticate){
+            /**
+             * @abstract resets print queue
+             */
+            $app->delete('/',$authenticate, function () use ($app){
+                unset($_SESSION['PRINTID']);
+                print '[PRINTID cleared]';
+            });
+            $app->get('/',$authenticate, function () use ($app){
+                //unset($_SESSION['PRINTID']);
+                if(isset($_SESSION['PRINTID'])){
+                    print json_encode($_SESSION['PRINTID']);
+                }
+                else{
+                    json_encode(array());
+                }
+            });
+        });
         $app->get('/', $authenticate, function () {
             $library = new \TPS\library();
             print json_encode($library->ListAll());

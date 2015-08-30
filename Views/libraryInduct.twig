@@ -252,6 +252,12 @@
                 disabled="disabled" 
             {% endif %}
                 type="button" value="Print Labels">
+            <input id="print_btn" class="btn btn-danger" 
+                   onclick="ClearPrintQueue();"
+            {% if PRINTID is null %}
+                disabled="disabled" 
+            {% endif %}
+                type="button" value="Clear Queue">
         </div>
     </div>
 </div>
@@ -410,6 +416,11 @@
         </div>
     </div>
 </div>
+<div id="dialog-confirm" style="display:none" title="Clear Print Queue?">
+    <div class="row"><div class='col-sm-3'><i class="fa fa-exclamation fa-5x"
+                                              style='color:orangered'></i></div>
+        <div class='col-sm-9'><p>This will reset your print queue and refresh the page<br>Are you sure?</p></div></div>
+</div>
 
 <style>
   .ui-autocomplete-loading {
@@ -501,12 +512,37 @@
         UpdateAutoArtist(option,id);
     }
     
+    function ClearPrintQueue(){
+        $( "#dialog-confirm" ).dialog({
+            dialogClass: 'no-close',
+            resizable: false,
+            modal: true,
+            buttons: {
+                Confirm: function() {
+                    $.ajax({
+                        url: '/api/library/print/',
+                        type: 'DELETE',
+                        success: function(result) {
+                            window.location.reload();
+                        },
+                        error: function(result) {
+                            alert("an error occured");
+                        }
+                    });
+                },
+                Cancel: function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+        });
+    }
+    
     $(function(){
         
     });
     $(document).ready(function(){
-       //edit('000005803637');
-       UpdateAutoArtist();
+        //edit('000005803637');
+        UpdateAutoArtist();
         $('input:radio[name=method]:checked').change(function(){
             $("#art_field").autocomplete("destroy");
             UpdateAutoArtist();
