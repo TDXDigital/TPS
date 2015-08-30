@@ -239,8 +239,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
     $app->get('/:RefCode', $authenticate, function ($RefCode) use ($app){
         $library = new \TPS\library();
         //global $mysqli;
-        $album=$library->GetLibraryRefcode($RefCode)[0];
-        $album['label']=$library->GetLabelbyId($album['labelid'])[0];
+        $album=$library->getAlbumByRefcode($RefCode)[0];
+        $album['label']=$library->getLabelbyId($album['labelid'])[0];
         $album['websites']=$library->getWebsitesByRefCode($RefCode);
         
         $params = array(

@@ -109,7 +109,7 @@ $app->group('/api', $authenticate, function () use ($app,$authenticate) {
     $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $app->get('/:refcode', function ($refcode){
             $library = new \TPS\library();
-            print json_encode($library->GetLibraryRefcode($refcode));
+            print json_encode($library->getAlbumByRefcode($refcode));
         });
         $app->get('/artist/:artist', function ($artist) use ($app) {
             $library = new \TPS\library();

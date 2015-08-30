@@ -163,7 +163,7 @@ class library{
      * @param int $labelid label identification number
      * @return boolean|array
      */
-    public function GetLabelbyId($labelid){
+    public function getLabelbyId($labelid){
         global $mysqli;
         $result = array();
         /*elseif(!$exact){
@@ -191,8 +191,16 @@ class library{
         return $result;
     }
     
-    public function GetLibraryRefcode($refcode){
-        global $mysqli,$exact;
+    /**
+     * 
+     * @abstract get album information from library by RefCode
+     * @global \TPS\mysqli $mysqli
+     * @param string $refcode
+     * @param boolena #exact
+     * @return boolean|array
+     */
+    public function getAlbumByRefcode($refcode,$exact=FALSE){
+        global $mysqli;#,$exact;
         $result = array();
         if($refcode===Null){
             $refcode='%';
@@ -241,14 +249,15 @@ class library{
      * @abstract Get all key library information based on \
      * given input and return in json format \
      * all values that match the paramaters. \
-     * Similar to SeathcLibraryWithAlbum
-     * @todo match review search
+     * Similar to SeathcLibraryWithAlbum but broader search
+     * @todo convert to wrapper for searchLibraryWithAlbum
      * @global \TPS\mysqli $mysqli
      * @param string $term
      * @param boolean $exact
      * @return boolean|array
+     * @deprecated 1.0 use searchLibraryWithAlbum
      */
-    public function SearchLibrary($term,$exact=False){
+    public function searchLibrary($term,$exact=False){
         global $mysqli;#,$exact;
         $result = array();
         if(!$exact){
@@ -352,7 +361,12 @@ class library{
         return $result;
     }
     
-    
+    /**
+     * @abstract provide basic list of all albums
+     * @global \TPS\mysqli $mysqli
+     * @return string|array
+     * @todo add pagination
+     */
     public function ListAll(){
         global $mysqli;
         if(is_null($mysqli)){
