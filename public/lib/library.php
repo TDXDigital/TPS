@@ -302,6 +302,10 @@ class library{
     function searchLibraryWithAlbum($artist, $album=NULL,$exact=FALSE){
         global $mysqli;#,$exact;
         $result = array();
+        $artist = urldecode($artist);
+        if($album){
+            $album = urldecode($album);
+        }
         if($artist===Null){
             $artist='%';
         }
@@ -347,5 +351,19 @@ class library{
         }
         return $result;
     }
-
+    
+    
+    public function ListAll(){
+        global $mysqli;
+        if(is_null($mysqli)){
+            return '';#$mysqli = $GLOBALS['db'];
+        }
+        $result = [];
+        $library = $mysqli->query(
+                "SELECT RefCode,artist,album,status FROM library");
+        while($result_temp = $library->fetch_array(MYSQLI_ASSOC)){
+            array_push($result, $result_temp);
+        }
+        return $result;
+    }
 }

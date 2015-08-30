@@ -113,13 +113,15 @@ $app->group('/api', $authenticate, function () use ($app,$authenticate) {
         });
         $app->get('/artist/:artist', function ($artist) use ($app) {
             $library = new \TPS\library();
-            print json_encode(GetLibraryfull($artist));
+            print json_encode($library->searchLibraryWithAlbum($artist));
         });
         $app->get('/:artist/:album', function ($artist,$album) use ($app) {
-            print json_encode(GetLibraryfull($artist,$album));
+            $library = new \TPS\library();
+            print json_encode($library->searchLibraryWithAlbum($artist,$album));
         });
         $app->get('/', $authenticate, function () {
-            print json_encode(ListLibrary());
+            $library = new \TPS\library();
+            print json_encode($library->ListAll());
         });
     });
     $app->group('/episode', $authenticate, function() use ($app,$authenticate){
@@ -221,7 +223,8 @@ $app->group('/api', $authenticate, function () use ($app,$authenticate) {
                         'for more information please see our wiki on '
                     . '<a href="https://github.com/TDXDigital/TPS/wiki/API-Documentation">'
                     . 'GitHub</a>'),
-                    ));
+                    )
+                ); 
     });
 
 });

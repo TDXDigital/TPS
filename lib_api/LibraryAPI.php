@@ -1,12 +1,21 @@
 <?php        
 $exact=filter_input(INPUT_GET,'exact',FILTER_SANITIZE_NUMBER_INT)?:FALSE;
 
+
+/**
+ * @deprecated 1.0
+ * @abstract Get all key library information based on 
+ * given input and return in json format
+ * all values that match the paramaters
+ * @global type $mysqli
+ * @global type $exact
+ * @param type $artist
+ * @param type $album
+ * @return type
+ * @throws Exception
+ */
 function GetLibraryfull($artist, $album=NULL){
-    /*
-     * Get all key library information based on 
-     * given input and return in json format
-     * all values that match the paramaters
-     */
+    throw new Exception('Deprecated');
     global $mysqli,$exact;
     $result = array();
     if($artist===Null){
@@ -53,13 +62,18 @@ function GetLibraryfull($artist, $album=NULL){
     return $result;
 }
 
+/**
+ * @abstract Get all key library information based on 
+ * given input and return in json format
+ * all values that match the paramaters
+ * @global type $mysqli
+ * @global type $exact
+ * @param type $term
+ * @return type
+ * @throws Exception
+ */
 function SearchLibrary($term){
     throw new Exception('Deprecated, use library');
-    /*
-     * Get all key library information based on 
-     * given input and return in json format
-     * all values that match the paramaters
-     */
     global $mysqli,$exact;
     $result = array();
     if(!$exact){
@@ -98,7 +112,16 @@ function SearchLibrary($term){
     return $result;
 }
 
+/**
+ * @deprecated 1.0
+ * @global type $mysqli
+ * @global type $exact
+ * @param string $refcode
+ * @throws Exception
+ * @return type
+ */
 function GetLibraryRefcode($refcode){
+    throw new Exception('Deprecated');
     global $mysqli,$exact;
     $result = array();
     if($refcode===Null){
@@ -142,7 +165,15 @@ function GetLibraryRefcode($refcode){
     return $result;
 }
 
+/**
+ * 
+ * @global type $mysqli
+ * @return string|array
+ * @deprecated 1.0
+ * @throws Exception
+ */
 function ListLibrary(){
+    throw new Exception("Deprecated, use ListAll in lib");
     global $mysqli;
     if(is_null($mysqli)){
         return '';#$mysqli = $GLOBALS['db'];
@@ -156,6 +187,14 @@ function ListLibrary(){
     return $result;
 }
 
+/**
+ * 
+ * @global type $mysqli
+ * @param type $labelid
+ * @return type
+ * @throws Exception
+ * @deprecated
+ */
 function GetLabelbyId($labelid){
     throw new Exception('Function Deprecated, Use new library');
     global $mysqli;
@@ -183,6 +222,15 @@ function GetLabelbyId($labelid){
     }
     return $result;
 }
+
+/**
+ * 
+ * @global type $mysqli
+ * @param type $id
+ * @return type
+ * @throws Exception
+ * @deprecated 1.0
+ */
 function GetWebsitesbyRefCode($id){
     throw new Exception('Fucntion Deprecated Use new library');
     global $mysqli;
