@@ -35,7 +35,7 @@ else{
 		<table border="1px" style="margin-top:2px; border-style: groove; padding-left: 1px; padding-right: 1px">
 			<tr><th>Cat</th><th>Playlist</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th><th>Composer</th><th>CC</th><th>Hit</th><th>Ins</th><th>Lang</th></tr>
 			<?php
-				$FETCH = "select * from SONG where callsign='" . addslashes($callsign) . "' and programname='" . addslashes($program) . "' and date='" . addslashes($date) . "' and starttime='" . addslashes($time) . "' order by time , songid ";
+				$FETCH = "select * from SONG where callsign='" . addslashes($callsign) . "' and programname='" . addslashes(urldecode($program)) . "' and date='" . addslashes($date) . "' and starttime='" . addslashes($time) . "' order by time , songid ";
 				if(!$Result=mysql_query($FETCH)){
 					echo "<tr><td>ERROR</td><td>".mysql_errno()."</td><td colspan=\"100%\">".mysql_error()."</td></tr>";
 				}
