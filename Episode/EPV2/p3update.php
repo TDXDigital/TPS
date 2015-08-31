@@ -29,12 +29,25 @@ else if($con){
                     $SHOW = addslashes($SHOW);
                 }
 	}
+        else if(isset($_GET['program'])){
+		$SHOW = $_GET['program'];
+                if ( urlencode(urldecode($SHOW)) === $SHOW){
+                    //data is urlencoded
+                    $SHOW = addslashes(urldecode($SHOW));
+                } else {
+                    //data is NOT urlencoded
+                    $SHOW = addslashes($SHOW);
+                }
+	}
 	else{
 		$SHOW = "NULL";
 	}
 	
 	if(isset($_POST['user_time'])){
 		$START = addslashes($_POST['user_time']);
+	}
+        else if(isset($_GET['user_time'])){
+		$START = addslashes($_GET['user_time']);
 	}
 	else{
 		$START = "00:00:00";
@@ -43,12 +56,18 @@ else if($con){
 	if(isset($_POST['user_date'])){
 		$DATE = addslashes($_POST['user_date']);
 	}
+        else if(isset($_GET['user_date'])){
+		$DATE = addslashes($_GET['user_date']);
+	}
 	else{
 		$DATE = date("Y-m-d");
 	}
 	
 	if(isset($_POST['callsign'])){
 		$CALL = addslashes($_POST['callsign']);
+	}
+        else if(isset($_GET['callsign'])){
+		$CALL = addslashes($_GET['callsign']);
 	}
 	else{
 		$CALL = "CKXU";
