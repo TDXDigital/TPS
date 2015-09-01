@@ -331,4 +331,41 @@ class reviews{
         }
         return FALSE; #should not be needed
     }
+    
+    public function setPrintLabel($RefCode){
+        if($_SESSION['ReviewLables'][] = $RefCode){
+            return TRUE;
+        }
+        else{
+            return FALSE;
+        }
+    }
+    
+    
+    public function clearPrintLabel($RefCode){
+        if(array_key_exists($RefCode, $_SESSION['ReviewLabels'])){
+            $_SESSION['ReviewLabels'] = NULL;
+            return TRUE;
+        }
+        else{
+            return FALSE;
+        }
+    }
+    
+    public function clearPrintLabels(){
+        try {
+            unset($_SESSION['ReviewLabels']);
+        } catch (Exception $ex) {
+            return FALSE;
+        }
+    }
+    
+    public function getPrintLables(){
+        if(isset($_SESSION['ReviewLabel'])){
+            return $_SESSION['ReviewLabesl'];
+        }
+        else{
+            return FALSE;
+        }
+    }
 }
