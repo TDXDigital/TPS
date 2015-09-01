@@ -8,6 +8,22 @@
 
 $app->group('/api', $authenticate, function () use ($app,   $authenticate) {
     $app->group('/review', $authenticate, function () use ($app,$authenticate){
+        $app->group('/print', $authenticate, function() use ($app,$authenticate){
+            $app->get('/',$authenticate, function () use ($app){
+                $reviews = new \TPS\reviews();
+                $params = $reviews->getPrintLables();
+            });
+            $app->put('/:RefCode', $authenticate, function($RefCode) use ($app){
+                $reviews = new \TPS\reviews();
+                $params = $reviews->setPrintLabel($RefCode);
+                print $RefCode;
+            });
+            $app->delete('/:RefCode', $authenticate, function($RefCode) use ($app){
+                $reviews = new \TPS\reviews();
+                $params = $reviews->clearPrintLabel($RefCode);
+                print $RefCode;
+            });
+        });
         $app->get('/', $authenticate, function () use ($app){
             $l = $app->request()->get('l')?:25;
             $p = $app->request()->get('p')?:1;
