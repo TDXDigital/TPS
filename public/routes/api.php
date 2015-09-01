@@ -6,12 +6,12 @@
     
 //////////////////////////////////////////////////////////////////////////////*/
 
-$app->group('/api', $authenticate, function () use ($app,$authenticate) {
+$app->group('/api', $authenticate, function () use ($app,   $authenticate) {
     $app->group('/review', $authenticate, function () use ($app,$authenticate){
         $app->get('/', $authenticate, function () use ($app){
             $l = $app->request()->get('l')?:25;
             $p = $app->request()->get('p')?:1;
-            $reviews = new reviews();
+            $reviews = new \TPS\reviews();
             $params = $reviews->getAlbumList($p,$l);
             print json_encode($params);
         });
@@ -23,7 +23,9 @@ $app->group('/api', $authenticate, function () use ($app,$authenticate) {
             print json_encode($params);
         });
         $app->get('/:refcode', $authenticate, function ($term) use ($app){
-            global $mysqli;
+            $reviews = new \TPS\reviews();
+            $params = $reviews->getFullReview($term);
+            /*global $mysqli;
             $maxResult = 100;
             $select = "Select library.RefCode, if(recordlabel.name_alias_duplicate is NULL, recordlabel.Name, "
                     . "(SELECT Name from recordlabel where LabelNumber = recordlabel.name_alias_duplicate) ) as recordLabel, "
@@ -73,7 +75,7 @@ $app->group('/api', $authenticate, function () use ($app,$authenticate) {
             }
             else{
                 print $mysqli->error;
-            }
+            }*/
             print json_encode($params);
         });
         $app->get('/search/:term', $authenticate, function ($term) use ($app){

@@ -68,7 +68,19 @@
 <body>
     <div class="no-print">Please use top and bottom margin of 0.5" and 0.0" sides. some printers may vary, adjust as needed</div>
     <?php
-    if($stmt=$mysqli->prepare("SELECT artist, album, format, genre, CanCon, Locale FROM library WHERE RefCode = ?")){
+    $review = new \TPS\reviews();
+    $reviews = $review->getPrintLables();
+    for($i=1;$i<$indent;$i++){
+        echo "<div class=\"label\" style=\"outline: none;\"></div>";
+    }
+    foreach ($reviews as $id ) {
+        $label = $review->getReview($id);
+        echo "<div class=\"label\">";
+        echo "</span><br style='clear: both'><strong style='float: left'>".$label['review']['description']."</strong><br><i style='float:left'>".$label['review']['notes']."</i><span style='float:right;'>".$label['review']['recommendations']."</span><br style='clear: both'/>";
+        echo "</div>";
+    }
+    
+    /*if($stmt=$mysqli->prepare("SELECT artist, album, format, genre, CanCon, Locale FROM library WHERE RefCode = ?")){
         for($i=1;$i<$indent;$i++){
             echo "<div class=\"label\" style=\"outline: none;\"></div>";
         }
@@ -87,7 +99,7 @@
     }
     else{
         echo "<div class=\label>ERROR :".$mysqli->error."</div>";
-    }
+    }*/
     ?>
 <div class="page-break"></div>
 <script>
