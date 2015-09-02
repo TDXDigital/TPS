@@ -1,0 +1,85 @@
+{% extends 'baseAdmin.twig' %}
+
+{% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+    </li>
+    <li class="active">
+        <i class="fa fa-tasks"></i>{% if search %}
+        <a href="/library/">Library</a>
+    </li>
+    <li>
+        <i class="fa fa-search"></i> Search
+        {% else %}
+            Library
+        {% endif %}
+    </li>
+</ol>
+{% endblock %}
+{% block content %}
+    {% if flash.error %}
+        <div class="row">
+            <div class="alert alert-danger">
+                <strong>Error</strong> {{flash.error}}
+            </div>
+        </div>
+    {% endif %}
+    {% if flash.success %}
+        <div class="row">
+            <div class="alert alert-success">
+                <strong>Success</strong> {{flash.success}}
+            </div>
+        </div>
+    {% endif %}
+    <form role="form" method="POST" action="/library/search/">
+        <div class="row">
+            <div class="form-group input-group">
+                <input type="text" class="form-control" name="q" 
+                       {% if search %}
+                           value="{{search}}"
+                       {% endif %}>
+                <span class="input-group-btn"><button class="btn btn-default" type="button"><i class="fa fa-search"></i></button></span>
+            </div>
+        </div>
+    </form>
+    <table class='table table-bordered table-hover' >
+        <thead>
+            <th><i class="fa fa-barcode "></i></th>
+            <th><i class="fa fa-thumbs-o-up"></i></th>
+            <th>Date In</th>
+            <th>Artist</th>
+            <th>Album</th>
+            <th>Genre</th>
+            <th>Year</th>
+            <th>Notes</th>
+        </thead>
+        <tbody>
+            {% for album in albums %}
+                <tr>
+                    <td>
+                        <button type="button" onclick="location.href='/library/{{album.RefCode}}';" class="btn btn-default btn-xs">
+                            {{album.RefCode}}
+                        <i class="fa fa-edit" aria-hidden="true"></i></button>
+                    </td>
+                    <td>{% if album.status == 1 %}
+                        <i class="fa fa-check-circle-o" style="color: #008000"></i>
+                        {% else %}
+                            <i class="fa fa-times-circle-o" style="color: #800000"></i>
+                        {% endif %}</td>
+                    <td>{{album.datein}}</td>
+                    <td>{{album.artist}}</td>
+                    <td>{{album.album}}</td>
+                    <td>{{album.genre}}</td>
+                    <td>{{album.year}}</td>
+                    <td>{% if album.note|length > 37 %}
+                        {{album.note|striptags|slice(0,37)}}...
+                        {% else %}
+                            {{album.note}}
+                    {% endif %}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

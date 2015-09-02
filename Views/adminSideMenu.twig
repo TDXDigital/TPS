@@ -1,6 +1,6 @@
 <div class="collapse navbar-collapse navbar-ex1-collapse">
     <ul class="nav navbar-nav side-nav">
-        <li class="active">
+        <li>
             <a href="/"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
         </li>
         <li>
@@ -21,6 +21,9 @@
                     </li>
                     <li>
                         <a href="/drop2/"><i class='fa fa-exclamation'></i> Audit Episode</a>
+                    </li>
+                    <li>
+                        <a href="/Reports/MissingLogRep.php"><i class='fa fa-crosshairs'></i> Missing Log Report</a>
                     </li>
                 {% endif %}
             </ul>
@@ -55,7 +58,7 @@
             <a href="javascript:;" data-toggle="collapse" data-target="#traffic"><i class="fa fa-fw fa-usd"></i> Traffic <i class="fa fa-fw fa-caret-down"></i></a>
             <ul id="traffic" class="collapse">
                 <li>
-                    <a href="/Advertisements/index.php?q=new"><i class='fa fa-bank'></i> New Contract</a>
+                    <a href="/Advertisements/p1advins.php"><i class='fa fa-bank'></i> New Contract</a>
                 </li>
                 <li>
                     <a href="/Advertisements/p1update.php"><i class='fa fa-book'></i> Edit Contract</a>
@@ -75,7 +78,7 @@
             <a href="javascript:;" data-toggle="collapse" data-target="#library"><i class="fa fa-fw fa-headphones"></i> Library <i class="fa fa-fw fa-caret-down"></i></a>
             <ul id="library" class="collapse">
                 <li>
-                    <a href="/Reports/p1SongSearch.php"><i class='fa fa-search'></i> Search</a>
+                    <a href="/library/search/"><i class='fa fa-search'></i> Search</a>
                 </li>
                 <li>
                     <a href="/library/"><i class='fa fa-music'></i> Management</a>
@@ -83,15 +86,17 @@
                 <li>
                     <a href="/Reports/PlaylistRep.php"><i class='fa fa-bar-chart-o'></i> Charts</a>
                 </li>
-                <li>
-                    <a href="/Reports/MissingLogRep.php"><i class='fa fa-crosshairs'></i> Missing Log Report</a>
-                </li>
             </ul>
         </li>
         {% endif %}
         <li>
             <a href="javascript:;" data-toggle="collapse" data-target="#reviews"><i class="fa fa-fw fa-tags"></i> Reviews <i class="fa fa-fw fa-caret-down"></i></a>
             <ul id="reviews" class="collapse">
+                {% if permissions > 1 %}
+                <li>
+                    <a href="/review/search/"><i class='fa fa-search'></i> Search</a>
+                </li>
+                {% endif %}
                 <li>
                     <a href="/review/"><i class='fa fa-comments-o'></i> Available Reviews</a>
                 </li>
@@ -100,7 +105,7 @@
                     <a href="/review/complete"><i class='fa fa-check-square'></i> Pending Approval</a>
                 </li>
                 <li>
-                    <a href="/review/print"><i class='fa fa-print'></i> Print Labels</a>
+                    <a href="/review/print/"><i class='fa fa-print'></i> Print Labels</a>
                 </li>
                 {% endif %}
             </ul>
@@ -131,6 +136,9 @@
                 </li>
                 <li>
                     <a href="/updates"><i class='fa fa-download'></i> Update</a>
+                </li>
+                <li>
+                    <a href="/legacy_controller.php" target="_legacy"><i class="fa fa-angle-down"></i> Legacy interface</a>
                 </li>
             </ul>
         </li>

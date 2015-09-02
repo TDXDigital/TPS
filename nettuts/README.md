@@ -1,1 +1,0 @@
-Written for an article on NetTuts+ on how to orginize larger projects with Slim

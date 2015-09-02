@@ -53,23 +53,30 @@
                 <!-- Messages -->
                 {% block messages %}
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i {% if messages %}class="fa fa-envelope" style="color:yellow" {% else %} class="fa fa-envelope-o" {% endif %}></i> <b class="caret"></b></a>
                     <ul class="dropdown-menu message-dropdown">
+                        {% if not messages %}
+                            {% set messages = [{'image':{'url':'https://placehold.it/50x50','alt':''},
+                                                'user':{'name':user.name},'time':date('now'),'content':'No Messages'}] %}
+                        {% endif %}
+                        {% for message in messages %}
                         <li class="message-preview">
                             <a href="#">
                                 <div class="media">
                                     <span class="pull-left">
-                                        <img class="media-object" src="https://placehold.it/50x50" alt="">
+                                        <img class="media-object" src="{{message.image.url}}" alt="{{message.image.alt}}">
                                     </span>
                                     <div class="media-body">
                                         <h5 class="media-heading"><strong>{{user.name}}</strong>
                                         </h5>
-                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> {{"now"|date('Y-m-d H:m')}} UTC</p>
-                                        <p>No Messages</p>
+                                        
+                                            <p class="small text-muted"><i class="fa fa-clock-o"></i> {{"now"|date('Y-m-d H:m')}} UTC</p>
+                                            <p>{{message.content}}</p>
                                     </div>
                                 </div>
                             </a>
                         </li>
+                        {% endfor %}
                         <li class="message-footer">
                             <a href="#">Read All New Messages</a>
                         </li>
@@ -180,6 +187,12 @@
 
     </div>
     <!-- /#wrapper -->
+    
+    <style>
+        .modal-backdrop {
+            z-index: -1;
+        }
+    </style>
 
     <!-- jQuery -->
     <script src="/js/jquery.js"></script>
@@ -190,6 +203,51 @@
     <!-- template specific JavaScript -->
     {% block lastScripts %}
     {% endblock %}
+    
+    <script>
+    $(function () {
+        setNavigation();
+    });
+    
+    function setActiveIfHref(uri){
+        var located = false;
+        $(".nav a").each(function () {
+            var href = $(this).attr('href');
+            if (uri === href) {
+                $(this).parents('li').addClass('active');
+                $(this).parents('ul').addClass('in');
+                //$(this).parent().prev('a').attr('aria-expanded','true');
+                $(this).closest('a').parent().addClass('focus');
+                //$(this).closest('a').addClass('in');
+                //var parents = $(this).parents().map(function(){return this.tagName;}).get().join(", ");
+                //alert(parents);
+                // LI UL LI UL
+                located = true;
+            }
+        });
+        return located;
+    }
+
+    function setNavigation() {
+        var path = window.location.pathname;
+        //path = path.replace(/\/$/, "");
+        path = decodeURIComponent(path);
+        var located = false;
+        if(setActiveIfHref(path)){
+            located = true;
+        }
+        else{
+            path = path.replace(/\/$/, "");
+            var origPath = path;
+            if(setActiveIfHref(path)){
+                located = true;
+            }
+        }
+        if(!located){
+            setActiveIfHref('');
+        }
+    }
+    </script>
     
     <!-- Morris Charts JavaScript -->
     <script src="{{siteUrl}}/js/plugins/morris/raphael.min.js"></script>

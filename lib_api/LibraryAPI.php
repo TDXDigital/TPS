@@ -1,12 +1,21 @@
 <?php        
 $exact=filter_input(INPUT_GET,'exact',FILTER_SANITIZE_NUMBER_INT)?:FALSE;
 
+
+/**
+ * @deprecated 1.0
+ * @abstract Get all key library information based on 
+ * given input and return in json format
+ * all values that match the paramaters
+ * @global type $mysqli
+ * @global type $exact
+ * @param type $artist
+ * @param type $album
+ * @return type
+ * @throws Exception
+ */
 function GetLibraryfull($artist, $album=NULL){
-    /*
-     * Get all key library information based on 
-     * given input and return in json format
-     * all values that match the paramaters
-     */
+    throw new Exception('Deprecated');
     global $mysqli,$exact;
     $result = array();
     if($artist===Null){
@@ -53,7 +62,66 @@ function GetLibraryfull($artist, $album=NULL){
     return $result;
 }
 
+/**
+ * @abstract Get all key library information based on 
+ * given input and return in json format
+ * all values that match the paramaters
+ * @global type $mysqli
+ * @global type $exact
+ * @param type $term
+ * @return type
+ * @throws Exception
+ */
+function SearchLibrary($term){
+    throw new Exception('Deprecated, use library');
+    global $mysqli,$exact;
+    $result = array();
+    if(!$exact){
+        $term="%{$term}%";
+    }
+    if($stmt = $mysqli->prepare("SELECT datein,dateout,RefCode,artist,album,"
+            . "`format`,variousartists,`condition`,genre,`status`,labelid,"
+            . "Locale,CanCon,updated,release_date,note,playlist_flag,year "
+            . "FROM library where "
+            . "artist like ? or album like ? or note like ? or"
+            . " Locale like ? or genre like ?")){
+        $stmt->bind_param('sssss',$term,$term,$term,$term,$term);
+        $stmt->execute();
+        $stmt->bind_result($datein,$dateout,$RefCode_q,
+                $artist_q,$album_q,$format,$variousartists,
+                $condition,$genre,$status,$labelid,
+                $Locale,$CanCon,$updated,$release_date,
+                $note,$playlist_flag,$year);
+        while($stmt->fetch()){
+            array_push($result, array(
+                'datein'=>$datein,'dateout'=>$dateout,'RefCode'=>$RefCode_q,
+                'artist'=>$artist_q,'album'=>$album_q,'format'=>$format,
+                'variousartists'=>$variousartists,
+                'condition'=>$condition,'genre'=>$genre,'status'=>$status,
+                'labelid'=>$labelid,
+                'Locale'=>$Locale,'CanCon'=>$CanCon,'updated'=>$updated,
+                'release_date'=>$release_date,
+                'note'=>$note,'playlist_flag'=>$playlist_flag,'year'=>$year,
+            ));
+        }
+        $stmt->close();
+    }
+    else{
+        $result=["error"=>$mysqli->error];
+    }
+    return $result;
+}
+
+/**
+ * @deprecated 1.0
+ * @global type $mysqli
+ * @global type $exact
+ * @param string $refcode
+ * @throws Exception
+ * @return type
+ */
 function GetLibraryRefcode($refcode){
+    throw new Exception('Deprecated');
     global $mysqli,$exact;
     $result = array();
     if($refcode===Null){
@@ -97,7 +165,15 @@ function GetLibraryRefcode($refcode){
     return $result;
 }
 
+/**
+ * 
+ * @global type $mysqli
+ * @return string|array
+ * @deprecated 1.0
+ * @throws Exception
+ */
 function ListLibrary(){
+    throw new Exception("Deprecated, use ListAll in lib");
     global $mysqli;
     if(is_null($mysqli)){
         return '';#$mysqli = $GLOBALS['db'];
@@ -111,7 +187,16 @@ function ListLibrary(){
     return $result;
 }
 
+/**
+ * 
+ * @global type $mysqli
+ * @param type $labelid
+ * @return type
+ * @throws Exception
+ * @deprecated
+ */
 function GetLabelbyId($labelid){
+    throw new Exception('Function Deprecated, Use new library');
     global $mysqli;
     $result = array();
     /*elseif(!$exact){
@@ -137,7 +222,17 @@ function GetLabelbyId($labelid){
     }
     return $result;
 }
+
+/**
+ * 
+ * @global type $mysqli
+ * @param type $id
+ * @return type
+ * @throws Exception
+ * @deprecated 1.0
+ */
 function GetWebsitesbyRefCode($id){
+    throw new Exception('Fucntion Deprecated Use new library');
     global $mysqli;
     $result = array();
     /*elseif(!$exact){
