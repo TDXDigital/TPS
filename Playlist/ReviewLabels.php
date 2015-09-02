@@ -12,7 +12,7 @@
     <link href="CSS_Labels/<?php
     $library = new \TPS\library();
     $reviews = new \TPS\reviews();
-    $type = filter_input(INPUT_GET,'type', FILTER_SANITIZE_NUMBER_INT)?:5160;
+    $type = filter_input(INPUT_GET,'type', FILTER_SANITIZE_NUMBER_INT)?:"5160";
     $indent = filter_input(INPUT_GET,'start', FILTER_SANITIZE_NUMBER_INT) ?: 0;
     $outline = filter_input(INPUT_GET,'outline',FILTER_SANITIZE_STRING) ?: 'false';
     
@@ -74,9 +74,29 @@
         echo "<div class=\"label\" style=\"outline: none;\"></div>";
     }
     foreach ($reviews as $id ) {
-        $label = $review->getReview($id);
-        echo "<div class=\"label\">";
-        echo "</span><br style='clear: both'><strong style='float: left'>".$label['review']['description']."</strong><br><i style='float:left'>".$label['review']['notes']."</i><span style='float:right;'>".$label['review']['recommendations']."</span><br style='clear: both'/>";
+        $label = $review->getFullReview($id);
+        echo "<div class=\"label\" style='font-size:xx-small;'>";
+        $trimArtist = $label['artist'];
+        if(strlen($label['artist'])>25){
+            
+            $trimArtist = substr($trimArtist,0, 23);
+            $trimArtist = join('', array($trimArtist,'...'));
+        }
+        $trimAlbum = $label['album'];
+        if(strlen($label['album'])>20){
+            
+            $trimAlbum = substr($trimAlbum,0, 17);
+            $trimAlbum = join('', array($trimAlbum,'...'));
+        }
+        $trimLabel = $label['label']['Name'];
+        if(strlen($$trimLabel)>13){
+            
+            $trimLabel = substr($trimLabel,0, 10);
+            $trimLabel = join('', array($trimLabel,'...'));
+        }
+        $title = strtolower($trimArtist.' ('.$trimAlbum.')');
+        echo "<small style='float: left'>$title</small><small style=\"float: right\">[".$trimLabel."]</small>";
+        echo "<small><br style='clear: both'><span style='float: left; text-align:justify;'>".substr($label['review']['description'],0,200)."</span><br><i style='float:right'>".substr($label['review']['notes'],0,100)."</i><br style='clear: both'><span style='float:right;'>".$label['review']['recommendations']."</span></small><br style='clear: both'/>";
         echo "</div>";
     }
     

@@ -210,14 +210,14 @@ class reviews{
                 . "(SELECT Name from recordlabel where LabelNumber = recordlabel.name_alias_duplicate) ) as recordLabel, "
                 . "if(review.id is NULL,0,1) as reviewed, library.labelid, library.Locale, library.variousartists, library.format, library.year, library.album, "
                 . "library.artist, library.CanCon, library.datein, library.playlist_flag, library.genre, "
-                . "review.reviewer, review.ts, review.approved, review.femcon, review.hometown, review.subgenre, review.description, review.recommendations, review.id "
-                . "from library left join review on library.RefCode = review.RefCode left join recordlabel on library.labelid = recordlabel.LabelNumber where "
+                . "review.reviewer, review.ts, review.approved, review.femcon, review.hometown, review.subgenre, review.description, review.recommendations, review.id, "
+                . "review.notes from library left join review on library.RefCode = review.RefCode left join recordlabel on library.labelid = recordlabel.LabelNumber where "
                 . "review.id = ? order by library.datein asc limit ?;";
         if($stmt = $mysqli->prepare($select)){
             $stmt->bind_param('si',$term,$maxResult);
             $stmt->execute();
             $stmt->bind_result($RefCode,$recordLabel,$reviewed,$labelid,$locale,$variousArtists,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre,
-                    $reviewer,$timestamp,$approved,$femcon,$hometown,$subgenre,$description,$recommends,$reviewID);
+                    $reviewer,$timestamp,$approved,$femcon,$hometown,$subgenre,$description,$recommends,$reviewID,$notes);
             while($stmt->fetch()){
                 $params = array(
                         "RefCode"=>$RefCode,
@@ -246,6 +246,7 @@ class reviews{
                             "subgenre"=>$subgenre,
                             "description"=>$description,
                             "recommendations"=>$recommends,
+                            "notes"=>$notes,
                         )
                     );
             }
@@ -389,22 +390,37 @@ class reviews{
     }
     
     public function setPrintLabel($RefCode){
-        if($_SESSION['ReviewLables'][] = $RefCode){
-            return TRUE;
+        if(array_key_exists('ReviewLabels',$_SESSION)){
+            if(($key = array_search($RefCode, $_SESSION['ReviewLabels'])) !== false){
+                return array(TRUE,304);
+            }
         }
         else{
-            return FALSE;
+            $_SESSION['ReviewLabels'] = [];
+        }
+        if($_SESSION['ReviewLabels'][] = $RefCode){
+            return array(TRUE,201);
+        }
+        else{
+            return array(FALSE,400);
         }
     }
     
     
     public function clearPrintLabel($RefCode){
-        if(array_key_exists($RefCode, $_SESSION['ReviewLabels'])){
-            $_SESSION['ReviewLabels'] = NULL;
-            return TRUE;
+        if(array_key_exists('ReviewLabels',$_SESSION)){
+
+            //$_SESSION['ReviewLabels'][$RefCode] = NULL;
+            if(($key = array_search($RefCode, $_SESSION['ReviewLabels'])) !== false) {
+                unset($_SESSION['ReviewLabels'][$key]);
+            }
+            else{
+                return array(FALSE,203);
+            }
+            return array(TRUE,202);
         }
         else{
-            return FALSE;
+            return array(FALSE,400);
         }
     }
     
@@ -417,11 +433,67 @@ class reviews{
     }
     
     public function getPrintLables(){
-        if(isset($_SESSION['ReviewLabel'])){
-            return $_SESSION['ReviewLabesl'];
+        if(array_key_exists('ReviewLabels',$_SESSION)){
+            return $_SESSION['ReviewLabels'];
         }
         else{
             return FALSE;
+        }
+    }
+    
+    public function getApprovedReviews($pagination=1,$maxResult=100){
+        // [TODO]
+        $this->sanitizePagination($pagination, $maxResult);
+        global $mysqli;
+        $reviews = array();
+        $selectReviews = "SELECT review.id, review.refcode, library.artist, library.album, review.reviewer, review.ts, review.notes "
+                . "FROM review LEFT JOIN library on review.refcode=library.RefCode where review.approved = 1 order by ts limit ?,?";
+        if($stmt = $mysqli->prepare($selectReviews)){
+            $stmt->bind_param('ii',$pagination,$maxResult);
+            $stmt->bind_result($id,$refcode,$artist,$album,$reviewer,$timestamp,$notes);
+            $stmt->execute();
+            while($stmt->fetch()){
+                $reviews[$id]= array(
+                    "refCode"=>$refcode,
+                    "artist"=>$artist,
+                    "album"=>$album,
+                    "review"=>array(
+                        "reviewer"=>$reviewer,
+                        ),
+                    "timestamp"=>$timestamp,
+                    "notes"=>$notes,
+                );
+            }
+        }
+        else{
+            error_log($mysqli->error);
+            return FALSE;
+        }
+        return $reviews;
+    }
+    
+    public function countApprovedReviews(){
+        global $mysqli;
+        $reviews = array();
+        $count = 0;
+        $selectReviews = "SELECT count(review.id) FROM review LEFT JOIN library on review.refcode=library.RefCode where review.approved = 1";
+        if($stmt = $mysqli->prepare($selectReviews)){
+            $stmt->bind_result($count);
+            $stmt->execute();
+            $i = 0;
+            while($stmt->fetch()){
+                $i++;
+            }
+        }
+        else{
+            error_log($mysqli->error);
+            return FALSE;
+        }
+        if($i>1){
+            return -1;
+        }
+        else{
+            return $count;
         }
     }
 }

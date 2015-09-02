@@ -12,35 +12,6 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
             );
         $app->render('reviewList.twig',$params);
     });
-    $app->get('/print' ,$authenticate , function () use ($app){
-        // [TODO]
-        global $mysqli;
-        $reviews = array();
-        $selectReviews = "SELECT review.id, review.refcode, library.artist, library.album, review.reviewer, review.ts, review.notes "
-                . "FROM review LEFT JOIN library on review.refcode=library.RefCode where review.approved = 1 order by ts limit 100";
-        if($stmt = $mysqli->prepare($selectReviews)){
-            $stmt->bind_result($id,$refcode,$artist,$album,$reviewer,$timestamp,$notes);
-            $stmt->execute();
-            while($stmt->fetch()){
-                $reviews[$id]= array(
-                    "refCode"=>$refcode,
-                    "artist"=>$artist,
-                    "album"=>$album,
-                    "review"=>array(
-                        "reviewer"=>$reviewer,
-                        ),
-                    "timestamp"=>$timestamp,
-                    "notes"=>$notes,
-                );
-            }
-        }
-        $params = array(
-            "area" => "Reviews",
-            "title" => "Approved",
-            "reviews" => $reviews,
-        );
-        $app->render('reviewPrint.twig',$params);
-    });
     $app->get('/complete' ,$authenticate , function () use ($app){
         global $mysqli;
         $reviews = array();
@@ -192,6 +163,42 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
         }
         $params['websites']=$websites?:NULL;
         $app->render('review.twig',$params);
+    });
+    
+    $app->group('/print' ,$authenticate , function () use ($app,$authenticate){
+        $app->get('/',$authenticate, function () use ($app){
+            $p = $app->request()->get('p') ?: 1;
+            $max = $app->request()->get('l') ?: 100;
+            $review = new \TPS\reviews();
+            $numReviews = $review->countApprovedReviews();
+            $reviews = $review->getApprovedReviews($p,$max);
+            $labels = $review->getPrintLables();
+            $pagination = array(
+                'currentPage'=>$p,
+                'limit'=>$max,
+                'max'=>$numReviews,
+                    );
+            $params = array(
+                "area" => "Reviews",
+                "title" => "Approved",
+                "reviews" => $reviews,
+                "pagination" => $pagination,
+                "labels" => $labels,
+            );
+            $app->render('reviewPrint.twig',$params);
+        });
+        $app->put('/:RefCode', $authenticate, function($RefCode) use ($app){
+            $reviews = new \TPS\reviews();
+            $result = $reviews->setPrintLabel($RefCode);
+            $app->response->setStatus($result[1]);
+            print $result[1]." ($RefCode)";
+        });
+        $app->delete('/:RefCode', $authenticate, function($RefCode) use ($app){
+            $reviews = new \TPS\reviews();
+            $result = $reviews->clearPrintLabel($RefCode);
+            $app->response->setStatus($result[1]);
+            print $result[1]." ($RefCode)";
+        });
     });
 
     // review/album group

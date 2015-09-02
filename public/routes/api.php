@@ -10,18 +10,29 @@ $app->group('/api', $authenticate, function () use ($app,   $authenticate) {
     $app->group('/review', $authenticate, function () use ($app,$authenticate){
         $app->group('/print', $authenticate, function() use ($app,$authenticate){
             $app->get('/',$authenticate, function () use ($app){
+                $p = $app->request()->get('p') ?: 1;
+                $max = $app->request()->get('l') ?: 1000;
                 $reviews = new \TPS\reviews();
-                $params = $reviews->getPrintLables();
+                $numReviews = $reviews->countApprovedReviews();
+                $params = $reviews->getPrintLables(); #getApprovedReviews($p,$max);
+                $pagination = array(
+                    'currentPage'=>$p,
+                    'limit'=>$max,
+                    'max'=>$numReviews,
+                );
+                print json_encode($params);
             });
             $app->put('/:RefCode', $authenticate, function($RefCode) use ($app){
                 $reviews = new \TPS\reviews();
-                $params = $reviews->setPrintLabel($RefCode);
-                print $RefCode;
+                $result = $reviews->setPrintLabel($RefCode);
+                $app->response->setStatus($result[1]);
+                print $result[1]." ($RefCode)";
             });
             $app->delete('/:RefCode', $authenticate, function($RefCode) use ($app){
                 $reviews = new \TPS\reviews();
-                $params = $reviews->clearPrintLabel($RefCode);
-                print $RefCode;
+                $result = $reviews->clearPrintLabel($RefCode);
+                $app->response->setStatus($result[1]);
+                print $result[1]." ($RefCode)";
             });
         });
         $app->get('/', $authenticate, function () use ($app){
