@@ -200,7 +200,7 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     <label for="notes"><i class="fa fa-language"  title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: (,!.:)"></i> Notes</label>
-                    <textarea id="notes" class="form-control" rows="2" maxlength="200" placeholder="additional relevant information, please also list any tracks with profanity or obscenity" name="notes" 
+                    <textarea id="notes" class="form-control" rows="2" maxlength="200" placeholder="Add composer notes (eg: all by M. Richter or #1 by C. Smith #2 by H. Smith), instrumental track numbers, and track numbers with profanity or obscenity" name="notes" 
                               pattern="[a-zA-Z0-9\s\,\!\.\:\)\(]+" >{% if review.notes is not null %}{{review.notes}}{% endif %}</textarea>
                     <h6 class="pull-right" id="count_message_notes"></h6>
                 </div>
