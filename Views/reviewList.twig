@@ -68,7 +68,7 @@
                     <td>{{album.genre}}</td>
                     <td>{{album.year}}</td>
                     {% if album.reviewed %}
-                    <td>{{album.reviewed}}</td>
+                    <td><a href="/review/album/{{RefCode}}" target="_reviews">{{album.reviewed}}</a></td>
                     {% endif %}
                     <td>{{album.hasWebsite}}</td>
                     <td><a href="/review/album/{{RefCode}}/new">review album</a></td>

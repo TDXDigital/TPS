@@ -31,17 +31,17 @@
                             {% if review.ReviewID is not null %}
                                 <label>Review Status</label>
                                 <select name="accepted" class="form-control">
-                                    <option value="null"  
-                                {% if review.approved is null%}
+                                {% if review.approved is not null %}
+                                    <option
                                     selected="selected" 
-                                {% endif %}
                                 /> Pending Approval</option>
+                                {% endif %}
                                 <option value="1" 
                                 {% if review.approved == 1 %}
                                     selected="selected" 
                                 {% endif %}/> Approved</option>
                                 <option value="0" 
-                                {% if review.approved == 0 and not review.approved is null %}
+                                {% if review.approved == 0 and not null %}
                                     selected="selected" 
                                 {% endif %}
                                 /> Rejected</option>
@@ -244,34 +244,42 @@
 {% endblock %}
 {% block lastScripts %}
     <script>
-        var text_max = 220;
-        $('#count_message').html(text_max + ' remaining');
-
-        $('#description').keyup(function() {
-          var text_length = $('#description').val().length;
-          var text_remaining = text_max - text_length;
-
-          $('#count_message').html(text_remaining + ' remaining');
-        });
         
-        var text_max_notes = 100;
-        $('#count_message_notes').html(text_max_notes + ' remaining');
-
-        $('#notes').keyup(function() {
-          var text_length = $('#notes').val().length;
-          var text_remaining = text_max_notes - text_length;
-
-          $('#count_message_notes').html(text_remaining + ' remaining');
-        });
+        function count_description(){
+            var text_max = 220;
+            var text_length = $('#description').val().length;
+            var text_remaining = text_max - text_length;
+            $('#count_message').html(text_remaining + ' remaining');
+        }
         
-        var text_riyl_max = 45;
-        $('#count_riyl').html(text_riyl_max + ' remaining');
-
-        $('#RIYL').keyup(function() {
-          var text_length = $('#RIYL').val().length;
-          var text_remaining = text_riyl_max - text_length;
-
-          $('#count_riyl').html(text_remaining + ' remaining');
+        function count_notes(){
+            var text_max_notes = 100;
+            var text_length = $('#notes').val().length;
+            var text_remaining = text_max_notes - text_length;
+            $('#count_message_notes').html(text_remaining + ' remaining');
+        }
+        
+        function count_riyl(){
+            var text_riyl_max = 45;
+            var text_length = $('#RIYL').val().length;
+            var text_remaining = text_riyl_max - text_length;
+            $('#count_riyl').html(text_remaining + ' remaining');
+        }
+        $(document).ready(function(){
+            count_description();
+            $('#description').keyup(function() {
+              count_description();
+            });
+            
+            count_notes();
+            $('#notes').keyup(function() {
+              count_notes();
+            });
+            
+            count_riyl();
+            $('#RIYL').keyup(function() {
+              count_riyl();
+            });
         });
     </script>
 {% endblock %}

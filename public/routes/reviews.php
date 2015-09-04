@@ -16,7 +16,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
         global $mysqli;
         $reviews = array();
         $selectReviews = "SELECT review.id, review.refcode, library.artist, library.album, review.reviewer, review.ts, review.notes "
-                . "FROM review LEFT JOIN library on review.refcode=library.RefCode where review.approved is null order by ts";
+                . "FROM review LEFT JOIN library on review.refcode=library.RefCode where review.approved is null and not review.approved = 0 order by ts";
         if($stmt = $mysqli->prepare($selectReviews)){
             $stmt->bind_result($id,$refcode,$artist,$album,$reviewer,$timestamp,$notes);
             $stmt->execute();
@@ -57,6 +57,9 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
             if($id_post != $id){
                 $app->halt(400);
             }
+            if(!is_numeric($approved)){
+                $approved = NULL;
+            }
             global $mysqli;
             $update = "UPDATE review SET approved=?, femcon=?, reviewer=?,"
                     . "hometown=?, subgenre=?, description=?, recommendations=?,"
@@ -70,7 +73,12 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
                 if($stmt->execute()){
                     $stmt->close();
                     $app->flash('success',"$id updated succesfully");
-                    $reviews->setPrintLabel($id);
+                    if($approved){
+                        $reviews->setPrintLabel($id);
+                    }
+                    else{
+                        $reviews->clearPrintLabel($id);
+                    }
                     $app->redirect('./complete');
                 }
                 $stmt->close();
