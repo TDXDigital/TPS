@@ -38,8 +38,10 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
         $app->render('reviewListCompleted.twig',$params);
     });
     $app->put('/:id', $authenticate, function ($id) use ($app){ // Update
+        $reviews = new \TPS\reviews();
         if($_SESSION['access']<2){
-            $app->render('error.html.twig',array("status"=>403,"title"=>"Error 403","details"=>array("permission denied")));
+            $app->response->setStatus(401);
+            $app->render('error.html.twig',array("status"=>401,"title"=>"Error 403","details"=>array("permission denied")));
         }
         else{
             #$app->render('notSupported.twig');
@@ -53,8 +55,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
             $approved = $app->request()->post('accepted')?:NULL;
             $id_post = $app->request()->post('id')?:NULL;
             if($id_post != $id){
-                var_dump($_POST);
-                die("ID mismatch");
+                $app->halt(400);
             }
             global $mysqli;
             $update = "UPDATE review SET approved=?, femcon=?, reviewer=?,"
@@ -69,13 +70,17 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
                 if($stmt->execute()){
                     $stmt->close();
                     $app->flash('success',"$id updated succesfully");
+                    $reviews->setPrintLabel($id);
                     $app->redirect('./complete');
                 }
                 $stmt->close();
             }
             else{
-                print $mysqli->error;
+                error_log($mysqli->error);
+                $app->halt(500);
             }
+            $reviews->setPrintLabel($id);
+            $app->response->setStatus(202);
         }
 
     });

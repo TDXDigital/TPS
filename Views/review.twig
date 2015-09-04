@@ -171,12 +171,13 @@
                             placeholder="List distinct genre crossovers or more specific ones (eg: Punk-rock, gypsy-punk, cow-punk)" />
                 </div>
                 <div class="form-group">
-                    <label for='RIYL'><i class="fa fa-language" title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: (,!.:)"></i> Recommended if you like:</label>
-                    <input id='RIYL' name="recommend" class="form-control" type="text" pattern="[a-zA-Z0-9\s\,\!\.\:\)\(]+" 
+                    <label for='RIYL'><i class="fa fa-language" title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: (,!.:-)"></i> Recommended if you like:</label>
+                    <input id='RIYL' name="recommend" class="form-control" type="text" maxlength="45" pattern="[a-zA-Z0-9\s\,\!\.\:\)\(\-]+" 
                            {% if review.recommends is not null %}
                                value="{{review.recommends}}" 
                             {% endif %}
                            placeholder="Name a couple additional artists they sound like (eg: Arcade Fire, Metric, Broken Social Scene)" />
+                    <h6 class="pull-right" id="count_riyl"></h6>
                 </div>
                 <div class="form-group">
                                 <label for="femcon">FemCon</label>
@@ -191,7 +192,7 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     <label for="description"><i class="fa fa-language"  title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: (,!.:#)"></i> Description</label>
-                    <textarea id="description" class="form-control" required rows="5" maxlength="300" 
+                    <textarea id="description" class="form-control" required rows="5" maxlength="220" 
                               placeholder="A brief and relatively objective description of relevant facts about album, artist, collaborations, and sound" name="description" 
                               pattern="[a-zA-Z0-9\s\,\!\.\:\)\(\#]+" >{% if review.description is not null %}{{review.description}}{% endif %}</textarea>
                     <h6 class="pull-right" id="count_message"></h6>
@@ -243,7 +244,7 @@
 {% endblock %}
 {% block lastScripts %}
     <script>
-        var text_max = 300;
+        var text_max = 220;
         $('#count_message').html(text_max + ' remaining');
 
         $('#description').keyup(function() {
@@ -252,6 +253,7 @@
 
           $('#count_message').html(text_remaining + ' remaining');
         });
+        
         var text_max_notes = 100;
         $('#count_message_notes').html(text_max_notes + ' remaining');
 
@@ -260,6 +262,16 @@
           var text_remaining = text_max_notes - text_length;
 
           $('#count_message_notes').html(text_remaining + ' remaining');
+        });
+        
+        var text_riyl_max = 45;
+        $('#count_riyl').html(text_riyl_max + ' remaining');
+
+        $('#RIYL').keyup(function() {
+          var text_length = $('#RIYL').val().length;
+          var text_remaining = text_riyl_max - text_length;
+
+          $('#count_riyl').html(text_remaining + ' remaining');
         });
     </script>
 {% endblock %}
