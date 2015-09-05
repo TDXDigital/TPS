@@ -551,6 +551,7 @@ class reviews{
     public function getAlbumAndReview($id){
         global $mysqli;
         $maxResult = 100;
+        $params = array();
         $selectAlbum = "Select library.RefCode, if(band_websites.ID is NULL,'No','Yes') as hasWebsite,if(recordlabel.name_alias_duplicate is NULL, recordlabel.Name, "
                 . "(SELECT Name from recordlabel where LabelNumber = recordlabel.name_alias_duplicate) ) as recordLabel, "
                 . "if(review.id is NULL,0,1) as reviewed, library.labelid, library.Locale, library.variousartists, library.format, library.year, library.album, "
@@ -605,6 +606,9 @@ class reviews{
             error_log($mysqli->error);
             #$params['error']=$mysqli->error;
             return False;
+        }
+        if(sizeof($params)<1){
+            return $params;
         }
         $RefCode = $params['album']['RefCode'];
         if($bands = $mysqli->prepare($selectWebsites)){
