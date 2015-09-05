@@ -31,7 +31,7 @@
                             {% if review.ReviewID is not null %}
                                 <label>Review Status</label>
                                 <select name="accepted" class="form-control">
-                                {% if review.approved is not null %}
+                                {% if review.approved is null %}
                                     <option
                                     selected="selected" 
                                 /> Pending Approval</option>
@@ -41,7 +41,8 @@
                                     selected="selected" 
                                 {% endif %}/> Approved</option>
                                 <option value="0" 
-                                {% if review.approved == 0 and not null %}
+                                {% if review.approved is not null 
+                                        and review.approved == 0 %}
                                     selected="selected" 
                                 {% endif %}
                                 /> Rejected</option>
