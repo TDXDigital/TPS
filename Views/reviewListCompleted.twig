@@ -58,8 +58,9 @@
                     <td>{{review.album}}</td>
                     <td>{{review.date|date('d M, Y H:m')}}</td>
                     {% if review.review.reviewer is not null %}
-                        <td><a href="/review/{{id}}"><i class="fa fa-desktop"> View</i></a></td>
-                        <td><a href="javascript: review({{id}})"><i class="fa fa-edit"> Edit/Approve</i></a></td>
+                        <!--<td><a href="/review/{{id}}"><i class="fa fa-desktop"> View</i></a></td>
+                        <td><a href="javascript: review({{id}})"><i class="fa fa-edit"> Edit/Approve</i></a></td>-->
+                        <td></td><td><a href="/review/{{id}}"><i class="fa fa-edit"> Edit/Approve</i></a></td>
                     {% else %}
                         <td></td>
                         <td><a href="/review/{{id}}/new"><i class="fa fa-edit"> Review</i></a></td>

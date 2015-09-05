@@ -13,7 +13,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
         $app->render('reviewList.twig',$params);
     });
     $app->get('/complete' ,$authenticate , function () use ($app){
-        global $mysqli;
+        /*global $mysqli;
         $reviews = array();
         $selectReviews = "SELECT review.id, review.refcode, library.artist, library.album, review.reviewer, review.ts, review.notes "
                 . "FROM review LEFT JOIN library on review.refcode=library.RefCode where review.approved is null order by ts";
@@ -31,9 +31,13 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
                 );
             }
         }
+        */
+        $reviews = new \TPS\reviews();
+        $review = $reviews->getPendingReviews();
         $params = array(
-            "title" => "Completed Reviews",
-            "reviews" => $reviews,
+            "area" => "Reviews",
+            "title" => "Pending Approval",
+            "reviews" => $review,
         );
         $app->render('reviewListCompleted.twig',$params);
     });

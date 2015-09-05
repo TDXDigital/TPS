@@ -441,7 +441,53 @@ class reviews{
         }
     }
     
+    /**
+     * 
+     * @todo verify use and functionality
+     * @global \TPS\type $mysqli
+     * @param type $pagination
+     * @param type $maxResult
+     * @return boolean|array
+     */
     public function getApprovedReviews($pagination=1,$maxResult=100){
+        $this->sanitizePagination($pagination, $maxResult);
+        global $mysqli;
+        $reviews = array();
+        $selectReviews = "SELECT review.id, review.refcode, library.artist, library.album, review.reviewer, review.ts, review.notes "
+                . "FROM review LEFT JOIN library on review.refcode=library.RefCode where review.approved = 1 order by ts limit ?,?";
+        if($stmt = $mysqli->prepare($selectReviews)){
+            $stmt->bind_param('ii',$pagination,$maxResult);
+            $stmt->bind_result($id,$refcode,$artist,$album,$reviewer,$timestamp,$notes);
+            $stmt->execute();
+            while($stmt->fetch()){
+                $reviews[$id]= array(
+                    "refCode"=>$refcode,
+                    "artist"=>$artist,
+                    "album"=>$album,
+                    "review"=>array(
+                        "reviewer"=>$reviewer,
+                        ),
+                    "timestamp"=>$timestamp,
+                    "notes"=>$notes,
+                );
+            }
+        }
+        else{
+            error_log($mysqli->error);
+            return FALSE;
+        }
+        return $reviews;
+    }
+    
+    /**
+     * 
+     * @todo verify functionality and use
+     * @global \TPS\type $mysqli
+     * @param type $pagination
+     * @param type $maxResult
+     * @return boolean
+     */
+    public function getPendingReviews($pagination=1,$maxResult=100){
         // [TODO]
         $this->sanitizePagination($pagination, $maxResult);
         global $mysqli;
