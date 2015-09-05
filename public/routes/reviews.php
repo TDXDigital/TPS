@@ -13,25 +13,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
         $app->render('reviewList.twig',$params);
     });
     $app->get('/complete' ,$authenticate , function () use ($app){
-        /*global $mysqli;
-        $reviews = array();
-        $selectReviews = "SELECT review.id, review.refcode, library.artist, library.album, review.reviewer, review.ts, review.notes "
-                . "FROM review LEFT JOIN library on review.refcode=library.RefCode where review.approved is null order by ts";
-        if($stmt = $mysqli->prepare($selectReviews)){
-            $stmt->bind_result($id,$refcode,$artist,$album,$reviewer,$timestamp,$notes);
-            $stmt->execute();
-            while($stmt->fetch()){
-                $reviews[$id]= array(
-                    "refCode"=>$refcode,
-                    "artist"=>$artist,
-                    "album"=>$album,
-                    "reviewer"=>$reviewer,
-                    "timestamp"=>$timestamp,
-                    "notes"=>$notes,
-                );
-            }
-        }
-        */
+
         $reviews = new \TPS\reviews();
         $review = $reviews->getPendingReviews();
         $params = array(

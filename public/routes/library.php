@@ -208,23 +208,19 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $app->redirect('./');
     });
     $app->get('/search/', $authenticate, function () use ($app){
+        $library = new \TPS\library();
+        $result = $library->searchLibrary("");
         $params = array(
+            "area"=>"Library",
+            "albums"=>$result,
             "title"=>"Search",
         );
         $app->render('searchLibrary.twig',$params);
     });
     $app->post('/search/', $authenticate, function () use ($app){
         $term = $app->request()->post('q');
-        $library = new \TPS\library();
-        $result = $library->SearchLibrary($term);
-        $params = array(
-            "title"=>"Search $term",
-            "albums"=>$result,
-            "search"=>$term,
-        );
-        $app->render('searchLibrary.twig',$params);
-        #$term = urlencode($app->request()->post('q'));
-        #$app->redirect("/library/search/$term");
+        $term = urlencode($term);
+        $app->redirect("/library/search/$term");
     });
     $app->get('/search/:value', $authenticate, function ($term) use ($app){
         $library = new \TPS\library();

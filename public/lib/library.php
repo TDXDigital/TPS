@@ -246,6 +246,8 @@ class library{
     }
     
     /**
+     * More general search of the library that matches on any
+     * of the following columns: artist, album, note, Locale, or Genre
      * @abstract Get all key library information based on \
      * given input and return in json format \
      * all values that match the paramaters. \
@@ -255,7 +257,6 @@ class library{
      * @param string $term
      * @param boolean $exact
      * @return boolean|array
-     * @deprecated 1.0 use searchLibraryWithAlbum
      */
     public function searchLibrary($term,$exact=False){
         global $mysqli;#,$exact;
@@ -329,7 +330,7 @@ class library{
         }
         if($stmt = $mysqli->prepare("SELECT datein,dateout,RefCode,artist,album,"
                 . "`format`,variousartists,`condition`,genre,`status`,labelid,"
-                . "Locale,CanCon,updated,release_date,note,playlist_flag "
+                . "Locale,CanCon,updated,release_date,note,playlist_flag,year "
                 . "FROM library where "
                 . "artist like ? and album like ?")){
             $stmt->bind_param('ss',$artist,$album);
@@ -338,7 +339,7 @@ class library{
                     $artist_q,$album_q,$format,$variousartists,
                     $condition,$genre,$status,$labelid,
                     $Locale,$CanCon,$updated,$release_date,
-                    $note,$playlist_flag);
+                    $note,$playlist_flag,$year);
             while($stmt->fetch()){
                 array_push($result, array(
                     'datein'=>$datein,'dateout'=>$dateout,'RefCode'=>$RefCode_q,
@@ -348,7 +349,7 @@ class library{
                     'labelid'=>$labelid,
                     'Locale'=>$Locale,'CanCon'=>$CanCon,'updated'=>$updated,
                     'release_date'=>$release_date,
-                    'note'=>$note,'playlist_flag'=>$playlist_flag
+                    'note'=>$note,'playlist_flag'=>$playlist_flag,'year'=>$year
                 ));
             }
             $stmt->close();
