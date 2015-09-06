@@ -59,6 +59,11 @@ class station extends TPS{
         else{return false;}
     }
     
+    /**
+     * Changes Station Designation in DB and Class
+     * @param type $Designation
+     * @return boolean
+     */
     public function changeStationDesignation($Designation){
         $con = $this->mysqli->prepare("Update station SET Designation=? where callsign=?");
         $con->bind_param('ss',$Designation,$this->callsign);
@@ -69,6 +74,11 @@ class station extends TPS{
         else{return false;}
     }
     
+    /**
+     * Changes Station Frequency in DB and Class
+     * @param type $frequency
+     * @return boolean
+     */
     public function changeStationFrequency($frequency){
         $con = $this->mysqli->prepare("Update station SET frequency=? where callsign=?");
         $con->bind_param('ss',$frequency,$this->callsign);
@@ -78,6 +88,12 @@ class station extends TPS{
         }
         else{return false;}
     }
+    
+    /**
+     * Changes Director Phone in DB and Class
+     * @param type $phone
+     * @return boolean
+     */
     public function changeStationPhoneDirector($phone){
         $con = $this->mysqli->prepare("Update station SET directorphone=? where callsign=?");
         $con->bind_param('ss',$phone,$this->callsign);
@@ -88,6 +104,11 @@ class station extends TPS{
         else{return false;}
     }
     
+    /**
+     * Changes Request Line number in DB and Class
+     * @param type $phone
+     * @return boolean
+     */
     public function changeStationPhoneRequest($phone){
         $con = $this->mysqli->prepare("Update station SET boothphone=? where callsign=?");
         $con->bind_param('ss',$phone,$this->callsign);
@@ -98,6 +119,11 @@ class station extends TPS{
         else{return false;}
     }
     
+    /**
+     * Changes Station Manager Phone in DB and Class
+     * @param type $phone
+     * @return boolean
+     */
     public function changeStationPhoneManager($phone){
         $con = $this->mysqli->prepare("Update station SET managerphone=? where callsign=?");
         $con->bind_param('ss',$phone,$this->callsign);
@@ -108,6 +134,11 @@ class station extends TPS{
         else{return false;}
     }
     
+    /**
+     * Changes Station website in DB and Class
+     * @param type $url
+     * @return boolean
+     */
     public function changeStationWebsite($url){
         $con = $this->mysqli->prepare("Update station SET website=? where callsign=?");
         $con->bind_param('ss',$url,$this->callsign);
@@ -118,6 +149,11 @@ class station extends TPS{
         else{return false;}
     }
     
+    /**
+     * Changes Station Address in DB and Class
+     * @param type $address
+     * @return boolean
+     */
     public function changeStationAddress($address){
         $con = $this->mysqli->prepare("Update station SET address=? where callsign=?");
         $con->bind_param('ss',$address,$this->callsign);
@@ -128,6 +164,11 @@ class station extends TPS{
         else{return false;}
     }
     
+    /**
+     * Changes Station TimeZone in DB and Class
+     * @param type $tz
+     * @return boolean
+     */
     public function changeStationTimeZone($tz){
         $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
         if(!in_array($tz, $tzlist)){

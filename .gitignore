@@ -34,4 +34,3 @@ php_errors.log
 !vendor/TPS/
 /public/slimConfig.php
 .forcetwig
-/Docs/

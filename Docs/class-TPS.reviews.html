@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="generator" content="ApiGen 2.8.0">
+
+	<title>Class TPS\reviews | TPS_GIT</title>
+
+	<script type="text/javascript" src="resources/combined.js?3604910170"></script>
+	<script type="text/javascript" src="elementlist.js?1071243315"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+				<li class="active"><a href="namespace-TPS.html">TPS</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-TPS.library.html">library</a></li>
+				<li class="active"><a href="class-TPS.reviews.html">reviews</a></li>
+				<li><a href="class-TPS.station.html">station</a></li>
+				<li><a href="class-TPS.TPS.html">TPS</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text">
+		<input type="submit" value="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-TPS.html" title="Summary of TPS"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+			<li>
+				<a href="deprecated.html" title="List of deprecated elements"><span>Deprecated</span></a>
+			</li>
+			<li>
+				<a href="todo.html" title="Todo list"><span>Todo</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class reviews</h1>
+
+
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-TPS.TPS.html"><span>TPS\TPS</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by">
+			<a href="class-TPS.station.html"><span>TPS\station</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by">
+<b><span>TPS\reviews</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-TPS.html">TPS</a><br>
+		
+
+		<b>Located at</b> <a href="source-class-TPS.reviews.html#11-599" title="Go to source code">public/lib/reviews.php</a><br>
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-TPS.reviews.html#12-19" title="Go to source code">__construct</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+				<h4>Version</h4>
+				<div class="list">
+						1.0<br>
+				</div>
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-TPS.station.html#___construct">TPS\station::__construct()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getAlbumList" id="_getAlbumList">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getAlbumList">#</a>
+		<code><a href="source-class-TPS.reviews.html#23-63" title="Go to source code">getAlbumList</a>( <span>integer <var>$pagination</var> = <span class="php-num">1</span></span>, <span>integer <var>$maxResult</var> = <span class="php-num">25</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$pagination</var></dt>
+					<dd><code>integer</code><br>$pagination current page index</dd>
+					<dt><var>$maxResult</var></dt>
+					<dd><code>integer</code><br>$maxResult number of items to in response</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>list of albums, False on error<br>
+				</div>
+
+
+				<h4>Author</h4>
+				<div class="list">
+						James Oliver &lt;<a
+href="mailto:support&#64;ckxu.com">support&#64;<!-- -->ckxu.com</a>&gt;<br>
+				</div>
+				<h4>Version</h4>
+				<div class="list">
+						1.0<br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getReviewsByAlbum" id="_getReviewsByAlbum">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getReviewsByAlbum">#</a>
+		<code><a href="source-class-TPS.reviews.html#65-132" title="Go to source code">getReviewsByAlbum</a>( <span>type <var>$RefCode</var></span>, <span>type <var>$pagination</var> = <span class="php-num">1</span></span>, <span>type <var>$maxResult</var> = <span class="php-num">25</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$RefCode</var></dt>
+					<dd><code>type</code><br>$RefCode Album RefCode</dd>
+					<dt><var>$pagination</var></dt>
+					<dd><code>type</code><br>$pagination page index</dd>
+					<dt><var>$maxResult</var></dt>
+					<dd><code>type</code><br>$maxResult max number of items to return</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>false if error, array of reviews otherwise<br>
+				</div>
+
+
+				<h4>Author</h4>
+				<div class="list">
+						James Oliver &lt;<a
+href="mailto:support&#64;ckxu.com">support&#64;<!-- -->ckxu.com</a>&gt;<br>
+				</div>
+				<h4>Version</h4>
+				<div class="list">
+						1.0<br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getAlbumReviews" id="_getAlbumReviews">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getAlbumReviews">#</a>
+		<code><a href="source-class-TPS.reviews.html#134-177" title="Go to source code">getAlbumReviews</a>( <span>type <var>$term</var></span>, <span>type <var>$pagination</var> = <span class="php-num">1</span></span>, <span>type <var>$maxResult</var> = <span class="php-num">25</span></span>, <span>type <var>$exactSearch</var> = <span class="php-keyword1">FALSE</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$term</var></dt>
+					<dd><code>type</code><br>$term</dd>
+					<dt><var>$pagination</var></dt>
+					<dd><code>type</code><br>$pagination</dd>
+					<dt><var>$maxResult</var></dt>
+					<dd><code>type</code><br>$maxResult</dd>
+					<dt><var>$exactSearch</var></dt>
+					<dd><code>type</code><br>$exactSearch provide true to prevent wildcard search</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>reviews based on search term, false on error<br>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getFullReview" id="_getFullReview">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getFullReview">#</a>
+		<code><a href="source-class-TPS.reviews.html#179-233" title="Go to source code">getFullReview</a>( <span>mixed <var>$term</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getReview" id="_getReview">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getReview">#</a>
+		<code><a href="source-class-TPS.reviews.html#235-273" title="Go to source code">getReview</a>( <span>string <var>$term</var></span>, <span>type <var>$exact</var> = <span class="php-keyword1">TRUE</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$term</var></dt>
+					<dd><code>string</code><br>$term search term</dd>
+					<dt><var>$exact</var></dt>
+					<dd><code>type</code><br>$exact removes wildcard search</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>
+				</div>
+
+
+				<h4>Todo</h4>
+				<div class="list">
+						Needs rebuilt<br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getAvailableReviews" id="_getAvailableReviews">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getAvailableReviews">#</a>
+		<code><a href="source-class-TPS.reviews.html#275-310" title="Go to source code">getAvailableReviews</a>( <span>type <var>$pagination</var> = <span class="php-num">1</span></span>, <span>type <var>$maxResult</var> = <span class="php-num">25</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$pagination</var></dt>
+					<dd><code>type</code><br>$pagination</dd>
+					<dt><var>$maxResult</var></dt>
+					<dd><code>type</code><br>$maxResult</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>albums without reviews<br>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="createReview" id="_createReview">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_createReview">#</a>
+		<code><a href="source-class-TPS.reviews.html#312-360" title="Go to source code">createReview</a>( <span>slim <var>&amp; $app</var></span>, <span>integer <var>$RefCode</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$app</var></dt>
+					<dd><code>slim</code><br>$app Slim application with request()</dd>
+					<dt><var>$RefCode</var></dt>
+					<dd><code>integer</code><br>$RefCode required integer of album</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br>False on error<br>
+				</div>
+
+
+				<h4>Author</h4>
+				<div class="list">
+						James Oliver &lt;<a
+href="mailto:support&#64;ckxu.com">support&#64;<!-- -->ckxu.com</a>&gt;<br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setPrintLabel" id="_setPrintLabel">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setPrintLabel">#</a>
+		<code><a href="source-class-TPS.reviews.html#362-377" title="Go to source code">setPrintLabel</a>( <span>mixed <var>$RefCode</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="clearPrintLabel" id="_clearPrintLabel">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_clearPrintLabel">#</a>
+		<code><a href="source-class-TPS.reviews.html#380-395" title="Go to source code">clearPrintLabel</a>( <span>mixed <var>$RefCode</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="clearPrintLabels" id="_clearPrintLabels">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_clearPrintLabels">#</a>
+		<code><a href="source-class-TPS.reviews.html#397-403" title="Go to source code">clearPrintLabels</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getPrintLables" id="_getPrintLables">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getPrintLables">#</a>
+		<code><a href="source-class-TPS.reviews.html#405-412" title="Go to source code">getPrintLables</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getApprovedReviews" id="_getApprovedReviews">
+
+		<td class="attributes"><code>
+			 public 
+			boolean|array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getApprovedReviews">#</a>
+		<code><a href="source-class-TPS.reviews.html#414-449" title="Go to source code">getApprovedReviews</a>( <span>type <var>$pagination</var> = <span class="php-num">1</span></span>, <span>type <var>$maxResult</var> = <span class="php-num">100</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$pagination</var></dt>
+					<dd><code>type</code><br>$pagination</dd>
+					<dt><var>$maxResult</var></dt>
+					<dd><code>type</code><br>$maxResult</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean|array</code><br>
+				</div>
+
+
+				<h4>Todo</h4>
+				<div class="list">
+						verify use and functionality<br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getPendingReviews" id="_getPendingReviews">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getPendingReviews">#</a>
+		<code><a href="source-class-TPS.reviews.html#451-486" title="Go to source code">getPendingReviews</a>( <span>type <var>$pagination</var> = <span class="php-num">1</span></span>, <span>type <var>$maxResult</var> = <span class="php-num">100</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$pagination</var></dt>
+					<dd><code>type</code><br>$pagination</dd>
+					<dt><var>$maxResult</var></dt>
+					<dd><code>type</code><br>$maxResult</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br>
+				</div>
+
+
+				<h4>Todo</h4>
+				<div class="list">
+						verify functionality and use<br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="countApprovedReviews" id="_countApprovedReviews">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_countApprovedReviews">#</a>
+		<code><a href="source-class-TPS.reviews.html#488-510" title="Go to source code">countApprovedReviews</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getAlbumAndReview" id="_getAlbumAndReview">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getAlbumAndReview">#</a>
+		<code><a href="source-class-TPS.reviews.html#512-598" title="Go to source code">getAlbumAndReview</a>( <span>type <var>$id</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$id</var></dt>
+					<dd><code>type</code><br>$id</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-TPS.station.html#methods">TPS\station</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-TPS.station.html#_changeStationAddress">changeStationAddress()</a>, 
+			<a href="class-TPS.station.html#_changeStationDesignation">changeStationDesignation()</a>, 
+			<a href="class-TPS.station.html#_changeStationFrequency">changeStationFrequency()</a>, 
+			<a href="class-TPS.station.html#_changeStationName">changeStationName()</a>, 
+			<a href="class-TPS.station.html#_changeStationPhoneDirector">changeStationPhoneDirector()</a>, 
+			<a href="class-TPS.station.html#_changeStationPhoneManager">changeStationPhoneManager()</a>, 
+			<a href="class-TPS.station.html#_changeStationPhoneRequest">changeStationPhoneRequest()</a>, 
+			<a href="class-TPS.station.html#_changeStationTimeZone">changeStationTimeZone()</a>, 
+			<a href="class-TPS.station.html#_changeStationWebsite">changeStationWebsite()</a>, 
+			<a href="class-TPS.station.html#_setupParams">setupParams()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-TPS.TPS.html#methods">TPS\TPS</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-TPS.TPS.html#_getStations">getStations()</a>, 
+			<a href="class-TPS.TPS.html#_sanitizePagination">sanitizePagination()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="error" id="$error">
+		<td class="attributes"><code>
+			protected  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-TPS.reviews.html#21" title="Go to source code"><var>$error</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$error" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-TPS.station.html#properties">TPS\station</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-TPS.station.html#$callsign"><var>$callsign</var></a>, 
+			<a href="class-TPS.station.html#$stationAddress"><var>$stationAddress</var></a>, 
+			<a href="class-TPS.station.html#$stationDesignation"><var>$stationDesignation</var></a>, 
+			<a href="class-TPS.station.html#$stationFrequency"><var>$stationFrequency</var></a>, 
+			<a href="class-TPS.station.html#$stationName"><var>$stationName</var></a>, 
+			<a href="class-TPS.station.html#$stationPhoneDirector"><var>$stationPhoneDirector</var></a>, 
+			<a href="class-TPS.station.html#$stationPhoneManager"><var>$stationPhoneManager</var></a>, 
+			<a href="class-TPS.station.html#$stationPhoneRequest"><var>$stationPhoneRequest</var></a>, 
+			<a href="class-TPS.station.html#$stationWebsite"><var>$stationWebsite</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-TPS.TPS.html#properties">TPS\TPS</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-TPS.TPS.html#$mysqli"><var>$mysqli</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		TPS_GIT API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

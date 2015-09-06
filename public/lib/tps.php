@@ -26,10 +26,39 @@ namespace TPS;
 
 class TPS{
     protected $mysqli;
+    
+    /**
+     * @access private
+     * @param int $pagination current page index
+     * @param int $maxResult number of items to in response
+     */
+    protected function sanitizePagination(&$pagination,&$maxResult){
+        if( !is_int($maxResult) || $maxResult > 1000):
+            $maxResult = 1000;
+        endif;
+        if( !is_int($pagination)):
+            $pagination = 1;
+        endif;
+        $floor = abs(($pagination*$maxResult))-($maxResult+1);
+        $ceil = abs(($pagination*$maxResult));
+        // Simply for security. should never happen
+        if ($floor < 0):
+            $floor=0;
+        endif;
+        if($ceil < 0):
+            $ceil = abs($ceil);
+        endif;
+        $pagination = $floor;
+        $maxResult = $ceil;
+    }
 
     public function __construct() {
         global $mysqli;
         $this->mysqli = $mysqli;
+    }
+    
+    public function getStations(){
+        
     }
     /*
      * should be used to create top level params such as DB connection
