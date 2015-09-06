@@ -29,8 +29,13 @@ namespace TPS;
  * @abstract library interface
  * @version 1.0
  */
-class library{
+require_once 'station.php';
+
+class library extends station{
     
+    public function __construct(){
+        parent::__construct();
+    }
     #protected $RefCode;
     
     /**
@@ -41,11 +46,11 @@ class library{
      * @version 0.1
      */
     public function getWebsitesByRefCode($RefCode){
-        global $mysqli;
+        $this->mysqli;
         $websites = array();
         $selectWebsites = "Select band_websites.URL, band_websites.Service, band_websites.date_available, band_websites.date_discontinue"
                     . " from band_websites where band_websites.ID=?;";
-        if($bands = $mysqli->prepare($selectWebsites)){
+        if($bands = $this->mysqli->prepare($selectWebsites)){
             $bands->bind_param('i',$RefCode);
             $bands->execute();
             $bands->bind_result($url,$service,$available,$discontinue);
@@ -58,7 +63,7 @@ class library{
             $bands->close();
         }
         else{
-            error_log($mysqli->errno.": ".$mysqli->error);
+            error_log($this->mysqli->errno.": ".$this->mysqli->error);
             return FALSE;
         }
         return $websites;
@@ -164,12 +169,12 @@ class library{
      * @return boolean|array
      */
     public function getLabelbyId($labelid){
-        global $mysqli;
+        $this->mysqli;
         $result = array();
         /*elseif(!$exact){
             $refcode="%{$refcode}%";
         }*/
-        if($stmt = $mysqli->prepare("SELECT LabelNumber, Name, Location, Size,"
+        if($stmt = $this->mysqli->prepare("SELECT LabelNumber, Name, Location, Size,"
                 . "name_alias_duplicate as alias, updated, verified FROM recordlabel"
                 . " WHERE LabelNumber=?")){
             $stmt->bind_param('i',$labelid);
@@ -185,7 +190,7 @@ class library{
             $stmt->close();
         }
         else{
-            error_log($mysqli->error);
+            error_log($this->mysqli->error);
             return FALSE;
         }
         return $result;
@@ -200,7 +205,7 @@ class library{
      * @return boolean|array
      */
     public function getAlbumByRefcode($refcode,$exact=FALSE){
-        global $mysqli;#,$exact;
+        $this->mysqli;
         $result = array();
         if($refcode===Null){
             $refcode='%';
@@ -208,7 +213,7 @@ class library{
         /*elseif(!$exact){
             $refcode="%{$refcode}%";
         }*/
-        if($stmt = $mysqli->prepare("SELECT Barcode,year,datein,dateout,RefCode,artist,album,"
+        if($stmt = $this->mysqli->prepare("SELECT Barcode,year,datein,dateout,RefCode,artist,album,"
                 . "`format`,variousartists,`condition`,genre,`status`,labelid,"
                 . "Locale,CanCon,updated,release_date,note,playlist_flag,governmentCategory,"
                 . "scheduleCode "
@@ -239,7 +244,7 @@ class library{
         }
         else{
             //$result=["error"=>$mysqli->error];
-            error_log($mysqli->error);
+            error_log($this->mysqli->error);
             return FALSE;
         }
         return $result;
@@ -259,12 +264,12 @@ class library{
      * @return boolean|array
      */
     public function searchLibrary($term,$exact=False){
-        global $mysqli;#,$exact;
+        $this->mysqli;
         $result = array();
         if(!$exact){
             $term="%{$term}%";
         }
-        if($stmt = $mysqli->prepare("SELECT datein,dateout,RefCode,artist,album,"
+        if($stmt = $this->mysqli->prepare("SELECT datein,dateout,RefCode,artist,album,"
                 . "`format`,variousartists,`condition`,genre,`status`,labelid,"
                 . "Locale,CanCon,updated,release_date,note,playlist_flag,year "
                 . "FROM library where "
@@ -293,7 +298,7 @@ class library{
         }
         else{
             //$result=["error"=>$mysqli->error];
-            error_log($mysqli->error);
+            error_log($this->mysqli->error);
             return FALSE;
         }
         return $result;
@@ -310,7 +315,7 @@ class library{
      * @return boolean|array
      */    
     function searchLibraryWithAlbum($artist, $album=NULL,$exact=FALSE){
-        global $mysqli;#,$exact;
+        $this->mysqli;
         $result = array();
         $artist = urldecode($artist);
         if($album){
@@ -328,7 +333,7 @@ class library{
         elseif(!$exact){
             $album="%{$album}%";
         }
-        if($stmt = $mysqli->prepare("SELECT datein,dateout,RefCode,artist,album,"
+        if($stmt = $this->mysqli->prepare("SELECT datein,dateout,RefCode,artist,album,"
                 . "`format`,variousartists,`condition`,genre,`status`,labelid,"
                 . "Locale,CanCon,updated,release_date,note,playlist_flag,year "
                 . "FROM library where "
@@ -356,7 +361,7 @@ class library{
         }
         else{
             //$result=["error"=>$mysqli->error];
-            error_log($mysqli->error);
+            error_log($this->mysqli->error);
             return FALSE;
         }
         return $result;
@@ -369,12 +374,12 @@ class library{
      * @todo add pagination
      */
     public function ListAll(){
-        global $mysqli;
-        if(is_null($mysqli)){
+        $this->mysqli;
+        if(is_null($this->mysqli)){
             return '';#$mysqli = $GLOBALS['db'];
         }
         $result = [];
-        $library = $mysqli->query(
+        $library = $this->mysqli->query(
                 "SELECT RefCode,artist,album,status FROM library");
         while($result_temp = $library->fetch_array(MYSQLI_ASSOC)){
             array_push($result, $result_temp);
@@ -390,7 +395,7 @@ class library{
      * @todo Optomize
      */
     public function GetFullAlbum($term){
-        global $mysqli;
+        $this->mysqli;
         $maxResult = 100;
         $selectAlbum = "Select library.RefCode, if(band_websites.ID is NULL,'No','Yes') as hasWebsite,if(recordlabel.name_alias_duplicate is NULL, recordlabel.Name, "
                 . "(SELECT Name from recordlabel where LabelNumber = recordlabel.name_alias_duplicate) ) as recordLabel, "
@@ -402,7 +407,7 @@ class library{
         $selectWebsites = "Select band_websites.URL, band_websites.Service, band_websites.date_available, band_websites.date_discontinue"
                 . " from band_websites where band_websites.ID=?;";
         $params = array();
-        if($stmt = $mysqli->prepare($selectAlbum)){
+        if($stmt = $this->mysqli->prepare($selectAlbum)){
             $stmt->bind_param('si',$term,$maxResult);
             $stmt->execute();
             $stmt->bind_result($RefCode,$hasWebsite,$recordLabel,$reviewed,$labelid,$locale,$variousArtists,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre,
@@ -433,7 +438,7 @@ class library{
         else{
             $params['error']=$mysqli->error;
         }
-        if($bands = $mysqli->prepare($selectWebsites)){
+        if($bands = $this->mysqli->prepare($selectWebsites)){
             $websites = array();
             $bands->bind_param('i',$term);
             $bands->execute();
@@ -447,8 +452,8 @@ class library{
             $bands->close();
         }
         else{
-            error_log($mysqli->errno.": ".$mysqli->error);
-            $params['error']=$mysqli->error;
+            error_log($this->mysqli->errno.": ".$this->mysqli->error);
+            $params['error']=$this->mysqli->error;
         }
         $params['websites']=$websites?:NULL;
         return $params;

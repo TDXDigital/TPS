@@ -6,14 +6,16 @@ namespace TPS;
  * @author James Oliver <support@ckxu.com>
  * @license https://raw.githubusercontent.com/TDXDigital/TPS/master/LICENSE MIT
  */
-class reviews{
+
+require_once 'station.php';
+class reviews extends station{
     /**
      * 
      * @global type $mysqli
      * @version 1.0
      */
     public function __construct() {
-        global $mysqli;
+        parent::__construct();
     }
     
     protected $error;
