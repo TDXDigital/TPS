@@ -26,7 +26,6 @@ namespace TPS;
 require_once 'tps.php';
 class station extends TPS{
     protected $callsign = null;
-    
     protected $stationName = null;
     protected $stationDesignation = null;
     protected $stationFrequency = null;
@@ -37,27 +36,147 @@ class station extends TPS{
     protected $stationWebsite = null;
     protected $DefaultSortOrder = 'asc';
     protected $GroupPlaylist = False;
-    protected $GroupFail = "#FC6E51"; #https://bootstrapbay.com/blog/bootstrap-ui-kit/
-    protected $GroupWarning = "#FFCE54";
-    protected $GroupPass = "#A0D468";
-    protected $GroupNote = "#4FC1E9";
+    protected $GroupPlaylistReporting = False;
+    #https://bootstrapbay.com/blog/bootstrap-ui-kit/
+    protected $colorFail = "#FC6E51"; 
+    protected $colorWarning = "#FFCE54";
+    protected $colorPass = "#A0D468";
+    protected $colorNote = "#4FC1E9";
     protected $ProgramCounters = False;
+    protected $forceComposer = False;
+    protected $forceArtist = False;
+    protected $forceAlbum = False;
+    protected $perHourTraffic = null;
+    protected $perHourPSA = null;
+    protected $timezone = "UTC";
             
-    function __construct() {
+    function __construct($callsign=null) {
         parent::__construct();
+        if(!is_null($callsign)){
+            $this->setupParams($callsign);
+        }
     }
     
     public function setupParams($callsign){
-        $this->callsign = $callsign;
+        $this->setStation($callsign);
+        if($params = $this->getStation()){
+            # set params
+            $this->stationName = $params["name"];
+            $this->stationDesignation = $params["designation"];
+            $this->stationFrequency = $params["frequency"];
+            $this->stationWebsite = $params["website"];
+            $this->stationAddress = $params["address"];
+            $this->stationPhoneDirector = $params["phone"]['director'];
+            $this->stationPhoneRequest = $params["phone"]["main"];
+            $this->stationPhoneManager = $params['phone']['manager'];
+            $this->DefaultSortOrder = $params['defaultSort'];
+            $this->colorPass = $params["colorPass"];
+            $this->colorNote = $params["colorNote"];
+            $this->colorFail = $params["colorFail"];
+            
+            if($params['displayCounters'] == 1){
+                $this->ProgramCounters = True;}
+            else {$this->ProgramCounters = False;}
+            
+            if($params["groupPlaylistProgramming"] == 1){
+                $this->GroupPlaylist = True;}
+            else {$this->GroupPlaylist = False;}
+            
+            if($params["groupPlaylistReporting"] == 1){
+                $this->GroupPlaylistReporting = True;}
+            else {$this->GroupPlaylistReporting = False;}
+            
+            if($params["forceComposer"] == 1){
+                $this->forceComposer = True;}
+            else {$this->forceComposer = False;}
+            
+            if($params["forceArtist"] == 1){
+                $this->forceArtist = True;}
+            else {$this->forceArtist = False;}
+            
+            if($params["forceAlbum"] == 1){
+                $this->forceAlbum = True;}
+            else {$this->forceAlbum = False;}
+            
+            $this->perHourTraffic = $params["perHourTraffic"];
+            $this->perHourPSA = $params["perHourPSAs"];
+            $this->timezone = $params['timezone'];
+        }
+        else{
+            return FALSE;
+        }
     }
     
+    public function getStation($callsign,$page=1,$maxResult=50){
+        $this->sanitizePagination($page,$maxResult);
+        $con = $this->mysqli->prepare("SELECT stationname,Designation,"
+                . "frequency,website,address,boothphone,directorphone,"
+                . "ST_DefaultSort,ST_PLLG,ST_ForceComposer,ST_ForceArtist,"
+                . "ST_ForceAlbum,ST_ColorFail,ST_ColorPass,ST_PLRG,"
+                . "ST_DispCount,ST_ColorNote,managerphone,ST_ADSH,ST_PSAH,"
+                . "timezone where callsign=? limit ?,?");
+        $con->bind_param('sii',$callsign,$page,$maxResult);
+        if($con->execute()){
+            $con->bind_result($stationname,$Designation,$frequency,$website,
+                $address,$boothphone,$directorphone,$DefaultSort,$PLLG,
+                $ForceComposer,$ForceArtist,$ForceAlbum,$ColorFail,$ColorPass,
+                $PLRG,$DispCount,$ColorNote,$ManagerPhone,$ADSH,$PSAH,$timezone
+                );
+            if($con->num_rows>1){
+                trigger_error(
+                        "Multiple stations returned for unique key:$callsign",
+                        E_RECOVERABLE_ERROR);
+            }
+            $result = array();
+            while($con->fetch()){
+                $result[$callsign] = array(
+                    "name"=>$stationname,
+                    "designation"=>$Designation,
+                    "frequency"=>$frequency,
+                    "website"=>$website,
+                    "address"=>$address,
+                    "phone"=>array(
+                        "main"=>$boothphone,
+                        "manager"=>$ManagerPhone,
+                        "director"=>$directorphone,
+                    ),
+                    "defaultSort"=>$DefaultSort,
+                    "groupPlaylistProgramming"=>$PLLG,
+                    "groupPlaylistReporting"=>$PLRG,
+                    "forceComposer"=>$ForceComposer,
+                    "forceArtist"=>$ForceArtist,
+                    "forceAlbum"=>$ForceAlbum,
+                    "displayCounters"=>$DispCount,
+                    "colorPass"=>$ColorPass,
+                    "colorFail"=>$ColorFail,
+                    "colorNote"=>$ColorNote,
+                    "perHourTraffic"=>$ADSH,
+                    "perHourPSAs"=>$PSAH,
+                    "timezone"=>$timezone,
+                );
+            }
+            return $result;
+        }
+        else{return false;}
+    }
+    
+    public function setStation($callsign){
+        $stations = $this->getStations();
+        if(array_key_exists($callsign, $stations)){
+            $this->callsign = $callsign;
+        }
+        else{
+            return False;
+        }
+    }
     /**
      * changes the station name
      * @param type $name
      * @return boolean
      */
     public function setStationName($name){
-        $con = $this->mysqli->prepare("Update station SET stationname=? where callsign=?");
+        $con = $this->mysqli->prepare(
+                "Update station SET stationname=? where callsign=?");
         $con->bind_param('ss',$name,$this->callsign);
         if($con->execute()){
             $this->stationName = $name;
@@ -72,7 +191,8 @@ class station extends TPS{
      * @return boolean
      */
     public function setStationDesignation($Designation){
-        $con = $this->mysqli->prepare("Update station SET Designation=? where callsign=?");
+        $con = $this->mysqli->prepare(
+                "Update station SET Designation=? where callsign=?");
         $con->bind_param('ss',$Designation,$this->callsign);
         if($con->execute()){
             $this->stationDesignation = $Designation;
@@ -87,7 +207,8 @@ class station extends TPS{
      * @return boolean
      */
     public function setStationFrequency($frequency){
-        $con = $this->mysqli->prepare("Update station SET frequency=? where callsign=?");
+        $con = $this->mysqli->prepare(
+                "Update station SET frequency=? where callsign=?");
         $con->bind_param('ss',$frequency,$this->callsign);
         if($con->execute()){
             $this->stationFrequency = $frequency;
@@ -102,7 +223,8 @@ class station extends TPS{
      * @return boolean
      */
     public function setStationPhoneDirector($phone){
-        $con = $this->mysqli->prepare("Update station SET directorphone=? where callsign=?");
+        $con = $this->mysqli->prepare(
+                "Update station SET directorphone=? where callsign=?");
         $con->bind_param('ss',$phone,$this->callsign);
         if($con->execute()){
             $this->stationPhoneDirector = $phone;
@@ -117,7 +239,8 @@ class station extends TPS{
      * @return boolean
      */
     public function setStationPhoneRequest($phone){
-        $con = $this->mysqli->prepare("Update station SET boothphone=? where callsign=?");
+        $con = $this->mysqli->prepare(
+                "Update station SET boothphone=? where callsign=?");
         $con->bind_param('ss',$phone,$this->callsign);
         if($con->execute()){
             $this->stationPhoneRequest = $phone;
@@ -132,7 +255,8 @@ class station extends TPS{
      * @return boolean
      */
     public function setStationPhoneManager($phone){
-        $con = $this->mysqli->prepare("Update station SET managerphone=? where callsign=?");
+        $con = $this->mysqli->prepare(
+                "Update station SET managerphone=? where callsign=?");
         $con->bind_param('ss',$phone,$this->callsign);
         if($con->execute()){
             $this->stationPhoneManager = $phone;
@@ -147,7 +271,8 @@ class station extends TPS{
      * @return boolean
      */
     public function setStationWebsite($url){
-        $con = $this->mysqli->prepare("Update station SET website=? where callsign=?");
+        $con = $this->mysqli->prepare(
+                "Update station SET website=? where callsign=?");
         $con->bind_param('ss',$url,$this->callsign);
         if($con->execute()){
             $this->stationWebsite = $url;
@@ -162,7 +287,8 @@ class station extends TPS{
      * @return boolean
      */
     public function setStationAddress($address){
-        $con = $this->mysqli->prepare("Update station SET address=? where callsign=?");
+        $con = $this->mysqli->prepare(
+                "Update station SET address=? where callsign=?");
         $con->bind_param('ss',$address,$this->callsign);
         if($con->execute()){
             $this->stationAddress = $address;
@@ -179,9 +305,11 @@ class station extends TPS{
     public function setStationTimeZone($tz){
         $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
         if(!in_array($tz, $tzlist)){
-            trigger_error("TimeZone $tz not found in TimeZone list", E_USER_WARNING);
+            trigger_error(
+                    "TimeZone $tz not found in TimeZone list", E_USER_WARNING);
         }
-        $con = $this->mysqli->prepare("Update station SET timezone=? where callsign=?");
+        $con = $this->mysqli->prepare(
+                "Update station SET timezone=? where callsign=?");
         $con->bind_param('ss',$tz,$this->callsign);
         if($con->execute()){
             $this->stationTimeZone = $tz;
@@ -191,7 +319,8 @@ class station extends TPS{
     }
     
     public function setPlaylistGrouping($gp){
-        $con = $this->mysqli->prepare("Update station SET ST_PLLG=? where callsign=?");
+        $con = $this->mysqli->prepare(
+                "Update station SET ST_PLLG=? where callsign=?");
         $con->bind_param('ss',$gp,$this->callsign);
         if($con->execute()){
             $this->GroupPlaylist = $gp;
@@ -201,7 +330,8 @@ class station extends TPS{
     }
     
     public function setDefaultSortOrder($SortOrder){
-        $con = $this->mysqli->prepare("Update station SET ST_DefaultSort=? where callsign=?");
+        $con = $this->mysqli->prepare(
+                "Update station SET ST_DefaultSort=? where callsign=?");
         $con->bind_param('ss',$SortOrder,$this->callsign);
         if($con->execute()){
             $this->DefaultSortOrder = $SortOrder;
@@ -211,7 +341,8 @@ class station extends TPS{
     }
     
     private function setProgramCounters($SortOrder){
-        $con = $this->mysqli->prepare("Update station SET ST_DispCount=? where callsign=?");
+        $con = $this->mysqli->prepare(
+                "Update station SET ST_DispCount=? where callsign=?");
         $con->bind_param('ss',$SortOrder,$this->callsign);
         if($con->execute()){
             return true;
@@ -220,7 +351,7 @@ class station extends TPS{
     }
     
     public function programCountersOn(){
-        if($this->changeProgramCounters("0")){
+        if($this->setProgramCounters("1")){
             $this->ProgramCounters = True;
             return true;
         }
@@ -228,7 +359,7 @@ class station extends TPS{
     }
     
     public function programCountersOff(){
-        if($this->changeProgramCounters("0")){
+        if($this->setProgramCounters("0")){
             $this->ProgramCounters = False;
             return true;
         }
