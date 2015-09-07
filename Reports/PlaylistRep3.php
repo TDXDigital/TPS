@@ -86,7 +86,7 @@ else if($con){
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="../altstyle.css" />
-    <link rel="stylesheet" type="text/css" href="../station/genres/genres.css"/>
+    <link rel="stylesheet" type="text/css" href="../stn/Genres/Genres.css"/>
     <!--<link rel="stylesheet" type="text/css" href="../js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>-->
     <!--<style>
         .google-visualization-table-table {
