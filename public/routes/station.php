@@ -36,6 +36,6 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
             'area'=>'Station Management',
             'title'=>'list'
             );
-        $app->render('reviewList.twig',$params);
+        $app->render('stations.twig',$params);
     });
 });

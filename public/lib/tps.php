@@ -58,10 +58,14 @@ class TPS{
     }
     
     public function getStations(){
+        $callsign = null;
+        $name = null;
         if($con = $this->mysqli->prepare("SELECT callsign, stationname FROM station")){
             $stations = array();
+            $con->execute();
             $con->bind_result($callsign,$name);
-            while($con->execute()){
+            while($con->fetch())
+            {
                 $stations[$callsign]=$name;
             }
             return $stations;
