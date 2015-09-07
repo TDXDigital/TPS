@@ -179,5 +179,5 @@ $app->post("/login", function () use ($app) {
 $app->get("/logout", function () use ($app) {
    session_unset();
    $app->view()->setData('access', null);
-   $app->render('error.html.twig',array('statusCode'=>'Logout','title'=>'Logout', 'message'=>'You have been logged out'));
+   $app->render('basic.twig',array('statusCode'=>'Logout','title'=>'Logout', 'message'=>'You have been logged out'));
 });

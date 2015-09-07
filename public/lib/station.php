@@ -58,8 +58,11 @@ class station extends TPS{
     }
     
     public function setupParams($callsign){
+        $callsign = strtoupper($callsign);
         $this->setStation($callsign);
-        if($params = $this->getStation()){
+        $stations = $this->getStation($callsign);
+        $params = $stations[$callsign];
+        if(sizeof($params)>0){
             # set params
             $this->stationName = $params["name"];
             $this->stationDesignation = $params["designation"];
@@ -109,58 +112,64 @@ class station extends TPS{
     
     public function getStation($callsign,$page=1,$maxResult=50){
         $this->sanitizePagination($page,$maxResult);
-        $con = $this->mysqli->prepare("SELECT stationname,Designation,"
+        if($con = $this->mysqli->prepare("SELECT stationname,Designation,"
                 . "frequency,website,address,boothphone,directorphone,"
                 . "ST_DefaultSort,ST_PLLG,ST_ForceComposer,ST_ForceArtist,"
                 . "ST_ForceAlbum,ST_ColorFail,ST_ColorPass,ST_PLRG,"
                 . "ST_DispCount,ST_ColorNote,managerphone,ST_ADSH,ST_PSAH,"
-                . "timezone where callsign=? limit ?,?");
-        $con->bind_param('sii',$callsign,$page,$maxResult);
-        if($con->execute()){
-            $con->bind_result($stationname,$Designation,$frequency,$website,
-                $address,$boothphone,$directorphone,$DefaultSort,$PLLG,
-                $ForceComposer,$ForceArtist,$ForceAlbum,$ColorFail,$ColorPass,
-                $PLRG,$DispCount,$ColorNote,$ManagerPhone,$ADSH,$PSAH,$timezone
-                );
-            if($con->num_rows>1){
-                trigger_error(
-                        "Multiple stations returned for unique key:$callsign",
-                        E_RECOVERABLE_ERROR);
+                . "timezone FROM station where callsign=? order by callsign limit ?,?;")){
+            $con->bind_param('sii',$callsign,$page,$maxResult);
+            if($con->execute()){
+                $con->bind_result($stationname,$Designation,$frequency,$website,
+                    $address,$boothphone,$directorphone,$DefaultSort,$PLLG,
+                    $ForceComposer,$ForceArtist,$ForceAlbum,$ColorFail,$ColorPass,
+                    $PLRG,$DispCount,$ColorNote,$ManagerPhone,$ADSH,$PSAH,$timezone
+                    );
+                if($con->num_rows>1){
+                    trigger_error(
+                            "Multiple stations returned for unique key:$callsign",
+                            E_USER_ERROR);
+                }
+                $result = array();
+                while($con->fetch()){
+                    $result[$callsign] = array(
+                        "name"=>$stationname,
+                        "designation"=>$Designation,
+                        "frequency"=>$frequency,
+                        "website"=>$website,
+                        "address"=>$address,
+                        "phone"=>array(
+                            "main"=>$boothphone,
+                            "manager"=>$ManagerPhone,
+                            "director"=>$directorphone,
+                        ),
+                        "defaultSort"=>$DefaultSort,
+                        "groupPlaylistProgramming"=>$PLLG,
+                        "groupPlaylistReporting"=>$PLRG,
+                        "forceComposer"=>$ForceComposer,
+                        "forceArtist"=>$ForceArtist,
+                        "forceAlbum"=>$ForceAlbum,
+                        "displayCounters"=>$DispCount,
+                        "colorPass"=>$ColorPass,
+                        "colorFail"=>$ColorFail,
+                        "colorNote"=>$ColorNote,
+                        "perHourTraffic"=>$ADSH,
+                        "perHourPSAs"=>$PSAH,
+                        "timezone"=>$timezone,
+                    );
+                }
+                return $result;
             }
-            $result = array();
-            while($con->fetch()){
-                $result[$callsign] = array(
-                    "name"=>$stationname,
-                    "designation"=>$Designation,
-                    "frequency"=>$frequency,
-                    "website"=>$website,
-                    "address"=>$address,
-                    "phone"=>array(
-                        "main"=>$boothphone,
-                        "manager"=>$ManagerPhone,
-                        "director"=>$directorphone,
-                    ),
-                    "defaultSort"=>$DefaultSort,
-                    "groupPlaylistProgramming"=>$PLLG,
-                    "groupPlaylistReporting"=>$PLRG,
-                    "forceComposer"=>$ForceComposer,
-                    "forceArtist"=>$ForceArtist,
-                    "forceAlbum"=>$ForceAlbum,
-                    "displayCounters"=>$DispCount,
-                    "colorPass"=>$ColorPass,
-                    "colorFail"=>$ColorFail,
-                    "colorNote"=>$ColorNote,
-                    "perHourTraffic"=>$ADSH,
-                    "perHourPSAs"=>$PSAH,
-                    "timezone"=>$timezone,
-                );
-            }
-            return $result;
+            else{return false;}
         }
-        else{return false;}
+        else{
+            trigger_error($this->mysqli->error, E_USER_ERROR);
+            return false;
+        }
     }
     
     public function setStation($callsign){
+        $callsign = strtoupper($callsign);
         $stations = $this->getStations();
         if(array_key_exists($callsign, $stations)){
             $this->callsign = $callsign;
