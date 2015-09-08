@@ -61,13 +61,13 @@
 
         else{
             if($_SESSION['access']==2){
-                include_once "station/admin.php";
+                include_once "stn/admin.php";
                 //header("location: masterpage.php");
             }
             else{
                 //include_once "station/user.php";
                 //include_once "djhome.php";
-                include_once "station/user_old.php";
+                include_once "stn/user_old.php";
                 //header("djhome.php");
             }
         }
@@ -76,12 +76,12 @@
         #echo "<span>Your server does not support mysqlnd, please enable this feature for full operations.</span>";
         $_SESSION['NDSupport']=FALSE;
         if($_SESSION['access']==2){
-                include_once "station/admin_old.php";
+                include_once "stn/admin_old.php";
                 //header("location: masterpage.php");
             }
             else{
                 //include_once "djhome.php";
-                include_once "station/user_old.php";
+                include_once "stn/user_old.php";
                 //header("djhome.php");
             }
     }

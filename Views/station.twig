@@ -65,28 +65,6 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-6">
-                        <div id="frequency_group" class="form-group input-group">
-                            <label class="input-group-addon" for="frequency_field">Call sign<span style="color:red">*</span></label>
-                            <input name="callsign" id="frequency_field" type="text" required 
-                                   {% if station.callsign is not null %} readonly value="{{station.callsign}}" {% endif %}
-                                   placeholder="eg. CAAA-FM" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div id="ind_group" class="form-group input-group">
-                            <label for="timezone" class="input-group-addon">TimeZone</label>
-                            <select id="timezone" class="form-control" name="timezone">
-                                {% for key,value in timezones %}
-                                    <option value='{{value}}' 
-                                            {% if station.timezone|default('UTC') == value %} selected {% endif %}
-                                            > {{value|default('Unknown TimeZone')}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-6">
                         <div id="web_group" class="form-group input-group">
                             <label for="website_field" class="input-group-addon">Website</label>
                             <input name="website" id="website_field" type="url" 
@@ -106,6 +84,28 @@
                             <label for="perHourPSAs_field" class="input-group-addon" title="PSA per Hour">PSA/Hr</label>
                             <input name="perHourPSAs" id="perHourPSAs_field" type="number" min="0"
                                    value="{{station.perHourPSAs|default(1)}}" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div id="frequency_group" class="form-group input-group">
+                            <label class="input-group-addon" for="callsign_field">Call sign<span style="color:red">*</span></label>
+                            <input name="callsign" id="callsign_field" type="text" required 
+                                   {% if station.callsign is not null %} readonly value="{{station.callsign}}" {% endif %}
+                                   placeholder="eg. CAAA-FM" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div id="ind_group" class="form-group input-group">
+                            <label for="timezone" class="input-group-addon">TimeZone</label>
+                            <select id="timezone" class="form-control" name="timezone">
+                                {% for key,value in timezones %}
+                                    <option value='{{value}}' 
+                                            {% if station.timezone|default('UTC') == value %} selected {% endif %}
+                                            > {{value|default('Unknown TimeZone')}}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
                 </div>
