@@ -72,8 +72,8 @@ $app->group('/user', $authenticate, function () use ($app) {
         $app->render('notSupported.twig', array('title'=>'User Settings'));
     });
 });
+
 require_once 'lib'.DIRECTORY_SEPARATOR.'libs.php';
-require_once 'routes'.DIRECTORY_SEPARATOR.'library.php';
-require_once 'routes'.DIRECTORY_SEPARATOR.'reviews.php';
-require_once 'routes'.DIRECTORY_SEPARATOR.'api.php';
+require_once 'routes'.DIRECTORY_SEPARATOR.'routes.php';
+
 $app->run();

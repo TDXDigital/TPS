@@ -67,6 +67,8 @@ body {
     height: .883in; /* plus .125 inches from padding */
     padding: .13in .3in 0;
     margin-right: .203in; /* the gutter */
+    
+    font-family: Tahoma, Geneva, sans-serif;
 
     float: left;
 

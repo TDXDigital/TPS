@@ -14,8 +14,8 @@ $temp_path = false;
 
 require_once 'header.php';
 
-$authenticate = function ($app,$access=0) {
-    return function () use ($app,$access) {
+$authenticate = function ($app,$access=0,$json=FALSE) {
+    return function () use ($app,$access,$json) {
         if (!isset($_SESSION['access'])) {
             $_SESSION['urlRedirect'] = $app->request()->getPathInfo();
             $app->flash('error', 'Login required');
@@ -23,12 +23,26 @@ $authenticate = function ($app,$access=0) {
         }
         elseif($access){
             if(!is_array($access)){
-                $array = array($access);
+                $access = array($access);
             }
             if(!in_array($_SESSION['access'],$access)){
                 $_SESSION['urlRedirect'] = $app->request()->getPathInfo();
-                $app->flash('error', 'Insufficient Permissions');
-                $app->redirect('/login');
+                //$app->flash('error', 'Insufficient Permissions');
+                //$app->redirect('/401');
+                $app->response->setStatus(401);
+                global $base_url, $twig;
+                $params = array(
+                    'base_url' => $app->request->getResourceUri(),
+                    'title' => 'Error 401',
+                    'message' => "Not Authorized",
+                );
+                if($json){
+                    print "<h1>".$params['title']."</h1>".$params['message'];
+                }
+                else{
+                    $app->render("error.html.twig",$params);
+                }
+                $app->stop(401);
             }
         }
     };
