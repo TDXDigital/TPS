@@ -117,18 +117,20 @@ class station extends TPS{
                 . "ST_DefaultSort,ST_PLLG,ST_ForceComposer,ST_ForceArtist,"
                 . "ST_ForceAlbum,ST_ColorFail,ST_ColorPass,ST_PLRG,"
                 . "ST_DispCount,ST_ColorNote,managerphone,ST_ADSH,ST_PSAH,"
-                . "timezone FROM station where callsign=? order by callsign limit ?,?;")){
+                . "timezone FROM station where callsign=? order by callsign "
+                . "limit ?,?;")){
             $con->bind_param('sii',$callsign,$page,$maxResult);
             if($con->execute()){
-                $con->bind_result($stationname,$Designation,$frequency,$website,
-                    $address,$boothphone,$directorphone,$DefaultSort,$PLLG,
-                    $ForceComposer,$ForceArtist,$ForceAlbum,$ColorFail,$ColorPass,
-                    $PLRG,$DispCount,$ColorNote,$ManagerPhone,$ADSH,$PSAH,$timezone
+                $con->bind_result($stationname, $Designation, $frequency, 
+                      $website, $address, $boothphone, $directorphone, 
+                      $DefaultSort, $PLLG, $ForceComposer, $ForceArtist, 
+                      $ForceAlbum, $ColorFail, $ColorPass, $PLRG, $DispCount, 
+                      $ColorNote, $ManagerPhone, $ADSH, $PSAH, $timezone
                     );
                 if($con->num_rows>1){
                     trigger_error(
-                            "Multiple stations returned for unique key:$callsign",
-                            E_USER_ERROR);
+                            "Multiple stations returned for unique key:"
+                            . $callsign, E_USER_ERROR);
                 }
                 $result = array();
                 while($con->fetch()){
@@ -327,15 +329,86 @@ class station extends TPS{
         else{return false;}
     }
     
-    public function setPlaylistGrouping($gp){
+    private function setPlaylistLiveGrouping($gp){
+        assert(in_array($gp, ['1','0',1,0,True,False]),'invalid paramater');
+        if(is_bool($gp) || is_int($gp)){
+            $gp = "".(int)$gp."";
+        }
         $con = $this->mysqli->prepare(
                 "Update station SET ST_PLLG=? where callsign=?");
         $con->bind_param('ss',$gp,$this->callsign);
         if($con->execute()){
-            $this->GroupPlaylist = $gp;
+            if($gp == '1'){
+                $this->GroupPlaylist = True;
+            }
+            else{
+                $this->GroupPlaylist = False;
+            }
             return true;
         }
         else{return false;}
+    }
+    
+    public function playlistLiveGroupingOn(){
+        return $this->setPlaylistLiveGrouping("1");
+    }
+    
+    public function playlistLiveGroupingOff(){
+        return $this->setPlaylistLiveGrouping("0");
+    }
+    
+    public function playlistLiveGrouping(){
+        return $this->GroupPlaylist;
+    }
+    
+    public function togglePlaylistLiveGrouping(){
+        if($this->playlistLiveGrouping()){
+            return $this->playlistLiveGroupingOff();
+        }
+        else{
+            return $this->playlistLiveGroupingOn();
+        }
+    }
+    
+    private function setPlaylistReportingGrouping($gp){
+        assert(in_array($gp, ['1','0',1,0,True,False]),'invalid paramater');
+        if(is_bool($gp) || is_int($gp)){
+            $gp = "".(int)$gp."";
+        }
+        $con = $this->mysqli->prepare(
+                "Update station SET ST_PLRG=? where callsign=?");
+        $con->bind_param('ss',$gp,$this->callsign);
+        if($con->execute()){
+            if($gp == '1'){
+                $this->GroupPlaylistReporting = True;
+            }
+            else{
+                $this->GroupPlaylistReporting = False;
+            }
+            return true;
+        }
+        else{return false;}
+    }
+    
+    public function PlaylistReportingGroupingOn(){
+        return $this->setPlaylistReportingGrouping("1");
+    }
+    
+    public function PlaylistReportingGroupingOff(){
+        return $this->setPlaylistReportingGrouping("0");
+    }
+    
+    public function PlaylistReportingGrouping(){
+        return $this->GroupPlaylistReporting;
+    }
+    
+    public function togglePlaylistReportingGrouping(){
+        if($this->PlaylistReportingGrouping()){
+            return $this->PlaylistReportingGroupingOff();
+        }
+        else{
+            return $this->PlaylistReportingGroupingOn();
+        }
     }
     
     public function setDefaultSortOrder($SortOrder){
@@ -378,4 +451,131 @@ class station extends TPS{
     public function programCounters(){
         return $this->ProgramCounters;
     }
+    
+    public function toggleProgramCounters(){
+        if($this->programCounters()){
+            return $this->programCountersOff();
+        }
+        else{
+            return $this->programCountersOn();
+        }
+    }
+    
+    private function setForceComposer($value){
+        $con = $this->mysqli->prepare(
+                "Update station SET ST_ForceComposer=? where callsign=?");
+        $con->bind_param('ss',$value,$this->callsign);
+        if($con->execute()){
+            return true;
+        }
+        else{return false;}
+    }
+        
+    public function forceComposerOn(){
+        if($this->setForceComposer("1")){
+            $this->forceComposer = True;
+            return true;
+        }
+        else{return false;}
+    }
+    
+    public function forceComposerOff(){
+        if($this->setForceComposer("0")){
+            $this->forceComposer = True;
+            return true;
+        }
+        else{return false;}
+    }
+    
+    public function forceComposer(){
+        return $this->forceComposer;
+    }
+    
+    public function toggleForceComposer(){
+        if($this->forceComposer()){
+            return $this->forceComposerOff();
+        }
+        else{
+            return $this->forceComposerOn();
+        }
+    }
+    
+    private function setForceArtist($value){
+        $con = $this->mysqli->prepare(
+                "Update station SET ST_ForceArtist=? where callsign=?");
+        $con->bind_param('ss',$value,$this->callsign);
+        if($con->execute()){
+            return true;
+        }
+        else{return false;}
+    }
+        
+    public function forceArtistOn(){
+        if($this->setForceArtist("1")){
+            $this->forceArtist = True;
+            return true;
+        }
+        else{return false;}
+    }
+    
+    public function forceArtistOff(){
+        if($this->setForceArtist("0")){
+            $this->forceArtist = True;
+            return true;
+        }
+        else{return false;}
+    }
+    
+    public function forceArtist(){
+        return $this->forceArtist;
+    }
+    
+    public function toggleForceArtist(){
+        if($this->forceArtist()){
+            return $this->forceArtistOff();
+        }
+        else{
+            return $this->forceArtistOn();
+        }
+    }
+    
+    private function setForceAlbum($value){
+        $con = $this->mysqli->prepare(
+                "Update station SET ST_ForceAlbum=? where callsign=?");
+        $con->bind_param('ss',$value,$this->callsign);
+        if($con->execute()){
+            return true;
+        }
+        else{return false;}
+    }
+        
+    public function forceAlbumOn(){
+        if($this->setForceAlbum("1")){
+            $this->forceAlbum = True;
+            return true;
+        }
+        else{return false;}
+    }
+    
+    public function forceAlbumOff(){
+        if($this->setForceAlbum("0")){
+            $this->forceAlbum = True;
+            return true;
+        }
+        else{return false;}
+    }
+    
+    public function forceAlbum(){
+        return $this->forceAlbum;
+    }
+    
+    public function toggleForceAlbum(){
+        if($this->forceAlbum()){
+            return $this->forceAlbumOff();
+        }
+        else{
+            return $this->forceAlbumOn();
+        }
+    }
+    
 }

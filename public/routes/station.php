@@ -119,18 +119,22 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
                 $station->setStationPhoneRequest($phoneMain);
             }
             if($groupPlaylistProgramming!=$stn['groupPlaylistProgramming']){
-                #$station->setGroupPlaylistProgramming($groupPlaylistProgramming);
+                $station->togglePlaylistLiveGrouping();
             }
             if($groupPlaylistReporting!=$stn['groupPlaylistReporting']){
-                #$station->setGroupPlaylistProgramming($groupPlaylistReporting);
+                $station->togglePlaylistReportingGrouping();
             }
-            if($displayCounters!=$stn['displayCounters']){
-                if($displayCounters){
-                    $station->programCountersOn();
-                }
-                else{
-                    $station->programCountersOff();
-                }
+            if($displayCounters!=$station->programCounters()){
+                $station->toggleProgramCounters();
+            }
+            if($forceAlbum!=$station->forceAlbum()){
+                $station->toggleForceAlbum();
+            }
+            if($forceArtist!=$station->forceArtist()){
+                $station->toggleForceArtist();
+            }
+            if($forceComposer!=$station->forceComposer()){
+                $station->toggleForceComposer();
             }
             $app->flash('success',"$callsign updated succesfully");
             $app->redirect("./$callsign");
