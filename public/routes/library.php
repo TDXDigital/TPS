@@ -495,7 +495,9 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     $s="";
                 }
                 if($print==1){
-                    $_SESSION['PRINTID'][]=$RefCode;
+                    $libCode=$library->getLibraryCodeByRefCode($RefCode);
+                    $_SESSION['PRINTID'][] = array("RefCode"=>$RefCode,
+                        "LibCode"=>$libCode);
                 }
             }
             #header("location: /library/?q=new&m=$artist'$s%20new%20album%20entered ($id_last)");
