@@ -308,6 +308,36 @@ class station extends TPS{
         else{return false;}
     }
     
+    public function hourlyTraffic(){
+        return $this->perHourTraffic;
+    }
+    
+    public function setHourlyTraffic($hourly) {
+        $con = $this->mysqli->prepare(
+                "Update station SET ST_ADSH=? where callsign=?");
+        $con->bind_param('ss',$hourly,$this->callsign);
+        if($con->execute()){
+            $this->perHourTraffic = $hourly;
+            return true;
+        }
+        else{return false;}
+    }
+    
+    public function hourlyPSA(){
+        return $this->perHourPSA;
+    }
+    
+    public function setHourlyPSA($hourly) {
+        $con = $this->mysqli->prepare(
+                "Update station SET ST_PSAH=? where callsign=?");
+        $con->bind_param('ss',$hourly,$this->callsign);
+        if($con->execute()){
+            $this->perHourPSA = $hourly;
+            return true;
+        }
+        else{return false;}
+    }
+    
     /**
      * Changes Station TimeZone in DB and Class
      * @param type $tz
