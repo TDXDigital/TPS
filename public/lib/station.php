@@ -57,6 +57,28 @@ class station extends TPS{
         }
     }
     
+    public function updateParent(){
+        if(parent::updateParent()){
+            return $this->update();
+        }
+        else{
+            $trace = debug_backtrace();
+            trigger_error(
+                'Undefined property via __get(): ' . $name .
+                ' in ' . $trace[0]['file'] .
+                ' on line ' . $trace[0]['line'],
+                E_USER_NOTICE);
+            return False;
+        }
+    }
+    
+    public function update(){
+        if(!is_null($this->callsign)){
+            return $this->setupParams($this->callsign);
+        }
+        return True;
+    }
+    
     public function setupParams($callsign){
         $callsign = strtoupper($callsign);
         $this->setStation($callsign);
@@ -104,6 +126,7 @@ class station extends TPS{
             $this->perHourTraffic = $params["perHourTraffic"];
             $this->perHourPSA = $params["perHourPSAs"];
             $this->timezone = $params['timezone'];
+            return TRUE;
         }
         else{
             return FALSE;
@@ -608,4 +631,24 @@ class station extends TPS{
         }
     }
     
+    public function getAllProgramIds($active = TRUE){
+        /**
+         * gets the ID associated with a program
+         */
+        $result = array();
+        $progam = null;
+        $con = $this->mysqli->prepare(
+                "SELECT ProgramID FROM program where callsign=? and active=?");
+        $iactive = (int)$active;
+        $vcallsign = $this->callsign;
+        $con->bind_param('si',$vcallsign,$iactive);
+        $con->bind_result($progam);
+        if($con->execute()){
+            while($con->fetch()){
+                array_push($result,$progam);
+            }
+            return $result;
+        }
+        else{return false;}
+    }
 }
