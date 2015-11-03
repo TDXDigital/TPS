@@ -286,10 +286,8 @@ class library extends station{
     public function getScheduleBlocks(){
         $blocks = array(
             NULL => "Select",
-            "M" => "Daytime1  [06:00-12:00]",
-            "D" => "Daytime2  [12:00-18:00]",
-            "E" => "Evening   [18:00-00:00]",
-            "N" => "Nighttime [00:00-06:00]",
+            "D" => "Daytime [06:00-21:00]",
+            "N" => "Nighttime [21:00-06:00]",
         );
         return $blocks;
     }
