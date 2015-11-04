@@ -58,7 +58,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         if(!$stmt1->execute()){
             $stmt1->close();
             $app->flash('error',$mysqli->error);
-            $app->redirect('./');
+            $app->redirect('./new');
         }
         $stmt1->bind_result($labelNum);
         $stmt1->fetch();
@@ -72,7 +72,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 $stmt2->close();
                 #header("location: ../library/?q=new&e=".$mysqli->errno."&s=2");
                 $app->flash('error',$mysqli->error);
-                $app->redirect('./');
+                $app->redirect('./new');
                 //echo "ERROR: " .    $mysqli->error;
             }
             else{
@@ -91,7 +91,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         if(is_null($labelNum)||$labelNum=="null"){
             #header("location: ../library/?q=new&e=9999&s=3");
             $app->flash('error','label is required but was not proveded or was invalid. could not recieve album');
-            $app->redirect('./');
+            $app->redirect('./new');
         }
 
         /*if($playlist==FALSE){
@@ -157,7 +157,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $stmt3->close();
             #header("location: /library/?q=new&e=".$error[0]."&s=3&m=".$error[1]);
             $app->flash('error',$mysqli->error);
-            $app->redirect('./');
+            $app->redirect('./new');
             //echo "ERROR #".$mysqli->errno . "  " .    $mysqli->error;
         }
         else{
@@ -205,7 +205,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         #header("location: /library/?q=new&m=$artist'$s%20new%20album%20entered ($id_last)");
         $app->flash('Success',"Album Recieved");
         #var_dump($_SESSION);
-        $app->redirect('./');
+        $app->redirect('./new');
     });
     $app->get('/search/', $authenticate, function () use ($app){
         $library = new \TPS\library();
