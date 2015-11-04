@@ -26,7 +26,7 @@ namespace TPS;
 
 class TPS{
     protected $mysqli;
-    
+    protected $username;
     /**
      * @access private
      * @param int $pagination current page index

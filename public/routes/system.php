@@ -23,6 +23,7 @@ $app->delete('/', $authenticate($app), function() use ($app){
 });
 
 $app->get("/login", function () use ($app) {
+    $log = \TPS\logger();
    $flash = $app->view()->getData('flash');
    $error = '';
    if (isset($flash['error'])) {
@@ -45,6 +46,7 @@ $app->get("/login", function () use ($app) {
    if (isset($flash['errors']['password'])) {
       $password_error = $flash['errors']['password'];
    }
+   $log->info("presented login to user via IP:".$_SERVER['REMOTE_ADDR']);
    $app->render('login.html.twig', array('error' => $error, 'Username' => $email_value, 'Username_error' => $email_error, 'password_error' => $password_error, 'urlRedirect' => $urlRedirect));
 });
 

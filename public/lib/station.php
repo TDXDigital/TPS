@@ -23,6 +23,8 @@ namespace TPS;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+require_once 'logger.php';
 require_once 'tps.php';
 class station extends TPS{
     protected $callsign = null;
@@ -49,12 +51,20 @@ class station extends TPS{
     protected $perHourTraffic = null;
     protected $perHourPSA = null;
     protected $timezone = "UTC";
+    public $log = null;
             
     function __construct($callsign=null) {
         parent::__construct();
         if(!is_null($callsign)){
             $this->setupParams($callsign);
         }
+        if(isset($_SESSION['account'])){
+            $username=$_SESSION['account'];
+        }
+        else{
+            $username="AnonamousUser";
+        }
+        $this->log = new \TPS\logger($username);
     }
     
     public function updateParent(){

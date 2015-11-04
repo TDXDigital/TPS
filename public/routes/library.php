@@ -16,6 +16,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $app->render('libraryInduct.twig',$params);
     });
     $app->post('/new', $authenticate($app,array(1,2)) , function () use ($app){
+        $station = new \TPS\station();
         global $mysqli;
         /* @var $artist Contains the artist name */
         $artist = filter_input(INPUT_POST, "artist");
@@ -204,12 +205,17 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         }
         #header("location: /library/?q=new&m=$artist'$s%20new%20album%20entered ($id_last)");
         $app->flash('Success',"Album Recieved");
+        $station->log->info("Album $album by $artist created");
         #var_dump($_SESSION);
         $app->redirect('./new');
     });
     $app->get('/search/', $authenticate, function () use ($app){
         $library = new \TPS\library();
+        $time_start = microtime(true); 
         $result = $library->searchLibrary("");
+        $time_end = microtime(true); 
+        $library->log->info("Search basic retrieval took ".
+                ($time_end - $time_start). "s");
         $params = array(
             "area"=>"Library",
             "albums"=>$result,
@@ -224,7 +230,11 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
     });
     $app->get('/search/:value', $authenticate, function ($term) use ($app){
         $library = new \TPS\library();
+        $time_start = microtime(true); 
         $result = $library->SearchLibrary($term);
+        $time_end = microtime(true); 
+        $library->log->info("Search basic retrieval took ".
+                ($time_end - $time_start). "s");
         $params = array(
             "title"=>"Search $term",
             "albums"=>$result,
