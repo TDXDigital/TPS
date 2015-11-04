@@ -35,12 +35,15 @@ class logger extends TPS{
     private $usernameLog = NULL;
     private $validLogLevel = ['debug','info','warn','error','exception'];
     private $logLevel = "info";
+    private $startTime = NULL;
+    private $endTime = NULL;
     
     private $data = array();
     
     public function __construct($username=NULL, $email=NULL, $logLevel=NULL, $ipv6=NULL,  
             $ipv4=NULL, $timezone=NULL) {
         $this->usernameLog = $username;
+        #register_shutdown_function(array("logger","fatalError"));
         parent::__construct();
     }
     /*
@@ -54,8 +57,12 @@ class logger extends TPS{
     public function error($event, $result=NULL, $source=NULL){}
     public function exception($event, $result=NULL, $source=NULL){}
     
-    private function traceCallingFile($limit=2){
+    private function traceCallingFile($limit=0){
         return debug_backtrace($options=DEBUG_BACKTRACE_IGNORE_ARGS, $limit);
+    }
+    
+    static public function fatalError(){
+        error_log($this->formatPHPlogLine("Fatal error encountered"));
     }
     
     /**
@@ -66,17 +73,22 @@ class logger extends TPS{
      * @return string
      */
     private function formatPHPlogLine($level, $string, $trace=True){
-        if($trace){
-            $btrace = $this->traceCallingFile()[1];
-            $traceStrFmt = " [%s, %s L%i] in %s]";
-            $traceStr = sprintf($traceStrFmt, date("Y-m-d H:i:s"), 
-                    $btrace['file'], $btrace['line'], $btrace['function']);
+        try{
+            if($trace){
+                $btrace = $this->traceCallingFile();
+                $traceStrFmt = " [%s, %s L%i] in %s]";
+                $traceStr = sprintf($traceStrFmt, date("Y-m-d H:i:s"), 
+                        $btrace[0]['file'], $btrace[0]['line'], $btrace[0]['function']);
+            }
+            else{
+                $traceStr = " ";
+            }
+            $format = '%1$s:%3$s %2s';
+            return sprintf($format, $level, $string, $traceStr);
         }
-        else{
-            $traceStr = " ";
+        catch(Exception $ex){
+            return "Exception $ex";
         }
-        $format = '%1$s:%3$s %2s';
-        return sprintf($format, $level, $string, $traceStr);
     }
     
     /**
@@ -87,6 +99,11 @@ class logger extends TPS{
      * @return boolean
      */
     public function saveInDatabase($severity,$event, $source, $result){
+        if(!$this->mysqli){
+            error_log($this->formatPHPlogLine("error","mysqli not yet defined:"
+                    . "$event"));
+            return false;
+        }
         $con = $this->mysqli->prepare("INSERT INTO eventlog "
                 . "(`user`,`event`,`source`,`result`,`severity`) VALUES "
                 . "(?,?,?,?,?)");
@@ -103,6 +120,11 @@ class logger extends TPS{
         }
         else{
             error_log($this->formatPHPlogLine("ERROR",$this->mysqli->error));
+            trigger_error(
+            'Undefined property via __get(): ' . $name .
+            ' in ' . $trace[0]['file'] .
+            ' on line ' . $trace[0]['line'],
+            E_USER_NOTICE);
             return false;
         }
     }
@@ -158,5 +180,33 @@ class logger extends TPS{
     {
         echo "Unsetting '$name'\n";
         unset($this->data[$name]);
+    }
+    
+    public function startTimer(){
+        if($this->startTime === NULL){
+            $this->startTime = microtime(true); 
+            $this->endTime = NULL;
+            return true;
+        }
+        else{
+            $this->startTime = microtime(true);
+            $this->endTime = NULL;
+        }
+    }
+    
+    public function stopTimer(){
+        if($this->startTime != null){
+            $this->endTime = microtime(true); 
+            $this->startTime = Null;
+            return true;
+        }
+        else{
+            $this->endTime = NULL;
+            return false;
+        }
+    }
+    
+    public function timerDuration(){
+        return $this->endTime - $this->startTime;
     }
 }
