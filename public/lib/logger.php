@@ -43,7 +43,7 @@ class logger extends TPS{
     public function __construct($username=NULL, $email=NULL, $logLevel=NULL, $ipv6=NULL,  
             $ipv4=NULL, $timezone=NULL) {
         $this->usernameLog = $username;
-        #register_shutdown_function(array("logger","fatalError"));
+        register_shutdown_function(array("\\TPS\\logger","fatalError"));
         parent::__construct();
     }
     /*
@@ -57,12 +57,12 @@ class logger extends TPS{
     public function error($event, $result=NULL, $source=NULL){}
     public function exception($event, $result=NULL, $source=NULL){}
     
-    private function traceCallingFile($limit=0){
+    static private function traceCallingFile($limit=0){
         return debug_backtrace($options=DEBUG_BACKTRACE_IGNORE_ARGS, $limit);
     }
     
     static public function fatalError(){
-        error_log($this->formatPHPlogLine("Fatal error encountered"));
+        error_log(self::formatPHPlogLine("Exception","Fatal error encountered"));
     }
     
     /**
@@ -72,10 +72,10 @@ class logger extends TPS{
      * @param type $trace
      * @return string
      */
-    private function formatPHPlogLine($level, $string, $trace=True){
+    static private function formatPHPlogLine($level, $string, $trace=True){
         try{
             if($trace){
-                $btrace = $this->traceCallingFile();
+                $btrace = self::traceCallingFile();
                 $traceStrFmt = " [%s, %s L%i] in %s]";
                 $traceStr = sprintf($traceStrFmt, date("Y-m-d H:i:s"), 
                         $btrace[0]['file'], $btrace[0]['line'], $btrace[0]['function']);
