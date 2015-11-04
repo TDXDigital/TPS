@@ -256,6 +256,50 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div id="gen_group" class="form-group input-group">
+                        <label for="RequireArtist" class="input-group-addon">Require Artist</label>
+                        <select id="RequireArtist" class="form-control"
+                                name="forceArtist">
+                            {% set forceArtist=forceArtist?:{"0":"No","1":"Yes"} %}
+                            {% for key,value in forceArtist %}
+                                <option value='{{key}}' 
+                                        {% if station.forceArtist == key %} selected {% endif %}
+                                        >{{value|default('Unknown Option')}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div id="gen_group" class="form-group input-group">
+                        <label for="RequireAlbum" class="input-group-addon">Require Album</label>
+                        <select id="RequireAlbum" class="form-control"
+                                name="forceAlbum">
+                            {% set forceAlbum=forceAlbum?:{"0":"No","1":"Yes"} %}
+                            {% for key,value in forceAlbum %}
+                                <option value='{{key}}' 
+                                        {% if station.forceAlbum == key %} selected {% endif %}
+                                        >{{value|default('Unknown Option')}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div id="gen_group" class="form-group input-group">
+                        <label for="RequireComposer" class="input-group-addon">Req. Composer</label>
+                        <select id="RequireComposer" class="form-control"
+                                name="forceComposer">
+                            {% set forceComposer=forceComposer?:{"0":"No","1":"Yes"} %}
+                            {% for key,value in forceComposer %}
+                                <option value='{{key}}' 
+                                        {% if station.forceComposer == key %} selected {% endif %}
+                                        >{{value|default('Unknown Option')}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <hr>

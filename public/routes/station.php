@@ -45,7 +45,8 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
             );
         $app->render('stations.twig',$params);
     });
-    $app->get('/:station',$authenticate($app,2), function ($callsign) use ($app,$authenticate){
+    $app->get('/:station',$authenticate($app,2), 
+            function ($callsign) use ($app,$authenticate){
         $data = array();
         $station = new \TPS\station();
         $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
@@ -61,7 +62,8 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
             );
         $app->render('station.twig',$params);
     });
-    $app->put('/:station',$authenticate($app,2), function ($callsign) use ($app,$authenticate){
+    $app->put('/:station',$authenticate($app,2), 
+            function ($callsign) use ($app,$authenticate){
         $data = array();
         $station = new \TPS\station($callsign);
         $stn = $station->getStation($callsign);
@@ -77,8 +79,10 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
             $phoneDirector = $app->request->put('phoneDirector');
             $phoneMain = $app->request->put('phoneMain');
             $defaultSort = $app->request->put('defaultSort');
-            $groupPlaylistProgramming = $app->request->put('groupPlaylistProgramming');
-            $groupPlaylistReporting = $app->request->put('groupPlaylistReporting');
+            $groupPlaylistProgramming = 
+                    $app->request->put('groupPlaylistProgramming');
+            $groupPlaylistReporting = 
+                    $app->request->put('groupPlaylistReporting');
             $forceComposer = $app->request->put('forceComposer');
             $forceArtist = $app->request->put('forceArtist');
             $forceAlbum = $app->request->put('forceAlbum');
@@ -119,18 +123,28 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
                 $station->setStationPhoneRequest($phoneMain);
             }
             if($groupPlaylistProgramming!=$stn['groupPlaylistProgramming']){
-                #$station->setGroupPlaylistProgramming($groupPlaylistProgramming);
+                $station->togglePlaylistLiveGrouping();
             }
             if($groupPlaylistReporting!=$stn['groupPlaylistReporting']){
-                #$station->setGroupPlaylistProgramming($groupPlaylistReporting);
+                $station->togglePlaylistReportingGrouping();
             }
-            if($displayCounters!=$stn['displayCounters']){
-                if($displayCounters){
-                    $station->programCountersOn();
-                }
-                else{
-                    $station->programCountersOff();
-                }
+            if($displayCounters!=$station->programCounters()){
+                $station->toggleProgramCounters();
+            }
+            if($perHourPSAs!=$station->hourlyPSA()){
+                $station->setHourlyPSA($perHourPSAs);
+            }
+            if($perHourTraffic!=$station->hourlyTraffic()){
+                $station->setHourlyTraffic($perHourTraffic);
+            }
+            if($forceAlbum!=$station->forceAlbum()){
+                $station->toggleForceAlbum();
+            }
+            if($forceArtist!=$station->forceArtist()){
+                $station->toggleForceArtist();
+            }
+            if($forceComposer!=$station->forceComposer()){
+                $station->toggleForceComposer();
             }
             $app->flash('success',"$callsign updated succesfully");
             $app->redirect("./$callsign");
@@ -140,10 +154,12 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
             $app->redirect("./$callsign");
         }
     });
-    $app->delete('/:station',$authenticate($app,2), function ($callsign) use ($app,$authenticate){
+    $app->delete('/:station',$authenticate($app,2), 
+            function ($callsign) use ($app,$authenticate){
         $app->render('notSupported.twig');
     });
-    $app->get('/new/',$authenticate($app,2), function () use ($app,$authenticate){
+    $app->get('/new/',$authenticate($app,2), 
+            function () use ($app,$authenticate){
         $data = array();
         $station = new \TPS\station();
         $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);

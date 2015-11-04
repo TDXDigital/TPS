@@ -57,6 +57,17 @@ class TPS{
         $this->mysqli = $mysqli;
     }
     
+    protected function updateParent(){
+        /**
+         * Nothing to update, start updating children
+         */
+        return update();
+    }
+    
+    private function update(){
+        return TRUE;
+    }
+    
     public function getStations(){
         $callsign = null;
         $name = null;

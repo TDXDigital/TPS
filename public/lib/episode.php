@@ -24,12 +24,32 @@
  * THE SOFTWARE.
  */
 
-#load page groups
-require_once 'library.php';
-require_once 'reviews.php';
-require_once 'station.php';
+namespace TPS;
+/** 
+ * @abstract contains all functions and methods related to episodes
+ * @version 1.0
+ * @author James Oliver <support@ckxu.com>
+ * @license https://raw.githubusercontent.com/TDXDigital/TPS/master/LICENSE MIT
+ */
+
 require_once 'program.php';
-
-#load api last;
-require_once 'api.php';
-
+class episode extends program{
+    protected $program = null;
+    protected $EpisodeID = null;
+    protected $time = null;
+    /**
+     * 
+     * @global type $mysqli
+     * @version 1.0
+     */
+    public function __construct(program &$program, $ID = NULL, $time = NULL) {
+        $this->program = $program;
+        /**
+         * this does duplicate the parent but It is likely more desirable 
+         * than a detached child object
+         */
+        parent::__construct($this->program);
+        $this->EpisodeID = $ID;
+        $this->time = $time;
+    }
+}

@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="{{siteUrl}}/js/bootstrap/checkbox/css/bootstrap-checkbox.css">
     <link rel="stylesheet" href="{{siteUrl}}/js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>
 {% endblock %}
-{% block title %}{{title|default('Library Recieving')}}{% endblock %}
+{% block title %}{{title|default('Library Receiving')}}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
     <li>
@@ -25,7 +25,7 @@
     <!--<span>SUCCESS: {{success}}, ERROR: {{error}}, ID: {{PRINTID}}| {% for id in PRINTID %}{{id}},{% endfor %}</span>-->
 {% endblock %}
 {% block content %}
-<form role="form" method="post"> <!-- action="/Playlist/playlist.induct.php" -->
+<form role="form" method="post">
     {% if album.name is not null %}
     {% endif %}
     <div class="row">
@@ -35,7 +35,7 @@
                     <label class="input-group-addon" for="art_field">Artist&nbsp;<span style="color:red">&nbsp;*</span></label>
                     <input name="artist" id="art_field" type="text" required list="artists" 
                            {% if album.artist is not null %} value="{{album.artist}}" {% endif %}
-                           placeholder="Start typing artist name to retrieve list" autocomplete="on" class="form-control" autofocus="autofocus" onkeyup="catch_enter(event);">
+                           placeholder="Start typing artist name to retrieve list" autocomplete="on" class="form-control TPSAutoSearch" autofocus="autofocus" onkeyup="catch_enter(event);">
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="button" onclick="get_albums();return true;"><i class="fa fa-search"></i></button>
                     </span>
@@ -44,7 +44,7 @@
                     <label class="input-group-addon" for="alb_field">Album<span style="color:red">*</span></label>
                     <input name="album" id="alb_field" type="text" required 
                            {% if album.album is not null %} value="{{album.album}}" {% endif %}
-                           placeholder="Start typing album name to retrieve list" autocomplete="on" class="form-control">
+                           placeholder="Start typing album name to retrieve list" autocomplete="on" class="form-control TPSAutoSearch">
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="button" onclick="get_albums();return true;"><i class="fa fa-search"></i></button>
                     </span>
@@ -58,6 +58,7 @@
         </div>
         <div class="col-lg-6">
             <div class="row">
+                {% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
                 <div class="col-lg-6">
                     <div id="gen_group" class="form-group input-group">
                         <label for="genre" class="input-group-addon">Genre&nbsp;</label>
@@ -85,6 +86,7 @@
                         <br>
                     </div>
                 </div>
+                {% endif %}
                 <div class="col-md-6">
                     <div id="ind_group" class="form-group input-group">
                         <label for="locale" class="input-group-addon">Region</label>
@@ -103,6 +105,7 @@
                         </select>
                     </div>
                 </div>
+                {% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
                 <div class="col-lg-6">
                     <div id="gen_group" class="form-group input-group">
                         <label for="schedule" class="input-group-addon">Schedule</label>
@@ -120,6 +123,7 @@
                         <br>
                     </div>
                 </div>
+                {% endif %}
                 <div class="col-lg-6">
                     <div id="ind_group" class="form-group input-group">
                         <label for="label" class="input-group-addon">Label</label>
@@ -163,37 +167,39 @@
                 <div class="col-lg-3">
                     <input type="checkbox" id="va_checkbox"
                            {% if album.variousartists == 1 %} checked="checked" {% endif %}
-                           data-label-prepend="VA" class="style3" name="print" value="1" />
+                           data-label-prepend="VA" class="style3" name="VA" value="1" />
                 </div>
-                <div class="col-lg-3">
-                    <input type="checkbox" data-label-prepend="Keep" 
-                           {% if album.status == 1 or album.status is null %} checked="checked" {% endif %}
-                           class="style3" name="accept" value="1"/>
-                </div>
-                {% if album.status is null %}
-                <div class="col-lg-3">
-                    <input type="checkbox" data-label-prepend="Print" class="style3" name="print" checked="checked" value="1" />
-                </div>
-                <div class="col-lg-3">
-                    <input type="checkbox" data-label-prepend="PL" class="style3" name="playlist" checked="checked" value="0" />
-                </div>
-                {% else %}
-                <div class="col-lg-3">
-                    <input type="checkbox" data-label-prepend="Print" class="style3" name="print" value="1" />
-                </div>
-                <div class="col-lg-3">
-                    {% set playlist = playlist?:['FALSE','PENDING','COMPLETE'] %}
-                    <div id="format" class="form-group input-group">
-                        <label for="label" class="input-group-addon">PL</label>
-                        <select class="form-control" name="playlist">
-                            {% for entry in playlist %}
-                                <option value="{{entry}}"
-                                        {% if entry == album.playlist_flag %} selected {% endif %}
-                                        >{{entry}}</option>
-                            {% endfor %}
-                        </select>
+                {% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
+                    <div class="col-lg-3">
+                        <input type="checkbox" data-label-prepend="Keep" 
+                               {% if album.status == 1 or album.status is null %} checked="checked" {% endif %}
+                               class="style3" name="accept" value="1"/>
                     </div>
-                </div>    
+                    {% if album.status is null %}
+                    <div class="col-lg-3">
+                        <input type="checkbox" data-label-prepend="Print" class="style3" name="print" checked="checked" value="1" />
+                    </div>
+                    <div class="col-lg-3">
+                        <input type="checkbox" data-label-prepend="PL" class="style3" name="playlist" checked="checked" value="0" />
+                    </div>
+                    {% else %}
+                    <div class="col-lg-3">
+                        <input type="checkbox" data-label-prepend="Print" class="style3" name="print" value="1" />
+                    </div>
+                    <div class="col-lg-3">
+                        {% set playlist = playlist?:['FALSE','PENDING','COMPLETE'] %}
+                        <div id="format" class="form-group input-group">
+                            <label for="label" class="input-group-addon">PL</label>
+                            <select class="form-control" name="playlist">
+                                {% for entry in playlist %}
+                                    <option value="{{entry}}"
+                                            {% if entry == album.playlist_flag %} selected {% endif %}
+                                            >{{entry}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>    
+                    {% endif %}
                 {% endif %}
             </div>
         </div>
@@ -236,35 +242,40 @@
         </div>
     </div>
 <datalist id="labels">
-
 </datalist>
 <div class="row">
     <div class="col-lg-6">
     </div>
     <div class="col-lg-6">
         <div class="pull-right">
-            {% if album.artist is not null %}
+            {% if album.artist is not null and 
+                    permissions > 1 or "libraryReceivingAdvanced" in permissions
+            %}
                 <input type="hidden" name="_METHOD" value="PUT"/>
+                <input class="btn btn-primary" type="submit" >
+            {% elseif album.artist is null %}
+                <input class="btn btn-primary" type="submit" >
             {% endif %}
-            <input class="btn btn-primary" type="submit" >
-            <input id="print_btn" class="btn btn-success" onclick="PrintModal();"
-            {% if PRINTID is null %}
-                disabled="disabled" 
+            {% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
+                <input id="print_btn" class="btn btn-success" onclick="PrintModal();"
+                {% if PRINTID is null %}
+                    disabled="disabled" 
+                {% endif %}
+                    type="button" value="Print Labels">
+                <input id="print_btn" class="btn btn-danger" 
+                       onclick="ClearPrintQueue();"
+                {% if PRINTID is null %}
+                    disabled="disabled" 
+                {% endif %}
+                    type="button" value="Clear Queue">
             {% endif %}
-                type="button" value="Print Labels">
-            <input id="print_btn" class="btn btn-danger" 
-                   onclick="ClearPrintQueue();"
-            {% if PRINTID is null %}
-                disabled="disabled" 
-            {% endif %}
-                type="button" value="Clear Queue">
         </div>
     </div>
 </div>
             <br>
 </form>
 <datalist id="artists"></datalist>
-
+{% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
 <div id="printModal" class="modal fade">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -421,7 +432,7 @@
                                               style='color:orangered'></i></div>
         <div class='col-sm-9'><p>This will reset your print queue and refresh the page<br>Are you sure?</p></div></div>
 </div>
-
+{% endif %}
 <style>
   .ui-autocomplete-loading {
     background: white url("../images/GIF/ajax-loader3.gif") right center no-repeat;
@@ -437,52 +448,7 @@
         $("#printModal").modal({
             show: 'true'
         });
-        //window.open('printtest.php', '  printwindow');
     }
-    
-/*    function edit(id){
-        $("#edit").modal({
-            show: 'true'
-        });
-        $.ajax({
-            url:"/Playlist/AJAX/playlist.libdata.php",
-            type: "json",
-            method: "POST",
-            data: {code:id},
-            beforeSend: function(){
-                $(".modal-title").html("<img src='../images/GIF/ajax-loader3.gif'/>");
-            },
-            success: function( data ){
-                var parsed = $.parseJSON(data);
-                $.each(parsed, function(k,v){
-                    var obj = $("#e_"+k)
-                    if(obj.is(":text")){
-                        if(v!==null){
-                            obj.val(v);
-                        }
-                    }
-                    else if(obj.is(":checkbox")){
-                        if(v==="1"){
-                            //obj.attr(checked,"checked");
-                            obj.prop('checked',true);
-                        }
-                    }
-                    else if(obj.is("select")){
-                        if(v!=="0"){
-                            //obj.attr(checked,"checked");
-                            //obj.prop('checked',true);
-                            alert('select not defined');
-                        }
-                    }
-                    console.log(k+"=>"+v);
-                })
-            },
-            complete: function(){
-                $(".modal-title").html("Edit: "+id);
-            }
-        })
-        //window.open('printtest.php', '  printwindow');
-    }*/
     function edit(id){
         window.open('{{siteUrl}}/library/'+id);
     }
@@ -536,10 +502,6 @@
             }
         });
     }
-    
-    $(function(){
-        
-    });
     $(document).ready(function(){
         //edit('000005803637');
         UpdateAutoArtist();
@@ -580,6 +542,9 @@
                 buttonStyleChecked: 'btn-success',
             checkedClass: 'icon-check',
             uncheckedClass: 'icon-check-empty'
+        });
+        $('.TPSAutoSearch').focusout(function() {
+            get_albums();
         });
     });
     function self_titled(){

@@ -9,3 +9,5 @@ namespace TPS;
 require_once 'station.php';
 require_once 'reviews.php';
 require_once 'library.php';
+require_once 'program.php';
+require_once 'episode.php';

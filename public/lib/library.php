@@ -91,6 +91,139 @@ class library extends station{
     }
     
     /**
+     * @abstract Library codes are prepended to a barcode and used 
+     * for indexing and management within a physical library.
+     * @todo store in DB
+     * @return array
+     * @version 1.0
+     */
+    public function listLibraryCodes(){
+        $codes = array(
+            "0" => array(
+                "Title"=>"Rock/Pop",
+                "Genre"=>"RP",
+                "SubGenres" => array(
+                    "21"=>"Rock",
+                    "21"=>"Pop",
+                    "21"=>"Alternative",
+                    "21"=>"Electronic Pop",
+                    "21"=>"Funk",
+                    "23"=>"Acoustic Versions",
+                    "24"=>"Easy Listening",
+                    )
+                ),
+            "1" => array(
+                "Title"=>"Folk/Roots",
+                "Genre"=>"FR",
+                "SubGenres" => array(
+                    "21"=>"Folk Rock",
+                    "21"=>"Singer-Songwriter",
+                    "21"=>"Blues Rock",
+                    "22"=>"Country",
+                    "32"=>"Traditional Folk",
+                    "34"=>"Traditional Blues",
+                    )
+                ),
+            "2" => array(
+                "Title"=>"Heavy",
+                "Genre"=>"HM",
+                "SubGenres" => array(
+                    "21"=>"Metal",
+                    "21"=>"Punk",
+                    "21"=>"Hardcore",
+                    "21"=>"Hard Rock",
+                    )
+                ),
+            "4" => array(
+                "Title"=>"Hip-hop/Rap",
+                "Genre"=>"HH",
+                "SubGenres" => array(
+                    "21"=>"Hip-hop/Rap",
+                    )
+                ),
+            "5" => array(
+                "Title"=>"World",
+                "Genre"=>"WD",
+                "SubGenres" => array(
+                    "35"=>"World Pop",
+                    "35"=>"Traditional World",
+                    "35"=>"3rd Language",
+                    )
+                ),
+            "6" => array(
+                "Title"=>"Jazz/Classical",
+                "Genre"=>"JC",
+                "SubGenres" => array(
+                    "31"=>"Classical",
+                    "34"=>"Jazz",
+                    )
+                ),
+            "7" => array(
+                "Title"=>"Experimental",
+                "Genre"=>"EX",
+                "SubGenres" => array(
+                    "36"=>"Avant composition",
+                    "36"=>"Noise",
+                    "36"=>"Field Recordings",
+                    "36"=>"Acousmatic",
+                    )
+                ),
+            "8" => array(
+                "Title"=>"Other",
+                "Genre"=>"OT",
+                "SubGenres" => array(
+                    "12"=>"Spoken Word",
+                    "12"=>"Comedy",
+                    "12"=>"Radio Drama",
+                    "11"=>"News",
+                    "35"=>"Religious",
+                    )
+                ),
+        );
+        return $codes;
+    }
+    
+    public function getLibraryCodeByGenre($Genre) {
+        $list = $this->listLibraryCodes();
+        $comVal='Genre';
+        foreach ($list as $key => $value) {
+            if ($value[$comVal] == $Genre){
+                return $key;
+            }
+        }
+        return False;
+    }
+    
+    public function getLibraryCodeByRefCode($RefCode) {
+        $album = $this->getAlbumByRefcode($RefCode, TRUE)[0];
+        return $this->getLibraryCodeByGenre($album['genre']);
+    }
+    
+    public function createBarcode($refcode){
+        if ($stmt = $mysqli->prepare(
+                    "UPDATE library SET Barcode=? WHERE RefCode=?")){
+            $stmt->bind_param("ii",$Barcode,$RefCode);
+            $stmt->execute();
+            $stmt->close();
+        }
+        else{
+            throw new Exception(
+                      "Could not create barcode ".$this->mysqli->error);
+        }
+    }
+    
+    public function getBarcodeByRefCode($RefCode){
+        $attr = $this->getAlbumByRefcode($RefCode, True);
+        if(is_null($attr['barcode'])){
+            $barcode = $this->createBarcode($RefCode);
+        }
+        else{
+            $barcode = $attr['barcode'];
+        }
+        return $barcode;
+    }
+    
+    /**
      * @abstract gets static associative array of covernment codes
      * @todo store in DB
      * @return string
@@ -153,10 +286,8 @@ class library extends station{
     public function getScheduleBlocks(){
         $blocks = array(
             NULL => "Select",
-            "M" => "Daytime1  [06:00-12:00]",
-            "D" => "Daytime2  [12:00-18:00]",
-            "E" => "Evening   [18:00-00:00]",
-            "N" => "Nighttime [00:00-06:00]",
+            "D" => "Daytime [06:00-21:00]",
+            "N" => "Nighttime [21:00-06:00]",
         );
         return $blocks;
     }

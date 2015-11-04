@@ -1,7 +1,7 @@
 <?php
 // Library
 $app->group('/library', $authenticate, function () use ($app,$authenticate){
-    $app->get('/', $authenticate, function () use ($app){
+    $app->get('/new', $authenticate($app,array(1,2)), function () use ($app){
         $library = new \TPS\library();
         $params = array(
             "govCats"=>$library->getGovernmentCodes(),
@@ -15,7 +15,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         }
         $app->render('libraryInduct.twig',$params);
     });
-    $app->post('/', $authenticate , function () use ($app){
+    $app->post('/new', $authenticate($app,array(1,2)) , function () use ($app){
         global $mysqli;
         /* @var $artist Contains the artist name */
         $artist = filter_input(INPUT_POST, "artist");
@@ -58,7 +58,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         if(!$stmt1->execute()){
             $stmt1->close();
             $app->flash('error',$mysqli->error);
-            $app->redirect('./');
+            $app->redirect('./new');
         }
         $stmt1->bind_result($labelNum);
         $stmt1->fetch();
@@ -72,7 +72,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 $stmt2->close();
                 #header("location: ../library/?q=new&e=".$mysqli->errno."&s=2");
                 $app->flash('error',$mysqli->error);
-                $app->redirect('./');
+                $app->redirect('./new');
                 //echo "ERROR: " .    $mysqli->error;
             }
             else{
@@ -91,7 +91,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         if(is_null($labelNum)||$labelNum=="null"){
             #header("location: ../library/?q=new&e=9999&s=3");
             $app->flash('error','label is required but was not proveded or was invalid. could not recieve album');
-            $app->redirect('./');
+            $app->redirect('./new');
         }
 
         /*if($playlist==FALSE){
@@ -147,7 +147,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 )){
             $stmt3->close();    
             $app->flash('error',$mysqli->error);
-            $app->redirect('./');
+            $app->redirect('./new');
             #header("location: ../library/?q=new&e=".$mysqli->errno."&s=3_b&m=".$mysqli->error);
         }
 
@@ -157,7 +157,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $stmt3->close();
             #header("location: /library/?q=new&e=".$error[0]."&s=3&m=".$error[1]);
             $app->flash('error',$mysqli->error);
-            $app->redirect('./');
+            $app->redirect('./new');
             //echo "ERROR #".$mysqli->errno . "  " .    $mysqli->error;
         }
         else{
@@ -205,7 +205,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         #header("location: /library/?q=new&m=$artist'$s%20new%20album%20entered ($id_last)");
         $app->flash('Success',"Album Recieved");
         #var_dump($_SESSION);
-        $app->redirect('./');
+        $app->redirect('./new');
     });
     $app->get('/search/', $authenticate, function () use ($app){
         $library = new \TPS\library();
@@ -232,7 +232,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         );
         $app->render('searchLibrary.twig',$params);
     });
-    $app->get('/:RefCode', $authenticate, function ($RefCode) use ($app){
+    $app->get('/:RefCode', $authenticate($app,array(1,2)), function ($RefCode) use ($app){
         $library = new \TPS\library();
         //global $mysqli;
         $album=$library->getAlbumByRefcode($RefCode)[0];
@@ -252,7 +252,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         }
         $app->render('libraryInduct.twig',$params);
     });
-    $app->put('/:RefCode', $authenticate, function ($RefCode) use ($app){
+    $app->put('/:RefCode', $authenticate($app,2), function ($RefCode) use ($app){
         if($_SESSION['access']<2){
             $app->render('error.html.twig');
         }
@@ -495,7 +495,9 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     $s="";
                 }
                 if($print==1){
-                    $_SESSION['PRINTID'][]=$RefCode;
+                    $libCode=$library->getLibraryCodeByRefCode($RefCode);
+                    $_SESSION['PRINTID'][] = array("RefCode"=>$RefCode,
+                        "LibCode"=>$libCode);
                 }
             }
             #header("location: /library/?q=new&m=$artist'$s%20new%20album%20entered ($id_last)");

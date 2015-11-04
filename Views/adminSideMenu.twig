@@ -74,6 +74,8 @@
                 </li>-->
             </ul>
         </li>
+        {% endif %}
+        {% if permissions > 0 or "library" in permissions %}
         <li>
             <a href="javascript:;" data-toggle="collapse" data-target="#library"><i class="fa fa-fw fa-headphones"></i> Library <i class="fa fa-fw fa-caret-down"></i></a>
             <ul id="library" class="collapse">
@@ -81,11 +83,13 @@
                     <a href="/library/search/"><i class='fa fa-search'></i> Search</a>
                 </li>
                 <li>
-                    <a href="/library/"><i class='fa fa-music'></i> Management</a>
+                    <a href="/library/new"><i class='fa fa-music'></i> Recieving</a>
                 </li>
+                {% if permissions > 1 or "libraryPlaylist" in permissions %}
                 <li>
                     <a href="/Reports/PlaylistRep.php"><i class='fa fa-bar-chart-o'></i> Charts</a>
                 </li>
+                {% endif %}
             </ul>
         </li>
         {% endif %}
@@ -116,9 +120,6 @@
             <ul id="management" class="collapse">
                 <li>
                     <a href="/station/"><i class='fa fa-bolt'></i> Station Settings</a>
-                </li>
-                <li>
-                    <a href="/stn/settings.php?old"><i class='fa fa-magic'></i> Station Settings</a>
                 </li>
                 <li>
                     <a href="/stn/Audit"><i class='fa fa-flag-o'></i> Reporting</a>
