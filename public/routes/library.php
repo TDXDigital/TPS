@@ -1,7 +1,7 @@
 <?php
 // Library
 $app->group('/library', $authenticate, function () use ($app,$authenticate){
-    $app->get('/', $authenticate, function () use ($app){
+    $app->get('/new', $authenticate($app,array(1,2)), function () use ($app){
         $library = new \TPS\library();
         $params = array(
             "govCats"=>$library->getGovernmentCodes(),
@@ -15,7 +15,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         }
         $app->render('libraryInduct.twig',$params);
     });
-    $app->post('/', $authenticate , function () use ($app){
+    $app->post('/new', $authenticate($app,array(1,2)) , function () use ($app){
         global $mysqli;
         /* @var $artist Contains the artist name */
         $artist = filter_input(INPUT_POST, "artist");
@@ -232,7 +232,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         );
         $app->render('searchLibrary.twig',$params);
     });
-    $app->get('/:RefCode', $authenticate, function ($RefCode) use ($app){
+    $app->get('/:RefCode', $authenticate($app,array(1,2)), function ($RefCode) use ($app){
         $library = new \TPS\library();
         //global $mysqli;
         $album=$library->getAlbumByRefcode($RefCode)[0];
@@ -252,7 +252,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         }
         $app->render('libraryInduct.twig',$params);
     });
-    $app->put('/:RefCode', $authenticate, function ($RefCode) use ($app){
+    $app->put('/:RefCode', $authenticate($app,2), function ($RefCode) use ($app){
         if($_SESSION['access']<2){
             $app->render('error.html.twig');
         }

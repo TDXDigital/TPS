@@ -14,6 +14,14 @@ $temp_path = false;
 
 require_once 'header.php';
 
+/**
+ * performs authentication (Not Authorization) for TPS
+ * $app is the current application to be used
+ * $access is a value greater than zero (public) corresponding to the security
+ * clearance level required, an array can be provided if multiple levels are
+ * to have access
+ * $json sets the output to a JSON format instead of the standard HTML output
+ */
 $authenticate = function ($app,$access=0,$json=FALSE) {
     return function () use ($app,$access,$json) {
         if (!isset($_SESSION['access'])) {
