@@ -10,7 +10,7 @@
 require_once '../barcode/validate.php';
 
 session_start();
-$artist = addslashes(filter_input(INPUT_GET,'term',FILTER_SANITIZE_STRING));
+$artist = addslashes(filter_input(INPUT_GET,'term',FILTER_SANITIZE_STRING))?:"";
 $format = addslashes(filter_input(INPUT_GET, 'format',FILTER_SANITIZE_STRING))?:"html";
 $limit = filter_input(INPUT_GET, 'limit', FILTER_SANITIZE_NUMBER_INT)?:15;
 
@@ -22,7 +22,7 @@ if(validate_UPCABarcode($artist)||  validate_EAN13Barcode($artist)){
 include_once '../../TPSBIN/functions.php';
 include_once '../../TPSBIN/db_connect.php';
 
-$con = $mysqli->prepare("SELECT RefCode, datein, artist, album, genre, status, recordlabel.Name as label_name FROM library LEFT JOIN recordlabel on library.labelid=recordlabel.LabelNumber where artist REGEXP ? or refcode=? order by soundex(artist) asc limit ?;");
+$con = $mysqli->prepare("SELECT RefCode, datein, artist, album, genre, status, recordlabel.Name as label_name FROM library LEFT JOIN recordlabel on library.labelid=recordlabel.LabelNumber where artist REGEXP ? or refcode=? or barcode=? order by soundex(artist) asc limit ?;");
 $result = array();
 $refcodeDB = NULL;
 $dateinDB = NULL;
@@ -33,7 +33,7 @@ $labelDB = NULL;
 $statusDB = NULL;
 
 if($con){
-    $con->bind_param("ssi",$artist,$artist,$limit);
+    $con->bind_param("sssi",$artist,$artist,$artist,$limit);
     $con->bind_result($refcodeDB,$dateinDB,$artistDB,$albumDB,$genreDB,$statusDB,$labelDB);
     $con->execute();
     while($con->fetch()){
@@ -43,6 +43,9 @@ if($con){
                 break;
             case 1:
                 $statusDB = "Accepted";
+                break;
+            case NULL:
+                break;
             default:
                 $statusDB = "Code ".$statusDB;
                 break;
