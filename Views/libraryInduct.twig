@@ -58,7 +58,7 @@
         </div>
         <div class="col-lg-6">
             <div class="row">
-                {% if permission > 1 or "libraryReceivingAdvanced" in permission %}
+                {% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
                 <div class="col-lg-6">
                     <div id="gen_group" class="form-group input-group">
                         <label for="genre" class="input-group-addon">Genre&nbsp;</label>
@@ -105,7 +105,7 @@
                         </select>
                     </div>
                 </div>
-                {% if permission > 1 or "libraryReceivingAdvanced" in permission %}
+                {% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
                 <div class="col-lg-6">
                     <div id="gen_group" class="form-group input-group">
                         <label for="schedule" class="input-group-addon">Schedule</label>
@@ -169,7 +169,7 @@
                            {% if album.variousartists == 1 %} checked="checked" {% endif %}
                            data-label-prepend="VA" class="style3" name="VA" value="1" />
                 </div>
-                {% if permission > 1 or "libraryReceivingAdvanced" in permission %}
+                {% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
                     <div class="col-lg-3">
                         <input type="checkbox" data-label-prepend="Keep" 
                                {% if album.status == 1 or album.status is null %} checked="checked" {% endif %}
@@ -249,14 +249,14 @@
     <div class="col-lg-6">
         <div class="pull-right">
             {% if album.artist is not null and 
-                    permission > 1 or "libraryReceivingAdvanced" in permission
+                    permissions > 1 or "libraryReceivingAdvanced" in permissions
             %}
                 <input type="hidden" name="_METHOD" value="PUT"/>
                 <input class="btn btn-primary" type="submit" >
             {% elseif album.artist is null %}
                 <input class="btn btn-primary" type="submit" >
             {% endif %}
-            {% if permission > 1 or "libraryReceivingAdvanced" in permission %}
+            {% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
                 <input id="print_btn" class="btn btn-success" onclick="PrintModal();"
                 {% if PRINTID is null %}
                     disabled="disabled" 
@@ -275,7 +275,7 @@
             <br>
 </form>
 <datalist id="artists"></datalist>
-{% if permission > 1 or "libraryReceivingAdvanced" in permission %}
+{% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
 <div id="printModal" class="modal fade">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

@@ -147,7 +147,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 )){
             $stmt3->close();    
             $app->flash('error',$mysqli->error);
-            $app->redirect('./');
+            $app->redirect('./new');
             #header("location: ../library/?q=new&e=".$mysqli->errno."&s=3_b&m=".$mysqli->error);
         }
 
