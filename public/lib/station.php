@@ -413,11 +413,17 @@ class station extends TPS{
     }
     
     public function playlistLiveGroupingOn(){
-        return $this->setPlaylistLiveGrouping("1");
+        $result = $this->setPlaylistLiveGrouping("1");
+        $this->log->info("Playlist Live Grouping enabled",
+                $result?"pass":"fail");
+        return $result;
     }
     
     public function playlistLiveGroupingOff(){
-        return $this->setPlaylistLiveGrouping("0");
+        $result = $this->setPlaylistLiveGrouping("0");
+        $this->log->info("Playlist Live Grouping disabled",
+                $result?"pass":"fail");
+        return $result;
     }
     
     public function playlistLiveGrouping(){

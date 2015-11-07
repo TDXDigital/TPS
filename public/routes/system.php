@@ -57,6 +57,7 @@ $app->post("/login", function () use ($app) {
     $access = 0;
     $errors = array();
     $log = new \TPS\logger($username);
+    $log->info("Login attempt received");
     $log->startTimer();
     
     require_once ("TPSBIN".DIRECTORY_SEPARATOR."functions.php");
