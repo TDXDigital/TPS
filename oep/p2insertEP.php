@@ -1990,7 +1990,7 @@ if(false){
           
         ?>
         <td colspan="1">
-        <!--<form name="exit" action="/Episode/p3update.php" method="POST">-->
+        <!--<form name="exit" action="/oep/p3update.php" method="POST">-->
         
         <form name="edit" action="EPV2/p3update.php" method="POST">
             <input type="hidden" name="callsign" value=<?php echo "\"" . addcslashes($CALLSHOW,'"') . "\"" ?> />

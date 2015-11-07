@@ -53,10 +53,6 @@ class logger extends TPS{
      * 
      */
     
-    public function warn($event, $result=NULL, $source=NULL){}
-    public function error($event, $result=NULL, $source=NULL){}
-    public function exception($event, $result=NULL, $source=NULL){}
-    
     static private function traceCallingFile($limit=0){
         return debug_backtrace($options=DEBUG_BACKTRACE_IGNORE_ARGS, $limit);
     }
@@ -134,6 +130,39 @@ class logger extends TPS{
             if(in_array(strtolower($this->logLevel), 
                     ['info','warn','error','exception'])){
                 $this->saveInDatabase("info",$event,$source,$result);
+            }
+        } catch (Exception $ex) {
+            error_log("Exception occured in logging, $ex");
+        }
+    }
+    
+    public function warn($event, $result=NULL, $source=NULL){
+        try{
+            if(in_array(strtolower($this->logLevel), 
+                    ['info','warn','error','exception'])){
+                $this->saveInDatabase("warn",$event,$source,$result);
+            }
+        } catch (Exception $ex) {
+            error_log("Exception occured in logging, $ex");
+        }
+    }
+    
+    public function error($event, $result=NULL, $source=NULL){
+        try{
+            if(in_array(strtolower($this->logLevel), 
+                    ['info','warn','error','exception'])){
+                $this->saveInDatabase("error",$event,$source,$result);
+            }
+        } catch (Exception $ex) {
+            error_log("Exception occured in logging, $ex");
+        }
+    }
+    
+    public function exception($event, $result=NULL, $source=NULL){
+        try{
+            if(in_array(strtolower($this->logLevel), 
+                    ['exception'])){
+                $this->saveInDatabase("exception",$event,$source,$result);
             }
         } catch (Exception $ex) {
             error_log("Exception occured in logging, $ex");

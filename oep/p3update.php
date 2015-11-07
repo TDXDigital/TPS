@@ -639,7 +639,7 @@ else{
                            echo "</td><td>";
                                 echo "<input type=\"submit\" value=\"Update\">";
                            echo "</td></form>";
-                           echo "<td><form name=\"remove\" action=\"/Episode/p3update.php\" method=\"POST\">";
+                           echo "<td><form name=\"remove\" action=\"/oep/p3update.php\" method=\"POST\">";
                                 echo "<input type=\"text\" name=\"program\" hidden=\"true\" value=\"" . $PROGRAMARRAY['programname'] . "\">";
                                 echo "<input type=\"text\" name=\"callsign\" hidden=\"true\" value=\"" . $PROGRAMARRAY['callsign'] . "\">";
                                 echo "<input type=\"text\" name=\"user_date\" hidden=\"true\" value=\"" . $PROGRAMARRAY['date'] . "\">";

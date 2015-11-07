@@ -74,7 +74,7 @@
         </form>
         </td>
         <td>
-        <form name="reset" action="/Episode/p1Audit.php" method="POST">
+        <form name="reset" action="/oep/p1Audit.php" method="POST">
               <input type="submit" value="Reset">
         </form>
         </td>

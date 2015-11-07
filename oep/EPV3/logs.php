@@ -146,14 +146,14 @@
 
         
     if($DEBUGONLY == TRUE && $_SESSION['access']!='2'){
-        //header("location: /episode/p2insertEP.php");
+        //header("location: /oep/p2insertEP.php");
         echo "
         $(function() {
             $( \"#dialog-message\" ).show();
             $( \"#dialog-message\" ).dialog({
                     modal: true,
                     close: function() {
-                        window.location.href = \"../../Episode/p1update.php\";
+                        window.location.href = \"../../oep/p1update.php\";
                     },
                     buttons: {
                     Ok: function() {

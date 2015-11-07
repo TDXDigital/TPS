@@ -132,18 +132,18 @@ header('location: djhome.php');
         </td></tr>
         <tr height="50" valign="middle">
                   <td width="450">
-	            <!--<a href="Episode/p1insertep.php">New Program Log</a>-->
-	            <button onclick="window.location.href='Episode/EPV2/p1insert.php'" value="New Program Log">New Program Log</button>
-	            <!--<button onclick="window.location.href='/Episode/EPV3/newLog.php'" value="New Program Log">Logs</button>-->
+	            <!--<a href="oep/p1insertep.php">New Program Log</a>-->
+	            <button onclick="window.location.href='oep/EPV2/p1insert.php'" value="New Program Log">New Program Log</button>
+	            <!--<button onclick="window.location.href='/oep/EPV3/newLog.php'" value="New Program Log">Logs</button>-->
 	     </td><td width="450">
-	            <!--<a href="Episode/p1view.php">View Program Log</a>-->
-	            <button onclick="window.location.href='Episode/p1view.php'" value="View Program Log">View Program Log</button>
+	            <!--<a href="oep/p1view.php">View Program Log</a>-->
+	            <button onclick="window.location.href='oep/p1view.php'" value="View Program Log">View Program Log</button>
 	     </td><td width="450">
-	            <!--<a href="Episode/p1update.php">Edit Program Log</a>-->
-	            <button onclick="window.location.href='Episode/p1update.php'" value="Update Program Log">Update Program Log</button>
+	            <!--<a href="oep/p1update.php">Edit Program Log</a>-->
+	            <button onclick="window.location.href='oep/p1update.php'" value="Update Program Log">Update Program Log</button>
 	     </td><td width="450">
-	            <!--<a href="Episode/p1advremove.php">Remove Program Log</a>-->
-	            <button onclick='window.location.href="Episode/p1advremove.php"' value="Delete Program Log">Remove Program Log</button>
+	            <!--<a href="oep/p1advremove.php">Remove Program Log</a>-->
+	            <button onclick='window.location.href="oep/p1advremove.php"' value="Delete Program Log">Remove Program Log</button>
 	           
 	     </td></tr>
 	 <tr><td colspan="4" width="1000">
@@ -151,8 +151,8 @@ header('location: djhome.php');
         </td></tr>
         <tr height="50" valign="middle">
                   <td width="450">
-	            <!--<a href="Episode/p1insertep.php">New Program Log</a>-->
-	            <button onclick="window.location.href='Episode/EPV3/logs.php'" <?php
+	            <!--<a href="oep/p1insertep.php">New Program Log</a>-->
+	            <button onclick="window.location.href='oep/EPV3/logs.php'" <?php
 	            	if($ACCnew != TRUE){
 	            		 echo " disabled ";
 	            	}
@@ -227,7 +227,7 @@ header('location: djhome.php');
                     <!--<td width="200"><a href="/PlayRep.php">Playlist Report</a></td>
                     <td width="200"><a href="/Top15Rep.php">Top 15 Report</a></td> -->
                  <td style="color: #4cff00"><button onclick="window.location.href='Reports/V3/Reports.php'">Reports (V3)</button></td>
-                    <td><button onclick='window.location.href="Episode/EPV3/Audit.php"' value="Audit">Audit</button></td>
+                    <td><button onclick='window.location.href="oep/EPV3/Audit.php"' value="Audit">Audit</button></td>
                     <td><button onclick='window.location.href="Reports/PlaylistRep.php"' value="Audit">Charts</button></td>
                     <td><button onclick='window.location.href="Reports/MissingLogRep.php"' value="Audit">Missing Log</button></td>
                     <td><button onclick='window.location.href="Reports/p1SongSearch.php"' value="Audit">Song Search</button></td>

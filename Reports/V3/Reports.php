@@ -215,7 +215,7 @@
 									}
 									echo " , ".$row['category'];
 									echo " ,'".$row['title']."','";
-									echo "<a target=\"_blank\" href=\"../../Episode/quickview.php?args=".urlencode($row['programname'])."@".$row['date']."@".$row['starttime']."@".$row['callsign']."\">";
+									echo "<a target=\"_blank\" href=\"../../oep/quickview.php?args=".urlencode($row['programname'])."@".$row['date']."@".$row['starttime']."@".$row['callsign']."\">";
 									echo addslashes($row['programname'])."</a>','";
 									echo $row['date']."','".$row['time']."', ";
 									echo $row['songid']." ,'";

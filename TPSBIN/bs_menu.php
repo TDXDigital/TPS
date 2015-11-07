@@ -221,8 +221,8 @@
                         }
                         if($playsheet_permission>0){
                             print("<li class=\"dropdown-header\">Logging</li>
-                <li><a href=\"$base/Episode/EPV2/p1insert.php\">New Playsheet (v0.2)</a></li>
-                <li><a href=\"$base/Episode/p1update.php\">Edit Playsheet</a></li>");
+                <li><a href=\"$base/oep/EPV2/p1insert.php\">New Playsheet (v0.2)</a></li>
+                <li><a href=\"$base/oep/p1update.php\">Edit Playsheet</a></li>");
                         }
                         print("</ul></li>");
                 }
@@ -265,7 +265,7 @@
               <ul class=\"dropdown-menu\">
                 <li class=\"dropdown-header\">Programming</li>
                 <li><a href=\"$base/station/Audit/\">Audit Maintenance</a></li>
-                <li><a href=\"$base/Episode/EPV3/Audit.php\">Perform Audit</a></li>
+                <li><a href=\"$base/oep/EPV3/Audit.php\">Perform Audit</a></li>
                 <li><a href=\"$base/Reports/Stats.php?w=12\">Programming Statistics</a></li>
                 <li class=\"divider\"></li>
                 <li class=\"dropdown-header\">Music Department</li>
