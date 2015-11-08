@@ -208,6 +208,7 @@ class station extends TPS{
         $stations = $this->getStations();
         if(array_key_exists($callsign, $stations)){
             $this->callsign = $callsign;
+            return $this->callsign;
         }
         else{
             return False;

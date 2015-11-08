@@ -3,7 +3,7 @@
 /* 
  * The MIT License
  *
- * Copyright 2015 James Oliver <support@ckxu.com>.
+ * Copyright 2015 J.oliver.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +24,27 @@
  * THE SOFTWARE.
  */
 
-#load page groups
-require_once 'library.php';
-require_once 'reviews.php';
-require_once 'station.php';
-require_once 'program.php';
-require_once 'episode.php';
-
-#load api last;
-require_once 'api.php';
-
+// Review(s)
+$app->group('/episode', $authenticate($app,[1,2]), 
+        function () use ($app,$authenticate){
+    $app->get('/new',$authenticate($app,[1,2]), 
+            function () use ($app){
+        $params=array(
+            'area'=>'Episode',
+            'title'=>'New'
+            );
+        $station = new \TPS\station();
+        $params['stations'] = $station->getStations();
+        $params['callsign'] = $station->setStation(key($params['stations']));
+        $params['programIds'] = $station->getAllProgramIds(True);
+        $temp = array();
+        foreach ($params['programIds'] as $id) {
+            $program = new \TPS\program($station, $id);
+            $pgm = $program->getValues();
+            array_push($temp, $pgm);
+        }
+        $params['program'] = $temp;
+        var_dump($params);
+        //$app->render("episodeNew.twig",$params);
+    });
+});

@@ -239,5 +239,20 @@ $app->group('/api', $authenticate, function () use ($app,   $authenticate) {
         print json_encode($data);
     });
 });
+    $app->group('/program', function () use ($app){
+         $app->get('/list/:station', function ($call) use ($app){
+            $station = new \TPS\station();
+            $callsign = $station->setStation($call);
+            $programIds = $station->getAllProgramIds(True);
+            $programs = array();
+            foreach ($programIds as $id) {
+                $program = new \TPS\program($station, $id);
+                $pgm = $program->getValues();
+                $programs[$pgm['name']] = $pgm;
+            }
+            print json_encode($programs);
+            //$app->render("episodeNew.twig",$params);
+        });
+    });
 
 });
