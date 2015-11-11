@@ -52,6 +52,9 @@ class logger extends TPS{
         elseif (isset($GLOBALS['logLevel'])) {
             $this->logLevel($GLOBALS['logLevel']);
         }
+        else{
+            $this->logLevel('info');
+        }
         register_shutdown_function(array("\\TPS\\logger","fatalError"));
         parent::__construct();
     }
@@ -64,7 +67,7 @@ class logger extends TPS{
     
     public function logLevel($level=NULL){
         if(!is_null($level)){
-            if(in_array($level, $this->validLogLevel || $level==FALSE)){
+            if(in_array($level, $this->validLogLevel) || $level==FALSE){
                 switch ($level) {
                     case 'debug':
                         $this->currentLogLevels = $this->validLogLevel;
@@ -194,7 +197,7 @@ class logger extends TPS{
     public function debug($event, $result=NULL, $source=NULL){
         try{
             if(in_array('debug',$this->currentLogLevels)){
-                $this->saveInDatabase("info",$event,$source,$result);
+                $this->saveInDatabase("debug",$event,$source,$result);
             }
         } catch (Exception $ex) {
             error_log("Exception occured in logging, $ex");
