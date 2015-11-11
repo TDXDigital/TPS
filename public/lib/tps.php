@@ -63,7 +63,6 @@ class TPS{
                         $database["DBHOST"] = $server->IPV4;
                     }
                 }
-                //define("HOST",  constant('HOST') );
                 $database["USER"] = easy_decrypt(ENCRYPTION_KEY,(string)$server->USER);
                 $database["PASSWORD"] = easy_decrypt(ENCRYPTION_KEY,(string)$server->PASSWORD);
                 $database["DATABASE"] = (string)$server->DATABASE;
