@@ -46,6 +46,9 @@ class logger extends TPS{
         if(!is_null($username)){
             $this->usernameLog = $username;
         }
+        else if(isset($_SESSION['account'])){
+            $this->usernameLog = $_SESSION['account'];
+        }
         if(!is_null($logLevel)){
             $this->logLevel($logLevel);
         }
