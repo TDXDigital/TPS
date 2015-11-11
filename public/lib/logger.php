@@ -34,6 +34,7 @@ class logger extends TPS{
     private $email = NULL;
     private $usernameLog = "Anonamous";
     private $validLogLevel = ['debug','info','warn','error','exception'];
+    private $currentLogLevels = ['debug','info','warn','error','exception'];
     private $logLevel = "info";
     private $startTime = NULL;
     private $endTime = NULL;
@@ -45,6 +46,12 @@ class logger extends TPS{
         if(!is_null($username)){
             $this->usernameLog = $username;
         }
+        if(!is_null($logLevel)){
+            $this->logLevel($logLevel);
+        }
+        elseif (isset($GLOBALS['logLevel'])) {
+            $this->logLevel($GLOBALS['logLevel']);
+        }
         register_shutdown_function(array("\\TPS\\logger","fatalError"));
         parent::__construct();
     }
@@ -54,6 +61,49 @@ class logger extends TPS{
     }
      * 
      */
+    
+    public function logLevel($level=NULL){
+        if(!is_null($level)){
+            if(in_array($level, $this->validLogLevel || $level==FALSE)){
+                switch ($level) {
+                    case 'debug':
+                        $this->currentLogLevels = $this->validLogLevel;
+                        break;
+                    case 'info':
+                        $this->currentLogLevels = array_diff(
+                                $this->validLogLevel,
+                                array('debug'));
+                        break;
+                    case 'warn':
+                        $this->currentLogLevels = array_diff(
+                                $this->validLogLevel,
+                                array('debug','info'));
+                        break;
+                    case 'error':
+                        $this->currentLogLevels = array_diff(
+                                $this->validLogLevel,
+                                array('debug','info','warn'));
+                        break;
+                    case 'exception':
+                        $this->currentLogLevels = array_diff(
+                                $this->validLogLevel,
+                                array('debug','info','warn','error'));
+                        break;
+                    default:
+                        $this->currentLogLevels = NULL; #off
+                        break;
+                }
+                $this->logLevel = $level;
+                $GLOBALS['logLevel'] = $level;
+            }
+            else{
+                error_log("invalid logging level $level provided,"
+                        . " please use one of the following: "
+                        . json_encode($this->validLogLevel));
+            }
+        }
+        return $this->logLevel;
+    }
     
     static protected function traceCallingFile($limit=0){
         return debug_backtrace($options=DEBUG_BACKTRACE_IGNORE_ARGS, $limit);
@@ -141,10 +191,19 @@ class logger extends TPS{
         }
     }
     
+    public function debug($event, $result=NULL, $source=NULL){
+        try{
+            if(in_array('debug',$this->currentLogLevels)){
+                $this->saveInDatabase("info",$event,$source,$result);
+            }
+        } catch (Exception $ex) {
+            error_log("Exception occured in logging, $ex");
+        }
+    }
+    
     public function info($event, $result=NULL, $source=NULL){
         try{
-            if(in_array(strtolower($this->logLevel), 
-                    ['info','warn','error','exception'])){
+            if(in_array('info',$this->currentLogLevels)){
                 $this->saveInDatabase("info",$event,$source,$result);
             }
         } catch (Exception $ex) {
@@ -154,8 +213,7 @@ class logger extends TPS{
     
     public function warn($event, $result=NULL, $source=NULL){
         try{
-            if(in_array(strtolower($this->logLevel), 
-                    ['info','warn','error','exception'])){
+            if(in_array('warn',$this->currentLogLevels)){
                 $this->saveInDatabase("warn",$event,$source,$result);
             }
         } catch (Exception $ex) {
@@ -165,8 +223,7 @@ class logger extends TPS{
     
     public function error($event, $result=NULL, $source=NULL){
         try{
-            if(in_array(strtolower($this->logLevel), 
-                    ['info','warn','error','exception'])){
+            if(in_array('error',$this->currentLogLevels)){
                 $this->saveInDatabase("error",$event,$source,$result);
             }
         } catch (Exception $ex) {
@@ -176,8 +233,7 @@ class logger extends TPS{
     
     public function exception($event, $result=NULL, $source=NULL){
         try{
-            if(in_array(strtolower($this->logLevel), 
-                    ['exception'])){
+            if(in_array('exception',$this->currentLogLevels)){
                 $this->saveInDatabase("exception",$event,$source,$result);
             }
         } catch (Exception $ex) {
