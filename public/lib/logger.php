@@ -53,7 +53,7 @@ class logger extends TPS{
      * 
      */
     
-    static private function traceCallingFile($limit=0){
+    static protected function traceCallingFile($limit=0){
         return debug_backtrace($options=DEBUG_BACKTRACE_IGNORE_ARGS, $limit);
     }
     
@@ -68,7 +68,7 @@ class logger extends TPS{
      * @param type $trace
      * @return string
      */
-    static private function formatPHPlogLine($level, $string, $trace=True){
+    static protected function formatPHPlogLine($level, $string, $trace=True){
         try{
             if($trace){
                 $btrace = self::traceCallingFile();
@@ -226,7 +226,7 @@ class logger extends TPS{
     public function stopTimer(){
         if($this->startTime != null){
             $this->endTime = microtime(true); 
-            $this->startTime = Null;
+            //$this->startTime = Null;
             return true;
         }
         else{
@@ -236,6 +236,9 @@ class logger extends TPS{
     }
     
     public function timerDuration(){
-        return $this->endTime - $this->startTime;
+        if(is_null($this->endTime)){
+            $this->stopTimer();
+        }
+        return ($this->endTime) - ($this->startTime);
     }
 }
