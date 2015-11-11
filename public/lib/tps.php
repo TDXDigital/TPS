@@ -24,6 +24,8 @@ namespace TPS;
  * THE SOFTWARE.
  */
 
+require_once 'TPSBIN'.DIRECTORY_SEPARATOR."functions.php";
+
 class TPS{
     protected $mysqli;
     protected $username;
@@ -34,8 +36,10 @@ class TPS{
         if(is_null($target)){
             // Get the default (first) server
             foreach ($dbxml->SERVER as $server){
-                if(strtolower($server->ACTIVE) == "true"){
-                    $target = $server->ID;
+                if(strtolower($server->ACTIVE) == "true" ||
+                        $server->ACTIVE == '1'){
+                    $target = (string)$server->ID;
+                    break;
                 }
             }
         }
@@ -95,6 +99,7 @@ class TPS{
 
     public function __construct() {
         global $mysqli;
+        $mysqli=$mysqli?:$GLOBALS['mysqli'];
         if(!$mysqli){
             // Establish DB connection
             $database = NULL    ;
@@ -105,6 +110,9 @@ class TPS{
                         $database['PASSWORD'], 
                         $database['DATABASE']
                         );
+                if(!$this->mysqli->connect_error){
+                    $GLOBALS['mysqli'] = $this->mysqli;
+                }
             }
             else{
                 $this->mysqli = NULL;
