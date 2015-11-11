@@ -46,7 +46,6 @@ $app->get("/login", function () use ($app) {
    if (isset($flash['errors']['password'])) {
       $password_error = $flash['errors']['password'];
    }
-   $log->warn("present login to user");
    $log->info("presented login to user via IP:",NULL,$_SERVER['REMOTE_ADDR']);
    $app->render('login.html.twig', array('error' => $error, 'Username' => $email_value, 'Username_error' => $email_error, 'password_error' => $password_error, 'urlRedirect' => $urlRedirect));
 });
@@ -58,7 +57,7 @@ $app->post("/login", function () use ($app) {
     $access = 0;
     $errors = array();
     $log = new \TPS\logger($username);
-    $log->info("Login attempt received");
+    $log->debug("Login attempt received");
     $log->startTimer();
     
     require_once ("TPSBIN".DIRECTORY_SEPARATOR."functions.php");

@@ -71,3 +71,5 @@ $app->hook('slim.before', function () use ($app) {
 
 $base_url = $app->router()->getCurrentRoute();
 
+require_once 'lib' . DIRECTORY_SEPARATOR . "logger.php";
+

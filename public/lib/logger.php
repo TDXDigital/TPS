@@ -32,7 +32,7 @@ class logger extends TPS{
     private $ipv6 = NULL;
     private $timezone = NULL;
     private $email = NULL;
-    private $usernameLog = NULL;
+    private $usernameLog = "Anonamous";
     private $validLogLevel = ['debug','info','warn','error','exception'];
     private $logLevel = "info";
     private $startTime = NULL;
@@ -42,7 +42,9 @@ class logger extends TPS{
     
     public function __construct($username=NULL, $email=NULL, $logLevel=NULL, $ipv6=NULL,  
             $ipv4=NULL, $timezone=NULL) {
-        $this->usernameLog = $username;
+        if(!is_null($username)){
+            $this->usernameLog = $username;
+        }
         register_shutdown_function(array("\\TPS\\logger","fatalError"));
         parent::__construct();
     }
@@ -58,7 +60,13 @@ class logger extends TPS{
     }
     
     static public function fatalError(){
-        error_log(self::formatPHPlogLine("Exception","Fatal error encountered"));
+        $error = error_get_last();
+        if($error['type'] === E_ERROR){
+            $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 0);
+            foreach ($trace as $value) {
+                error_log(json_encode($value));
+            }
+        }
     }
     
     /**
@@ -71,16 +79,18 @@ class logger extends TPS{
     static protected function formatPHPlogLine($level, $string, $trace=True){
         try{
             if($trace){
-                $btrace = self::traceCallingFile();
+                $btrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 0);
                 $traceStrFmt = " [%s, %s L%i] in %s]";
                 $traceStr = sprintf($traceStrFmt, date("Y-m-d H:i:s"), 
-                        $btrace[0]['file'], $btrace[0]['line'], $btrace[0]['function']);
+                        $btrace[3]['file'], $btrace[3]['line'],
+                        $btrace[3]['function']);
             }
             else{
                 $traceStr = " ";
             }
-            $format = '%1$s:%3$s %2s';
-            return sprintf($format, $level, $string, $traceStr);
+            $format = '%1$s : %3$s %2$s';
+            $format = sprintf($format, $level, $string, $traceStr);
+            return $format;
         }
         catch(Exception $ex){
             return "Exception $ex";
@@ -112,7 +122,13 @@ class logger extends TPS{
                 error_log($this->formatPHPlogLine(
                         "ERROR",$this->mysqli->error));
             }
-            return true;
+            if(!$this->mysqli->errno){
+                return true;
+            }
+            else{
+                error_log($this->formatPHPlogLine(
+                                "ERROR", $this->mysqli->error, TRUE));
+            }
         }
         else{
             error_log($this->formatPHPlogLine("ERROR",$this->mysqli->error));
