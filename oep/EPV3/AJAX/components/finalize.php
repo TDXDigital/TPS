@@ -72,7 +72,7 @@ else if($con){
 		  	var time = $('#FinTime').val();
 		  	var spoken = "8" // aprox average time for now...
 		  	var dataString = "end="+time+"&spoken="+spoken;
-		  	var URL = "/episode/p3insertEP.php";
+		  	var URL = "/oep/p3insertEP.php";
 		  	$.ajax({
 		  		url: URL,
 		  		data: dataString,

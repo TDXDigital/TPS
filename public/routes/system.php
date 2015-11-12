@@ -23,6 +23,7 @@ $app->delete('/', $authenticate($app), function() use ($app){
 });
 
 $app->get("/login", function () use ($app) {
+   $log = new \TPS\logger();
    $flash = $app->view()->getData('flash');
    $error = '';
    if (isset($flash['error'])) {
@@ -45,6 +46,7 @@ $app->get("/login", function () use ($app) {
    if (isset($flash['errors']['password'])) {
       $password_error = $flash['errors']['password'];
    }
+   $log->info("presented login to user via IP:",NULL,$_SERVER['REMOTE_ADDR']);
    $app->render('login.html.twig', array('error' => $error, 'Username' => $email_value, 'Username_error' => $email_error, 'password_error' => $password_error, 'urlRedirect' => $urlRedirect));
 });
 
@@ -54,6 +56,9 @@ $app->post("/login", function () use ($app) {
     $databaseID = $app->request()->post('SRVID');
     $access = 0;
     $errors = array();
+    $log = new \TPS\logger($username);
+    $log->debug("Login attempt received");
+    $log->startTimer();
     
     require_once ("TPSBIN".DIRECTORY_SEPARATOR."functions.php");
     $dbxml = simplexml_load_file("TPSBIN".DIRECTORY_SEPARATOR."XML"
@@ -151,7 +156,7 @@ $app->post("/login", function () use ($app) {
                     #error_log("Could not Bind LDAP server");
                     $errors['Username'] = "Invalid login";
                 }
-            }
+            }/*
             elseif((string)$server->AUTH == strtoupper("SECL")){
                 if ($username != "brian@nesbot.com") {
                     $errors['Username'] = "Username not found.";
@@ -167,23 +172,29 @@ $app->post("/login", function () use ($app) {
                     $app->flash('Username', $username);
                     $errors['password'] = "Password does not match.";
                 } 
-            }
+            }*/
         endif;
     endforeach;
+    $duration = $log->timerDuration();
     if (count($errors) > 0) {
         $app->flash('errors', $errors);
+        $log->info("Login attempt failed (took $duration s)",
+                json_encode($errors),$_SERVER['REMOTE_ADDR']);
         $app->redirect('/login');
     }
     if (isset($_SESSION['urlRedirect'])) {
        $tmp = $_SESSION['urlRedirect'];
        unset($_SESSION['urlRedirect']);
+       $log->info("User Login (took $duration s)");
        $app->redirect($tmp);
     }
     $app->redirect('/');
 });
 
 $app->get("/logout", function () use ($app) {
-   session_unset();
-   $app->view()->setData('access', null);
-   $app->render('basic.twig',array('statusCode'=>'Logout','title'=>'Logout', 'message'=>'You have been logged out'));
+    $log = new \TPS\logger();
+    $log->info("User Logout");
+    session_unset();
+    $app->view()->setData('access', null);
+    $app->render('basic.twig',array('statusCode'=>'Logout','title'=>'Logout', 'message'=>'You have been logged out'));
 });

@@ -24,16 +24,25 @@ require_once 'header.php';
  */
 $authenticate = function ($app,$access=0,$json=FALSE) {
     return function () use ($app,$access,$json) {
+        $log = new \TPS\logger(NULL,NULL,NULL,NULL,$_SERVER['REMOTE_ADDR']);
         if (!isset($_SESSION['access'])) {
+            $log->info("access to ".$app->request()->getPathInfo()
+                    ." denied, Login required","redirect",
+                    $_SERVER['REMOTE_ADDR']);
             $_SESSION['urlRedirect'] = $app->request()->getPathInfo();
             $app->flash('error', 'Login required');
             $app->redirect('/login');
         }
         elseif($access){
             if(!is_array($access)){
+                $log->debug("user accessed ".$app->request()->getPathInfo(),
+                        'pass',$_SERVER['REMOTE_ADDR']);
                 $access = array($access);
             }
             if(!in_array($_SESSION['access'],$access)){
+                $log->info("access to ".$app->request()->getPathInfo()
+                    ." denied, Not Authorized",401,
+                    $_SERVER['REMOTE_ADDR']);
                 $_SESSION['urlRedirect'] = $app->request()->getPathInfo();
                 //$app->flash('error', 'Insufficient Permissions');
                 //$app->redirect('/401');
@@ -57,7 +66,11 @@ $authenticate = function ($app,$access=0,$json=FALSE) {
 };
 
 $requiresHttps = function () use ($app) {
+    $log = new \TPS\logger(NULL,NULL,NULL,NULL,$_SERVER['REMOTE_ADDR']);
     if ($app->environment['slim.url_scheme'] !== 'https' ) {
+        $log->info("access to ".$app->request()->getPathInfo()
+                    ." denied, HTTPS Required","redirect",
+                    $_SERVER['REMOTE_ADDR']);
         $app->redirect('/requiressl');    // or render response and $app->stop();
      }
 };

@@ -156,6 +156,8 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
     });
     $app->delete('/:station',$authenticate($app,2), 
             function ($callsign) use ($app,$authenticate){
+        $log = new \TPS\logger();
+        $log->info("user denied access to delete a station ($station)");
         $app->render('notSupported.twig');
     });
     $app->get('/new/',$authenticate($app,2), 

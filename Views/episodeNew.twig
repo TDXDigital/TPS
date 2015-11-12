@@ -1,0 +1,82 @@
+{% extends 'baseAdmin.twig' %}
+
+{% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+    </li>
+    <li class="active">
+        <i class="fa fa-tasks"></i>{% if search %}
+        <a href="/station">Station</a>
+    </li>
+    <li>
+        <i class="fa fa-search"></i> Search
+        {% else %}
+            search
+        {% endif %}
+    </li>
+</ol>
+{% endblock %}
+{% block content %}
+    {% if flash.error %}
+        <div class="row">
+            <div class="alert alert-danger">
+                <strong>Error</strong> {{flash.error}}
+            </div>
+        </div>
+    {% endif %}
+    {% if flash.success %}
+        <div class="row">
+            <div class="alert alert-success">
+                <strong>Success</strong> {{flash.success}}
+            </div>
+        </div>
+    {% endif %}
+    <!--<form role="form" method="POST" action="/station/search/">
+        <div class="row">
+            <div class="form-group input-group">
+                <input type="text" class="form-control" name="q" 
+                       {% if search %}
+                           value="{{search}}"
+                       {% endif %}>
+                <span class="input-group-btn"><button class="btn btn-default" type="button"><i class="fa fa-search"></i></button></span>
+            </div>
+        </div>
+    </form>-->
+    <table class='table table-bordered table-hover' >
+        <thead>
+            <th>Callsign</th>
+            <th>Designation</th>
+            <th>Frequency</th>
+            <th>Address</th>
+            <th>Main Phone</th>
+            <th>Time Zone</th>
+            <th>Website</th>
+            <th>Edit</th>
+        </thead>
+        <tbody>
+            {% for callsign,station in stations %}
+                <tr>
+                    <td>{{callsign}}</td>
+                    <td>{{station.designation}}</td>
+                    <td>{{station.frequency}}</td>
+                    <td>{{station.address}}</td>
+                    <td>{{station.phone.main}}</td>
+                    <td>{{station.timezone}}</td>
+                    <td><a href="{{station.website}}" target="_stnWeb">{{station.website}}</a></td>
+                    <td><a href="/station/{{callsign|lower}}"><i class="fa fa-edit"></i> Edit</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+<div class="row">
+    <div class="col-lg-6">
+    </div>
+    <div class="col-lg-6">
+        <div class="pull-right">
+            <a class="btn btn-success" href="/station/new/">New Station</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

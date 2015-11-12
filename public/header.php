@@ -64,10 +64,14 @@ $view->parserExtensions = array(
     new \Slim\Views\TwigExtension(),
 );
 $app->hook('slim.before', function () use ($app) {
+    $log = new \TPS\logger(NULL,NULL,NULL,NULL,$_SERVER['REMOTE_ADDR']);
     $posIndex = strpos( $_SERVER['PHP_SELF'], '/index.php');
     $base_url = substr( $_SERVER['PHP_SELF'], 0, $posIndex);
     $app->view()->appendData(array('baseUrl' => $base_url ));
+    $log->debug("Rendering ".$app->router()->getCurrentRoute());
 });
 
 $base_url = $app->router()->getCurrentRoute();
+
+require_once 'lib' . DIRECTORY_SEPARATOR . "logger.php";
 

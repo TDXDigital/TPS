@@ -229,7 +229,7 @@ else{
         <?php
           if($_SESSION['usr']=='user')
           {
-            echo "<form name=\"exit\" action=\"/Episode/EPV3/logs.php\" method=\"POST\">";
+            echo "<form name=\"exit\" action=\"/oep/EPV3/logs.php\" method=\"POST\">";
             echo "<input type=\"submit\" value=\"New Log\">";
             echo "</form></td>";
             echo "<td><form name=\"exit\" action=\"/VERLogout.php\" method=\"POST\">";
@@ -247,7 +247,7 @@ else{
 
         </td>
         <td>
-        <form name="edit" action="/Episode/EPV3/logs.php" method="POST">
+        <form name="edit" action="/oep/EPV3/logs.php" method="POST">
             <input type="text" hidden="true" name="callsign" value=<?php echo "\"" . $PROGRAMARRAY['callsign'] . "\"" ?> />
             <input type="text" hidden="true" name="program" value=<?php echo "\"" . $_POST['program'] . "\"" ?> />
             <input type="text" hidden="true" name="user_date" value=<?php echo "\"" . $_POST['user_date'] . "\"" ?> />
@@ -256,7 +256,7 @@ else{
         </form>
         </td>
         <td>
-        <form name="append" action="/Episode/EPV3/logs.php" method="POST">
+        <form name="append" action="/oep/EPV3/logs.php" method="POST">
         <input type="text" hidden="true" name="callsign" value=<?php echo "\"" . $PROGRAMARRAY['callsign'] . "\"" ?> />
             <input type="text" hidden="true" name="program" value=<?php echo "\"" . $_POST['program'] . "\"" ?> />
             <input type="text" hidden="true" name="user_date" value=<?php echo "\"" . $_POST['user_date'] . "\"" ?> />

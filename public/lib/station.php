@@ -23,6 +23,8 @@ namespace TPS;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+require_once 'logger.php';
 require_once 'tps.php';
 class station extends TPS{
     protected $callsign = null;
@@ -49,12 +51,20 @@ class station extends TPS{
     protected $perHourTraffic = null;
     protected $perHourPSA = null;
     protected $timezone = "UTC";
+    public $log = null;
             
     function __construct($callsign=null) {
         parent::__construct();
         if(!is_null($callsign)){
             $this->setupParams($callsign);
         }
+        if(isset($_SESSION['account'])){
+            $username=$_SESSION['account'];
+        }
+        else{
+            $username="AnonamousUser";
+        }
+        $this->log = new \TPS\logger($username);
     }
     
     public function updateParent(){
@@ -198,6 +208,7 @@ class station extends TPS{
         $stations = $this->getStations();
         if(array_key_exists($callsign, $stations)){
             $this->callsign = $callsign;
+            return $this->callsign;
         }
         else{
             return False;
@@ -403,11 +414,17 @@ class station extends TPS{
     }
     
     public function playlistLiveGroupingOn(){
-        return $this->setPlaylistLiveGrouping("1");
+        $result = $this->setPlaylistLiveGrouping("1");
+        $this->log->info("Playlist Live Grouping enabled",
+                $result?"pass":"fail");
+        return $result;
     }
     
     public function playlistLiveGroupingOff(){
-        return $this->setPlaylistLiveGrouping("0");
+        $result = $this->setPlaylistLiveGrouping("0");
+        $this->log->info("Playlist Live Grouping disabled",
+                $result?"pass":"fail");
+        return $result;
     }
     
     public function playlistLiveGrouping(){

@@ -225,7 +225,7 @@ else if($con){
 	   						}
 	   					}
 	   				}
-	   			xmlhttp.open("GET","/Episode/EPV2/AJAX/date.php",true);
+	   			xmlhttp.open("GET","/oep/EPV2/AJAX/date.php",true);
 	   			xmlhttp.send();
 	   			
 				document.getElementById("prdate").required = false;

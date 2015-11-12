@@ -89,20 +89,20 @@ include_once 'CONFIG.php';
         <?php
         	if($ACCold != TRUE){
         		 echo " <!-- ";
-				//header("location:/Episode/EPV3/logs.php?b=$br");
+				//header("location:/oep/EPV3/logs.php?b=$br");
         	}
         ?>
         <!--<h3>(Version 0.2)</h3><span style="font-size: 9px"><i>works with: Opera</i></span>-->
         </td></tr>
         <tr style="height:50px; vertical-align: middle">
                   <td style="width: 450px">
-	            <button onclick="window.location.href='Episode/EPV2/p1insert.php'" <?php
+	            <button onclick="window.location.href='oep/EPV2/p1insert.php'" <?php
 	            	if($ACCold != TRUE){
 	            		 echo " disabled ";
 	            	}
 	            ?>value="New Program Log">New Program Log</button>
 	     </td><td style="width: 450px">
-	            <button onclick="window.location.href='Episode/p1update.php'"<?php
+	            <button onclick="window.location.href='oep/p1update.php'"<?php
 	            	if($ACCold != TRUE){
 	            		 echo " disabled ";
 	            	}
@@ -120,8 +120,8 @@ include_once 'CONFIG.php';
         </td></tr>
         <tr style="height: 50px; vertical-align: middle;">
                   <td style="width:450px">
-	            <!--<a href="Episode/p1insertep.php">New Program Log</a>-->
-	            <button onclick="window.location.href='/Episode/EPV3/logs.php?ref=1'" <?php
+	            <!--<a href="oep/p1insertep.php">New Program Log</a>-->
+	            <button onclick="window.location.href='/oep/EPV3/logs.php?ref=1'" <?php
 	            	if($ACCnew != TRUE){
 	            		 echo " disabled ";
 	            	}
@@ -144,7 +144,7 @@ include_once 'CONFIG.php';
              <tr height="50" valign="middle">
                     <td width="200"><a href="/PlayRep.php">Playlist Report</a></td>
                     <td width="200"><a href="/Top15Rep.php">Top 15 Report</a></td> 
-                    <td><button onclick='window.location.href="/Episode/p1Audit.php"' value="Audit">Audit</button></td>
+                    <td><button onclick='window.location.href="/oep/p1Audit.php"' value="Audit">Audit</button></td>
                     <td><button onclick='window.location.href="Reports/PlaylistRep.php"' value="Audit">Charts</button></td>
              </tr>-->
              <tr>

@@ -35,7 +35,6 @@ namespace TPS;
 require_once 'station.php';
 class program extends station{
     private $station = null;
-    
     protected $name = null;
     protected $djs = null;
     protected $genre = null;
@@ -90,11 +89,11 @@ class program extends station{
             return False;
         }
         $con = $this->mysqli->prepare(
-                "SELECT programname, length, syndicatesource, genre, active,"
-                . "Airtime, CCX, PLX, HitLimit, SponsId, displayorder, Theme,"
-                . "Display_Order, Reviewable, last_review FROM program WHERE"
-                . "ProgramID=? and callsign=?"
+                "SELECT programname, length, syndicatesource, genre, active, Airtime, CCX, PLX, HitLimit, SponsId, displayorder, Theme, Display_Order, Reviewable, last_review FROM program WHERE ProgramID=? and callsign=?"
             );
+        if($this->mysqli->error){
+            die($this->mysqli->error);
+        }
         if($con){
             $con->bind_param("ss",$this->programID,$this->callsign);
             $con->bind_result(

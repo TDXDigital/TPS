@@ -24,8 +24,52 @@ namespace TPS;
  * THE SOFTWARE.
  */
 
+require_once 'TPSBIN'.DIRECTORY_SEPARATOR."functions.php";
+
 class TPS{
     protected $mysqli;
+    protected $username;
+    
+    private function getDatabaseConfig($target=NULL,
+            $xmlpath="TPSBIN/XML/DBSETTINGS.xml"){
+        $dbxml = simplexml_load_file($xmlpath);
+        if(is_null($target)){
+            // Get the default (first) server
+            foreach ($dbxml->SERVER as $server){
+                if(strtolower($server->ACTIVE) == "true" ||
+                        $server->ACTIVE == '1'){
+                    $target = (string)$server->ID;
+                    break;
+                }
+            }
+        }
+        $database=False;
+        foreach ($dbxml->SERVER as $server){
+            if((string)$server->ID === $target){
+                if($server->RESOLVE === "URL")
+                {
+                  $database["DBHOST"] = $server->URL;
+                }
+                elseif($server->RESOLVE === "IPV4")
+                {
+                  $database["DBHOST"] = $server->IPV4;
+                }
+                else
+                {
+                    if($server->URL!=""){
+                        $database["DBHOST"] = $server->URL;
+                    }
+                    else{
+                        $database["DBHOST"] = $server->IPV4;
+                    }
+                }
+                $database["USER"] = easy_decrypt(ENCRYPTION_KEY,(string)$server->USER);
+                $database["PASSWORD"] = easy_decrypt(ENCRYPTION_KEY,(string)$server->PASSWORD);
+                $database["DATABASE"] = (string)$server->DATABASE;
+            }
+        }
+        return $database;
+    }
     
     /**
      * @access private
@@ -54,7 +98,28 @@ class TPS{
 
     public function __construct() {
         global $mysqli;
-        $this->mysqli = $mysqli;
+        $mysqli=$mysqli?:$GLOBALS['mysqli'];
+        if(!$mysqli){
+            // Establish DB connection
+            $database = NULL    ;
+            if($database = $this->getDatabaseConfig()){
+                $this->mysqli = new \mysqli(
+                        $database['DBHOST'], 
+                        $database['USER'], 
+                        $database['PASSWORD'], 
+                        $database['DATABASE']
+                        );
+                if(!$this->mysqli->connect_error){
+                    $GLOBALS['mysqli'] = $this->mysqli;
+                }
+            }
+            else{
+                $this->mysqli = NULL;
+            }
+        }
+        else{
+            $this->mysqli = $mysqli;
+        }
     }
     
     protected function updateParent(){

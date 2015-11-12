@@ -34,7 +34,7 @@ function get_playing() {
         }
     }
 
-    xmlhttp.open("GET", "../../../Episode/EPV3/workers.php?q=np", true);
+    xmlhttp.open("GET", "../../../oep/EPV3/workers.php?q=np", true);
     xmlhttp.send();
     setTimeout("get_playing()",1125);
     /*var switch_s = $.ajax({
