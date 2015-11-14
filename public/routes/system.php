@@ -198,7 +198,7 @@ $app->post("/login", function () use ($app) {
     if (count($errors) > 0) {
         $app->flash('errors', $errors);
         $log->info("Login attempt failed (took $duration s)",
-                json_encode($errors),$_SERVER['REMOTE_ADDR']);
+                json_encode($errors),$app->request->getIp());
         $app->redirect('/login');
     }
     if (isset($_SESSION['urlRedirect'])) {
@@ -207,7 +207,11 @@ $app->post("/login", function () use ($app) {
        $log->info("User Login (took $duration s)");
        $app->redirect($tmp);
     }
-    $app->redirect('/');
+    $isXHR = $app->request->isAjax();
+    $isXHR = $app->request->isXhr();
+    if(!$isXHR){
+        $app->redirect('/');
+    }
 });
 
 $app->get("/logout", function () use ($app) {

@@ -41,6 +41,13 @@ class logger extends TPS{
     
     private $data = array();
     
+    public function write($message){
+        if(isset($_SESSION['account'])){
+            $this->username = $_SESSION['account'];
+        }
+        $this->debug($message);
+    }
+    
     public function __construct($username=NULL, $email=NULL, $logLevel=NULL, $ipv6=NULL,  
             $ipv4=NULL, $timezone=NULL) {
         if(!is_null($username)){

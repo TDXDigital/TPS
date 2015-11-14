@@ -45,6 +45,11 @@ $app->group('/episode', $authenticate($app,[1,2]),
         }
         $params['program'] = $temp;
         var_dump($params);
+        $isXHR = $app->request->isAjax();
+        $isXHR = $app->request->isXhr();
+        if(!$isXHR){
+            
+        }
         //$app->render("episodeNew.twig",$params);
     });
 });

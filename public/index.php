@@ -18,6 +18,10 @@ $sessionSecret =
 
 require_once 'header.php';
 
+if($debug){
+    $GLOBALS['logLevel'] = "debug";
+}
+
 /**
  * performs authentication (Not Authorization) for TPS
  * $app is the current application to be used
@@ -96,5 +100,14 @@ $app->hook('slim.before.dispatch', function() use ($app) {
    $app->view()->setData('userId',$uid);
    $app->view()->setData('permissions',$access);
 });
+/*
+$app->hook('slim.after', function() use ($app){
+    $uid = null;
+    if (isset($_SESSION['account'])) {
+       $uid = $_SESSION['account'];
+    }
+    $log = new \TPS\logger($uid);
+    $log->debug("Render complete ".$app->request->url);
+});*/
 require_once 'routes.php';
 
