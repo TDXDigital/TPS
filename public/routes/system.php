@@ -9,6 +9,25 @@ $app->notFound(function() use ($app) {
     $app->render('error.html.twig',$params);
 });
 
+$app->error(function (\Exception $e) use ($app){
+    try{
+        $log = new \TPS\logger();
+        $log->exception($e);
+    } catch (Exception $ex) {
+        error_log(sprintf("Unhandled Exception Occured %s,"
+                . " could not log exception %s",
+                $ex->getMessage(),$e->getMessage()));
+    }
+    $params=array(
+        "statusCode" => 500,
+        "title" => "Error 500",
+        "message" => "Internal Server Error",
+        "details" => ["&nbsp","<sub>Tech Blabber for the nosy type: </sub>",
+            "<sub>".$e->getMessage()."</sub>"],
+    );
+    $app->render("error.html.twig",$params);
+});
+
 $app->get('/', $authenticate($app), function() use ($app){
     $app->render('dashboard.twig');
 });

@@ -240,6 +240,10 @@ class logger extends TPS{
     public function exception($event, $result=NULL, $source=NULL){
         try{
             if(in_array('exception',$this->currentLogLevels)){
+                if(get_class($event) == "Exception"){
+                    $exception = $event;
+                    $event = $exception->getMessage();
+                }
                 $this->saveInDatabase("exception",$event,$source,$result);
             }
         } catch (Exception $ex) {

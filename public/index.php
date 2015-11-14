@@ -2,7 +2,7 @@
 //if (session_status() !== PHP_SESSION_ACTIVE) {session_start();}
 
 // Set variables
-$debug = TRUE;
+$debug = False;
 $basepath = dirname(__DIR__).DIRECTORY_SEPARATOR;
 $autoload_path = $basepath."vendor".DIRECTORY_SEPARATOR."autoload.php";
 $twig_path = $basepath."lib".DIRECTORY_SEPARATOR."Twig".DIRECTORY_SEPARATOR
@@ -11,6 +11,10 @@ $slim_path = $basepath."lib".DIRECTORY_SEPARATOR."Slim".DIRECTORY_SEPARATOR
         ."Slim.php";
 $views_path = $basepath."Views";
 $temp_path = false;
+$sessionExpiry = "30minutes";
+$sessionName = "TPSSlimSession";
+$sessionSecret = 
+        "Q7^nY{Zd'UO]Z`=L8X&`fV)Fn(LwH(vFwAm-y[z,YJD*vJj'WVYNC!+R3\cnF3I";
 
 require_once 'header.php';
 
