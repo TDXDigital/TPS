@@ -33,9 +33,21 @@ $app->group('/episode', $authenticate($app,[1,2]),
             'area'=>'Episode',
             'title'=>'New'
             );
+        $callsign = $app->request->get('callsign');
+        $encode = $app->request->get('encode');
         $station = new \TPS\station();
         $params['stations'] = $station->getStations();
-        $params['callsign'] = $station->setStation(key($params['stations']));
+        if(is_null($callsign) || !in_array($callsign,$params['stations'])){
+            // invalid or missing callsign
+            if(!is_null($callsign)){
+                $warn = "Error, invalid callsign `$callsign`"
+                        . " provided, using default";
+                $app->flashNow('error',$warn);
+                $station->log->warn($warn);
+            }
+            $callsign = key($params['stations']);
+        }
+        $params['callsign'] = $station->setStation($callsign);
         $params['programIds'] = $station->getAllProgramIds(True);
         $temp = array();
         foreach ($params['programIds'] as $id) {
@@ -44,12 +56,18 @@ $app->group('/episode', $authenticate($app,[1,2]),
             array_push($temp, $pgm);
         }
         $params['program'] = $temp;
-        var_dump($params);
         $isXHR = $app->request->isAjax();
-        $isXHR = $app->request->isXhr();
-        if(!$isXHR){
-            
+        if($isXHR){
+            print json_encode($params);
         }
-        //$app->render("episodeNew.twig",$params);
+        elseif(!is_null($encode)){
+            print json_encode($params);
+        }
+        else{
+            $app->render("episodeNew.twig",$params);
+        }
+    });
+    $app->post('/new', $authenticate($app,[1,2]), function() use ($app){
+        
     });
 });

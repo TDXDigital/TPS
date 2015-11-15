@@ -18,3 +18,7 @@ $slim_path = $basepath."lib".DIRECTORY_SEPARATOR."Slim".DIRECTORY_SEPARATOR
         ."Slim.php";
 $views_path = $basepath."Views";
 $temp_path = false;
+$sessionExpiry = "30minutes";
+$sessionName = "TPSSlimSession";
+$sessionSecret = 
+        "Q7^nY{Zd'UO]Z`=L8X&`fV)Fn(LwH(v4dfS2;'{*vJj'WVYNC!+R3\cnF3I";

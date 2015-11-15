@@ -1,82 +1,83 @@
 {% extends 'baseAdmin.twig' %}
+{% block headScripts %}
+    <link href="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.css" 
+          rel="stylesheet" type="text/css"/>
+{% endblock %}
 
-{% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
+{% block title %}{{title|default('Episode')}}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
     <li>
         <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
     </li>
     <li class="active">
-        <i class="fa fa-tasks"></i>{% if search %}
-        <a href="/station">Station</a>
+        <i class="fa fa-tasks"></i> <a href="/">Program</a>
     </li>
-    <li>
-        <i class="fa fa-search"></i> Search
-        {% else %}
-            search
-        {% endif %}
+    <li class="active">
+        <a href="/episode/new"><i class="fa fa-plus-square-o"></i> New Episode</a>
     </li>
 </ol>
 {% endblock %}
 {% block content %}
-    {% if flash.error %}
+    <form role="form" {% if episode.id is null %}
+          method="POST">
+        {% else %}
+            method="POST" action="./{{episode.id}}"> <!-- PUT NOT YET SUPPORTED BY BROWSER -->
+            <input type="hidden" value="{{episode.id}}" name="id" />
+        {% endif %}
         <div class="row">
-            <div class="alert alert-danger">
-                <strong>Error</strong> {{flash.error}}
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label for="station">Station</label>
+                    <select id="station" name="callsign" class="form-control">
+                        {% for stnCallsign, stnBrand in stations %}
+                        <option {% if callsign == stnCallsign %}
+                            selected 
+                            {% endif %} value="{{stnCallsign|escape}}">{{stnBrand}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label for="program">Program</label>
+                    <select id="program" name="program" class="form-control">
+                        {% for pgm in program %}
+                        <option value="{{pgm.id}}">{{pgm.name}}  [{{pgm.genre}}]</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <label for="datePicker">Date</label>
+                <input type='text' class="form-control" id='datePicker' 
+                       name="date" value="{{date|default("now"|date('Y-m-d'))}}"/>
             </div>
         </div>
-    {% endif %}
-    {% if flash.success %}
         <div class="row">
-            <div class="alert alert-success">
-                <strong>Success</strong> {{flash.success}}
+            <div class="col-lg-10">
+                <label for="description">Description</label>
+                <input type='text' class="form-control" id='description' 
+                       name="description" value="{{description}}"/>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group pull-right">
+                    {% if episode.id is not null %}
+                        <input type="hidden" name="_METHOD" value="PUT"/>
+                    {% endif %}
+                <button type="submit" class="btn btn-success">Submit</button>
+                <!--<button type="reset" class="btn btn-warning">Reset</button>-->
+                </div>
             </div>
         </div>
-    {% endif %}
-    <!--<form role="form" method="POST" action="/station/search/">
-        <div class="row">
-            <div class="form-group input-group">
-                <input type="text" class="form-control" name="q" 
-                       {% if search %}
-                           value="{{search}}"
-                       {% endif %}>
-                <span class="input-group-btn"><button class="btn btn-default" type="button"><i class="fa fa-search"></i></button></span>
-            </div>
-        </div>
-    </form>-->
-    <table class='table table-bordered table-hover' >
-        <thead>
-            <th>Callsign</th>
-            <th>Designation</th>
-            <th>Frequency</th>
-            <th>Address</th>
-            <th>Main Phone</th>
-            <th>Time Zone</th>
-            <th>Website</th>
-            <th>Edit</th>
-        </thead>
-        <tbody>
-            {% for callsign,station in stations %}
-                <tr>
-                    <td>{{callsign}}</td>
-                    <td>{{station.designation}}</td>
-                    <td>{{station.frequency}}</td>
-                    <td>{{station.address}}</td>
-                    <td>{{station.phone.main}}</td>
-                    <td>{{station.timezone}}</td>
-                    <td><a href="{{station.website}}" target="_stnWeb">{{station.website}}</a></td>
-                    <td><a href="/station/{{callsign|lower}}"><i class="fa fa-edit"></i> Edit</a></td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-<div class="row">
-    <div class="col-lg-6">
-    </div>
-    <div class="col-lg-6">
-        <div class="pull-right">
-            <a class="btn btn-success" href="/station/new/">New Station</a>
-        </div>
-    </div>
-</div>
+    </form>
+{% endblock %}
+{% block lastScripts %}
+    <script src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.datepicker.setDefaults({dateFormat: "yy-mm-dd"});
+            $("#datePicker").datepicker();
+        });
+    </script>
 {% endblock %}
