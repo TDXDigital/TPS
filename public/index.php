@@ -73,9 +73,9 @@ $authenticate = function ($app,$access=0,$json=FALSE) {
     };
 };
 
-$requiresHttps = function () use ($app) {
-    $log = new \TPS\logger(NULL,NULL,NULL,NULL,$_SERVER['REMOTE_ADDR']);
-    if ($app->environment['slim.url_scheme'] !== 'https' ) {
+$requiresHttps = function () use ($app,$debug) {
+    $log = new \TPS\logger(NULL,NULL,NULL,NULL,$app->request()->getIp());
+    if ($app->environment['slim.url_scheme'] !== 'https' and !$debug) {
         $log->info("access to ".$app->request()->getPathInfo()
                     ." denied, HTTPS Required","redirect",
                     $_SERVER['REMOTE_ADDR']);

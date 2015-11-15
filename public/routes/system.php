@@ -69,6 +69,34 @@ $app->get("/login", function () use ($app) {
    $app->render('login.html.twig', array('error' => $error, 'Username' => $email_value, 'Username_error' => $email_error, 'password_error' => $password_error, 'urlRedirect' => $urlRedirect));
 });
 
+$app->group("/system", array($authenticate($app,[2]), $requiresHttps),
+        function() use ($app,$authenticate){
+    $app->group("/log", $authenticate($app,[2]), function() use ($app,$authenticate){
+        $app->get('/', $authenticate($app,[2]), function() use ($app){
+            $log = new \TPS\logger();
+            $page = $app->request->get('page')?:1;
+            $limit = $app->request->get('results')?:1000;
+            $severity = $app->request->get('severity');
+            $start = $app->request->get('start')?:'1000-01-01 00:00:00';
+            $end = $app->request->get('end')?:'9999-12-31 23:59:59';
+            $user = $app->request->get('user')?:"%";
+            $sort = $app->request->get('sort')?:"DESC";
+            $events = $log->getLoggedMessages(
+                    $page,$limit,$severity,$start,$end,$user,$sort);
+            $params = array(
+                "area" => "System",
+                "title" => "Event Logs",
+                "events" => $events,
+                "page" => $page,
+                "limit" => $limit,
+                "severity" => $severity,
+                "eventCount" => sizeof($events), #this is not correct @todo fix
+            );
+            $app->render("eventList.twig",$params);
+        });
+    });
+});
+
 $app->post("/login", function () use ($app) {
     $username = $app->request()->post('name');
     $password = $app->request()->post('pass');
@@ -208,7 +236,6 @@ $app->post("/login", function () use ($app) {
        $app->redirect($tmp);
     }
     $isXHR = $app->request->isAjax();
-    $isXHR = $app->request->isXhr();
     if(!$isXHR){
         $app->redirect('/');
     }
