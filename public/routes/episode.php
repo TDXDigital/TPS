@@ -34,9 +34,10 @@ $app->group('/episode', $authenticate($app,[1,2]),
             'title'=>'New'
             );
         $callsign = $app->request->get('callsign');
-        $encode = $app->request->get('encode');
+        $format = $app->request->get('format');
         $station = new \TPS\station();
         $params['stations'] = $station->getStations();
+        $genres = array();
         if(is_null($callsign) || !in_array($callsign,$params['stations'])){
             // invalid or missing callsign
             if(!is_null($callsign)){
@@ -48,19 +49,24 @@ $app->group('/episode', $authenticate($app,[1,2]),
             $callsign = key($params['stations']);
         }
         $params['callsign'] = $station->setStation($callsign);
-        $params['programIds'] = $station->getAllProgramIds(True);
+        $params['station'] = $station->getStation($callsign);
+        $programIds = $station->getAllProgramIds(True);
         $temp = array();
-        foreach ($params['programIds'] as $id) {
+        foreach ($programIds as $id) {
             $program = new \TPS\program($station, $id);
             $pgm = $program->getValues();
             array_push($temp, $pgm);
+            array_push($genres, $pgm['genre']);
         }
+        $genres = array_unique($genres,SORT_STRING);
+        sort($genres);
+        $params['genres'] = $genres;
         $params['program'] = $temp;
         $isXHR = $app->request->isAjax();
         if($isXHR){
             print json_encode($params);
         }
-        elseif(!is_null($encode)){
+        elseif(!is_null($format) && $format=="json"){
             print json_encode($params);
         }
         else{
@@ -68,6 +74,18 @@ $app->group('/episode', $authenticate($app,[1,2]),
         }
     });
     $app->post('/new', $authenticate($app,[1,2]), function() use ($app){
+        $allParams = $app->request->params();
         
+        $callsign = $app->request->post('callsign')?:NULL;
+        $programID = $app->request->post('program')?:NULL;
+        $airDate = $app->request->post('airDate')?:NULL;
+        $recordDate = $app->request->post('recordDate')?:NULL;
+        $airTime = $app->request->post('airTime')?:NULL;
+        $type = $app->request->post('type')?:NULL;
+        
+        $station = new \TPS\station($callsign);
+        $program = new \TPS\program($station, $programID);
+        $episode = new \TPS\episode($program, NULL, $airDate, $airTime);
+        var_dump($allParams);
     });
 });
