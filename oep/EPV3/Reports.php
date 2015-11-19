@@ -10,6 +10,7 @@
 <?php
 
 include('PHP/php-barcode.php');
+require_once("../../TPSBIN/db_connect.php");
 
 
 $ShowStats = FALSE;
@@ -72,8 +73,11 @@ else{
 
 $con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
 if (!$con){
-	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
+	if(!$mysqli){
+		echo 'Uh oh!';
+		die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
+	}
+	
 }
 else{
   $BUFFSQL = "SELECT * FROM Episode where";
@@ -124,13 +128,13 @@ else{
               }
           }
 		$BUFFSQL .= " order by ".$sort." asc";
-        $AUDIT=mysql_query($BUFFSQL,$con);
-        while ($AUDITROW=mysql_fetch_array($AUDIT)) {
+        $AUDIT=mysqli_query($BUFFSQL,$mysqli);
+        while ($AUDITROW=mysqli_fetch_array($AUDIT)) {
           // this will contain ALL of the setup to print a log
           // the end MUST have the <p class=break>
           $STAT = "SELECT * from STATION where callsign LIKE '%" . $AUDITROW['callsign'] . "%'";
-          $STQUE = mysql_query($STAT,$con);
-          $SROW = mysql_fetch_array($STQUE);
+          $STQUE = mysqli_query($STAT,$mysqli);
+          $SROW = mysqli_fetch_array($STQUE);
 		  
              echo "<table width=\"100%\" border=\"0\" style='font-size: inherit;' >"; //style=\"background-color:black; color:white;\" >";
                   // Row 1
@@ -215,12 +219,12 @@ else{
              "'";*/
 			 $GETDJ = "SELECT dj.djname from PERFORMS, DJ, EPISODE where episode.callsign = '" . addslashes($AUDITROW['callsign']) .
 			 "' and performs.programname = '" . addslashes($AUDITROW['programname']) . "' and performs.Alias = dj.Alias group by dj.djname asc";
-             $DJARRAY = mysql_query($GETDJ);
-			 if(mysql_error()){
-			 	echo mysql_error() . " - " . $GETDJ;
+             $DJARRAY = mysqli_query($GETDJ);
+			 if(mysqli_error()){
+			 	echo mysqli_error() . " - " . $GETDJ;
 			 }
 			 $looped = false;
-             while($DJNAME = mysql_fetch_array($DJARRAY)){
+             while($DJNAME = mysqli_fetch_array($DJARRAY)){
 				 if($looped==TRUE){
 				 	echo ', ';
 				 }
@@ -257,11 +261,11 @@ else{
                       $query = "select song.*,language.languageid from SONG left join language on language.songid=song.songid where song.callsign='" . $AUDITROW['callsign']. "' and song.programname='" . addslashes($AUDITROW['programname']) . "' and song.date='" . $AUDITROW['date'] . "' and song.starttime='" . $AUDITROW['starttime'] . "' order by time, songid";
                   }
                   
-                     $listed=mysql_query($query,$con);
-                     if(mysql_errno($con)){
+                     $listed=mysqli_query($query,$con);
+                     if(mysqli_errno($con)){
                          echo "<tr><td colspan=\"11\" style=\"background-color:red;\">Query Error: ".mysql_error()."</td></tr>";
                      }
-                     if(mysql_num_rows($listed)=="0"){
+                     if(mysqli_num_rows($listed)=="0"){
                        echo "<tr><td colspan=\"100%\" style=\"background-color:yellow;\">no data returned</td></tr>";
                      }
                      /*elseif($_POST['type']=='ADM'){ // Processed Separate due to large data numbers
@@ -272,7 +276,7 @@ else{
                      }*/
                      else
                      {
-                         while ($list=mysql_fetch_array($listed))
+                         while ($list=mysqli_fetch_array($listed))
                          {
                            if($list['category']=='51'){
                                echo "<tr><td style=\"background-color:#ffff99;\">";
