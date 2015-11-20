@@ -168,7 +168,7 @@ class Report extends TPS{
                         }
             else{
                 echo $episodeData['endTime']?:"<i>".
-                        date("HH:MM:II", 
+                        date("H:i:s", 
                         strtotime($episodeData['time']." + "
                             .$programData['length']." minutes"))
                         ."</i>";
