@@ -2,7 +2,7 @@
 //if (session_status() !== PHP_SESSION_ACTIVE) {session_start();}
 
 // Set variables
-$debug = TRUE;
+$debug = False;
 $basepath = dirname(__DIR__).DIRECTORY_SEPARATOR;
 $autoload_path = $basepath."vendor".DIRECTORY_SEPARATOR."autoload.php";
 $twig_path = $basepath."lib".DIRECTORY_SEPARATOR."Twig".DIRECTORY_SEPARATOR
@@ -11,8 +11,16 @@ $slim_path = $basepath."lib".DIRECTORY_SEPARATOR."Slim".DIRECTORY_SEPARATOR
         ."Slim.php";
 $views_path = $basepath."Views";
 $temp_path = false;
+$sessionExpiry = "30minutes";
+$sessionName = "TPSSlimSession";
+$sessionSecret = 
+        "Q7^nY{Zd'UO]Z`=L8X&`fV)Fn(LwH(vFwAm-y[z,YJD*vJj'WVYNC!+R3\cnF3I";
 
 require_once 'header.php';
+
+if($debug){
+    $GLOBALS['logLevel'] = "debug";
+}
 
 /**
  * performs authentication (Not Authorization) for TPS
@@ -65,9 +73,9 @@ $authenticate = function ($app,$access=0,$json=FALSE) {
     };
 };
 
-$requiresHttps = function () use ($app) {
-    $log = new \TPS\logger(NULL,NULL,NULL,NULL,$_SERVER['REMOTE_ADDR']);
-    if ($app->environment['slim.url_scheme'] !== 'https' ) {
+$requiresHttps = function () use ($app,$debug) {
+    $log = new \TPS\logger(NULL,NULL,NULL,NULL,$app->request()->getIp());
+    if ($app->environment['slim.url_scheme'] !== 'https' and !$debug) {
         $log->info("access to ".$app->request()->getPathInfo()
                     ." denied, HTTPS Required","redirect",
                     $_SERVER['REMOTE_ADDR']);
@@ -92,5 +100,14 @@ $app->hook('slim.before.dispatch', function() use ($app) {
    $app->view()->setData('userId',$uid);
    $app->view()->setData('permissions',$access);
 });
+/*
+$app->hook('slim.after', function() use ($app){
+    $uid = null;
+    if (isset($_SESSION['account'])) {
+       $uid = $_SESSION['account'];
+    }
+    $log = new \TPS\logger($uid);
+    $log->debug("Render complete ".$app->request->url);
+});*/
 require_once 'routes.php';
 

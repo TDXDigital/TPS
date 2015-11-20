@@ -35,11 +35,16 @@ class logger extends TPS{
     private $usernameLog = "Anonamous";
     private $validLogLevel = ['debug','info','warn','error','exception'];
     private $currentLogLevels = ['debug','info','warn','error','exception'];
+    private $displayLogLevels = ['info','warn','error','exception'];
     private $logLevel = "info";
     private $startTime = NULL;
     private $endTime = NULL;
     
     private $data = array();
+    
+    public function write($message){
+        $this->debug($message);
+    }
     
     public function __construct($username=NULL, $email=NULL, $logLevel=NULL, $ipv6=NULL,  
             $ipv4=NULL, $timezone=NULL) {
@@ -240,6 +245,10 @@ class logger extends TPS{
     public function exception($event, $result=NULL, $source=NULL){
         try{
             if(in_array('exception',$this->currentLogLevels)){
+                if(get_class($event) == "Exception"){
+                    $exception = $event;
+                    $event = $exception->getMessage();
+                }
                 $this->saveInDatabase("exception",$event,$source,$result);
             }
         } catch (Exception $ex) {
@@ -318,5 +327,50 @@ class logger extends TPS{
             $this->stopTimer();
         }
         return ($this->endTime) - ($this->startTime);
+    }
+    
+    public function getLoggedMessages(
+            $pagination=1,$maxResult=1000,
+            $severity=Null,$startDate='1000-01-01 00:00:00', 
+            $endDate='9999-12-31 23:59:59', $user="%", $sort="DESC"
+            ){
+        $stmt = $this->mysqli->stmt_init();
+        $entries = array();
+        if($stmt->prepare("SELECT logid, time, user, event, source, "
+                    . "result, severity FROM `eventlog` WHERE `time` "
+                    . "BETWEEN ? AND ? and `user` like ? "
+                    . "ORDER BY `time` DESC, `user` DESC LIMIT ?,?;")){
+            $stmt->bind_param('sssii',
+                    $startDate,$endDate,$user,$pagination,$maxResult);
+            $stmt->bind_result(
+                    $id,
+                    $time,
+                    $user,
+                    $event,
+                    $source,
+                    $result,
+                    $severity
+                    );
+            $stmt->execute();
+            while($stmt->fetch()){
+                if(in_array($severity,$this->displayLogLevels)){
+                $entries[$id] = array(
+                        'time' => $time,
+                        'user' => $user,
+                        'event'=> $event,
+                        'source' => $source,
+                        'result' => $result,
+                        'severity' => $severity,
+                    );
+                }
+            }
+            $stmt->close();
+            $this->debug(sprintf("Query returned %i eventlogs", 
+                    sizeof($entries)));
+        }
+        else{
+            die($this->mysqli->error);
+        }
+        return $entries;
     }
 }

@@ -33,18 +33,59 @@ $app->group('/episode', $authenticate($app,[1,2]),
             'area'=>'Episode',
             'title'=>'New'
             );
+        $callsign = $app->request->get('callsign');
+        $format = $app->request->get('format');
         $station = new \TPS\station();
         $params['stations'] = $station->getStations();
-        $params['callsign'] = $station->setStation(key($params['stations']));
-        $params['programIds'] = $station->getAllProgramIds(True);
+        $genres = array();
+        if(is_null($callsign) || !in_array($callsign,$params['stations'])){
+            // invalid or missing callsign
+            if(!is_null($callsign)){
+                $warn = "Error, invalid callsign `$callsign`"
+                        . " provided, using default";
+                $app->flashNow('error',$warn);
+                $station->log->warn($warn);
+            }
+            $callsign = key($params['stations']);
+        }
+        $params['callsign'] = $station->setStation($callsign);
+        $params['station'] = $station->getStation($callsign);
+        $programIds = $station->getAllProgramIds(True);
         $temp = array();
-        foreach ($params['programIds'] as $id) {
+        foreach ($programIds as $id) {
             $program = new \TPS\program($station, $id);
             $pgm = $program->getValues();
             array_push($temp, $pgm);
+            array_push($genres, $pgm['genre']);
         }
+        $genres = array_unique($genres,SORT_STRING);
+        sort($genres);
+        $params['genres'] = $genres;
         $params['program'] = $temp;
-        var_dump($params);
-        //$app->render("episodeNew.twig",$params);
+        $isXHR = $app->request->isAjax();
+        if($isXHR){
+            print json_encode($params);
+        }
+        elseif(!is_null($format) && $format=="json"){
+            print json_encode($params);
+        }
+        else{
+            $app->render("episodeNew.twig",$params);
+        }
+    });
+    $app->post('/new', $authenticate($app,[1,2]), function() use ($app){
+        $allParams = $app->request->params();
+        
+        $callsign = $app->request->post('callsign')?:NULL;
+        $programID = $app->request->post('program')?:NULL;
+        $airDate = $app->request->post('airDate')?:NULL;
+        $recordDate = $app->request->post('recordDate')?:NULL;
+        $airTime = $app->request->post('airTime')?:NULL;
+        $type = $app->request->post('type')?:NULL;
+        
+        $station = new \TPS\station($callsign);
+        $program = new \TPS\program($station, $programID);
+        $episode = new \TPS\episode($program, NULL, $airDate, $airTime);
+        var_dump($allParams);
     });
 });

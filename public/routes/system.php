@@ -9,6 +9,25 @@ $app->notFound(function() use ($app) {
     $app->render('error.html.twig',$params);
 });
 
+$app->error(function (\Exception $e) use ($app){
+    try{
+        $log = new \TPS\logger();
+        $log->exception($e);
+    } catch (Exception $ex) {
+        error_log(sprintf("Unhandled Exception Occured %s,"
+                . " could not log exception %s",
+                $ex->getMessage(),$e->getMessage()));
+    }
+    $params=array(
+        "statusCode" => 500,
+        "title" => "Error 500",
+        "message" => "Internal Server Error",
+        "details" => ["&nbsp","<sub>Tech Blabber for the nosy type: </sub>",
+            "<sub>".$e->getMessage()."</sub>"],
+    );
+    $app->render("error.html.twig",$params);
+});
+
 $app->get('/', $authenticate($app), function() use ($app){
     $app->render('dashboard.twig');
 });
@@ -48,6 +67,34 @@ $app->get("/login", function () use ($app) {
    }
    $log->info("presented login to user via IP:",NULL,$_SERVER['REMOTE_ADDR']);
    $app->render('login.html.twig', array('error' => $error, 'Username' => $email_value, 'Username_error' => $email_error, 'password_error' => $password_error, 'urlRedirect' => $urlRedirect));
+});
+
+$app->group("/system", array($authenticate($app,[2]), $requiresHttps),
+        function() use ($app,$authenticate){
+    $app->group("/log", $authenticate($app,[2]), function() use ($app,$authenticate){
+        $app->get('/', $authenticate($app,[2]), function() use ($app){
+            $log = new \TPS\logger();
+            $page = $app->request->get('page')?:1;
+            $limit = $app->request->get('results')?:1000;
+            $severity = $app->request->get('severity');
+            $start = $app->request->get('start')?:'1000-01-01 00:00:00';
+            $end = $app->request->get('end')?:'9999-12-31 23:59:59';
+            $user = $app->request->get('user')?:"%";
+            $sort = $app->request->get('sort')?:"DESC";
+            $events = $log->getLoggedMessages(
+                    $page,$limit,$severity,$start,$end,$user,$sort);
+            $params = array(
+                "area" => "System",
+                "title" => "Event Logs",
+                "events" => $events,
+                "page" => $page,
+                "limit" => $limit,
+                "severity" => $severity,
+                "eventCount" => sizeof($events), #this is not correct @todo fix
+            );
+            $app->render("eventList.twig",$params);
+        });
+    });
 });
 
 $app->post("/login", function () use ($app) {
@@ -179,7 +226,7 @@ $app->post("/login", function () use ($app) {
     if (count($errors) > 0) {
         $app->flash('errors', $errors);
         $log->info("Login attempt failed (took $duration s)",
-                json_encode($errors),$_SERVER['REMOTE_ADDR']);
+                json_encode($errors),$app->request->getIp());
         $app->redirect('/login');
     }
     if (isset($_SESSION['urlRedirect'])) {
@@ -188,7 +235,10 @@ $app->post("/login", function () use ($app) {
        $log->info("User Login (took $duration s)");
        $app->redirect($tmp);
     }
-    $app->redirect('/');
+    $isXHR = $app->request->isAjax();
+    if(!$isXHR){
+        $app->redirect('/');
+    }
 });
 
 $app->get("/logout", function () use ($app) {

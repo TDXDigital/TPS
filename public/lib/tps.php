@@ -28,6 +28,7 @@ require_once 'TPSBIN'.DIRECTORY_SEPARATOR."functions.php";
 
 class TPS{
     protected $mysqli;
+    protected $mysqliDriver;
     protected $username;
     
     private function getDatabaseConfig($target=NULL,
@@ -96,7 +97,7 @@ class TPS{
         $maxResult = $ceil;
     }
 
-    public function __construct() {
+    public function __construct($enableDbReporting=FALSE) {
         global $mysqli;
         $mysqli=$mysqli?:$GLOBALS['mysqli'];
         if(!$mysqli){
@@ -119,6 +120,15 @@ class TPS{
         }
         else{
             $this->mysqli = $mysqli;
+        }
+        if(!$this->mysqliDriver){
+            $this->mysqliDriver = new \mysqli_driver();
+            if($enableDbReporting){
+                $this->mysqliDriver->report_mode = MYSQLI_REPORT_ALL;
+            }
+            else{
+                $this->mysqliDriver->report_mode = MYSQLI_REPORT_ERROR;
+            }
         }
     }
     
