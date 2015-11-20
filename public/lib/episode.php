@@ -87,7 +87,7 @@ class episode extends program{
             $stmt = $this->mysqli->prepare("SELECT "
                 . "callsign, programname, date, starttime, type, "
                 . "prerecorddate, description, IP_Created, totalspokentime, "
-                . "`Lock`, EndStamp, LastAccess FROM episode "
+                . "`Lock`, EndStamp, LastAccess, endtime FROM episode "
                 . "WHERE `EpNum`=? or (`programname`=? and `date`=? and "
                 . "`starttime`=? and `callsign`=?)");
             if($stmt === false){
@@ -99,7 +99,7 @@ class episode extends program{
                     $this->time, $this->type, $this->recordDate, 
                     $this->description, $this->originIP, $this->totalSpokenTime,
                     $this->locked, $this->finalizedTimestamp, 
-                    $this->lastAccessTimestamp);
+                    $this->lastAccessTimestamp, $this->endTime);
             if($stmt->execute()){
                 //$stmt->store_result();
                 if($stmt->num_rows > 1){
