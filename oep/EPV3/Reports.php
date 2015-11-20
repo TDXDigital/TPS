@@ -137,8 +137,9 @@ class Report extends TPS{
             print "<tr><td colspan=\"2\" ><img src=\"../../images/Ckxu_logo_PNG.png"
             . "\" width=\"150px\"></td><td colspan=\"3\">";
             if($barcode){
-                print "<img src='oep/EPV3/PHP/createBarcode.php?bcd="
-                . $episodeNumber."&type=".$codef."'/>";
+                print "<img src='Playlist/barcode/barcode.php?bcd="
+                . join('', array(str_pad($episodeNumber, 11,
+                        "0", STR_PAD_LEFT)))."'/>";
             }
             else{
                 print "Episode Number: ".$episodeID;
