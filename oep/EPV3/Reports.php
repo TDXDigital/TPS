@@ -166,7 +166,7 @@ class Report extends TPS{
                         }
             else{
                 echo $episodeData['endTime']?:"<i>".
-                        date("H:m:s", 
+                        date("HH:MM:II", 
                         strtotime($episodeData['time']." + "
                             .$programData['length']." minutes"))
                         ."</i>";
@@ -304,7 +304,8 @@ class Report extends TPS{
                 }
                 
             }
-            echo "</table></br>";
+            echo "</table></br>Times reported in the '".$stationData['timezone'].
+                    "' timezone";
             echo '<p style="page-break-before: always;"> </p>';     
         }
         echo "<table width=\"100%\" style=\"background-color:black; color:white\"><tr><td width=\"10%\" rowspan=\"2\"></td><td><h3>End Report</h3><br /></td></tr>";
