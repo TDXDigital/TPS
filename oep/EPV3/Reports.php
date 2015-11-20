@@ -165,7 +165,10 @@ class Report extends TPS{
                echo to12hour($episodeData['endTime']);
                         }
             else{
-                echo $episodeData['endTime']?:"Not Defined";
+                echo $episodeData['endTime']?:"<i>".
+                    strtotime($episodeData['time']." + "
+                            .$programData['length']." minutes")
+                        ."</i>";
             }
             echo "</td><td>";
             echo "Total Spoken Time: " . $episodeData['totalSpokenTime'];
