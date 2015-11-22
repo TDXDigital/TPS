@@ -24,6 +24,8 @@ namespace TPS;
  * THE SOFTWARE.
  */
 
+require_once 'TPSBIN/functions.php';
+
 class TPS{
     protected $mysqli;
     protected $username;
@@ -34,8 +36,10 @@ class TPS{
         if(is_null($target)){
             // Get the default (first) server
             foreach ($dbxml->SERVER as $server){
-                if(strtolower($server->ACTIVE) == "true"){
-                    $target = $server->ID;
+                if(strtolower($server->ACTIVE) == "true" 
+                        || $server->ACTIVE == '1'){
+                    $target = (string)$server->ID;
+                    break;
                 }
             }
         }
