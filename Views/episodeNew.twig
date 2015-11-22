@@ -1,82 +1,188 @@
 {% extends 'baseAdmin.twig' %}
-
-{% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
+{% block headScripts %}
+    <link href="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.css" 
+          rel="stylesheet" type="text/css"/>
+    <link href="{{siteUrl}}/js/chosen.min.css" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% set firstStation = station|first %}
+{% block title %}{{title|default('Episode')}}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
     <li>
         <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
     </li>
     <li class="active">
-        <i class="fa fa-tasks"></i>{% if search %}
-        <a href="/station">Station</a>
+        <i class="fa fa-tasks"></i> <a href="/">Program</a>
     </li>
-    <li>
-        <i class="fa fa-search"></i> Search
-        {% else %}
-            search
-        {% endif %}
+    <li class="active">
+        <a href="/episode/new"><i class="fa fa-plus-square-o"></i> New Episode</a>
     </li>
 </ol>
 {% endblock %}
 {% block content %}
-    {% if flash.error %}
+    <form role="form" {% if episode.id is null %}
+          method="POST">
+        {% else %}
+            method="POST" action="./{{episode.id}}"> <!-- PUT NOT YET SUPPORTED BY BROWSER -->
+            <input type="hidden" value="{{episode.id}}" name="id" />
+        {% endif %}
         <div class="row">
-            <div class="alert alert-danger">
-                <strong>Error</strong> {{flash.error}}
+            <div class="col-sm-1">
+                <div class="form-group">
+                    <label for="station">Station</label>
+                    <select id="station" name="callsign" class="form-control">
+                        {% for stnCallsign, stnBrand in stations %}
+                        <option {% if callsign == stnCallsign %}
+                            selected 
+                            {% endif %} value="{{stnCallsign|escape}}">{{stnBrand}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label for="program">Program</label>
+                    <select id="program" name="program" required class="form-control chosen-select">
+                        <option value="">Select Your Program</option>
+                        {% for genreGroup in genres %}
+                            <optgroup label="{{genreGroup}}">
+                            {% for pgm in program %}
+                                {% if pgm.genre == genreGroup %}
+                                    <option value="{{pgm.programID}}">{{pgm.name}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    {% set broadcastTypes = broadcastTypes?:
+                        {0:'Live',1:'Pre-Record',2:'Timeless'} %}
+                    <label for="type">Type</label>
+                    <select id="type" name="type" class="form-control"
+                            onChange="changedType();" required>
+                        {% for key,value in broadcastTypes %}
+                        <option value="{{key}}">{{value}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <label for="datePicker">Record Date</label>
+                <input type='text' class="form-control" id='datePickerRecord' 
+                       name="recordDate" 
+                       value="{{recordDate}}"
+                       required
+                       pattern="([1-9][\d]{3})-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])"/>
+            </div>
+            <div class="col-sm-2">
+                <label for="datePicker">Broadcast Date</label>
+                <input type='text' class="form-control" id='datePickerAir' 
+                       name="airDate" 
+                       value="{{airDate|default("now"|date('Y-m-d', firstStation.timezone))}}"
+                       required
+                       pattern="([1-9][\d]{3})-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])"/>
+            </div>
+            <div class="col-sm-2">
+                <label for="datePicker">Broadcast Time</label>
+                <input type='time' class="form-control" id='timePicker' 
+                       name="airTime" 
+                       required
+                       value="{{airTime|default("+1 hour"|date('H:00', firstStation.timezone))}}"/>
             </div>
         </div>
-    {% endif %}
-    {% if flash.success %}
         <div class="row">
-            <div class="alert alert-success">
-                <strong>Success</strong> {{flash.success}}
+            <div class="col-sm-11">
+                <label for="description">Description</label>
+                <input type='text' class="form-control" id='description' 
+                       name="description" value="{{description}}"/>
+            </div>
+            <div class="col-sm-1">
+                <div class="form-group pull-right">
+                    {% if episode.id is not null %}
+                        <input type="hidden" name="_METHOD" value="PUT"/>
+                    {% endif %}
+                    <button id="submit" type="submit"
+                            disabled 
+                            class="btn btn-success pull-down">Submit</button>
+                <!--<button type="reset" class="btn btn-warning">Reset</button>-->
+                </div>
             </div>
         </div>
-    {% endif %}
-    <!--<form role="form" method="POST" action="/station/search/">
-        <div class="row">
-            <div class="form-group input-group">
-                <input type="text" class="form-control" name="q" 
-                       {% if search %}
-                           value="{{search}}"
-                       {% endif %}>
-                <span class="input-group-btn"><button class="btn btn-default" type="button"><i class="fa fa-search"></i></button></span>
-            </div>
-        </div>
-    </form>-->
-    <table class='table table-bordered table-hover' >
-        <thead>
-            <th>Callsign</th>
-            <th>Designation</th>
-            <th>Frequency</th>
-            <th>Address</th>
-            <th>Main Phone</th>
-            <th>Time Zone</th>
-            <th>Website</th>
-            <th>Edit</th>
-        </thead>
-        <tbody>
-            {% for callsign,station in stations %}
-                <tr>
-                    <td>{{callsign}}</td>
-                    <td>{{station.designation}}</td>
-                    <td>{{station.frequency}}</td>
-                    <td>{{station.address}}</td>
-                    <td>{{station.phone.main}}</td>
-                    <td>{{station.timezone}}</td>
-                    <td><a href="{{station.website}}" target="_stnWeb">{{station.website}}</a></td>
-                    <td><a href="/station/{{callsign|lower}}"><i class="fa fa-edit"></i> Edit</a></td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-<div class="row">
-    <div class="col-lg-6">
-    </div>
-    <div class="col-lg-6">
-        <div class="pull-right">
-            <a class="btn btn-success" href="/station/new/">New Station</a>
-        </div>
-    </div>
-</div>
+    </form>
+{% endblock %}
+{% block lastScripts %}
+    <script src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
+    <script src="{{siteUrl}}/js/chosen.jquery.min.js"></script>
+    <script>
+        Date.prototype.yyyymmdd = function() {
+            var yyyy = this.getFullYear().toString();
+            var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
+            var dd  = this.getDate().toString();
+            return yyyy +'-'+ (mm[1]?mm:"0"+mm[0]) +'-'+ (dd[1]?dd:"0"+dd[0]); // padding
+        };
+        var today = new Date();
+        var todayString = today.yyyymmdd();
+        
+        function changedType(){
+            var type = $("#type option:selected").val();
+            switch(type){
+                case '0':
+                    $("#datePickerAir").prop('disabled',false);
+                    $("#datePickerRecord").prop('disabled',false);
+                    $("#datePickerRecord").prop('required',false);
+                    $("#datePickerRecord").val('');
+                    break;
+                case '1':
+                    $("#datePickerAir").prop('disabled',false);
+                    $("#datePickerAir").prop('required',true);
+                    if($("#datePickerAir").val() === todayString){
+                        $("#datePickerAir").val('');
+                    }
+                    $("#datePickerRecord").prop('required',true);
+                    $("#datePickerRecord").val(todayString);
+                    $("#datePickerRecord").prop('disabled',false);
+                    break;
+                case '2':
+                    $("#datePickerAir").prop('disabled',true);
+                    $("#datePickerAir").prop('required',false);
+                    $("#datePickerRecord").prop('disabled',false);
+                    $("#datePickerRecord").prop('required',true);
+                    $("#datePickerRecord").val(todayString);
+                    break;
+                default:
+                    $("#datePickerRecord").prop('disabled',false);
+                    $("#datePickerRecord").prop('required',true);
+                    $("#datePickerRecord").val(todayString);
+                    $("#datePickerAir").prop('disabled',false);
+                    $("#datePickerAir").prop('required',true);
+                    $("#datePickerAir").val(todayString);
+            }
+        }
+        
+        $(document).ready(function(){
+            $.datepicker.setDefaults({dateFormat: "yy-mm-dd"});
+            $("#datePickerAir").datepicker();
+            $("#datePickerRecord").datepicker();
+            
+            $('.pull-down').each(function() {
+                $(this).css('margin-top', $(this).parent().height()-$(this).height())
+            });
+            $(".chosen-select").chosen({disable_search_threshold: 10}).change(
+                    function(event){
+                        if(event.target == this){
+                            var program = $(this).val();
+                            if(program.length < 1){
+                                $("#submit").prop('disabled',true);
+                            }
+                            else{
+                                $("#submit").prop('disabled',false);
+                            }
+                        }
+                    });
+            changedType();
+            changedProgram();
+        });
+    </script>
 {% endblock %}

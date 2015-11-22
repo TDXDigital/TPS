@@ -24,10 +24,11 @@ namespace TPS;
  * THE SOFTWARE.
  */
 
-require_once 'TPSBIN/functions.php';
+require_once 'TPSBIN'.DIRECTORY_SEPARATOR."functions.php";
 
 class TPS{
     protected $mysqli;
+    protected $mysqliDriver;
     protected $username;
     
     private function getDatabaseConfig($target=NULL,
@@ -63,7 +64,6 @@ class TPS{
                         $database["DBHOST"] = $server->IPV4;
                     }
                 }
-                //define("HOST",  constant('HOST') );
                 $database["USER"] = easy_decrypt(ENCRYPTION_KEY,(string)$server->USER);
                 $database["PASSWORD"] = easy_decrypt(ENCRYPTION_KEY,(string)$server->PASSWORD);
                 $database["DATABASE"] = (string)$server->DATABASE;
@@ -97,8 +97,9 @@ class TPS{
         $maxResult = $ceil;
     }
 
-    public function __construct() {
+    public function __construct($enableDbReporting=FALSE) {
         global $mysqli;
+        $mysqli=$mysqli?:$GLOBALS['mysqli'];
         if(!$mysqli){
             // Establish DB connection
             $database = NULL    ;
@@ -109,6 +110,9 @@ class TPS{
                         $database['PASSWORD'], 
                         $database['DATABASE']
                         );
+                if(!$this->mysqli->connect_error){
+                    $GLOBALS['mysqli'] = $this->mysqli;
+                }
             }
             else{
                 $this->mysqli = NULL;
@@ -116,6 +120,15 @@ class TPS{
         }
         else{
             $this->mysqli = $mysqli;
+        }
+        if(!$this->mysqliDriver){
+            $this->mysqliDriver = new \mysqli_driver();
+            if($enableDbReporting){
+                $this->mysqliDriver->report_mode = MYSQLI_REPORT_ALL;
+            }
+            else{
+                $this->mysqliDriver->report_mode = MYSQLI_REPORT_ERROR;
+            }
         }
     }
     

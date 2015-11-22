@@ -184,9 +184,13 @@ class program extends station{
                     "SELECT ProgramID FROM program where "
                 . "programname=? and callsign=?"
                 );
+        if($con === false){
+            $this->log->debug("Error Occured in getting ID");
+        }
         $con->bind_param('ss',$name,$tmpstn->callsign);
         $con->bind_result($result);
         $con->execute();
+        $con->fetch();
         return $result;
     }
     

@@ -211,11 +211,10 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
     });
     $app->get('/search/', $authenticate, function () use ($app){
         $library = new \TPS\library();
-        $time_start = microtime(true); 
+        $library->log->startTimer();
         $result = $library->searchLibrary("");
-        $time_end = microtime(true); 
         $library->log->info("Search basic retrieval took ".
-                ($time_end - $time_start). "s");
+                $library->log->timerDuration(). "s");
         $params = array(
             "area"=>"Library",
             "albums"=>$result,

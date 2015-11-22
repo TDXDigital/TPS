@@ -32,17 +32,37 @@ class logger extends TPS{
     private $ipv6 = NULL;
     private $timezone = NULL;
     private $email = NULL;
-    private $usernameLog = NULL;
+    private $usernameLog = "Anonamous";
     private $validLogLevel = ['debug','info','warn','error','exception'];
+    private $currentLogLevels = ['debug','info','warn','error','exception'];
+    private $displayLogLevels = ['info','warn','error','exception'];
     private $logLevel = "info";
     private $startTime = NULL;
     private $endTime = NULL;
     
     private $data = array();
     
+    public function write($message){
+        $this->debug($message);
+    }
+    
     public function __construct($username=NULL, $email=NULL, $logLevel=NULL, $ipv6=NULL,  
             $ipv4=NULL, $timezone=NULL) {
-        $this->usernameLog = $username;
+        if(!is_null($username)){
+            $this->usernameLog = $username;
+        }
+        else if(isset($_SESSION['account'])){
+            $this->usernameLog = $_SESSION['account'];
+        }
+        if(!is_null($logLevel)){
+            $this->logLevel($logLevel);
+        }
+        elseif (isset($GLOBALS['logLevel'])) {
+            $this->logLevel($GLOBALS['logLevel']);
+        }
+        else{
+            $this->logLevel('info');
+        }
         register_shutdown_function(array("\\TPS\\logger","fatalError"));
         parent::__construct();
     }
@@ -53,12 +73,61 @@ class logger extends TPS{
      * 
      */
     
-    static private function traceCallingFile($limit=0){
+    public function logLevel($level=NULL){
+        if(!is_null($level)){
+            if(in_array($level, $this->validLogLevel) || $level==FALSE){
+                switch ($level) {
+                    case 'debug':
+                        $this->currentLogLevels = $this->validLogLevel;
+                        break;
+                    case 'info':
+                        $this->currentLogLevels = array_diff(
+                                $this->validLogLevel,
+                                array('debug'));
+                        break;
+                    case 'warn':
+                        $this->currentLogLevels = array_diff(
+                                $this->validLogLevel,
+                                array('debug','info'));
+                        break;
+                    case 'error':
+                        $this->currentLogLevels = array_diff(
+                                $this->validLogLevel,
+                                array('debug','info','warn'));
+                        break;
+                    case 'exception':
+                        $this->currentLogLevels = array_diff(
+                                $this->validLogLevel,
+                                array('debug','info','warn','error'));
+                        break;
+                    default:
+                        $this->currentLogLevels = NULL; #off
+                        break;
+                }
+                $this->logLevel = $level;
+                $GLOBALS['logLevel'] = $level;
+            }
+            else{
+                error_log("invalid logging level $level provided,"
+                        . " please use one of the following: "
+                        . json_encode($this->validLogLevel));
+            }
+        }
+        return $this->logLevel;
+    }
+    
+    static protected function traceCallingFile($limit=0){
         return debug_backtrace($options=DEBUG_BACKTRACE_IGNORE_ARGS, $limit);
     }
     
     static public function fatalError(){
-        error_log(self::formatPHPlogLine("Exception","Fatal error encountered"));
+        $error = error_get_last();
+        if($error['type'] === E_ERROR){
+            $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 0);
+            foreach ($trace as $value) {
+                error_log(json_encode($value));
+            }
+        }
     }
     
     /**
@@ -68,19 +137,21 @@ class logger extends TPS{
      * @param type $trace
      * @return string
      */
-    static private function formatPHPlogLine($level, $string, $trace=True){
+    static protected function formatPHPlogLine($level, $string, $trace=True){
         try{
             if($trace){
-                $btrace = self::traceCallingFile();
+                $btrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 0);
                 $traceStrFmt = " [%s, %s L%i] in %s]";
                 $traceStr = sprintf($traceStrFmt, date("Y-m-d H:i:s"), 
-                        $btrace[0]['file'], $btrace[0]['line'], $btrace[0]['function']);
+                        $btrace[3]['file'], $btrace[3]['line'],
+                        $btrace[3]['function']);
             }
             else{
                 $traceStr = " ";
             }
-            $format = '%1$s:%3$s %2s';
-            return sprintf($format, $level, $string, $traceStr);
+            $format = '%1$s : %3$s %2$s';
+            $format = sprintf($format, $level, $string, $traceStr);
+            return $format;
         }
         catch(Exception $ex){
             return "Exception $ex";
@@ -112,7 +183,13 @@ class logger extends TPS{
                 error_log($this->formatPHPlogLine(
                         "ERROR",$this->mysqli->error));
             }
-            return true;
+            if(!$this->mysqli->errno){
+                return true;
+            }
+            else{
+                error_log($this->formatPHPlogLine(
+                                "ERROR", $this->mysqli->error, TRUE));
+            }
         }
         else{
             error_log($this->formatPHPlogLine("ERROR",$this->mysqli->error));
@@ -125,10 +202,19 @@ class logger extends TPS{
         }
     }
     
+    public function debug($event, $result=NULL, $source=NULL){
+        try{
+            if(in_array('debug',$this->currentLogLevels)){
+                $this->saveInDatabase("debug",$event,$source,$result);
+            }
+        } catch (Exception $ex) {
+            error_log("Exception occured in logging, $ex");
+        }
+    }
+    
     public function info($event, $result=NULL, $source=NULL){
         try{
-            if(in_array(strtolower($this->logLevel), 
-                    ['info','warn','error','exception'])){
+            if(in_array('info',$this->currentLogLevels)){
                 $this->saveInDatabase("info",$event,$source,$result);
             }
         } catch (Exception $ex) {
@@ -138,8 +224,7 @@ class logger extends TPS{
     
     public function warn($event, $result=NULL, $source=NULL){
         try{
-            if(in_array(strtolower($this->logLevel), 
-                    ['info','warn','error','exception'])){
+            if(in_array('warn',$this->currentLogLevels)){
                 $this->saveInDatabase("warn",$event,$source,$result);
             }
         } catch (Exception $ex) {
@@ -149,8 +234,7 @@ class logger extends TPS{
     
     public function error($event, $result=NULL, $source=NULL){
         try{
-            if(in_array(strtolower($this->logLevel), 
-                    ['info','warn','error','exception'])){
+            if(in_array('error',$this->currentLogLevels)){
                 $this->saveInDatabase("error",$event,$source,$result);
             }
         } catch (Exception $ex) {
@@ -160,8 +244,11 @@ class logger extends TPS{
     
     public function exception($event, $result=NULL, $source=NULL){
         try{
-            if(in_array(strtolower($this->logLevel), 
-                    ['exception'])){
+            if(in_array('exception',$this->currentLogLevels)){
+                if(get_class($event) == "Exception"){
+                    $exception = $event;
+                    $event = $exception->getMessage();
+                }
                 $this->saveInDatabase("exception",$event,$source,$result);
             }
         } catch (Exception $ex) {
@@ -226,7 +313,7 @@ class logger extends TPS{
     public function stopTimer(){
         if($this->startTime != null){
             $this->endTime = microtime(true); 
-            $this->startTime = Null;
+            //$this->startTime = Null;
             return true;
         }
         else{
@@ -236,6 +323,54 @@ class logger extends TPS{
     }
     
     public function timerDuration(){
-        return $this->endTime - $this->startTime;
+        if(is_null($this->endTime)){
+            $this->stopTimer();
+        }
+        return ($this->endTime) - ($this->startTime);
+    }
+    
+    public function getLoggedMessages(
+            $pagination=1,$maxResult=1000,
+            $severity=Null,$startDate='1000-01-01 00:00:00', 
+            $endDate='9999-12-31 23:59:59', $user="%", $sort="DESC"
+            ){
+        $stmt = $this->mysqli->stmt_init();
+        $entries = array();
+        if($stmt->prepare("SELECT logid, time, user, event, source, "
+                    . "result, severity FROM `eventlog` WHERE `time` "
+                    . "BETWEEN ? AND ? and `user` like ? "
+                    . "ORDER BY `time` DESC, `user` DESC LIMIT ?,?;")){
+            $stmt->bind_param('sssii',
+                    $startDate,$endDate,$user,$pagination,$maxResult);
+            $stmt->bind_result(
+                    $id,
+                    $time,
+                    $user,
+                    $event,
+                    $source,
+                    $result,
+                    $severity
+                    );
+            $stmt->execute();
+            while($stmt->fetch()){
+                if(in_array($severity,$this->displayLogLevels)){
+                $entries[$id] = array(
+                        'time' => $time,
+                        'user' => $user,
+                        'event'=> $event,
+                        'source' => $source,
+                        'result' => $result,
+                        'severity' => $severity,
+                    );
+                }
+            }
+            $stmt->close();
+            $this->debug(sprintf("Query returned %i eventlogs", 
+                    sizeof($entries)));
+        }
+        else{
+            die($this->mysqli->error);
+        }
+        return $entries;
     }
 }

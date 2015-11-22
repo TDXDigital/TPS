@@ -49,8 +49,8 @@
 	</head>
 	<body style="height: inherit;">
 		<div id="content" style="margin: auto; width: 1280px; height: inherit; background-color: white;">
-			<form action="Reports.php" method="post" target="_blank" accept-charset="utf-8">
-			<div id="logo" style="margin-bottom: 25px;"><img style="display: inline;" src="../../images/ckxu_logo_PNG.png" height="50px" alt="logo"/><h1 style="display: inline; text-align: center; width: 100%">
+			<form action="../../reportInterpreter.php" method="post" target="_blank" accept-charset="utf-8">
+			<div id="logo" style="margin-bottom: 25px;"><img style="display: inline;" src="../../images/Ckxu_logo_PNG.png" height="50px" alt="logo"/><h1 style="display: inline; text-align: center; width: 100%">
 				Audit Options</h1><br/><hr></div>
 			<div id="options" style="float: left;">
 				<h2>Date Range</h2>

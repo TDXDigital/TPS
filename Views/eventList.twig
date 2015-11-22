@@ -1,0 +1,82 @@
+{% extends 'baseAdmin.twig' %}
+
+{% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+    </li>
+    <li class="active">
+        <i class="fa fa-lock"></i>{% if search %}
+        <a href="/station">System</a>
+    </li>
+    <li>
+        <i class="fa fa-search"></i> Event Logs
+        {% else %}
+            Event Logs
+        {% endif %}
+    </li>
+</ol>
+{% endblock %}
+{% block content %}
+    {% if flash.error %}
+        <div class="row">
+            <div class="alert alert-danger">
+                <strong>Error</strong> {{flash.error}}
+            </div>
+        </div>
+    {% endif %}
+    {% if flash.success %}
+        <div class="row">
+            <div class="alert alert-success">
+                <strong>Success</strong> {{flash.success}}
+            </div>
+        </div>
+    {% endif %}
+    <!--<form role="form" method="POST" action="/station/search/">
+        <div class="row">
+            <div class="form-group input-group">
+                <input type="text" class="form-control" name="q" 
+                       {% if search %}
+                           value="{{search}}"
+                       {% endif %}>
+                <span class="input-group-btn"><button class="btn btn-default" type="button"><i class="fa fa-search"></i></button></span>
+            </div>
+        </div>
+    </form>-->
+    <table class='table table-bordered table-hover' >
+        <thead>
+            <th>ID</th>
+            <th>Severity</th>
+            <th>Date/Time</th>
+            <th>User</th>
+            <th>Event</th>
+            <th>Source</th>
+            <th>Result</th>
+            <th>Edit</th>
+        </thead>
+        <tbody>
+            {% for id,event in events %}
+                <tr>
+                    <td>{{id}}</td>
+                    <td>{{event.severity}}</td>
+                    <td>{{event.time}}</td>
+                    <td>{{event.user}}</td>
+                    <td>{{event.event}}</td>
+                    <td>{{event.source}}</td>
+                    <td>{{event.result}}</td>
+                    <td><a href="{{id|lower}}"><i class="fa fa-edit"></i> delete</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+<div class="row">
+    <div class="col-lg-6">
+    </div>
+    <div class="col-lg-6">
+        <div class="pull-right">
+            <a class="btn btn-success" href="/system/log">Refresh</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
