@@ -75,7 +75,7 @@
         foreach($_SESSION['PRINTID'] as $BCD){
             $albums = $library->getAlbumByRefcode($BCD['RefCode'], TRUE);
             if(sizeof($albums)<1){
-                break;
+                continue;
             }
             $albumArr = $albums[0];
             $RefCode = $albumArr['RefCode'];
