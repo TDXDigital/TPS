@@ -35,6 +35,19 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $locale = filter_input(INPUT_POST, "locale")? :"international";
         $release_date = filter_input(INPUT_POST,'rel_date')?:NULL;
         $note = filter_input(INPUT_POST, "notes")?:NULL;
+        
+        $replacePatterns = array(
+            ["$2, $1","/^\\s*?((?i)the)(?<=(?i)the)\\s+([[:print:]]{3,})/"],
+            ["$2, $1","/^\\s*?((?i)a)(?<=(?i)a)\\s+([[:print:]]{3,})/"]
+        );
+        foreach ($replacePatterns as $regex) {
+            $controller = 0;
+            $artRep = preg_replace($regex[1], $regex[0], $artist, 1, $controller);
+            if($controller){
+                $artist = $artRep;
+                break;
+            }
+        }
 
         if($locale=="International"){
             $CanCon=0;
