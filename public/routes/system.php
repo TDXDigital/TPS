@@ -248,3 +248,7 @@ $app->get("/logout", function () use ($app) {
     $app->view()->setData('access', null);
     $app->render('basic.twig',array('statusCode'=>'Logout','title'=>'Logout', 'message'=>'You have been logged out'));
 });
+
+$app->get("/labels/print", $authenticate($app,[2]), function() use ($app) {
+    require_once 'Playlist/PrintTest.php';
+});
