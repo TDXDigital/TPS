@@ -1,9 +1,9 @@
 <?php
 
-/* 
+/*
  * The MIT License
  *
- * Copyright 2015 James Oliver <support@ckxu.com>.
+ * Copyright 2015 J.oliver.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,17 @@
  * THE SOFTWARE.
  */
 
-#load page groups
+namespace TPS;
+
 require_once 'library.php';
-require_once 'reviews.php';
-require_once 'station.php';
-require_once 'program.php';
-require_once 'episode.php';
-require_once 'label.php';
-
-#load api last;
-require_once 'api.php';
-
+/**
+ * Description of submissionTracking
+ *
+ * @author J.oliver
+ */
+class submissionTracking extends library{
+    //put your code here
+    public function __construct() {
+        parent::__construct();
+    }
+}
