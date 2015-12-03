@@ -5,9 +5,10 @@
     <link href="{{siteUrl}}/js/chosen.min.css" rel="stylesheet" type="text/css"/>
     <style>
         .lableTree{
-            width:335px;
-            height: 160px;
+            width: 100%;
+            height: 250px;
             text-align: center;
+            vertical-align: bottom;
         }
     </style>
 {% endblock %}
@@ -166,10 +167,14 @@
             /* http://fperucic.github.io/treant-js/examples/custom-colored/custom-colored.js */
             $.getJSON( "./{{label.id}}/tree",{format:"json"}, function( data ) {
                 simpleChartConfig = {chart: {
-                        container: "#companyTree"
+                        container: "#companyTree",
+                        node: {
+                            collapsable: true,
+                        }
                     },
                     nodeStructure: data
                 };
+                $("#companyTree").html("");
                 var my_chart = new Treant(simpleChartConfig);
             });
             $.datepicker.setDefaults({dateFormat: "yy-mm-dd"});
