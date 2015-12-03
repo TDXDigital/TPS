@@ -26,43 +26,60 @@
 
 // labels
 $app->group('/label', $authenticate, function () use ($app,$authenticate){
-    $app->group('/list',$authenticate($app,2), 
-            function () use ($app,$authenticate){
-        $app->get('/:id',$authenticate($app,2), 
-                function ($id) use ($app,$authenticate){
-            $format = $app->request->get('format');
-            $label = new \TPS\label($id);
-            $params=array(
-                'label'=>$label->fetch(),
-                'companyTree'=>$label->companyTree(),
-                );
-            $isXHR = $app->request->isAjax();
-            if($isXHR){
-                print json_encode($params);
-            }
-            elseif(!is_null($format) && $format=="json"){
-                print json_encode($params);
-            }
-            else{
-                $app->render("notSupported.twig",$params);
-            }
-        });
-        $app->get('/:station/all',$authenticate($app,2), 
-                function ($callsign) use ($app,$authenticate){
-            $station = new \TPS\station($callsign);
-            $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
-            if($stn = $station->getStation($callsign)){
-                $stn = $stn[$callsign];
-                $stn['callsign']=$callsign;
-            }
-            $params=array(
-                'station'=>$stn,
-                'timezones'=>$tzlist,
-                'area'=>'Administration',
-                'title'=>'Manage Station',
-                );
-            $app->render('notSupported.twig',$params);
-        });
+    $app->get('/', $authenticate($app,2), function() use ($app, $authenticate){
+        $format = $app->request->get('format');
+        $search = $app->request->get('search');
+        $labels = \TPS\label::nameSearch("%$search%");
+        $params = array(
+            "area" => "Record Labels",
+            "title" => "Label Management",
+            "search" => $search,
+            "labels" => $labels,
+        );
+        $isXHR = $app->request->isAjax();
+        if($isXHR || $format=="json"){
+            print json_encode($params);
+        }
+        else{
+            $app->render("labels.twig",$params);
+        }
+    });
+    $app->get('/:id',$authenticate($app,2), 
+            function ($id) use ($app,$authenticate){
+        $format = $app->request->get('format');
+        $label = new \TPS\label($id);
+        $params=array(
+            "area" => "Record Labels",
+            "title" => "Label Management",
+            'label'=>$label->fetch(),
+            );
+        if(!is_null($params['label']['alias'])){
+            $alias = new \TPS\label($params['label']['alias']);
+            $params['alias'] = $alias->fetch();
+        }
+        $isXHR = $app->request->isAjax();
+        if($isXHR){
+            print json_encode($params);
+        }
+        elseif(!is_null($format) && $format=="json"){
+            print json_encode($params);
+        }
+        else{
+            $app->render("labelManager.twig",$params);
+        }
+    });
+    $app->get('/:id/tree',$authenticate($app,2), 
+            function ($id) use ($app,$authenticate){
+        $format = $app->request->get('format');
+        $label = new \TPS\label($id);
+        $params = $label->companyTree(True);
+        $isXHR = $app->request->isAjax();
+        if($isXHR || $format=="json"){
+            print json_encode($params);
+        }
+        else{
+            $app->render("notSupported.twig",$params);
+        }
     });
 });
 

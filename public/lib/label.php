@@ -51,13 +51,41 @@ class label extends TPS{
         $this->rootParentCompany();
     }
     
-    public function companyTree(){
-        $root = new \TPS\label($this->rootParentCompany());
-        $subsidiaries = $root->subsidiariesTree();
-        $result[$root->id] = array("name" => $root->name,
+    private function formatTreeReturn(&$root, &$subsidiaries,
+                                      $nodeStructure=False, &$result = array()){
+        
+        if(!$nodeStructure){
+            $result[$root->id] = array("name" => $root->name,
                 "alias" => $root->nameAlias,
                 "subsidiaries" => $subsidiaries);
+        }
+        else{
+            $text =array( 
+                "name"=> $root->name,
+                "alias" => $root->nameAlias?:$root->name
+                    );
+            $storage = array(
+                "text"=> $text,
+                "children" => $subsidiaries
+            );
+            if(sizeof($subsidiaries)<1 || sizeof($subsidiaries[0])<1){
+                unset($storage["children"]);
+            }
+            array_push($result, $storage);
+        }
         return $result;
+    }
+    
+    public function companyTree($nodeStructure=False){
+        $root = new \TPS\label($this->rootParentCompany());
+        $subsidiaries = $root->subsidiariesTree($nodeStructure);
+        $result = $this->formatTreeReturn($root, $subsidiaries, $nodeStructure);
+        if($nodeStructure && sizeof($result>0)){
+            return $result[0];
+        }
+        else{
+            return $result;
+        }
     }
     
     public function rootParentCompany(){
@@ -71,18 +99,14 @@ class label extends TPS{
         }
     }
     
-    public function subsidiariesTree(){
+    public function subsidiariesTree($nodeStructure=False){
         $subsidiaries = $this->subsidiaries();
         $result = array();
         foreach ($subsidiaries as $id => $name) {
             $label = new \TPS\label($id);
-            $subsidiaries2 = $label->subsidiariesTree();
-            if(sizeof($subsidiaries2)<1){
-                $subsidiaries2 = NULL;
-            }
-            $result[$id] = array("name" => $label->name,
-                "alias" => $label->nameAlias,
-                "subsidiaries" => $subsidiaries2);
+            $subsidiaries = $label->subsidiariesTree($nodeStructure);
+            $this->formatTreeReturn($label, $subsidiaries, 
+                    $nodeStructure, $result);
         }
         return $result;
     }
@@ -145,10 +169,15 @@ class label extends TPS{
     }
     
     static function nameSearch($name) {
-        if(!$this->mysqli){
-            parent::__construct();
+        if(isset($this)){
+            if(!$this->mysqli){
+                parent::__construct();
+            }
         }
-        $stmt = $this->mysqli->prepare(
+        else{
+            $self = new \TPS\TPS();
+        }
+        $stmt = $self->mysqli->prepare(
                 "SELECT LabelNumber, Name from recordlabel where Name like ?"
                 );
         $stmt->bind_param("s",$name);
