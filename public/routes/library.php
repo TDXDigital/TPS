@@ -48,6 +48,14 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 break;
             }
         }
+        
+        $library = new \TPS\library();
+        $result = $library->searchLibraryWithAlbum($artist, $album, True);
+        if(sizeof($result)>0 && $result[0]['datein']==$datein){
+            $app->flash("error", "album already entered in database with same receiving date");
+            $app->redirect("./".$result[0]['RefCode']);
+            $app->halt();
+        }
 
         if($locale=="International"){
             $CanCon=0;
@@ -257,7 +265,19 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
     $app->get('/:RefCode', $authenticate($app,array(1,2)), function ($RefCode) use ($app){
         $library = new \TPS\library();
         //global $mysqli;
-        $album=$library->getAlbumByRefcode($RefCode)[0];
+        $album=$library->getAlbumByRefcode($RefCode);
+        if(sizeof($album)>0){
+            $album = $album[0];
+        }
+        else{
+            $params = array(
+                "title" => "400 Bad Request",
+                "message" => "The resource `$RefCode` does not exist or is invalid",
+            );
+            $app->response->setStatus(400);
+            $app->render("error.html.twig",$params);
+            $app->halt();
+        }
         $album['label']=$library->getLabelbyId($album['labelid'])[0];
         $album['websites']=$library->getWebsitesByRefCode($RefCode);
         
