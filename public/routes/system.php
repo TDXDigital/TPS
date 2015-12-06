@@ -65,7 +65,7 @@ $app->get("/login", function () use ($app) {
    if (isset($flash['errors']['password'])) {
       $password_error = $flash['errors']['password'];
    }
-   $log->info("presented login to user via IP:",NULL,$_SERVER['REMOTE_ADDR']);
+   $log->debug("presented login to user via IP:",NULL,$_SERVER['REMOTE_ADDR']);
    $app->render('login.html.twig', array('error' => $error, 'Username' => $email_value, 'Username_error' => $email_error, 'password_error' => $password_error, 'urlRedirect' => $urlRedirect));
 });
 

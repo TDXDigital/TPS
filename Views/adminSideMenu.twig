@@ -1,11 +1,19 @@
+{% if theme == "sbAdmin2.twig" %}
+{% set secondLevelClass = "nav nav-second-level" %}
+<div class="navbar-default sidebar" role="navigation">
+    <div class="sidebar-nav navbar-collapse">
+        <ul class="nav" id="side-menu">
+{% else %}
+    {% set secondLevelClass = "collapse" %}
 <div class="collapse navbar-collapse navbar-ex1-collapse">
     <ul class="nav navbar-nav side-nav">
+{% endif %}
         <li>
             <a href="/"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
         </li>
         <li>
             <a href="javascript:;" data-toggle="collapse" data-target="#episode"><i class="fa fa-fw fa-cubes"></i> Playsheets <i class="fa fa-fw fa-caret-down"></i></a>
-            <ul id="episode" class="collapse">
+            <ul id="episode" class="{{secondLevelClass}}">
                 <li>
                     <a href="/episode/new"><i class='fa fa-cube'></i> New Episode</a>
                 </li>
@@ -31,7 +39,7 @@
         {% if permissions > 1 %}
         <li>
             <a href="javascript:;" data-toggle="collapse" data-target="#program"><i class="fa fa-fw fa-cogs"></i> Programs <i class="fa fa-fw fa-caret-down"></i></a>
-            <ul id="program" class="collapse">
+            <ul id="program" class="{{secondLevelClass}}">
                 <li>
                     <a href="/program/p1insert.php"><i class='fa fa-cog'></i> New Program</a>
                 </li>
@@ -45,7 +53,7 @@
         </li>
         <li>
             <a href="javascript:;" data-toggle="collapse" data-target="#hosts"><i class="fa fa-fw fa-group"></i> Hosts <i class="fa fa-fw fa-caret-down"></i></a>
-            <ul id="hosts" class="collapse">
+            <ul id="hosts" class="{{secondLevelClass}}">
                 <li>
                     <a href="/dj/p1newdj.php"><i class='fa fa-user-plus'></i> New Host</a>
                 </li>
@@ -56,7 +64,7 @@
         </li>
         <li>
             <a href="javascript:;" data-toggle="collapse" data-target="#traffic"><i class="fa fa-fw fa-usd"></i> Traffic <i class="fa fa-fw fa-caret-down"></i></a>
-            <ul id="traffic" class="collapse">
+            <ul id="traffic" class="{{secondLevelClass}}">
                 <li>
                     <a href="/Advertisements/p1advins.php"><i class='fa fa-plus'></i> New Contract</a>
                 </li>
@@ -78,7 +86,7 @@
         {% if permissions > 0 or "library" in permissions %}
         <li>
             <a href="javascript:;" data-toggle="collapse" data-target="#library"><i class="fa fa-fw fa-headphones"></i> Library <i class="fa fa-fw fa-caret-down"></i></a>
-            <ul id="library" class="collapse">
+            <ul id="library" class="{{secondLevelClass}}">
                 <li>
                     <a href="/library/search/"><i class='fa fa-search'></i> Search</a>
                 </li>
@@ -98,7 +106,7 @@
         {% endif %}
         <li>
             <a href="javascript:;" data-toggle="collapse" data-target="#reviews"><i class="fa fa-fw fa-tags"></i> Reviews <i class="fa fa-fw fa-caret-down"></i></a>
-            <ul id="reviews" class="collapse">
+            <ul id="reviews" class="{{secondLevelClass}}">
                 {% if permissions > 1 %}
                 <li>
                     <a href="/review/search/"><i class='fa fa-search'></i> Search</a>
@@ -120,7 +128,7 @@
         {% if permissions > 1 %}
         <li>
             <a href="javascript:;" data-toggle="collapse" data-target="#management"><i class="fa fa-fw fa-gavel"></i> Management <i class="fa fa-fw fa-caret-down"></i></a>
-            <ul id="management" class="collapse">
+            <ul id="management" class="{{secondLevelClass}}">
                 <li>
                     <a href="/station/"><i class='fa fa-bolt'></i> Station Settings</a>
                 </li>
@@ -140,7 +148,7 @@
         </li>
         <li>
             <a href="javascript:;" data-toggle="collapse" data-target="#advanced"><i class="fa fa-fw fa-terminal"></i> Advanced <i class="fa fa-fw fa-caret-down"></i></a>
-            <ul id="advanced" class="collapse">
+            <ul id="advanced" class="{{secondLevelClass}}">
                 <li>
                     <a href="/Remote/index.php"><i class='fa fa-wrench'></i> Switch Control</a>
                 </li>
@@ -154,4 +162,7 @@
         </li>
         {% endif %}
     </ul>
+    {% if theme=="sbAdmin2.twig" %}
+    </div>
+    {% endif %}
 </div>
