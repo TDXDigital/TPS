@@ -4,7 +4,7 @@
         "Description" : "default layout featuring dark menus"
     },
     "sbAdmin2": {
-        "name": "TPS Light",
+        "name": "TPS Light (experimental)",
         "Description" : "Light version of default theme"
     }
 }

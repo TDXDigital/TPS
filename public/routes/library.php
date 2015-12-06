@@ -232,6 +232,9 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $app->redirect('./new');
     });
     $app->get('/search/', $authenticate, function () use ($app){
+        $format = $app->request->get("format");
+        $page = $app->request->get("p")?:1;
+        $limit = $app->request->get("l")?:25;
         $library = new \TPS\library();
         $library->log->startTimer();
         $result = $library->searchLibrary("");
@@ -241,8 +244,16 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             "area"=>"Library",
             "albums"=>$result,
             "title"=>"Search",
+            "page"=>$page,
+            "resultLimit"=>$limit,
         );
-        $app->render('searchLibrary.twig',$params);
+        $isXHR = $app->request->isAjax();
+        if($isXHR || $format=="json"){
+            print json_encode($params);
+        }
+        else{
+            $app->render('searchLibrary.twig',$params);
+        }
     });
     $app->post('/search/', $authenticate, function () use ($app){
         $term = $app->request()->post('q');
@@ -250,9 +261,13 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $app->redirect("/library/search/$term");
     });
     $app->get('/search/:value', $authenticate, function ($term) use ($app){
+        $format = $app->request->get("format");
+        $page = $app->request->get("p")?:1;
+        $limit = $app->request->get("l")?:25;
         $library = new \TPS\library();
         $time_start = microtime(true); 
-        $result = $library->SearchLibrary($term);
+        $result = $library->SearchLibrary($term,False,(int)$page,(int)$limit);
+        $pages = ceil($library->countSearchLibrary($term)/$limit);
         $time_end = microtime(true); 
         $library->log->info("Search basic retrieval took ".
                 ($time_end - $time_start). "s");
@@ -260,6 +275,9 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             "title"=>"Search $term",
             "albums"=>$result,
             "search"=>$term,
+            "page"=>$page,
+            "pages"=>$pages,
+            "limit"=>$limit,
         );
         $app->render('searchLibrary.twig',$params);
     });

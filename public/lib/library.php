@@ -394,8 +394,10 @@ class library extends station{
      * @param boolean $exact
      * @return boolean|array
      */
-    public function searchLibrary($term,$exact=False){
-        $this->mysqli;
+    public function searchLibrary($term,$exact=False,$page=1,$limit=1000){
+        //$this->mysqli;
+        $tps = new \TPS\TPS();
+        $tps->sanitizePagination($page, $limit);
         $result = array();
         if(!$exact){
             $term="%{$term}%";
@@ -405,8 +407,8 @@ class library extends station{
                 . "Locale,CanCon,updated,release_date,note,playlist_flag,year "
                 . "FROM library where "
                 . "artist like ? or album like ? or note like ? or"
-                . " Locale like ? or genre like ?")){
-            $stmt->bind_param('sssss',$term,$term,$term,$term,$term);
+                . " Locale like ? or genre like ? limit ?,?")){
+            $stmt->bind_param('sssssii',$term,$term,$term,$term,$term,$page,$limit);
             $stmt->execute();
             $stmt->bind_result($datein,$dateout,$RefCode_q,
                     $artist_q,$album_q,$format,$variousartists,
@@ -424,6 +426,34 @@ class library extends station{
                     'release_date'=>$release_date,
                     'note'=>$note,'playlist_flag'=>$playlist_flag,'year'=>$year,
                 ));
+            }
+            $stmt->close();
+        }
+        else{
+            //$result=["error"=>$mysqli->error];
+            error_log($this->mysqli->error);
+            return FALSE;
+        }
+        return $result;
+    }
+    
+    public function countSearchLibrary($term,$exact=False){
+        //$this->mysqli;
+        $tps = new \TPS\TPS();
+        $tps->sanitizePagination($page, $limit);
+        $result = 0;
+        if(!$exact){
+            $term="%{$term}%";
+        }
+        if($stmt = $this->mysqli->prepare("SELECT count(*)"
+                . "FROM library where "
+                . "artist like ? or album like ? or note like ? or"
+                . " Locale like ? or genre like ?")){
+            $stmt->bind_param('sssss',$term,$term,$term,$term,$term);
+            $stmt->execute();
+            $stmt->bind_result($count);
+            while($stmt->fetch()){
+                $result+=$count;
             }
             $stmt->close();
         }
