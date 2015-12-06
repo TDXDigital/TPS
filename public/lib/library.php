@@ -437,7 +437,7 @@ class library extends station{
         return $result;
     }
     
-    public function countSearchLibrary($term,$exact=False){
+    public function countSearchLibrary($term="",$exact=False){
         //$this->mysqli;
         $tps = new \TPS\TPS();
         $tps->sanitizePagination($page, $limit);

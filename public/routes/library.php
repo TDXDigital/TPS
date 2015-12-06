@@ -233,11 +233,12 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
     });
     $app->get('/search/', $authenticate, function () use ($app){
         $format = $app->request->get("format");
-        $page = $app->request->get("p")?:1;
-        $limit = $app->request->get("l")?:25;
+        $page = (int)$app->request->get("p")?:1;
+        $limit = (int)$app->request->get("l")?:25;
         $library = new \TPS\library();
         $library->log->startTimer();
-        $result = $library->searchLibrary("");
+        $result = $library->searchLibrary("",False,$page,$limit);
+        $pages = ceil($library->countSearchLibrary()/$limit);
         $library->log->info("Search basic retrieval took ".
                 $library->log->timerDuration(). "s");
         $params = array(
@@ -245,7 +246,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             "albums"=>$result,
             "title"=>"Search",
             "page"=>$page,
-            "resultLimit"=>$limit,
+            "pages"=>$pages,
+            "limit"=>$limit,
         );
         $isXHR = $app->request->isAjax();
         if($isXHR || $format=="json"){
@@ -262,11 +264,11 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
     });
     $app->get('/search/:value', $authenticate, function ($term) use ($app){
         $format = $app->request->get("format");
-        $page = $app->request->get("p")?:1;
-        $limit = $app->request->get("l")?:25;
+        $page = (int)$app->request->get("p")?:1;
+        $limit = (int)$app->request->get("l")?:25;
         $library = new \TPS\library();
         $time_start = microtime(true); 
-        $result = $library->SearchLibrary($term,False,(int)$page,(int)$limit);
+        $result = $library->SearchLibrary($term,False,$page,$limit);
         $pages = ceil($library->countSearchLibrary($term)/$limit);
         $time_end = microtime(true); 
         $library->log->info("Search basic retrieval took ".

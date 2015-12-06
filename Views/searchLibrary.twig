@@ -105,44 +105,6 @@
             {% endfor %}
         </tbody>
     </table>
-<nav>
-  <ul class="pagination">
-    {% set limit = limit?:25 %}
-    {% set page = page?:1 %}
-    {% set startPage = startPage?:(page|default(1)-2) %}
-    {% if startPage < 2 %}
-        {% set controlPrevious = "disabled" %}
-        {% set startPage = 1 %}
-    {% else %}
-        {% set controlPrevious = "" %}
-    {% endif %}
-    {% set endPage = pages|default(startPage) %}
-    {% if page >= endPage %}
-        {% set endPage = page %}
-        {% set controlNext = "disabled" %}
-    {% else %}
-        {% set controlNext = "" %}
-    {% endif %}
-    <li class="{{controlPrevious}}"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-    {% for i in range(startPage, endPage) %}
-        <li {% if i == page %}
-            class="active"
-            {% endif %}
-            >
-        <a href="?p={{i}}&l={{limit}}">{{i}} <span class="sr-only">
-                {% if i == page %}
-                    (current)
-                {% else %}
-                    {{i}}
-                {% endif %}
-            </span></a></li>
-    {% endfor %}
-    <li class="{{controlNext}}"><a href="{{page+1}}" aria-label="Previous"><span aria-hidden="true">&raquo;</span></a></li>
-    <!--{% if limit is defined %}
-    <input type="hidden" value="{{limit}}" name="l"/>
-    {% endif %}-->
-  </ul>
-</nav>
 {% endblock %}
 {% block lastScripts %}
 <script>

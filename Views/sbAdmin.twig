@@ -200,7 +200,13 @@
                           {% else %}
                               {% set controlNext = "" %}
                           {% endif %}
-                          <li class="{{controlPrevious}}"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                          <li class="{{controlPrevious}}"><a 
+                                {% if controlPrevious == "" %}
+                                    href="?p={{page-1}}"
+                                {% else %}
+                                    href="#" 
+                                {% endif %}
+                                aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
                           {% for i in range(startPage, endPage) %}
                               <li {% if i == page %}
                                   class="active"
@@ -214,10 +220,13 @@
                                       {% endif %}
                                   </span></a></li>
                           {% endfor %}
-                          <li class="{{controlNext}}"><a href="{{page+1}}" aria-label="Previous"><span aria-hidden="true">&raquo;</span></a></li>
-                          <!--{% if limit is defined %}
-                          <input type="hidden" value="{{limit}}" name="l"/>
-                          {% endif %}-->
+                          <li class="{{controlNext}}"><a 
+                                {% if controlNext == "" %}
+                                    href="?p={{page+1}}"
+                                {% else %}
+                                    href="#" 
+                                {% endif %}
+                                aria-label="Previous"><span aria-hidden="true">&raquo;</span></a></li>
                         </ul>
                     </nav>
                     {% endif %}
