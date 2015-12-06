@@ -75,7 +75,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $labelNum = NULL;
 
         // Get label number if exists
-        $stmt1 = $mysqli->prepare("SELECT labelNumber FROM recordlabel where Name=? limit 1");
+        $stmt1 = $mysqli->prepare("SELECT labelNumber FROM recordlabel where"
+                . " LOWER(`Name`) = LOWER(?) limit 1");
         $stmt1->bind_param("s",$label);
         if(!$stmt1->execute()){
             $stmt1->close();

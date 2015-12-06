@@ -28,11 +28,12 @@
 </ol>
 {% endblock %}
 {% block content %}
-    <form role="form" {% if episode.id is null %}
+    <form role="form" {% if label.id is null %}
           method="POST">
         {% else %}
-            method="POST" action="./{{episode.id}}"> <!-- PUT NOT YET SUPPORTED BY BROWSER -->
-            <input type="hidden" value="{{episode.id}}" name="id" />
+            method="POST" action="./{{label.id}}"> <!-- PUT NOT YET SUPPORTED BY BROWSER -->
+            <input type="hidden" name="_METHOD" value="PUT"/>
+            <input type="hidden" value="{{label.id}}" name="id" />
         {% endif %}
         <div class="row">
             <div class="col-sm-7">
@@ -57,31 +58,95 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="name">Size</label>
-                            <input id="size" name="size" class="form-control" 
-                                   {% if label is not null %}
-                                       value="{{label.size}}"
-                                    {% endif %}/>
+                            <label for="size">Size</label>
+                            <select id="size" name="size" class="form-control">
+                            {% set labelSizes = labelSizes?:{1:"International", 
+                                    2: "National", 3:"Regional", 4:"Semi-Local",
+                                    5:"Independent", 6:"Local", 7:"Priority"}%}
+                            {% for key,value in labelSizes %}
+                            <option value="{{key}}" {% if key == label.size %}
+                                selected
+                                    {% endif %}
+                                        >{{key}} - {{value}}</option>
+                            {% endfor %}
+                            </select>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="name">Proper Name</label>
-                            <input id="size" name="size" class="form-control" 
-                                   {% if alias is not null %}
-                                       value="{{alias.name}}"
-                                    {% endif %}/>
+                            <!--alias.id: alias.name-->
+                            <label for="alias">Proper Name 
+                            {% if alias.id is not null %}
+                                <a href="./{{alias.id}}">
+                                    <i class="fa fa-link"></i>
+                                </a>
+                            {% endif %}</label>
+                            <select id="alias" name="alias" class="form-control 
+                                    chosen-select"
+                                {% if recordLabels is null%}
+                                        readonly ><option value="{{alias.id}}">
+                                            {{alias.name}}</option>
+                                    {% else %}
+                                    ><option value="">N/A</option>
+                                    {% for key, value in recordLabels 
+                                    if key != label.id 
+                                    and key != label.parentCompany %}
+                                        <option value="{{key}}"
+                                                {% if key == alias.id %}
+                                                    selected
+                                                {% endif %}
+                                                >{{value}}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="name">Verified</label>
-                            <input id="size" name="size" class="form-control" 
-                                   {% if label is not null %}
-                                       value="{{label.verified}}"
-                                    {% endif %}/>
+                            <!--alias.id: alias.name-->
+                            <label for="parent">Parent Company 
+                            {% if label.parentCompany is not null %}
+                                <a href="./{{label.parentCompany}}">
+                                    <i class="fa fa-link"></i>
+                                </a>
+                            {% endif %}</label>
+                            <select id="parent" name="parent" class="form-control 
+                                    chosen-select"
+                                {% if recordLabels is null%}
+                            readonly ><option value="{{label.parentCompany}}">
+                                            {{label.parentCompany}}</option>
+                                    {% else %}
+                                    ><option value="">N/A</option>
+                                    {% for key, value in recordLabels 
+                                        if key != label.id 
+                                        and key != label.alias %}
+                                        <option value="{{key}}"
+                                                {% if key == label.parentCompany %}
+                                                    selected
+                                                {% endif %}
+                                                >{{value}}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="verified">Verified (Director Approved)</label>
+                            <select id="verified" name="verified" class="form-control">
+                                {% set verifiedOptions = verifiedOptions?:{0:"False",1:"True"} %}
+                                {% for key, value in verifiedOptions %}
+                                    <option value="{{key}}" 
+                                            {% if label.verified == key %}
+                                            selected 
+                                            {% endif %}
+                                            >{{value}}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -105,7 +170,6 @@
                         <input type="hidden" name="_METHOD" value="PUT"/>
                     {% endif %}
                     <button id="submit" type="submit"
-                            disabled 
                             class="btn btn-success pull-down">Submit</button>
                 <!--<button type="reset" class="btn btn-warning">Reset</button>-->
                 </div>

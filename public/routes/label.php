@@ -48,10 +48,12 @@ $app->group('/label', $authenticate, function () use ($app,$authenticate){
             function ($id) use ($app,$authenticate){
         $format = $app->request->get('format');
         $label = new \TPS\label($id);
+        $labels = \TPS\label::nameSearch("%",False);
         $params=array(
             "area" => "Record Labels",
             "title" => "Label Management",
             'label'=>$label->fetch(),
+            "recordLabels"=>$labels,
             );
         if(!is_null($params['label']['alias'])){
             $alias = new \TPS\label($params['label']['alias']);
@@ -67,6 +69,40 @@ $app->group('/label', $authenticate, function () use ($app,$authenticate){
         else{
             $app->render("labelManager.twig",$params);
         }
+    });
+    $app->put('/:id', $authenticate($app,2), function($id) use ($app){
+        $format = $app->request->get('format');
+        $name = $app->request->put('name')?:null;
+        $location = $app->request->put('location')?:null;
+        $size = $app->request->put('size')?:null;
+        $alias = $app->request->put('alias')?:null;
+        $parent = $app->request->put('parent')?:null;
+        $verified = $app->request->put('verified')?:null;
+        $label = new \TPS\label($id);
+        $label->setName($name);
+        $label->setLocation($location);
+        $label->setSize($size);
+        $label->setAlias($alias);
+        $label->setParentCompany($parent);
+        $label->setVerified($verified);
+        $isXHR = $app->request->isAjax();
+        if($isXHR || $format=="json"){
+            $app->response->setStatus(200);
+            print "200";
+        }
+        else{
+            $app->flash("success","$name ($id) updated");
+            $label->log->info("$name ($id) updated");
+            $app->redirect($id);
+        }
+    });
+    $app->delete('/:id', $authenticate($app,2), function($id) use ($app){
+        $app->response->setStatus(200);
+        print "203";
+    });
+    $app->post('/:id', $authenticate($app,2), function($id) use ($app){
+        $app->response->setStatus(405);
+        print "405 Method Not Allowed";
     });
     $app->get('/:id/tree',$authenticate($app,2), 
             function ($id) use ($app,$authenticate){

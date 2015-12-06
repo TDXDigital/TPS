@@ -7,7 +7,7 @@
 	<title>Class BCGcode128 | TPS_GIT</title>
 
 	<script type="text/javascript" src="resources/combined.js?3604910170"></script>
-	<script type="text/javascript" src="elementlist.js?1071243315"></script>
+	<script type="text/javascript" src="elementlist.js?3705013715"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360">
 
 </head>
@@ -113,7 +113,6 @@
 				<li><a href="function-absolute_include.html">absolute_include</a></li>
 				<li><a href="function-ApplyUpdate.html">ApplyUpdate</a></li>
 				<li><a href="function-baseCustomSetup.html">baseCustomSetup</a></li>
-				<li><a href="function-ChangeDB.html">ChangeDB</a></li>
 				<li><a href="function-checkbrute.html">checkbrute</a></li>
 				<li><a href="function-CheckStorage.html">CheckStorage</a></li>
 				<li><a href="function-CheckTTF.html" class="invalid">CheckTTF</a></li>
@@ -194,7 +193,6 @@
 				<li><a href="function-txtentities.html" class="invalid">txtentities</a></li>
 				<li><a href="function-UPCAbarcode.html">UPCAbarcode</a></li>
 				<li><a href="function-UpdateMeta.html">UpdateMeta</a></li>
-				<li><a href="function-url.html">url</a></li>
 				<li><a href="function-validate_EAN13Barcode.html">validate_EAN13Barcode</a></li>
 				<li><a href="function-validate_UPCABarcode.html">validate_UPCABarcode</a></li>
 				<li><a href="function-Versions.html">Versions</a></li>
@@ -306,14 +304,12 @@
 		<code><a href="source-class-BCGcode128.html#62-212" title="Go to source code">__construct</a>( <span>char <var>$start</var> = <span class="php-keyword1">NULL</span></span> )</code>
 
 		<div class="description short">
-			
-<p>Constructor.</p>
+			<p>Constructor.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>Constructor.</p>
+			<p>Constructor.</p>
 
 
 
@@ -346,8 +342,7 @@
 		<code><a href="source-class-BCGcode128.html#214-231" title="Go to source code">setStart</a>( <span>string <var>$table</var></span> )</code>
 
 		<div class="description short">
-			
-<p>Specifies the start code. Can be 'A', 'B', 'C', or NULL<br />
+			<p>Specifies the start code. Can be 'A', 'B', 'C', or NULL<br />
 - Table A: Capitals + ASCII 0-31 + punct<br />
 - Table B: Capitals + LowerCase + punct<br />
 - Table C: Numbers</p>
@@ -355,8 +350,7 @@
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>Specifies the start code. Can be 'A', 'B', 'C', or NULL - Table A: Capitals +
+			<p>Specifies the start code. Can be 'A', 'B', 'C', or NULL - Table A: Capitals +
 ASCII 0-31 + punct - Table B: Capitals + LowerCase + punct - Table C:
 Numbers</p>
 
@@ -392,14 +386,12 @@ is NULL.</p>
 		<code><a href="source-class-BCGcode128.html#233-240" title="Go to source code">getTilde</a>( )</code>
 
 		<div class="description short">
-			
-<p>Gets the tilde.</p>
+			<p>Gets the tilde.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>Gets the tilde.</p>
+			<p>Gets the tilde.</p>
 
 
 
@@ -429,8 +421,7 @@ is NULL.</p>
 		<code><a href="source-class-BCGcode128.html#242-252" title="Go to source code">setTilde</a>( <span>boolean <var>$accept</var></span> )</code>
 
 		<div class="description short">
-			
-<p>Accepts tilde to be process as a special character. If true, you can do
+			<p>Accepts tilde to be process as a special character. If true, you can do
 this:<br />
 - ~~ : to make ONE tilde<br />
 - ~Fx : to insert FCNx. x is equal from 1 to 4.</p>
@@ -438,8 +429,7 @@ this:<br />
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>Accepts tilde to be process as a special character. If true, you can do this:
+			<p>Accepts tilde to be process as a special character. If true, you can do this:
 - ~~ : to make ONE tilde - ~Fx : to insert FCNx. x is equal from 1 to 4.</p>
 
 
@@ -471,14 +461,12 @@ this:<br />
 		<code><a href="source-class-BCGcode128.html#254-302" title="Go to source code">parse</a>( <span>mixed <var>$text</var></span> )</code>
 
 		<div class="description short">
-			
-<p>Parses the text before displaying it.</p>
+			<p>Parses the text before displaying it.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>Parses the text before displaying it.</p>
+			<p>Parses the text before displaying it.</p>
 
 
 
@@ -511,14 +499,12 @@ this:<br />
 		<code><a href="source-class-BCGcode128.html#304-317" title="Go to source code">draw</a>( <span>resource <var>$im</var></span> )</code>
 
 		<div class="description short">
-			
-<p>Draws the barcode.</p>
+			<p>Draws the barcode.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>Draws the barcode.</p>
+			<p>Draws the barcode.</p>
 
 
 
@@ -549,14 +535,12 @@ this:<br />
 		<code><a href="source-class-BCGcode128.html#319-334" title="Go to source code">getDimension</a>( <span>integer <var>$w</var></span>, <span>integer <var>$h</var></span> )</code>
 
 		<div class="description short">
-			
-<p>Returns the maximal size of a barcode.</p>
+			<p>Returns the maximal size of a barcode.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>Returns the maximal size of a barcode.</p>
+			<p>Returns the maximal size of a barcode.</p>
 
 
 
@@ -595,14 +579,12 @@ this:<br />
 		<code><a href="source-class-BCGcode128.html#336-346" title="Go to source code">validate</a>( )</code>
 
 		<div class="description short">
-			
-<p>Validates the input.</p>
+			<p>Validates the input.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>Validates the input.</p>
+			<p>Validates the input.</p>
 
 
 
@@ -630,14 +612,12 @@ this:<br />
 		<code><a href="source-class-BCGcode128.html#348-365" title="Go to source code">calculateChecksum</a>( )</code>
 
 		<div class="description short">
-			
-<p>Overloaded method to calculate checksum.</p>
+			<p>Overloaded method to calculate checksum.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>Overloaded method to calculate checksum.</p>
+			<p>Overloaded method to calculate checksum.</p>
 
 
 
@@ -665,14 +645,12 @@ this:<br />
 		<code><a href="source-class-BCGcode128.html#367-380" title="Go to source code">processChecksum</a>( )</code>
 
 		<div class="description short">
-			
-<p>Overloaded method to display the checksum.</p>
+			<p>Overloaded method to display the checksum.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>Overloaded method to display the checksum.</p>
+			<p>Overloaded method to display the checksum.</p>
 
 
 

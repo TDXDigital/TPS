@@ -27,6 +27,7 @@
 namespace TPS;
 
 require_once "tps.php";
+require_once "logger.php";
 
 /**
  * Description of label
@@ -42,13 +43,14 @@ class label extends TPS{
     private $updated;
     private $verified;
     private $parentComapny;
-    private $rootParent;
+    public $log = Null;
 
     public function __construct($id, $enableDbReporting = FALSE) {
         parent::__construct($enableDbReporting);
         $this->id = $id;
         $this->fetch();
         $this->rootParentCompany();
+        $this->log = new \TPS\logger();
     }
     
     private function formatTreeReturn(&$root, &$subsidiaries,
@@ -127,6 +129,99 @@ class label extends TPS{
         return $result;
     }
     
+    private function setParameter($param, $value){
+        $stmt = $this->mysqli->prepare(
+                "UPDATE recordlabel SET $value=? WHERE LabelNumber=?");
+        if ($stmt === false) {
+            trigger_error($this->mysqli->error, E_USER_ERROR);
+        }
+        $stmt->bind_param("si",$param,$this->id);
+        $status = $stmt->execute();
+        if($status === false){
+            trigger_error($this->mysqli->error, E_USER_ERROR);
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+    
+    public function setName($param) {
+        $result = true;
+        if($param!=$this->name){
+            $result = $this->setParameter($param,"Name");
+            if($result){
+                $this->name = $param;
+            }
+        }
+        return $result;
+    }
+    
+    public function setLocation($param) {
+        $result = true;
+        if($param!=$this->location){
+            $result = $this->setParameter($param,"Location");
+            if($result){
+                $this->location = $param;
+            }
+        }
+        return $result;
+    }
+    
+    public function setSize($param) {
+        $result = true;
+        if($param!=$this->Size){
+            $result = $this->setParameter($param,"Size");
+            if($result){
+                $this->Size = $param;
+            }
+        }
+        return $result;
+    }
+    
+    public function setAlias($param) {
+        if(!is_null($param) && ($param==$this->id || $param==$this->parentComapny)){
+            trigger_error("Cannot set label alias to itself",E_USER_ERROR);
+            return False;
+        }
+        $result = true;
+        if($param!=$this->nameAlias){
+            $result = $this->setParameter($param,"name_alias_duplicate");
+            if($result){
+                $this->nameAlias = $param;
+            }
+        }
+        return $result;
+    }
+    
+    public function setVerified($param) {
+        $result = true;
+        $param = $param?TRUE:FALSE;
+        if($param!=$this->verified){
+            $result = $this->setParameter($param?"TRUE":"FALSE","verified");
+            if($result){
+                $this->name = $param;
+            }
+        }
+        return $result;
+    }
+    
+    public function setParentCompany($param) {
+        $result = true;
+        if(!is_null($param) && ($param==$this->id || $param==$this->nameAlias)){
+            trigger_error("Cannot set label parent company to itself"
+                    ,E_USER_ERROR);
+            return False;
+        }
+        if($param!=$this->parentComapny){
+            $result = $this->setParameter($param,"parentCompany");
+            if($result){
+                $this->parentComapny = $param;
+            }
+        }
+        return $result;
+    }
+        
     public function fetch() {
         $stmt = $this->mysqli->prepare(
                 "SELECT LabelNumber, Name, Location, Size, name_alias_duplicate,"
@@ -168,7 +263,7 @@ class label extends TPS{
         return $result;
     }
     
-    static function nameSearch($name) {
+    static function nameSearch($name, $includeAlias=True) {
         if(isset($this)){
             if(!$this->mysqli){
                 parent::__construct();
@@ -178,14 +273,17 @@ class label extends TPS{
             $self = new \TPS\TPS();
         }
         $stmt = $self->mysqli->prepare(
-                "SELECT LabelNumber, Name from recordlabel where Name like ?"
+                "SELECT LabelNumber, Name, name_alias_duplicate "
+                . "from recordlabel where Name like ?"
                 );
         $stmt->bind_param("s",$name);
         $stmt->execute();
-        $stmt->bind_result($idArray, $nameArray);
+        $stmt->bind_result($idArray, $nameArray, $alias);
         $result = array();
         while($stmt->fetch()){
-            $result[$idArray] = $nameArray;
+            if($includeAlias || (!$includeAlias && is_null($alias))){
+                $result[$idArray] = $nameArray;
+            }
         }
         $stmt->close();
         return $result;
