@@ -40,7 +40,7 @@
                 <div class="row">
                     <div class="form-group">
                         <label for="name">Name</label>
-                        <input id="name" name="name" class="form-control" 
+                        <input id="name" name="name" class="form-control" required 
                                {% if label is not null %}
                                    value="{{label.name}}"
                                 {% endif %}/>
@@ -229,6 +229,7 @@
         $(document).ready(function(){
             /* Load via AJAX */
             /* http://fperucic.github.io/treant-js/examples/custom-colored/custom-colored.js */
+            {% if label is defined %}
             $.getJSON( "./{{label.id}}/tree",{format:"json"}, function( data ) {
                 simpleChartConfig = {chart: {
                         container: "#companyTree",
@@ -241,6 +242,9 @@
                 $("#companyTree").html("");
                 var my_chart = new Treant(simpleChartConfig);
             });
+            {% else %}
+                $("#companyTree").html("");
+            {% endif %}
             $.datepicker.setDefaults({dateFormat: "yy-mm-dd"});
             $("#datePickerAir").datepicker();
             $("#datePickerRecord").datepicker();

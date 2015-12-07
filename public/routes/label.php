@@ -28,11 +28,11 @@
 $app->group('/label', $authenticate, function () use ($app,$authenticate){
     $app->get('/', $authenticate($app,2), function() use ($app, $authenticate){
         $format = $app->request->get('format');
-        $search = $app->request->get('search');
-        $labels = \TPS\label::nameSearch("%$search%");
+        $search = $app->request->get('search')?:null;
+        $labels = \TPS\label::nameSearch("%$search%",$search?True:False);
         $params = array(
             "area" => "Record Labels",
-            "title" => "Label Management",
+            "title" => "Management",
             "search" => $search,
             "labels" => $labels,
         );
@@ -43,6 +43,58 @@ $app->group('/label', $authenticate, function () use ($app,$authenticate){
         else{
             $app->render("labels.twig",$params);
         }
+    });
+    $app->group('/new', $authenticate, function() use ($app,$authenticate){
+        $app->get('/', $authenticate, function() use ($app){
+            $labels = \TPS\label::nameSearch("%",False);
+            $params = array(
+                "recordLabels" => $labels
+            );
+            $app->render("labelManager.twig",$params);
+        });
+        $app->post('/', $authenticate, function() use ($app){
+            $format = $app->request->get('format');
+            $name = $app->request->put('name')?:null;
+            $location = $app->request->put('location')?:null;
+            $size = $app->request->put('size')?:null;
+            $alias = $app->request->put('alias')?:null;
+            $parent = $app->request->put('parent')?:null;
+            $verified = $app->request->put('verified')?:null;
+            $labels = \TPS\label::nameSearch($name);
+            if(sizeof($labels)>1){
+                if($labels[0]["alias"]){
+                    $app->request->setStatus(400);
+                    print "400, Bad Request<br>Label Already Exists";
+                }
+                else{
+                    $id = key($labels[0]);
+                }
+            }
+            else{
+                $id = \TPS\label::createLabel($name, 1);
+                $labelRewrite = array(
+                    "/(.+)(?=(?i)\srecord.{0,5})/",
+                );
+                foreach ($labelRewrite as $regex) {
+                    $value = false;
+                    $value = preg_match($regex, $name, $matches);
+                    if($value==1){
+                        $id2 = \TPS\label::createLabel($matches[0],1);
+                        $subLabel = new \TPS\label($id2);
+                        $subLabel->setAlias($id);
+                    }
+                }
+
+            }
+            $label = new \TPS\label($id);
+            $label->setName($name);
+            $label->setLocation($location);
+            $label->setSize($size);
+            $label->setAlias($alias);
+            $label->setParentCompany($parent);
+            $label->setVerified($verified);
+            print json_encode($label->fetch());
+        });
     });
     $app->get('/:id',$authenticate($app,2), 
             function ($id) use ($app,$authenticate){

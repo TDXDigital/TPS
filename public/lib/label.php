@@ -263,18 +263,47 @@ class label extends TPS{
         return $result;
     }
     
+    static function createLabel($label,$label_size){
+        if(isset($this)){
+            if(!$this->mysqli){
+                parent::__construct();
+            }
+            $self=$this;
+        }
+        else{
+            $self = new \TPS\TPS();
+        }
+        $result = false;
+        $stmt2 = $self->mysqli->prepare("INSERT INTO recordlabel(Name,size) VALUES (?,?)");
+        $stmt2->bind_param("si",$label,$label_size);
+        if(!$stmt2->execute()){
+            $stmt2->close();
+            #header("location: ../library/?q=new&e=".$mysqli->errno."&s=2");
+            $app->flash('error',$mysqli->error);
+            $app->redirect('./new');
+            //echo "ERROR: " .    $mysqli->error;
+        }
+        else{
+            $result=$stmt2->insert_id;
+            //echo "created recordlabel #".$labelNum;
+        }
+        $stmt2->close();
+        return $result;
+    }
+    
     static function nameSearch($name, $includeAlias=True) {
         if(isset($this)){
             if(!$this->mysqli){
                 parent::__construct();
             }
+            $self=$this;
         }
         else{
             $self = new \TPS\TPS();
         }
         $stmt = $self->mysqli->prepare(
                 "SELECT LabelNumber, Name, name_alias_duplicate "
-                . "from recordlabel where Name like ?"
+                . "from recordlabel where LOWER(`Name`) like LOWER(?)"
                 );
         $stmt->bind_param("s",$name);
         $stmt->execute();

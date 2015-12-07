@@ -73,40 +73,42 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $playlist=2;
         }
         $labelNum = NULL;
-
-        // Get label number if exists
-        $stmt1 = $mysqli->prepare("SELECT labelNumber FROM recordlabel where"
-                . " LOWER(`Name`) = LOWER(?) limit 1");
-        $stmt1->bind_param("s",$label);
-        if(!$stmt1->execute()){
-            $stmt1->close();
-            $app->flash('error',$mysqli->error);
-            $app->redirect('./new');
-        }
-        $stmt1->bind_result($labelNum);
-        $stmt1->fetch();
-        $stmt1->close();
-
-        //if does not exist create label
-        if(is_null($labelNum)){
-            $stmt2 = $mysqli->prepare("INSERT INTO recordlabel(Name,size) VALUES (?,?)");
-            $stmt2->bind_param("si",$label,$label_size);
-            if(!$stmt2->execute()){
-                $stmt2->close();
-                #header("location: ../library/?q=new&e=".$mysqli->errno."&s=2");
-                $app->flash('error',$mysqli->error);
-                $app->redirect('./new');
-                //echo "ERROR: " .    $mysqli->error;
+        
+        //find id
+        $labels = \TPS\label::nameSearch($label);
+        if(sizeof($labels)>1){
+            if($labels[0]["alias"]){
+                $labelNum = key($labels[0]["alias"]);
             }
             else{
-                $labelNum=$stmt2->insert_id;
-                //echo "created recordlabel #".$labelNum;
+                $labelNum = key($labels[0]);
             }
-            $stmt2->close();
         }
         else{
-            //echo $labelNum ? : " NULL ";
+            $labelNum = \TPS\label::createLabel($label, 1);
+            $labelRewrite = array(
+                "/(.+)(?=(?i)\srecord.{0,5})/",
+            );
+            foreach ($labelRewrite as $regex) {
+                $value = false;
+                $value = preg_match($regex, $label, $matches);
+                if($value==1){
+                    $id = \TPS\label::createLabel($matches[0],1);
+                    $subLabel = new \TPS\label($id);
+                    $subLabel->setAlias($labelNum);
+                }
+            }
+            
         }
+        
+        //insert real;
+        
+        //insert alias if needed, reference real
+        
+        $label = new \TPS\label($labelNum);
+        //if does not exist create label
+        
+        
         //echo "creating album...";
         if($genre=="null"){
             $genre=NULL;
