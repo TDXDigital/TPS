@@ -93,7 +93,7 @@ $app->group('/label', $authenticate, function () use ($app,$authenticate){
             $label->setAlias($alias);
             $label->setParentCompany($parent);
             $label->setVerified($verified);
-            print json_encode($label->fetch());
+            $app->redirect("../$id");
         });
     });
     $app->get('/:id',$authenticate($app,2), 
