@@ -1,0 +1,269 @@
+{% extends 'baseAdmin.twig' %}
+{% block headScripts %}
+    <link href="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.css" 
+          rel="stylesheet" type="text/css"/>
+    <link href="{{siteUrl}}/js/chosen.min.css" rel="stylesheet" type="text/css"/>
+    <style>
+        .lableTree{
+            width: 100%;
+            height: 250px;
+            text-align: center;
+            vertical-align: bottom;
+        }
+    </style>
+{% endblock %}
+{% set firstStation = station|first %}
+{% block title %}{{title|default('Episode')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <a href="/"><i class="fa fa-dashboard"></i>  Dashboard</a>
+    </li>
+    <li class="active">
+        <a href="./"><i class="fa fa-tasks"></i> labels</a>
+    </li>
+    <li class="active">
+        <a href="#"><i class="fa fa-globe"></i> {{label.name|default('New Label')}}</a>
+    </li>
+</ol>
+{% endblock %}
+{% block content %}
+    <form role="form" {% if label.id is null %}
+          method="POST">
+        {% else %}
+            method="POST" action="./{{label.id}}"> <!-- PUT NOT YET SUPPORTED BY BROWSER -->
+            <input type="hidden" name="_METHOD" value="PUT"/>
+            <input type="hidden" value="{{label.id}}" name="id" />
+        {% endif %}
+        <div class="row">
+            <div class="col-sm-7">
+                <div class="row">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input id="name" name="name" class="form-control" required 
+                               {% if label is not null %}
+                                   value="{{label.name}}"
+                                {% endif %}/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="name">Location</label>
+                            <input id="location" name="location" class="form-control" 
+                                   {% if label is not null %}
+                                       value="{{label.location}}"
+                                    {% endif %}/>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="size">Size</label>
+                            <select id="size" name="size" class="form-control">
+                            {% set labelSizes = labelSizes?:{1:"International", 
+                                    2: "National", 3:"Regional", 4:"Semi-Local",
+                                    5:"Independent", 6:"Local", 7:"Priority"}%}
+                            {% for key,value in labelSizes %}
+                            <option value="{{key}}" {% if key == label.size %}
+                                selected
+                                    {% endif %}
+                                        >{{key}} - {{value}}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <!--alias.id: alias.name-->
+                            <label for="alias">Proper Name 
+                            {% if alias.id is not null %}
+                                <a href="./{{alias.id}}">
+                                    <i class="fa fa-link"></i>
+                                </a>
+                            {% endif %}</label>
+                            <select id="alias" name="alias" class="form-control 
+                                    chosen-select"
+                                {% if recordLabels is null%}
+                                        readonly ><option value="{{alias.id}}">
+                                            {{alias.name}}</option>
+                                    {% else %}
+                                    ><option value="">N/A</option>
+                                    {% for key, value in recordLabels 
+                                    if key != label.id 
+                                    and key != label.parentCompany %}
+                                        <option value="{{key}}"
+                                                {% if key == alias.id %}
+                                                    selected
+                                                {% endif %}
+                                                >{{value}}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <!--alias.id: alias.name-->
+                            <label for="parent">Parent Company 
+                            {% if label.parentCompany is not null %}
+                                <a href="./{{label.parentCompany}}">
+                                    <i class="fa fa-link"></i>
+                                </a>
+                            {% endif %}</label>
+                            <select id="parent" name="parent" class="form-control 
+                                    chosen-select"
+                                {% if recordLabels is null%}
+                            readonly ><option value="{{label.parentCompany}}">
+                                            {{label.parentCompany}}</option>
+                                    {% else %}
+                                    ><option value="">N/A</option>
+                                    {% for key, value in recordLabels 
+                                        if key != label.id 
+                                        and key != label.alias %}
+                                        <option value="{{key}}"
+                                                {% if key == label.parentCompany %}
+                                                    selected
+                                                {% endif %}
+                                                >{{value}}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="verified">Verified (Director Approved)</label>
+                            <select id="verified" name="verified" class="form-control">
+                                {% set verifiedOptions = verifiedOptions?:{0:"False",1:"True"} %}
+                                {% for key, value in verifiedOptions %}
+                                    <option value="{{key}}" 
+                                            {% if label.verified == key %}
+                                            selected 
+                                            {% endif %}
+                                            >{{value}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <div class="form-group">
+                    <label for="companyTree">Company Structure</label>
+                    <div id="companyTree" class="lableTree">
+                        <i class="fa fa-spin fa-5x fa-circle-o-notch"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-11">
+                
+            </div>
+            <div class="col-sm-1">
+                <div class="form-group pull-right">
+                    {% if episode.id is not null %}
+                        <input type="hidden" name="_METHOD" value="PUT"/>
+                    {% endif %}
+                    <button id="submit" type="submit"
+                            class="btn btn-success pull-down">Submit</button>
+                <!--<button type="reset" class="btn btn-warning">Reset</button>-->
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block lastScripts %}
+    <script src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
+    <script src="{{siteUrl}}/js/chosen.jquery.min.js"></script>
+    <script>
+        Date.prototype.yyyymmdd = function() {
+            var yyyy = this.getFullYear().toString();
+            var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
+            var dd  = this.getDate().toString();
+            return yyyy +'-'+ (mm[1]?mm:"0"+mm[0]) +'-'+ (dd[1]?dd:"0"+dd[0]); // padding
+        };
+        var today = new Date();
+        var todayString = today.yyyymmdd();
+        
+        function changedType(){
+            var type = $("#type option:selected").val();
+            switch(type){
+                case '0':
+                    $("#datePickerAir").prop('disabled',false);
+                    $("#datePickerRecord").prop('disabled',false);
+                    $("#datePickerRecord").prop('required',false);
+                    $("#datePickerRecord").val('');
+                    break;
+                case '1':
+                    $("#datePickerAir").prop('disabled',false);
+                    $("#datePickerAir").prop('required',true);
+                    if($("#datePickerAir").val() === todayString){
+                        $("#datePickerAir").val('');
+                    }
+                    $("#datePickerRecord").prop('required',true);
+                    $("#datePickerRecord").val(todayString);
+                    $("#datePickerRecord").prop('disabled',false);
+                    break;
+                case '2':
+                    $("#datePickerAir").prop('disabled',true);
+                    $("#datePickerAir").prop('required',false);
+                    $("#datePickerRecord").prop('disabled',false);
+                    $("#datePickerRecord").prop('required',true);
+                    $("#datePickerRecord").val(todayString);
+                    break;
+                default:
+                    $("#datePickerRecord").prop('disabled',false);
+                    $("#datePickerRecord").prop('required',true);
+                    $("#datePickerRecord").val(todayString);
+                    $("#datePickerAir").prop('disabled',false);
+                    $("#datePickerAir").prop('required',true);
+                    $("#datePickerAir").val(todayString);
+            }
+        }
+        
+        $(document).ready(function(){
+            /* Load via AJAX */
+            /* http://fperucic.github.io/treant-js/examples/custom-colored/custom-colored.js */
+            {% if label is defined %}
+            $.getJSON( "./{{label.id}}/tree",{format:"json"}, function( data ) {
+                simpleChartConfig = {chart: {
+                        container: "#companyTree",
+                        node: {
+                            collapsable: true,
+                        }
+                    },
+                    nodeStructure: data
+                };
+                $("#companyTree").html("");
+                var my_chart = new Treant(simpleChartConfig);
+            });
+            {% else %}
+                $("#companyTree").html("");
+            {% endif %}
+            $.datepicker.setDefaults({dateFormat: "yy-mm-dd"});
+            $("#datePickerAir").datepicker();
+            $("#datePickerRecord").datepicker();
+            
+            $('.pull-down').each(function() {
+                $(this).css('margin-top', $(this).parent().height()-$(this).height())
+            });
+            $(".chosen-select").chosen({disable_search_threshold: 10}).change(
+                    function(event){
+                        if(event.target == this){
+                            var program = $(this).val();
+                            if(program.length < 1){
+                                $("#submit").prop('disabled',true);
+                            }
+                            else{
+                                $("#submit").prop('disabled',false);
+                            }
+                        }
+                    });
+        });
+    </script>
+{% endblock %}

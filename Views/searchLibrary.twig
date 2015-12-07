@@ -1,5 +1,14 @@
 {% extends 'baseAdmin.twig' %}
 
+{% block headScripts %}
+    <style type="text/css">
+        td label { 
+           display: block;
+           text-align: center;
+        }
+    </style>
+{% endblock %}
+
 {% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
@@ -7,13 +16,13 @@
         <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
     </li>
     <li class="active">
-        <i class="fa fa-tasks"></i>{% if search %}
-        <a href="/library/">Library</a>
+        <a href="/library/search/"><i class="fa fa-tasks"></i>{% if search %}
+        Library</a>
     </li>
     <li>
-        <i class="fa fa-search"></i> Search
+        <a href="/library/search/"><i class="fa fa-search"></i> Search</a>
         {% else %}
-            Library
+            Library</a>
         {% endif %}
     </li>
 </ol>
@@ -46,6 +55,11 @@
     </form>
     <table class='table table-bordered table-hover' >
         <thead>
+            {% if permissions > 1 or BulkEdit in permssions %}
+            <th>
+                <label><input type="checkbox" onClick="toggle(this)"> All</label>
+            </th>
+            {% endif %}
             <th><i class="fa fa-barcode "></i></th>
             <th><i class="fa fa-thumbs-o-up"></i></th>
             <th>Date In</th>
@@ -58,9 +72,18 @@
         <tbody>
             {% for album in albums %}
                 <tr>
+                    {% if permissions > 1 or BulkEdit in permssions %}
+                        <td>
+                            <label><input type="checkbox" name="bulkEditId[]" value="{{album.RefCode}}"> {{album.RefCode}}</label>
+                        </td>
+                    {% endif %}
                     <td>
                         <button type="button" onclick="location.href='/library/{{album.RefCode}}';" class="btn btn-default btn-xs">
-                            {{album.RefCode}}
+                            {% if not (permissions > 1 or BulkEdit in permssions) %}
+                                {{album.RefCode}}
+                            {% else %}
+                                Edit
+                            {% endif %}
                         <i class="fa fa-edit" aria-hidden="true"></i></button>
                     </td>
                     <td>{% if album.status == 1 %}
@@ -82,4 +105,14 @@
             {% endfor %}
         </tbody>
     </table>
+{% endblock %}
+{% block lastScripts %}
+<script>
+function toggle(source) {
+    checkboxes = document.getElementsByName('bulkEditId[]');
+    for(var i=0, n=checkboxes.length;i<n;i++) {
+      checkboxes[i].checked = source.checked;
+    }
+  }
+</script>
 {% endblock %}

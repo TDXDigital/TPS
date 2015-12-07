@@ -1,16 +1,17 @@
 <!doctype html>
 <?php
-    error_reporting(E_ERROR);
-    include_once '../TPSBIN/functions.php';
-    include_once '../TPSBIN/db_connect.php';
-    require_once "../public/lib/libs.php";
+    error_reporting(E_ALL);
+    include_once 'TPSBIN/functions.php';
+    include_once 'TPSBIN/db_connect.php';
+    require_once "public/lib/station.php";
+    require_once "public/lib/library.php";
     //include_once 'barcode/barcode.php';
 ?>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <title>Print Labels</title>
-    <link href="CSS_Labels/<?php
+    <link href="../Playlist/CSS_Labels/<?php
     $type = filter_input(INPUT_GET,'type', FILTER_SANITIZE_NUMBER_INT)?:5160;
     $indent = filter_input(INPUT_GET,'start', FILTER_SANITIZE_NUMBER_INT) ?: 0;
     $outline = filter_input(INPUT_GET,'outline',FILTER_SANITIZE_STRING) ?: 'false';
@@ -73,6 +74,9 @@
         }
         foreach($_SESSION['PRINTID'] as $BCD){
             $albums = $library->getAlbumByRefcode($BCD['RefCode'], TRUE);
+            if(sizeof($albums)<1){
+                continue;
+            }
             $albumArr = $albums[0];
             $RefCode = $albumArr['RefCode'];
             $artist = $albumArr['artist'];
@@ -87,15 +91,15 @@
             $padded= join('', array($genreCode,str_pad($BCD['RefCode'], 10, "0", STR_PAD_LEFT)));
             
             //echo "<img src='barcode/createBarcode.php?bcd=$BCD'/>";
-            echo "<div class=\"label\"><span ><img style='float:left; margin:0px;' src='./barcode/barcode.php?bcd=$padded' alt='$padded'/>";
+            echo "<div class=\"label\"><span ><img style='float:left; margin:0px;' src='../Playlist/barcode/barcode.php?bcd=$padded' alt='$padded'/>";
             if($locale=="Country"){
-                echo "<img style='float: left; margin: 0px;' src='./maple.gif' alt='CC'/>";
+                echo "<img style='float: left; margin: 0px;' src='../Playlist/maple.gif' alt='CC'/>";
             }
             else if ($locale=="Province"){
-                echo "<img style='float: right; margin: 0px;' width='25px' src='./ab_ttm.png' alt='PRO'/>";
+                echo "<img style='float: right; margin: 0px;' width='25px' src='../Playlist/ab_ttm.png' alt='PRO'/>";
             }
             else if ($locale=="Local"){
-                echo "<img style='float: right; margin: 0px;' width='25px' src='./pointer.png' alt='PRO'/>";
+                echo "<img style='float: right; margin: 0px;' width='25px' src='../Playlist/pointer.png' alt='PRO'/>";
             }
             substr("abcdef", -1);
             if(strlen($artist)>20){

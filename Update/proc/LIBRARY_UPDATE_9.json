@@ -1,0 +1,16 @@
+{
+    "TPS_Errno": "DRLB-001",
+    "type" : "database",
+    "execute" : "SQL",
+    "description" : "Adds parent company attribute to recordlabel",
+    "SQL_QRY" : {
+        "TEST": "SHOW COLUMNS FROM `recordlabel` WHERE `Field` = 'parentCompany';",
+        "RESULT" : {
+            "Field" : [
+                "parentCompany"
+            ]
+        },
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "LIBRARY_UPDATE_9.sql"
+    }
+}

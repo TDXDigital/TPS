@@ -30,6 +30,7 @@ require_once 'reviews.php';
 require_once 'station.php';
 require_once 'program.php';
 require_once 'episode.php';
+require_once 'label.php';
 
 #load api last;
 require_once 'api.php';

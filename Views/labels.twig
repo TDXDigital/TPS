@@ -1,0 +1,72 @@
+{% extends 'baseAdmin.twig' %}
+
+{% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+    </li>
+    <li class="active">
+        <i class="fa fa-tasks"></i>{% if search %}
+        <a href="">label</a>
+    </li>
+    <li>
+        <i class="fa fa-search"></i> Search
+        {% else %}
+            search
+        {% endif %}
+    </li>
+</ol>
+{% endblock %}
+{% block content %}
+    {% if flash.error %}
+        <div class="row">
+            <div class="alert alert-danger">
+                <strong>Error</strong> {{flash.error}}
+            </div>
+        </div>
+    {% endif %}
+    {% if flash.success %}
+        <div class="row">
+            <div class="alert alert-success">
+                <strong>Success</strong> {{flash.success}}
+            </div>
+        </div>
+    {% endif %}
+    <form role="form" method="GET">
+        <div class="row">
+            <div class="form-group input-group">
+                <input type="text" class="form-control" name="search" 
+                       {% if search %}
+                           value="{{search}}"
+                       {% endif %}>
+                <span class="input-group-btn"><button class="btn btn-default" type="button"><i class="fa fa-search"></i></button></span>
+            </div>
+        </div>
+    </form>
+    <table class='table table-bordered table-hover' >
+        <thead>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Edit</th>
+        </thead>
+        <tbody>
+            {% for id,name in labels %}
+                <tr>
+                    <td>{{id}}</td>
+                    <td>{{name}}</td>
+                    <td><a href="{{id}}"><i class="fa fa-edit"></i> Edit</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+<div class="row">
+    <div class="col-lg-6">
+    </div>
+    <div class="col-lg-6">
+        <div class="pull-right">
+            <a class="btn btn-success" href="/label/new/">New Label</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

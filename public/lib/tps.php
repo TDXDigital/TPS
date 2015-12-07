@@ -37,8 +37,8 @@ class TPS{
         if(is_null($target)){
             // Get the default (first) server
             foreach ($dbxml->SERVER as $server){
-                if(strtolower($server->ACTIVE) == "true" ||
-                        $server->ACTIVE == '1'){
+                if(strtolower($server->ACTIVE) == "true" 
+                        || $server->ACTIVE == '1'){
                     $target = (string)$server->ID;
                     break;
                 }

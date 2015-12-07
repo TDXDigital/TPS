@@ -65,7 +65,7 @@ $app->get("/login", function () use ($app) {
    if (isset($flash['errors']['password'])) {
       $password_error = $flash['errors']['password'];
    }
-   $log->info("presented login to user via IP:",NULL,$_SERVER['REMOTE_ADDR']);
+   $log->debug("presented login to user via IP:",NULL,$_SERVER['REMOTE_ADDR']);
    $app->render('login.html.twig', array('error' => $error, 'Username' => $email_value, 'Username_error' => $email_error, 'password_error' => $password_error, 'urlRedirect' => $urlRedirect));
 });
 
@@ -247,4 +247,8 @@ $app->get("/logout", function () use ($app) {
     session_unset();
     $app->view()->setData('access', null);
     $app->render('basic.twig',array('statusCode'=>'Logout','title'=>'Logout', 'message'=>'You have been logged out'));
+});
+
+$app->get("/labels/print", $authenticate($app,[2]), function() use ($app) {
+    require_once 'Playlist/PrintTest.php';
 });

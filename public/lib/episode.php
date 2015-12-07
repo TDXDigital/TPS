@@ -60,18 +60,18 @@ class episode extends program{
             $description = NULL,
             $type = NULL,
             $recordDate = NULL) {
-        $this->program = $program;
-        /**
-         * this does duplicate the parent but It is likely more desirable 
-         * than a detached child object
-         */
-        parent::__construct($this->program);
         $this->EpisodeID = $ID;
         $this->time = $time;
         $this->date = $date;
         $this->description = $description;
         $this->type = $type;
         $this->recordDate = $recordDate;
+        $this->program = $program;
+        /**
+         * this does duplicate the parent but It is likely more desirable 
+         * than a detached child object
+         */
+        parent::__construct($this->program);
     }
     public function setDescription(){
         
@@ -83,11 +83,11 @@ class episode extends program{
     }
     
     public function getEpisode(){
-        if($this->needsUpdate){
+        if($this->needsUpdate && !is_null($this->callsign)){
             $stmt = $this->mysqli->prepare("SELECT "
                 . "callsign, programname, date, starttime, type, "
                 . "prerecorddate, description, IP_Created, totalspokentime, "
-                . "`Lock`, EndStamp, LastAccess, endtime FROM episode "
+                . "`Lock`, EndStamp, LastAccess, endtime, EpNum FROM episode "
                 . "WHERE `EpNum`=? or (`programname`=? and `date`=? and "
                 . "`starttime`=? and `callsign`=?)");
             if($stmt === false){
@@ -99,7 +99,8 @@ class episode extends program{
                     $this->time, $this->type, $this->recordDate, 
                     $this->description, $this->originIP, $this->totalSpokenTime,
                     $this->locked, $this->finalizedTimestamp, 
-                    $this->lastAccessTimestamp, $this->endTime);
+                    $this->lastAccessTimestamp, $this->endTime, 
+                    $this->EpisodeID);
             if($stmt->execute()){
                 //$stmt->store_result();
                 if($stmt->num_rows > 1){
@@ -130,27 +131,33 @@ class episode extends program{
     }
     
     public function createEpisode(){
-        if(!($this->EpisodeID || $this->date || $this->time)){
+        if(!($this->EpisodeID || ($this->date && $this->time))){
             $this->log->error("Could not create episode, values missing");
-            return False;
+            throw new \Exception(sprintf("Values are missing that are required, "
+                    . "cannot create Episode (ID:%d, %s, %s) ",
+                    (integer)$this->EpisodeID,(string)$this->date,
+                    (string)$this->time));
         }
         elseif($this->EpisodeID){
-            return $this->EpisodeID;
+            return $this->getEpisode($this->EpisodeID);
         }
         if($stmt = $this->mysqli->prepare("insert into episode ("
                 . "callsign, programname, date, starttime, type,"
                 . "prerecorddate, description, IP_Created) values "
-                . "( ?, ?, ?, ?, ?, ?, ? )")){
-            $stmt->bind_param("sssssss",$this->callsign,$this->program->name,
+                . "( ?, ?, ?, ?, ?, ?, ?, ?)")){
+            $stmt->bind_param("ssssssss",$this->callsign,$this->program->name,
                     $this->date,$this->time,$this->type,  $this->recordDate,
                     $this->description, $_SERVER['REMOTE_ADDR']);
             if($stmt->execute()){
-                $this->EpisodeID=$this->mysqli->insert_id;
+                $id = $this->mysqli->insert_id;
+                $this->EpisodeID = $id;
+                $this->log->info(sprintf("New Episode created %d", $id ));
             }
             else{
                 $this->log->error($this->mysqli->errno);
             }
             $stmt->close();
+            return $this->getEpisode();
         }
         else{
             $this->log->error("Failed to create new episode"

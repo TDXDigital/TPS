@@ -1,0 +1,31 @@
+{% extends 'baseAdmin.twig' %}
+
+{% block title %}{{title|default('Episode Redirect')}}{% endblock %}
+{% block content %}
+    {% if permissions > 0 %}
+        <div class="row">
+            <div class="col-sm-4">
+                <i class="fa fa-cog fa-spin fa-5x"></i>
+            </div>
+            <div class="col-sm-8">
+                Please Wait, your episode is being created</br>
+                This page should redirect automatically</p>
+            </div>
+        </div>
+    {% endif %}
+    <form action="{{siteUrl}}/oep/p2insertEP.php" method="post">
+        <input type="hidden" name="callsign" value="{{episode.callsign}}"/>
+        <input type="hidden" name="brType" value="{{episode.type}}"/>
+        <input type="hidden" name="program" value="{{episode.name}}"/>
+        <input type="hidden" name="prdate" value="{{episode.recordDate}}"/>
+        <input type="hidden" name="user_date" value="{{episode.date}}"/>
+        <input type="hidden" name="user_time" value="{{episode.time}}"/>
+    </form>
+{% endblock %}
+{% block lastScripts %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $( "form" ).submit();
+        });
+    </script>
+{% endblock %}

@@ -35,6 +35,27 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $locale = filter_input(INPUT_POST, "locale")? :"international";
         $release_date = filter_input(INPUT_POST,'rel_date')?:NULL;
         $note = filter_input(INPUT_POST, "notes")?:NULL;
+        
+        $replacePatterns = array(
+            ["$2, $1","/^\\s*?((?i)the)(?<=(?i)the)\\s+([[:print:]]{3,})/"],
+            ["$2, $1","/^\\s*?((?i)a)(?<=(?i)a)\\s+([[:print:]]{3,})/"]
+        );
+        foreach ($replacePatterns as $regex) {
+            $controller = 0;
+            $artRep = preg_replace($regex[1], $regex[0], $artist, 1, $controller);
+            if($controller){
+                $artist = $artRep;
+                break;
+            }
+        }
+        
+        $library = new \TPS\library();
+        $result = $library->searchLibraryWithAlbum($artist, $album, True);
+        if(sizeof($result)>0 && $result[0]['datein']==$datein){
+            $app->flash("error", "album already entered in database with same receiving date");
+            $app->redirect("./".$result[0]['RefCode']);
+            $app->halt();
+        }
 
         if($locale=="International"){
             $CanCon=0;
@@ -52,39 +73,42 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $playlist=2;
         }
         $labelNum = NULL;
-
-        // Get label number if exists
-        $stmt1 = $mysqli->prepare("SELECT labelNumber FROM recordlabel where Name=? limit 1");
-        $stmt1->bind_param("s",$label);
-        if(!$stmt1->execute()){
-            $stmt1->close();
-            $app->flash('error',$mysqli->error);
-            $app->redirect('./new');
-        }
-        $stmt1->bind_result($labelNum);
-        $stmt1->fetch();
-        $stmt1->close();
-
-        //if does not exist create label
-        if(is_null($labelNum)){
-            $stmt2 = $mysqli->prepare("INSERT INTO recordlabel(Name,size) VALUES (?,?)");
-            $stmt2->bind_param("si",$label,$label_size);
-            if(!$stmt2->execute()){
-                $stmt2->close();
-                #header("location: ../library/?q=new&e=".$mysqli->errno."&s=2");
-                $app->flash('error',$mysqli->error);
-                $app->redirect('./new');
-                //echo "ERROR: " .    $mysqli->error;
+        
+        //find id
+        $labels = \TPS\label::nameSearch($label);
+        if(sizeof($labels)>1){
+            if($labels[0]["alias"]){
+                $labelNum = key($labels[0]["alias"]);
             }
             else{
-                $labelNum=$stmt2->insert_id;
-                //echo "created recordlabel #".$labelNum;
+                $labelNum = key($labels[0]);
             }
-            $stmt2->close();
         }
         else{
-            //echo $labelNum ? : " NULL ";
+            $labelNum = \TPS\label::createLabel($label, 1);
+            $labelRewrite = array(
+                "/(.+)(?=(?i)\srecord.{0,5})/",
+            );
+            foreach ($labelRewrite as $regex) {
+                $value = false;
+                $value = preg_match($regex, $label, $matches);
+                if($value==1){
+                    $id = \TPS\label::createLabel($matches[0],1);
+                    $subLabel = new \TPS\label($id);
+                    $subLabel->setAlias($labelNum);
+                }
+            }
+            
         }
+        
+        //insert real;
+        
+        //insert alias if needed, reference real
+        
+        $label = new \TPS\label($labelNum);
+        //if does not exist create label
+        
+        
         //echo "creating album...";
         if($genre=="null"){
             $genre=NULL;
@@ -210,17 +234,30 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $app->redirect('./new');
     });
     $app->get('/search/', $authenticate, function () use ($app){
+        $format = $app->request->get("format");
+        $page = (int)$app->request->get("p")?:1;
+        $limit = (int)$app->request->get("l")?:25;
         $library = new \TPS\library();
         $library->log->startTimer();
-        $result = $library->searchLibrary("");
+        $result = $library->searchLibrary("",False,$page,$limit);
+        $pages = ceil($library->countSearchLibrary()/$limit);
         $library->log->info("Search basic retrieval took ".
                 $library->log->timerDuration(). "s");
         $params = array(
             "area"=>"Library",
             "albums"=>$result,
             "title"=>"Search",
+            "page"=>$page,
+            "pages"=>$pages,
+            "limit"=>$limit,
         );
-        $app->render('searchLibrary.twig',$params);
+        $isXHR = $app->request->isAjax();
+        if($isXHR || $format=="json"){
+            print json_encode($params);
+        }
+        else{
+            $app->render('searchLibrary.twig',$params);
+        }
     });
     $app->post('/search/', $authenticate, function () use ($app){
         $term = $app->request()->post('q');
@@ -228,9 +265,13 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $app->redirect("/library/search/$term");
     });
     $app->get('/search/:value', $authenticate, function ($term) use ($app){
+        $format = $app->request->get("format");
+        $page = (int)$app->request->get("p")?:1;
+        $limit = (int)$app->request->get("l")?:25;
         $library = new \TPS\library();
         $time_start = microtime(true); 
-        $result = $library->SearchLibrary($term);
+        $result = $library->SearchLibrary($term,False,$page,$limit);
+        $pages = ceil($library->countSearchLibrary($term)/$limit);
         $time_end = microtime(true); 
         $library->log->info("Search basic retrieval took ".
                 ($time_end - $time_start). "s");
@@ -238,13 +279,28 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             "title"=>"Search $term",
             "albums"=>$result,
             "search"=>$term,
+            "page"=>$page,
+            "pages"=>$pages,
+            "limit"=>$limit,
         );
         $app->render('searchLibrary.twig',$params);
     });
     $app->get('/:RefCode', $authenticate($app,array(1,2)), function ($RefCode) use ($app){
         $library = new \TPS\library();
         //global $mysqli;
-        $album=$library->getAlbumByRefcode($RefCode)[0];
+        $album=$library->getAlbumByRefcode($RefCode);
+        if(sizeof($album)>0){
+            $album = $album[0];
+        }
+        else{
+            $params = array(
+                "title" => "400 Bad Request",
+                "message" => "The resource `$RefCode` does not exist or is invalid",
+            );
+            $app->response->setStatus(400);
+            $app->render("error.html.twig",$params);
+            $app->halt();
+        }
         $album['label']=$library->getLabelbyId($album['labelid'])[0];
         $album['websites']=$library->getWebsitesByRefCode($RefCode);
         

@@ -7,7 +7,7 @@
 	<title>Class TPS\station | TPS_GIT</title>
 
 	<script type="text/javascript" src="resources/combined.js?3604910170"></script>
-	<script type="text/javascript" src="elementlist.js?1071243315"></script>
+	<script type="text/javascript" src="elementlist.js?3705013715"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360">
 
 </head>
@@ -36,9 +36,16 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
+				<li><a href="class-TPS.episode.html">episode</a></li>
+				<li><a href="class-TPS.label.html">label</a></li>
 				<li><a href="class-TPS.library.html">library</a></li>
+				<li><a href="class-TPS.logger.html">logger</a></li>
+				<li><a href="class-TPS.program.html">program</a></li>
+				<li><a href="class-TPS.Report.html">Report</a></li>
 				<li><a href="class-TPS.reviews.html">reviews</a></li>
+				<li><a href="class-TPS.song.html">song</a></li>
 				<li class="active"><a href="class-TPS.station.html">station</a></li>
+				<li><a href="class-TPS.submissionTracking.html">submissionTracking</a></li>
 				<li><a href="class-TPS.TPS.html">TPS</a></li>
 			</ul>
 
@@ -111,9 +118,16 @@
 	<div>
 		<h4>Direct known subclasses</h4>
 			<a href="class-TPS.library.html">TPS\library</a>, 
+			<a href="class-TPS.program.html">TPS\program</a>, 
 			<a href="class-TPS.reviews.html">TPS\reviews</a>
 	</div>
 
+	<div>
+		<h4>Indirect known subclasses</h4>
+			<a href="class-TPS.episode.html">TPS\episode</a>, 
+			<a href="class-TPS.song.html">TPS\song</a>, 
+			<a href="class-TPS.submissionTracking.html">TPS\submissionTracking</a>
+	</div>
 
 
 
@@ -125,7 +139,7 @@
 		<b>Namespace:</b> <a href="namespace-TPS.html">TPS</a><br>
 		
 
-		<b>Located at</b> <a href="source-class-TPS.station.html#27-611" title="Go to source code">public/lib/station.php</a><br>
+		<b>Located at</b> <a href="source-class-TPS.station.html#29-671" title="Go to source code">public/lib/station.php</a><br>
 	</div>
 
 
@@ -143,7 +157,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-TPS.station.html#53-58" title="Go to source code">__construct</a>( <span>mixed <var>$callsign</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-TPS.station.html#56-68" title="Go to source code">__construct</a>( <span>mixed <var>$callsign</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -163,6 +177,66 @@
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="updateParent" id="_updateParent">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_updateParent">#</a>
+		<code><a href="source-class-TPS.station.html#70-83" title="Go to source code">updateParent</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-TPS.TPS.html#_updateParent">TPS\TPS::updateParent()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="update" id="_update">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_update">#</a>
+		<code><a href="source-class-TPS.station.html#85-90" title="Go to source code">update</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="setupParams" id="_setupParams">
 
 		<td class="attributes"><code>
@@ -174,7 +248,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setupParams">#</a>
-		<code><a href="source-class-TPS.station.html#60-111" title="Go to source code">setupParams</a>( <span>mixed <var>$callsign</var></span> )</code>
+		<code><a href="source-class-TPS.station.html#92-144" title="Go to source code">setupParams</a>( <span>mixed <var>$callsign</var></span> )</code>
 
 		<div class="description short">
 			
@@ -203,7 +277,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getStation">#</a>
-		<code><a href="source-class-TPS.station.html#113-171" title="Go to source code">getStation</a>( <span>mixed <var>$callsign</var></span>, <span>mixed <var>$page</var> = <span class="php-num">1</span></span>, <span>mixed <var>$maxResult</var> = <span class="php-num">50</span></span> )</code>
+		<code><a href="source-class-TPS.station.html#146-204" title="Go to source code">getStation</a>( <span>mixed <var>$callsign</var></span>, <span>mixed <var>$page</var> = <span class="php-num">1</span></span>, <span>mixed <var>$maxResult</var> = <span class="php-num">50</span></span> )</code>
 
 		<div class="description short">
 			
@@ -232,7 +306,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setStation">#</a>
-		<code><a href="source-class-TPS.station.html#173-182" title="Go to source code">setStation</a>( <span>mixed <var>$callsign</var></span> )</code>
+		<code><a href="source-class-TPS.station.html#206-216" title="Go to source code">setStation</a>( <span>mixed <var>$callsign</var></span> )</code>
 
 		<div class="description short">
 			
@@ -261,17 +335,15 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setStationName">#</a>
-		<code><a href="source-class-TPS.station.html#183-197" title="Go to source code">setStationName</a>( <span>type <var>$name</var></span> )</code>
+		<code><a href="source-class-TPS.station.html#217-231" title="Go to source code">setStationName</a>( <span>type <var>$name</var></span> )</code>
 
 		<div class="description short">
-			
-<p>changes the station name</p>
+			<p>changes the station name</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>changes the station name</p>
+			<p>changes the station name</p>
 
 
 
@@ -303,17 +375,15 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setStationDesignation">#</a>
-		<code><a href="source-class-TPS.station.html#199-213" title="Go to source code">setStationDesignation</a>( <span>type <var>$Designation</var></span> )</code>
+		<code><a href="source-class-TPS.station.html#233-247" title="Go to source code">setStationDesignation</a>( <span>type <var>$Designation</var></span> )</code>
 
 		<div class="description short">
-			
-<p>Changes Station Designation in DB and Class</p>
+			<p>Changes Station Designation in DB and Class</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>Changes Station Designation in DB and Class</p>
+			<p>Changes Station Designation in DB and Class</p>
 
 
 
@@ -345,17 +415,15 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setStationFrequency">#</a>
-		<code><a href="source-class-TPS.station.html#215-229" title="Go to source code">setStationFrequency</a>( <span>type <var>$frequency</var></span> )</code>
+		<code><a href="source-class-TPS.station.html#249-263" title="Go to source code">setStationFrequency</a>( <span>type <var>$frequency</var></span> )</code>
 
 		<div class="description short">
-			
-<p>Changes Station Frequency in DB and Class</p>
+			<p>Changes Station Frequency in DB and Class</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>Changes Station Frequency in DB and Class</p>
+			<p>Changes Station Frequency in DB and Class</p>
 
 
 
@@ -387,17 +455,15 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setStationPhoneDirector">#</a>
-		<code><a href="source-class-TPS.station.html#231-245" title="Go to source code">setStationPhoneDirector</a>( <span>type <var>$phone</var></span> )</code>
+		<code><a href="source-class-TPS.station.html#265-279" title="Go to source code">setStationPhoneDirector</a>( <span>type <var>$phone</var></span> )</code>
 
 		<div class="description short">
-			
-<p>Changes Director Phone in DB and Class</p>
+			<p>Changes Director Phone in DB and Class</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>Changes Director Phone in DB and Class</p>
+			<p>Changes Director Phone in DB and Class</p>
 
 
 
@@ -429,17 +495,15 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setStationPhoneRequest">#</a>
-		<code><a href="source-class-TPS.station.html#247-261" title="Go to source code">setStationPhoneRequest</a>( <span>type <var>$phone</var></span> )</code>
+		<code><a href="source-class-TPS.station.html#281-295" title="Go to source code">setStationPhoneRequest</a>( <span>type <var>$phone</var></span> )</code>
 
 		<div class="description short">
-			
-<p>Changes Request Line number in DB and Class</p>
+			<p>Changes Request Line number in DB and Class</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>Changes Request Line number in DB and Class</p>
+			<p>Changes Request Line number in DB and Class</p>
 
 
 
@@ -471,17 +535,15 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setStationPhoneManager">#</a>
-		<code><a href="source-class-TPS.station.html#263-277" title="Go to source code">setStationPhoneManager</a>( <span>type <var>$phone</var></span> )</code>
+		<code><a href="source-class-TPS.station.html#297-311" title="Go to source code">setStationPhoneManager</a>( <span>type <var>$phone</var></span> )</code>
 
 		<div class="description short">
-			
-<p>Changes Station Manager Phone in DB and Class</p>
+			<p>Changes Station Manager Phone in DB and Class</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>Changes Station Manager Phone in DB and Class</p>
+			<p>Changes Station Manager Phone in DB and Class</p>
 
 
 
@@ -513,17 +575,15 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setStationWebsite">#</a>
-		<code><a href="source-class-TPS.station.html#279-293" title="Go to source code">setStationWebsite</a>( <span>type <var>$url</var></span> )</code>
+		<code><a href="source-class-TPS.station.html#313-327" title="Go to source code">setStationWebsite</a>( <span>type <var>$url</var></span> )</code>
 
 		<div class="description short">
-			
-<p>Changes Station website in DB and Class</p>
+			<p>Changes Station website in DB and Class</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>Changes Station website in DB and Class</p>
+			<p>Changes Station website in DB and Class</p>
 
 
 
@@ -555,17 +615,15 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setStationAddress">#</a>
-		<code><a href="source-class-TPS.station.html#295-309" title="Go to source code">setStationAddress</a>( <span>type <var>$address</var></span> )</code>
+		<code><a href="source-class-TPS.station.html#329-343" title="Go to source code">setStationAddress</a>( <span>type <var>$address</var></span> )</code>
 
 		<div class="description short">
-			
-<p>Changes Station Address in DB and Class</p>
+			<p>Changes Station Address in DB and Class</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>Changes Station Address in DB and Class</p>
+			<p>Changes Station Address in DB and Class</p>
 
 
 
@@ -597,7 +655,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_hourlyTraffic">#</a>
-		<code><a href="source-class-TPS.station.html#311-313" title="Go to source code">hourlyTraffic</a>( )</code>
+		<code><a href="source-class-TPS.station.html#345-347" title="Go to source code">hourlyTraffic</a>( )</code>
 
 		<div class="description short">
 			
@@ -626,7 +684,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setHourlyTraffic">#</a>
-		<code><a href="source-class-TPS.station.html#315-324" title="Go to source code">setHourlyTraffic</a>( <span>mixed <var>$hourly</var></span> )</code>
+		<code><a href="source-class-TPS.station.html#349-358" title="Go to source code">setHourlyTraffic</a>( <span>mixed <var>$hourly</var></span> )</code>
 
 		<div class="description short">
 			
@@ -655,7 +713,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_hourlyPSA">#</a>
-		<code><a href="source-class-TPS.station.html#326-328" title="Go to source code">hourlyPSA</a>( )</code>
+		<code><a href="source-class-TPS.station.html#360-362" title="Go to source code">hourlyPSA</a>( )</code>
 
 		<div class="description short">
 			
@@ -684,7 +742,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setHourlyPSA">#</a>
-		<code><a href="source-class-TPS.station.html#330-339" title="Go to source code">setHourlyPSA</a>( <span>mixed <var>$hourly</var></span> )</code>
+		<code><a href="source-class-TPS.station.html#364-373" title="Go to source code">setHourlyPSA</a>( <span>mixed <var>$hourly</var></span> )</code>
 
 		<div class="description short">
 			
@@ -713,17 +771,15 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setStationTimeZone">#</a>
-		<code><a href="source-class-TPS.station.html#341-360" title="Go to source code">setStationTimeZone</a>( <span>type <var>$tz</var></span> )</code>
+		<code><a href="source-class-TPS.station.html#375-394" title="Go to source code">setStationTimeZone</a>( <span>type <var>$tz</var></span> )</code>
 
 		<div class="description short">
-			
-<p>Changes Station TimeZone in DB and Class</p>
+			<p>Changes Station TimeZone in DB and Class</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-			
-<p>Changes Station TimeZone in DB and Class</p>
+			<p>Changes Station TimeZone in DB and Class</p>
 
 
 
@@ -755,7 +811,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_playlistLiveGroupingOn">#</a>
-		<code><a href="source-class-TPS.station.html#382-384" title="Go to source code">playlistLiveGroupingOn</a>( )</code>
+		<code><a href="source-class-TPS.station.html#416-421" title="Go to source code">playlistLiveGroupingOn</a>( )</code>
 
 		<div class="description short">
 			
@@ -784,7 +840,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_playlistLiveGroupingOff">#</a>
-		<code><a href="source-class-TPS.station.html#386-388" title="Go to source code">playlistLiveGroupingOff</a>( )</code>
+		<code><a href="source-class-TPS.station.html#423-428" title="Go to source code">playlistLiveGroupingOff</a>( )</code>
 
 		<div class="description short">
 			
@@ -813,7 +869,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_playlistLiveGrouping">#</a>
-		<code><a href="source-class-TPS.station.html#390-392" title="Go to source code">playlistLiveGrouping</a>( )</code>
+		<code><a href="source-class-TPS.station.html#430-432" title="Go to source code">playlistLiveGrouping</a>( )</code>
 
 		<div class="description short">
 			
@@ -842,7 +898,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_togglePlaylistLiveGrouping">#</a>
-		<code><a href="source-class-TPS.station.html#394-401" title="Go to source code">togglePlaylistLiveGrouping</a>( )</code>
+		<code><a href="source-class-TPS.station.html#434-441" title="Go to source code">togglePlaylistLiveGrouping</a>( )</code>
 
 		<div class="description short">
 			
@@ -871,7 +927,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_PlaylistReportingGroupingOn">#</a>
-		<code><a href="source-class-TPS.station.html#423-425" title="Go to source code">PlaylistReportingGroupingOn</a>( )</code>
+		<code><a href="source-class-TPS.station.html#463-465" title="Go to source code">PlaylistReportingGroupingOn</a>( )</code>
 
 		<div class="description short">
 			
@@ -900,7 +956,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_PlaylistReportingGroupingOff">#</a>
-		<code><a href="source-class-TPS.station.html#427-429" title="Go to source code">PlaylistReportingGroupingOff</a>( )</code>
+		<code><a href="source-class-TPS.station.html#467-469" title="Go to source code">PlaylistReportingGroupingOff</a>( )</code>
 
 		<div class="description short">
 			
@@ -929,7 +985,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_PlaylistReportingGrouping">#</a>
-		<code><a href="source-class-TPS.station.html#431-433" title="Go to source code">PlaylistReportingGrouping</a>( )</code>
+		<code><a href="source-class-TPS.station.html#471-473" title="Go to source code">PlaylistReportingGrouping</a>( )</code>
 
 		<div class="description short">
 			
@@ -958,7 +1014,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_togglePlaylistReportingGrouping">#</a>
-		<code><a href="source-class-TPS.station.html#435-442" title="Go to source code">togglePlaylistReportingGrouping</a>( )</code>
+		<code><a href="source-class-TPS.station.html#475-482" title="Go to source code">togglePlaylistReportingGrouping</a>( )</code>
 
 		<div class="description short">
 			
@@ -987,7 +1043,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setDefaultSortOrder">#</a>
-		<code><a href="source-class-TPS.station.html#444-453" title="Go to source code">setDefaultSortOrder</a>( <span>mixed <var>$SortOrder</var></span> )</code>
+		<code><a href="source-class-TPS.station.html#484-493" title="Go to source code">setDefaultSortOrder</a>( <span>mixed <var>$SortOrder</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1016,7 +1072,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_programCountersOn">#</a>
-		<code><a href="source-class-TPS.station.html#465-471" title="Go to source code">programCountersOn</a>( )</code>
+		<code><a href="source-class-TPS.station.html#505-511" title="Go to source code">programCountersOn</a>( )</code>
 
 		<div class="description short">
 			
@@ -1045,7 +1101,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_programCountersOff">#</a>
-		<code><a href="source-class-TPS.station.html#473-479" title="Go to source code">programCountersOff</a>( )</code>
+		<code><a href="source-class-TPS.station.html#513-519" title="Go to source code">programCountersOff</a>( )</code>
 
 		<div class="description short">
 			
@@ -1074,7 +1130,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_programCounters">#</a>
-		<code><a href="source-class-TPS.station.html#481-483" title="Go to source code">programCounters</a>( )</code>
+		<code><a href="source-class-TPS.station.html#521-523" title="Go to source code">programCounters</a>( )</code>
 
 		<div class="description short">
 			
@@ -1103,7 +1159,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_toggleProgramCounters">#</a>
-		<code><a href="source-class-TPS.station.html#485-492" title="Go to source code">toggleProgramCounters</a>( )</code>
+		<code><a href="source-class-TPS.station.html#525-532" title="Go to source code">toggleProgramCounters</a>( )</code>
 
 		<div class="description short">
 			
@@ -1132,7 +1188,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_forceComposerOn">#</a>
-		<code><a href="source-class-TPS.station.html#504-510" title="Go to source code">forceComposerOn</a>( )</code>
+		<code><a href="source-class-TPS.station.html#544-550" title="Go to source code">forceComposerOn</a>( )</code>
 
 		<div class="description short">
 			
@@ -1161,7 +1217,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_forceComposerOff">#</a>
-		<code><a href="source-class-TPS.station.html#512-518" title="Go to source code">forceComposerOff</a>( )</code>
+		<code><a href="source-class-TPS.station.html#552-558" title="Go to source code">forceComposerOff</a>( )</code>
 
 		<div class="description short">
 			
@@ -1190,7 +1246,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_forceComposer">#</a>
-		<code><a href="source-class-TPS.station.html#520-522" title="Go to source code">forceComposer</a>( )</code>
+		<code><a href="source-class-TPS.station.html#560-562" title="Go to source code">forceComposer</a>( )</code>
 
 		<div class="description short">
 			
@@ -1219,7 +1275,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_toggleForceComposer">#</a>
-		<code><a href="source-class-TPS.station.html#524-531" title="Go to source code">toggleForceComposer</a>( )</code>
+		<code><a href="source-class-TPS.station.html#564-571" title="Go to source code">toggleForceComposer</a>( )</code>
 
 		<div class="description short">
 			
@@ -1248,7 +1304,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_forceArtistOn">#</a>
-		<code><a href="source-class-TPS.station.html#543-549" title="Go to source code">forceArtistOn</a>( )</code>
+		<code><a href="source-class-TPS.station.html#583-589" title="Go to source code">forceArtistOn</a>( )</code>
 
 		<div class="description short">
 			
@@ -1277,7 +1333,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_forceArtistOff">#</a>
-		<code><a href="source-class-TPS.station.html#551-557" title="Go to source code">forceArtistOff</a>( )</code>
+		<code><a href="source-class-TPS.station.html#591-597" title="Go to source code">forceArtistOff</a>( )</code>
 
 		<div class="description short">
 			
@@ -1306,7 +1362,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_forceArtist">#</a>
-		<code><a href="source-class-TPS.station.html#559-561" title="Go to source code">forceArtist</a>( )</code>
+		<code><a href="source-class-TPS.station.html#599-601" title="Go to source code">forceArtist</a>( )</code>
 
 		<div class="description short">
 			
@@ -1335,7 +1391,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_toggleForceArtist">#</a>
-		<code><a href="source-class-TPS.station.html#563-570" title="Go to source code">toggleForceArtist</a>( )</code>
+		<code><a href="source-class-TPS.station.html#603-610" title="Go to source code">toggleForceArtist</a>( )</code>
 
 		<div class="description short">
 			
@@ -1364,7 +1420,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_forceAlbumOn">#</a>
-		<code><a href="source-class-TPS.station.html#582-588" title="Go to source code">forceAlbumOn</a>( )</code>
+		<code><a href="source-class-TPS.station.html#622-628" title="Go to source code">forceAlbumOn</a>( )</code>
 
 		<div class="description short">
 			
@@ -1393,7 +1449,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_forceAlbumOff">#</a>
-		<code><a href="source-class-TPS.station.html#590-596" title="Go to source code">forceAlbumOff</a>( )</code>
+		<code><a href="source-class-TPS.station.html#630-636" title="Go to source code">forceAlbumOff</a>( )</code>
 
 		<div class="description short">
 			
@@ -1422,7 +1478,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_forceAlbum">#</a>
-		<code><a href="source-class-TPS.station.html#598-600" title="Go to source code">forceAlbum</a>( )</code>
+		<code><a href="source-class-TPS.station.html#638-640" title="Go to source code">forceAlbum</a>( )</code>
 
 		<div class="description short">
 			
@@ -1451,7 +1507,36 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_toggleForceAlbum">#</a>
-		<code><a href="source-class-TPS.station.html#602-609" title="Go to source code">toggleForceAlbum</a>( )</code>
+		<code><a href="source-class-TPS.station.html#642-649" title="Go to source code">toggleForceAlbum</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getAllProgramIds" id="_getAllProgramIds">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getAllProgramIds">#</a>
+		<code><a href="source-class-TPS.station.html#651-670" title="Go to source code">getAllProgramIds</a>( <span>mixed <var>$active</var> = <span class="php-keyword1">TRUE</span></span> )</code>
 
 		<div class="description short">
 			
@@ -1500,7 +1585,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#28" title="Go to source code"><var>$callsign</var></a>
+				<a href="source-class-TPS.station.html#30" title="Go to source code"><var>$callsign</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
@@ -1523,7 +1608,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#29" title="Go to source code"><var>$stationName</var></a>
+				<a href="source-class-TPS.station.html#31" title="Go to source code"><var>$stationName</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
@@ -1546,7 +1631,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#30" title="Go to source code"><var>$stationDesignation</var></a>
+				<a href="source-class-TPS.station.html#32" title="Go to source code"><var>$stationDesignation</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
@@ -1569,7 +1654,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#31" title="Go to source code"><var>$stationFrequency</var></a>
+				<a href="source-class-TPS.station.html#33" title="Go to source code"><var>$stationFrequency</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
@@ -1592,7 +1677,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#32" title="Go to source code"><var>$stationPhoneDirector</var></a>
+				<a href="source-class-TPS.station.html#34" title="Go to source code"><var>$stationPhoneDirector</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
@@ -1615,7 +1700,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#33" title="Go to source code"><var>$stationPhoneManager</var></a>
+				<a href="source-class-TPS.station.html#35" title="Go to source code"><var>$stationPhoneManager</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
@@ -1638,7 +1723,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#34" title="Go to source code"><var>$stationPhoneRequest</var></a>
+				<a href="source-class-TPS.station.html#36" title="Go to source code"><var>$stationPhoneRequest</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
@@ -1661,7 +1746,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#35" title="Go to source code"><var>$stationAddress</var></a>
+				<a href="source-class-TPS.station.html#37" title="Go to source code"><var>$stationAddress</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
@@ -1684,7 +1769,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#36" title="Go to source code"><var>$stationWebsite</var></a>
+				<a href="source-class-TPS.station.html#38" title="Go to source code"><var>$stationWebsite</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
@@ -1707,7 +1792,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#37" title="Go to source code"><var>$DefaultSortOrder</var></a>
+				<a href="source-class-TPS.station.html#39" title="Go to source code"><var>$DefaultSortOrder</var></a>
 		</td>
 		<td class="value"><code><span class="php-quote">'asc'</span></code></td>
 		<td class="description"><div>
@@ -1730,7 +1815,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#38" title="Go to source code"><var>$GroupPlaylist</var></a>
+				<a href="source-class-TPS.station.html#40" title="Go to source code"><var>$GroupPlaylist</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">False</span></code></td>
 		<td class="description"><div>
@@ -1753,7 +1838,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#39" title="Go to source code"><var>$GroupPlaylistReporting</var></a>
+				<a href="source-class-TPS.station.html#41" title="Go to source code"><var>$GroupPlaylistReporting</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">False</span></code></td>
 		<td class="description"><div>
@@ -1776,7 +1861,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#41" title="Go to source code"><var>$colorFail</var></a>
+				<a href="source-class-TPS.station.html#43" title="Go to source code"><var>$colorFail</var></a>
 		</td>
 		<td class="value"><code><span class="php-quote">&quot;#FC6E51&quot;</span></code></td>
 		<td class="description"><div>
@@ -1799,7 +1884,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#42" title="Go to source code"><var>$colorWarning</var></a>
+				<a href="source-class-TPS.station.html#44" title="Go to source code"><var>$colorWarning</var></a>
 		</td>
 		<td class="value"><code><span class="php-quote">&quot;#FFCE54&quot;</span></code></td>
 		<td class="description"><div>
@@ -1822,7 +1907,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#43" title="Go to source code"><var>$colorPass</var></a>
+				<a href="source-class-TPS.station.html#45" title="Go to source code"><var>$colorPass</var></a>
 		</td>
 		<td class="value"><code><span class="php-quote">&quot;#A0D468&quot;</span></code></td>
 		<td class="description"><div>
@@ -1845,7 +1930,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#44" title="Go to source code"><var>$colorNote</var></a>
+				<a href="source-class-TPS.station.html#46" title="Go to source code"><var>$colorNote</var></a>
 		</td>
 		<td class="value"><code><span class="php-quote">&quot;#4FC1E9&quot;</span></code></td>
 		<td class="description"><div>
@@ -1868,7 +1953,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#45" title="Go to source code"><var>$ProgramCounters</var></a>
+				<a href="source-class-TPS.station.html#47" title="Go to source code"><var>$ProgramCounters</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">False</span></code></td>
 		<td class="description"><div>
@@ -1891,7 +1976,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#46" title="Go to source code"><var>$forceComposer</var></a>
+				<a href="source-class-TPS.station.html#48" title="Go to source code"><var>$forceComposer</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">False</span></code></td>
 		<td class="description"><div>
@@ -1914,7 +1999,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#47" title="Go to source code"><var>$forceArtist</var></a>
+				<a href="source-class-TPS.station.html#49" title="Go to source code"><var>$forceArtist</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">False</span></code></td>
 		<td class="description"><div>
@@ -1937,7 +2022,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#48" title="Go to source code"><var>$forceAlbum</var></a>
+				<a href="source-class-TPS.station.html#50" title="Go to source code"><var>$forceAlbum</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">False</span></code></td>
 		<td class="description"><div>
@@ -1960,7 +2045,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#49" title="Go to source code"><var>$perHourTraffic</var></a>
+				<a href="source-class-TPS.station.html#51" title="Go to source code"><var>$perHourTraffic</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
@@ -1983,7 +2068,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#50" title="Go to source code"><var>$perHourPSA</var></a>
+				<a href="source-class-TPS.station.html#52" title="Go to source code"><var>$perHourPSA</var></a>
 		</td>
 		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
@@ -2006,11 +2091,34 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.station.html#51" title="Go to source code"><var>$timezone</var></a>
+				<a href="source-class-TPS.station.html#53" title="Go to source code"><var>$timezone</var></a>
 		</td>
 		<td class="value"><code><span class="php-quote">&quot;UTC&quot;</span></code></td>
 		<td class="description"><div>
 			<a href="#$timezone" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="log" id="$log">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-TPS.station.html#54" title="Go to source code"><var>$log</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$log" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -2028,7 +2136,9 @@
 	<caption>Properties inherited from <a href="class-TPS.TPS.html#properties">TPS\TPS</a></caption>
 	<tr>
 		<td><code>
-			<a href="class-TPS.TPS.html#$mysqli"><var>$mysqli</var></a>
+			<a href="class-TPS.TPS.html#$mysqli"><var>$mysqli</var></a>, 
+			<a href="class-TPS.TPS.html#$mysqliDriver"><var>$mysqliDriver</var></a>, 
+			<a href="class-TPS.TPS.html#$username"><var>$username</var></a>
 		</code></td>
 	</tr>
 	</table>

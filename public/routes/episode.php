@@ -81,11 +81,48 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $airDate = $app->request->post('airDate')?:NULL;
         $recordDate = $app->request->post('recordDate')?:NULL;
         $airTime = $app->request->post('airTime')?:NULL;
-        $type = $app->request->post('type')?:NULL;
+        $type = $app->request->post('type')?:0;
+        $description = $app->request->post('description')?:NULL;
+        
+        if($type==2 && is_null($airDate)){
+            $airDate="1973-01-01";
+        }
         
         $station = new \TPS\station($callsign);
         $program = new \TPS\program($station, $programID);
-        $episode = new \TPS\episode($program, NULL, $airDate, $airTime);
-        var_dump($allParams);
+        $episode = new \TPS\episode($program, NULL, $airDate, $airTime,
+                $description, $type, $recordDate);
+        $episodeCheck = new \TPS\episode($program, NULL, $airDate, $airTime,
+                $description, $type, $recordDate);
+        if( $type == 2){
+            while($episodeCheck->getEpisode()["id"] != Null){
+                $airTime = date("H:i", 
+                        strtotime("$airDate $airTime + 1 minutes"));
+                $episodeCheck = new \TPS\episode($program, NULL, $airDate, $airTime,
+                    $description, $type, $recordDate);
+            }
+            $episode = new \TPS\episode($program, NULL, $airDate, $airTime,
+                    $description, $type, $recordDate);
+        }
+        $params = array(
+            'area'=>'Episode',
+            'title'=>'Redirect  '
+        );
+        if($episodeCheck->getEpisode()['id']){
+            $params['episode'] = $episode->getEpisode();
+        }
+        else{
+            $params['episode'] = $episode->createEpisode();
+        }
+        // Redirect to query URL in future
+        $app->response->setStatus(201);
+        $isXHR = $app->request->isAjax();
+        if(!$isXHR){
+            $app->render("episodeRedirect.twig",$params);
+        }
+        else{
+            print json_encode($params);
+        }
+        //var_dump($params);
     });
 });
