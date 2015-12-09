@@ -46,7 +46,7 @@ else{
     if($vars = mysqli_query($link,$SQL_QUERY_NAME)){
         if($vars->fetch_object()->UID_NUM==0){
             if(mysqli_query($link,$SQL_INSERT)){
-                header('location: genre.php?r=Successfully%20Added');
+                header('location: Genre.php?r=Successfully%20Added');
             }
             else{
                 header('location: '.$_SERVER['HTTP_REFERER'].'?e=Invalid%20Parameters');
