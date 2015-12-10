@@ -16,6 +16,12 @@ $sessionName = "TPSSlimSession";
 $sessionSecret = 
         "Q7^nY{Zd'UO]Z`=L8X&`fV)Fn(LwH(vFwAm-y[z,YJD*vJj'WVYNC!+R3\cnF3I";
 
+if(!file_exists("TPSBIN".DIRECTORY_SEPARATOR."XML".
+        DIRECTORY_SEPARATOR."DBSETTINGS.xml")){
+    header('Location: /Setup/');
+    exit();
+}
+
 require_once 'header.php';
 
 if($debug){

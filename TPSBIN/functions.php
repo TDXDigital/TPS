@@ -229,8 +229,12 @@ $TPSBIN = dirname(findHOME(0,__DIR__,10,"functions.php"));
         session_regenerate_id();    // regenerated the session, delete the old one. */
     }
 
-    function login($email, $password, $mysqli) {
+    function login($email, $password, $mysqli=NULL, $callsign=NULL) {
         // Using prepared statements means that SQL injection is not possible. 
+        if($callsign){
+            $station = new \TPS\station($callsign);
+            //@todo implement SECL login at station level.
+        }
         if ($stmt = $mysqli->prepare("SELECT id, username, password, salt, access
             FROM members
            WHERE email = ?

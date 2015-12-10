@@ -668,4 +668,26 @@ class station extends TPS{
         }
         else{return false;}
     }
+    
+    public static function create($callsign, $name, $designation,
+            $frequency, $website, $address, $mainPhone, $mgrPhone){
+        $tps = new \TPS\TPS();
+        $con = $this->mysqli->prepare(
+                "insert into `station` (callsign,stationname,Designation,"
+                . "frequency,website,address,boothphone,directorphone) "
+                . "values ( ?, ?, ?, ?, ?, ?, ?, ?)"
+                );
+        if($con===false){
+            trigger_error($tps->mysqli->error,E_USER_ERROR);
+        }
+        $con->bind_param("ssssssss", $callsign, $name, $designation,
+                $frequency, $website, $address, $mainPhone, $mgrPhone);
+        $con->execute();
+        if($con === false){
+            trigger_error($tps->mysqli->error,E_USER_ERROR);
+        }
+        $result = $con->insert_id;
+        $con->close();
+        return $result;
+    }
 }

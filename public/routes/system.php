@@ -203,15 +203,14 @@ $app->post("/login", function () use ($app) {
                     #error_log("Could not Bind LDAP server");
                     $errors['Username'] = "Invalid login";
                 }
-            }/*
+            }
             elseif((string)$server->AUTH == strtoupper("SECL")){
-                if ($username != "brian@nesbot.com") {
-                    $errors['Username'] = "Username not found.";
-                } else if ($password != "aaaa") {
+                $station = substr($server->ID,0,4);
+                if(!login($username, $password, NULL, $station)){
                     $app->flash('Username', $username);
                     $errors['password'] = "Password does not match.";
-                } 
-            }
+                }
+            }/*
             elseif((string)$server->AUTH == strtoupper("LIST")){
                 if ($username != "brian@nesbot.com") {
                     $errors['Username'] = "Username not found.";

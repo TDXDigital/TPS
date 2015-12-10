@@ -68,7 +68,7 @@ foreach($SERV as $key=>$value)
 //if(function(){
 if($doc->save('../TPSBIN/XML/DBSETTINGS.xml')){
     if(chmod('../TPSBIN/XML/DBSETTINGS.xml',0600)){
-        print json_encode(array("status"=>"Complete","value"=>$SERV));
+        print json_encode(array("status"=>"Complete"));#,"value"=>$SERV));
     }
     else{
         print json_encode(array("status"=>"warning","value"=>"could not change permissions"));
@@ -76,7 +76,7 @@ if($doc->save('../TPSBIN/XML/DBSETTINGS.xml')){
 }
 else{
     http_response_code(500);
-    print json_encode(array("status"=>"Fail","value"=>$SERV));
+    print json_encode(array("status"=>"Fail"));#,"value"=>$SERV));
 }
     
 /*})
