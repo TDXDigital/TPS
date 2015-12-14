@@ -1034,9 +1034,9 @@ else{
      }
      $(document).ready(function () {
          // Load Emergency Information
-         GetEAS('EAS', '../../');
+         GetEAS('EAS', '../../', "lethbridge");
          setInterval(function () {
-            GetEAS('EAS', '../../');
+            GetEAS('EAS', '../../', "lethbridge");
          }, 15000);
      });
 	</script>

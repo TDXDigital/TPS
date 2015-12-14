@@ -21,7 +21,6 @@ if(!set_db_params($dbxml,$var)){
 
 //include_once 'db_auth_connect.php';
 
-
 // establish connection
 include_once '../../TPSBIN/db_connect.php';
  

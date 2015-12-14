@@ -1,10 +1,17 @@
 <?php
 
 $DEBUG=FALSE;
+#$DEBUG = TRUE;
 
 include "../TPSBIN/functions.php";
 if(is_session_started()===FALSE) { session_start(); }
-
+    if(file_exists("../TPSBIN/XML/DBSETTINGS.xml") 
+            && !key_exists("max_page", $_SESSION)){
+        http_response_code(403);
+        $refusal = "<h1>403 Forbidden</h1><p>Your request cannot proceed as the"
+                . " this server has already been configured.</p>";
+        die($refusal);
+    }
 /**
  * This page handles configuration for the 
  * Setup sequence. Stores all data, sanitizes

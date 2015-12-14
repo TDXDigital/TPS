@@ -99,7 +99,8 @@ $app->group("/system", array($authenticate($app,[2]), $requiresHttps),
 
 $app->post("/login", function () use ($app) {
     $username = $app->request()->post('name');
-    $password = $app->request()->post('pass');
+    $passwordHash = $app->request()->post('p');
+    $password = $app->request()->post('pass')?:$passwordHash;
     $databaseID = $app->request()->post('SRVID');
     $access = 0;
     $errors = array();
@@ -170,21 +171,17 @@ $app->post("/login", function () use ($app) {
                         }
                         if($access>0){
                             $_SESSION['usr'] = easy_decrypt(ENCRYPTION_KEY,(string)$server->USER);
-                            //define("USER",easy_decrypt(ENCRYPTION_KEY,(string)$server->USER));
                             $_SESSION['rpw'] = easy_decrypt(ENCRYPTION_KEY,(string)$server->PASSWORD);
-                            //define("PASSWORD",easy_decrypt(ENCRYPTION_KEY,(string)$server->PASSWORD));
                             $_SESSION['access'] = $access;
                             $_SESSION['fname'] = $nameLDAP;//"LDAP Authenticated User";
-                            $_SESSION['DBNAME'] = (string)$server->DATABASE;//"CKXU";
+                            $_SESSION['DBNAME'] = (string)$server->DATABASE;
                             if((string)$server->RESOLVE == 'URL'){
                                 $_SESSION['DBHOST'] = (string)$server->URL;
                             }
                             else{
                                 $_SESSION['DBHOST'] = (string)$server->IPV4;
                             }
-                            //define("HOST",(string)$_SESSION['DBHOST']);
-                            //define('DBNAME',(string)$_SESSION['DBNAME']);
-                            $_SESSION['SRVPOST'] = (string)$server->ID;//addslashes($_POST['SID']);
+                            $_SESSION['SRVPOST'] = (string)$server->ID;
                             $_SESSION['logo']=$logo;
                             $_SESSION['m_logo']=$m_logo;
                             $_SESSION['account'] = $username;
@@ -193,32 +190,22 @@ $app->post("/login", function () use ($app) {
                             $_SESSION['TimeZone']='UTC'; // this is just the default to be updated after login
                         }
                         else{
+                            $app->flash('Username', $username);
                             $errors['Username'] = "Invalid username or password";
                         }
-                        
-                            
                     }
                 }
                 catch (Exception $ex){
-                    #error_log("Could not Bind LDAP server");
                     $errors['Username'] = "Invalid login";
                 }
             }
             elseif((string)$server->AUTH == strtoupper("SECL")){
                 $station = substr($server->ID,0,4);
-                if(!login($username, $password, NULL, $station)){
+                if(!login($username, $password, NULL, $station, $server)){
                     $app->flash('Username', $username);
-                    $errors['password'] = "Password does not match.";
+                    $errors['Username'] = "Invalid username or password";
                 }
-            }/*
-            elseif((string)$server->AUTH == strtoupper("LIST")){
-                if ($username != "brian@nesbot.com") {
-                    $errors['Username'] = "Username not found.";
-                } else if ($password != "aaaa") {
-                    $app->flash('Username', $username);
-                    $errors['password'] = "Password does not match.";
-                } 
-            }*/
+            }
         endif;
     endforeach;
     $duration = $log->timerDuration();

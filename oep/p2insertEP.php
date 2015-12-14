@@ -607,13 +607,14 @@ else{
             if($Foobar_Enabled){ print("Foobar2000();"); };
          ?>
          // Load Emergency Information
-        GetEAS('EAS', '../');
+         EASlocation = "lethbridge";
+        GetEAS('EAS', '../', EASlocation);
         var EAS_fail = 0;
         var RDS_fail = 0;
         var STC_fail = 0;
         
         var eas_ctl = setInterval(function () {
-             if(!GetEAS('EAS', '../')){
+             if(!GetEAS('EAS', '../', EASlocation)){
                  EAS_fail++;
                  if(EAS_fail>1){
                      console.log("EAS has failed to load twice in a row, cancelling further requests");

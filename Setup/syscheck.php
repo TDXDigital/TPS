@@ -1,10 +1,10 @@
 <?php
-
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+    if(file_exists("../TPSBIN/XML/DBSETTINGS.xml")){
+        http_response_code(403);
+        $refusal = "<h1>403 Forbidden</h1><p>Your request cannot proceed as the"
+                . " this server has already been configured.</p>";
+        die($refusal);
+    }
 
 function Extensions( $extensions ){
     $minimum_requirements = [

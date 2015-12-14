@@ -690,4 +690,187 @@ class station extends TPS{
         $con->close();
         return $result;
     }
+    
+    public function login($email, $password, $server) {
+        // Using prepared statements means that SQL injection is not possible. 
+        if ($stmt = $this->mysqli->prepare("SELECT id, username, password, salt, access
+            FROM members
+           WHERE email = ?
+            LIMIT 1")) {
+            $stmt->bind_param('s', $email);  // Bind "$email" to parameter.
+            $stmt->execute();    // Execute the prepared query.
+            $stmt->store_result();
+
+            // get variables from result.
+            $stmt->bind_result($user_id, $username, $db_password, $salt, $access);
+            $stmt->fetch();
+
+            // hash the password with the unique salt.
+            $password = hash('sha512', $password . $salt);
+            if ($stmt->num_rows == 1) {
+                // If the user exists we check if the account is locked
+                // from too many login attempts 
+
+                if ($this->checkbrute($user_id)) {
+                    // Account is locked 
+                    // Send an email to user saying their account is locked
+                    return false;
+                } else {
+                    // Check if the password in the database matches
+                    // the password the user submitted.
+                    if ($db_password == $password) {
+                        // Password is correct!
+                        // Get the user-agent string of the user.
+                        $user_browser = $_SERVER['HTTP_USER_AGENT'];
+                        // XSS protection as we might print this value
+                        $user_id = preg_replace("/[^0-9]+/", "", $user_id);
+                        $_SESSION['user_id'] = $user_id;
+                        // XSS protection as we might print this value
+                        $username = preg_replace("/[^a-zA-Z0-9_\-]+/", 
+                                                                    "", 
+                                                                    $username);
+                        $_SESSION['username'] = $username;
+                        $_SESSION['login_string'] = hash('sha512', 
+                                  $password . $user_browser);
+                        $_SESSION['account'] = $username;
+                        $_SESSION['userId'] = $user_id;
+                        $_SESSION['access'] = $access;
+                        $_SESSION['AutoComLimit'] = 8;
+                        $_SESSION['AutoComEnable'] = TRUE;
+                        $_SESSION['TimeZone']='UTC'; // this is just the default to be updated after login
+                        if($server){
+                            $_SESSION['usr'] = easy_decrypt(ENCRYPTION_KEY,(string)$server->USER);
+                            $_SESSION['rpw'] = easy_decrypt(ENCRYPTION_KEY,(string)$server->PASSWORD);
+                            $_SESSION['DBNAME'] = (string)$server->DATABASE;
+                            if((string)$server->RESOLVE == 'URL'){
+                                $_SESSION['DBHOST'] = (string)$server->URL;
+                            }
+                            else{
+                                $_SESSION['DBHOST'] = (string)$server->IPV4;
+                            }
+                            $_SESSION['SRVPOST'] = (string)$server->ID;
+                        }
+                        else{
+                            $_SESSION['DBHOST'] = HOST;
+                            $_SESSION['usr'] = USER;
+                            $_SESSION['rpw'] = PASSWORD;
+                            $_SESSION['DBNAME'] = DATABASE;
+                            $_SESSION['SRVPOST'] = 'SECL';
+                        }
+                        $_SESSION['fname'] = $username;
+                        $_SESSION['logo'] = 'images/Ckxu_logo_2.png';
+                        $_SESSION['m_logo']=$_SESSION['logo'];
+                        // Login successful.
+                        $_SESSION['CALLSIGN'] = $this->callsign;
+                        return true;
+                    } else {
+                        // Password is not correct
+                        // We record this attempt in the database
+                        // 
+                        // needs prepare then execute without mysqlnd
+                        $now = time();
+                        $this->mysqli->query("INSERT INTO login_attempts(user_id, time)
+                                        VALUES ('$user_id', '$now')");
+                        return false;
+                    }
+                }
+            } else {
+                // No user exists.
+                return false;
+            }
+        }
+        else{
+         // failed to connect
+         return false;
+        }
+    }
+    
+    private function checkbrute($user_id) {
+        // Get timestamp of current time 
+        $now = time();
+
+        // All login attempts are counted from the past 2 hours. 
+        $valid_attempts = ceil($now - (2 * 60 * 60));
+
+        if ($stmt = $this->mysqli->prepare("SELECT time 
+                                 FROM login_attempts
+                                 WHERE user_id = ? 
+                                AND time > ?")) {
+            $stmt->bind_param('ii', $user_id, $valid_attempts);
+
+            // Execute the prepared query. 
+            $stmt->execute();
+            $stmt->store_result();
+
+            // If there have been more than 5 failed logins 
+            if ($stmt->num_rows > 5) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    
+    public function registerUser($username, $email, $password){
+        $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+        $username = filter_var($username, FILTER_SANITIZE_STRING);
+        $password = filter_var($password,FILTER_SANITIZE_STRING);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            // Not a valid email
+            $error_msg .= '<p class="error">The email address you entered is not valid</p>';
+        }
+        if (strlen($password) != 128) {
+            // The hashed pwd should be 128 characters long.
+            // If it's not, something really odd has happened
+            $error_msg .= '<p class="error">Invalid password configuration.</p>';
+        }
+
+        // Username validity and password validity have been checked client side.
+        // This should should be adequate as nobody gains any advantage from
+        // breaking these rules.
+        //
+
+        $prep_stmt = "SELECT id FROM members WHERE email = ? LIMIT 1";
+        $stmt = $this->mysqli->prepare($prep_stmt);
+
+        if ($stmt) {
+            $stmt->bind_param('s', $email);
+            $stmt->execute();
+            $stmt->store_result();
+
+            if ($stmt->num_rows == 1) {
+                // A user with this email address already exists
+                $error_msg .= '<p class="error">A user with this email address already exists.</p>';
+            }
+        } else {
+            $error_msg .= '<p class="error">Database error</p>';
+            $error_msg .= $this->mysqli->error;
+        }
+
+        // TODO: 
+        // We'll also have to account for the situation where the user doesn't have
+        // rights to do registration, by checking what type of user is attempting to
+        // perform the operation.
+
+        if (empty($error_msg)) {
+            // Create a random salt
+            $random_salt = hash('sha512', uniqid(openssl_random_pseudo_bytes(16), TRUE));
+
+            // Create salted password 
+            $password = hash('sha512', $password . $random_salt);
+
+            // Insert the new user into the database 
+            if ($insert_stmt = $mysqli->prepare("INSERT INTO members (username, email, password, salt) VALUES (?, ?, ?, ?)")) {
+                $insert_stmt->bind_param('ssss', $username, $email, $password, $random_salt);
+                // Execute the prepared query.
+                if (! $insert_stmt->execute()) {
+                    return $error_msg;
+                }
+            }
+            return True;
+        }
+        else{
+            return $error_msg;
+        }
+    }
 }

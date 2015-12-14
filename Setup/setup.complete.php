@@ -7,6 +7,12 @@
     }*/
 ?>
 <?php
+    if(count(get_included_files()) == 1){
+        http_response_code(403);
+        $refusal = "<h1>403 Forbidden</h1><p>The requested resource cannot"
+                . " be accessed directly</p>";
+        die($refusal);
+    }
     $message = filter_input(INPUT_GET, 'm' , FILTER_SANITIZE_STRING);
     if(isset($message)){
         echo "<div class=\"panel panel-success\">
