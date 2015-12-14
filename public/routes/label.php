@@ -79,7 +79,11 @@ $app->group('/label', $authenticate, function () use ($app,$authenticate){
                     $value = false;
                     $value = preg_match($regex, $name, $matches);
                     if($value==1){
-                        $id2 = \TPS\label::createLabel($matches[0],1);
+                        try {
+                           $id2 = \TPS\label::createLabel($matches[0],1);
+                        } catch (Exception $exc) {
+                            //echo $exc->getTraceAsString();
+                        }
                         $subLabel = new \TPS\label($id2);
                         $subLabel->setAlias($id);
                     }

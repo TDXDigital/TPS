@@ -2,6 +2,12 @@
 /*
  * provides "routing" for Setup.    
 */
+if(count(get_included_files()) ==1){
+    http_response_code(403);
+    $refusal = "<h1>403 Forbidden</h1><p>The requested resource cannot"
+            . " be accessed directly</p>";
+    die($refusal);
+}
 if(!isset($PAGE)||$PAGE=='undefined'){
     echo "<span class='ui-state ui-state-error>Welcome to the TPS Broadcast Setup, please start at welcome.</span>";
     //header('location:?q=wel');

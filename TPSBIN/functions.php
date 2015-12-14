@@ -229,8 +229,12 @@ $TPSBIN = dirname(findHOME(0,__DIR__,10,"functions.php"));
         session_regenerate_id();    // regenerated the session, delete the old one. */
     }
 
-    function login($email, $password, $mysqli) {
+    function login($email, $password, $mysqli=NULL, $callsign=NULL, $server=NULL) {
         // Using prepared statements means that SQL injection is not possible. 
+        if($callsign){
+            $station = new \TPS\station($callsign);
+            return $station->login($email, $password, $server);
+        }
         if ($stmt = $mysqli->prepare("SELECT id, username, password, salt, access
             FROM members
            WHERE email = ?
@@ -271,14 +275,33 @@ $TPSBIN = dirname(findHOME(0,__DIR__,10,"functions.php"));
                         $_SESSION['login_string'] = hash('sha512', 
                                   $password . $user_browser);
                         $_SESSION['account'] = $username;
-                        $_SESSION['DBHOST'] = HOST;
-                        $_SESSION['usr'] = USER;
-                        $_SESSION['rpw'] = PASSWORD;
-                        $_SESSION['DBNAME'] = DATABASE;
-                        $_SESSION['fname'] = $user_id;
                         $_SESSION['access'] = $access;
+                        $_SESSION['account'] = $username;
+                        $_SESSION['AutoComLimit'] = 8;
+                        $_SESSION['AutoComEnable'] = TRUE;
+                        $_SESSION['TimeZone']='UTC'; // this is just the default to be updated after login
+                        if($server){
+                            $_SESSION['usr'] = easy_decrypt(ENCRYPTION_KEY,(string)$server->USER);
+                            $_SESSION['rpw'] = easy_decrypt(ENCRYPTION_KEY,(string)$server->PASSWORD);
+                            $_SESSION['DBNAME'] = (string)$server->DATABASE;
+                            if((string)$server->RESOLVE == 'URL'){
+                                $_SESSION['DBHOST'] = (string)$server->URL;
+                            }
+                            else{
+                                $_SESSION['DBHOST'] = (string)$server->IPV4;
+                            }
+                            $_SESSION['SRVPOST'] = (string)$server->ID;
+                        }
+                        else{
+                            $_SESSION['DBHOST'] = HOST;
+                            $_SESSION['usr'] = USER;
+                            $_SESSION['rpw'] = PASSWORD;
+                            $_SESSION['DBNAME'] = DATABASE;
+                            $_SESSION['SRVPOST'] = 'SECL';
+                        }
+                        $_SESSION['fname'] = $user_id;
                         $_SESSION['logo'] = 'images/Ckxu_logo_2.png';
-                        $_SESSION['SRVPOST'] = 'SECL';
+                        $_SESSION['m_logo']=$_SESSION['logo'];
                         // Login successful.
 
                         $stmt2=$mysqli->prepare("SELECT callsign FROM station LIMIT 1");

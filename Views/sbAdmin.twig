@@ -46,7 +46,9 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
+                {% if not (showLogo is defined and showLogo == false) %}
                 <a class="navbar-brand" href="/"><img src="{{logoUrl|default('/images/logo.png')}}" style="height: 20px;" title="logo"></a>
+                {% endif %}
                 <a class="navbar-brand" href="/">{{siteTitle|default('TPS Broadcast')|upper}}</a>
             </div>
             <!-- Top Menu Items -->

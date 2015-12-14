@@ -171,10 +171,15 @@ class logger extends TPS{
                     . "$event"));
             return false;
         }
-        $con = $this->mysqli->prepare("INSERT INTO eventlog "
-                . "(`user`,`event`,`source`,`result`,`severity`) VALUES "
-                . "(?,?,?,?,?)");
-        if($con){
+        try{
+            $con = $this->mysqli->prepare("INSERT INTO eventlog "
+                    . "(`user`,`event`,`source`,`result`,`severity`) VALUES "
+                    . "(?,?,?,?,?)");
+        } catch (\Exception $ex){
+            error_log($ex->getTraceAsString(), E_USER_NOTICE);
+            return false;
+        }
+        if(isset($con) && $con){
             try{
                 $con->bind_param("sssss",
                     $this->usernameLog,$event, $source, $result,$severity);

@@ -5,6 +5,12 @@
     if(isset($_GET['m'])){
         $message=urldecode($_GET['m']);
     }*/
+    if(file_exists("../TPSBIN/XML/DBSETTINGS.xml")){
+        http_response_code(403);
+        $refusal = "<h1>403 Forbidden</h1><p>Your request cannot proceed as the"
+                . " this server has already been configured.</p>";
+        die($refusal);
+    }
 ?>
 <?php
     $message = filter_input(INPUT_GET, 'm' , FILTER_SANITIZE_STRING);

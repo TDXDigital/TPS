@@ -1,6 +1,13 @@
 <?php
     include_once "../TPSBIN/functions.php";
     //include_once "../TPSBIN/db_connect.php";
+    if(file_exists("../TPSBIN/XML/DBSETTINGS.xml")
+            && !key_exists("max_page", $_SESSION)){
+        http_response_code(403);
+        $refusal = "<h1>403 Forbidden</h1><p>Your request cannot proceed as the"
+                . " this server has already been configured.</p>";
+        die($refusal);
+    }
     if(!isset($_SESSION)){
         sec_session_start();
     }

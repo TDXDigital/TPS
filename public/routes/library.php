@@ -76,12 +76,14 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         
         //find id
         $labels = \TPS\label::nameSearch($label);
-        if(sizeof($labels)>1){
-            if($labels[0]["alias"]){
-                $labelNum = key($labels[0]["alias"]);
-            }
-            else{
-                $labelNum = key($labels[0]);
+        if(sizeof($labels)>0){
+            foreach ($labels as $key => $value) {
+                if(is_array($value) && key_exists("alias", $value)){
+                    $labelNum = $value["alias"];
+                }
+                else{
+                    $labelNum = $key;
+                }
             }
         }
         else{

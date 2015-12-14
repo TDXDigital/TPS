@@ -165,6 +165,7 @@ function DatabaseUpdateApply($Update_PKG,$path){
                         http_response_code(400);
                     }
                     else{
+                        $sql = str_replace(array("\r\n", "\n"), " ", $sql);
                         if(!$mysqli->query($sql)){
                             //http_response_code(400);
                             return json_encode(array("Status"=>false,"Result"=>array("SQL"=>$sql,"ERROR"=>$mysqli->error,"CODE"=>$mysqli->errno)));

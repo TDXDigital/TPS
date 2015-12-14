@@ -173,6 +173,34 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
         $app->render('station.twig',$params);
     });
     
+    $app->post('/new/', $authenticate($app,2), function() use ($app){
+        $brand = $app->request->post('brand');
+        $address = $app->request->post('address');
+        $designation = $app->request->post('designation');
+        $frequency = $app->request->post('frequency');
+        $website = $app->request->post('website');
+        $phoneManager = $app->request->post('phoneManager');
+        $phoneDirector = $app->request->post('phoneDirector');
+        $phoneMain = $app->request->post('phoneMain');
+        $defaultSort = $app->request->post('defaultSort');
+        $groupPlaylistProgramming = 
+                $app->request->post('groupPlaylistProgramming');
+        $groupPlaylistReporting = 
+                $app->request->post('groupPlaylistReporting');
+        $forceComposer = $app->request->post('forceComposer');
+        $forceArtist = $app->request->post('forceArtist');
+        $forceAlbum = $app->request->post('forceAlbum');
+        $displayCounters = $app->request->post('displayCounters');
+        $colorPass = $app->request->post('passColor');
+        $colorFail = $app->request->post('failColor');
+        $colorNote = $app->request->post('noteColor');
+        $colorWarning = $app->request->post('warningColor');
+        $perHourTraffic = $app->request->post('perHourTraffic');
+        $perHourPSAs = $app->request->post('perHourPSAs');
+        $timezone = $app->request->post('timezone');
+        $app->render("notSupported.twig");
+    });
+    
     $app->post('/',$authenticate($app,2), function () use ($app,$authenticate){
         $data = array();
         $station = new \TPS\station();

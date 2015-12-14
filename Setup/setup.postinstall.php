@@ -78,6 +78,30 @@ else{
     $SALT = $_SESSION['SALT'];
     //$sql = preg_replace("/[?]+/", $callsign, $sql);
     
+    $name = $_SESSION['brand'];
+    $designation = "";
+    $frequency = $_SESSION['frequency'];
+    $website = $_SESSION['website'];
+    $address = "";
+    $mainPhone = $_SESSION['req_phone'];
+    $mgrPhone = $_SESSION['mgrPhone'];
+    $con = $mysqli->prepare(
+            "insert into `station` (callsign,stationname,Designation,"
+            . "frequency,website,address,boothphone,directorphone) "
+            . "values ( ?, ?, ?, ?, ?, ?, ?, ?)"
+            );
+    if($con===false){
+        trigger_error($tps->mysqli->error,E_USER_ERROR);
+    }
+    $con->bind_param("ssssssss", $callsign, $name, $designation,
+            $frequency, $website, $address, $mainPhone, $mgrPhone);
+    $con->execute();
+    if($con === false){
+        trigger_error($tps->mysqli->error,E_USER_ERROR);
+    }
+    $station = $con->insert_id;
+    $con->close();
+    
     
     $SQL_Statements=explode(";",$sql);
     $PER_Statements=explode(";",$permissions);
@@ -93,17 +117,14 @@ else{
     /* Prepared statement, stage 1: prepare */
     error_reporting(0);
     $error_check=false;
-    try{
-        $mysqli->query("START TRANSACTION");
-    } catch (Exception $ex) {
-
-    }
+    $mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
     try{
         $mysqli->autocommit(FALSE);
         foreach($SQL_Statements as $EXEC){
-            if(strlen($EXEC)<6){
+            //if(strlen($EXEC)<6){
                 $EXEC = str_replace(array("\r", "\n"), '', $EXEC);
-            }/*
+            //}
+            /*
             else{
                 $EXEC = str_replace(array("\r", "\n"), ' ', $EXEC);
             }*/
@@ -203,7 +224,7 @@ else{
         //echo "<br>".$functions."<br>";
     }*/
     
-    if($error_check===false){
+    if($error_check===false && empty($return)){
         $return=["status"=>"Complete","Result"=>"Complete"];
     }
     //$mysqli->commit();
