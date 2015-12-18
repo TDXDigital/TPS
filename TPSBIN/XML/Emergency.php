@@ -1,24 +1,15 @@
 <?php
     
-    include "../functions.php";
-    if(!isset($_SESSION)){
-        sec_session_start();
-    }
-    
-    
-    //sec_session_start();
-    header("application/JSON");
+set_include_path("..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR);
+include 'public/lib/emergencyAlert.php';
 
-$providers = array(
-    "AEMA" => array(
-        "feed" => "http://www.emergencyalert.alberta.ca/aeapublic/feed.atom",
-        "logo" => "/images/AEMA.png",
-        ),
-    "NAAD/NPAS" => array(
-        "feed" => "http://rss.naad-adna.pelmorex.com/",
-        "logo" => "/images/NPAS.png",
-        ),
-);
+$station = filter_input(INPUT_GET, "station", FILTER_SANITIZE_STRING);
+$location = filter_input(INPUT_GET, "location", FILTER_SANITIZE_STRING);
+
+$alerts = new \TPS\emergencyAlert($station);
+print $alerts->run();
+
+exit();
 
 function checkFeed($provider, $data, $location, $logo){
     //if(!file_exists($data)){
