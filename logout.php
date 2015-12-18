@@ -1,6 +1,6 @@
 <?php
 session_start();
-if(isset($_SESSION['slim.flash'])){
+if(isset($_SESSION['slim.flash']) || true){
     header('Location: ./logout');
 }
 else{
