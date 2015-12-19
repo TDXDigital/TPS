@@ -133,7 +133,6 @@ class emergencyAlert extends station{
     private $station = null;
     private $alerts = array();
     private $formatted = array();
-    private $logger = Null;
     private $providers = array(
         "AEMA" => array(
             "feed" => "http://www.emergencyalert.alberta.ca/aeapublic/feed.atom",
@@ -147,6 +146,15 @@ class emergencyAlert extends station{
     public $location = "*";
     public $format = "json";
     private $exactMatchLocation = False;
+    
+    public function __construct($station=Null, $locations=Null, 
+            $sources=Null, $severity="all") {
+        parent::__construct($station);
+        if($sources != Null && is_array($sources) ){
+            $this->$providers = $sources;
+        }
+        $this->location = explode(",", $locations);
+    }
     
     private function setParams(&$alert,&$previous,$alertDate){
         if(is_string($previous)){
@@ -162,18 +170,6 @@ class emergencyAlert extends station{
             return True;
         }
         return True;
-    }
-
-    public function __construct($station=Null, $locations=Null, 
-            $sources=Null, $severity="all") {
-        if($sources != Null && is_array($sources) ){
-            $this->$providers = $sources;
-        }
-        $this->location = explode(",", $locations);
-        $this->logger = new \TPS\logger();
-        if($station){
-            $this->station = new \TPS\station($station);
-        }
     }
     
     public function locations($value){
