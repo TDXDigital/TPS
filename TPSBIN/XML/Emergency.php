@@ -6,7 +6,7 @@ include 'public/lib/emergencyAlert.php';
 $station = filter_input(INPUT_GET, "station", FILTER_SANITIZE_STRING);
 $location = filter_input(INPUT_GET, "location", FILTER_SANITIZE_STRING);
 
-$alerts = new \TPS\emergencyAlert($station);
+$alerts = new \TPS\emergencyAlert($station,$location);
 print $alerts->run();
 
 exit();

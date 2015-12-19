@@ -26,21 +26,21 @@ namespace TPS;
  */
 
 require 'logger.php';
+require 'station.php';
 class alert{
-    public $polygon="";
-    public $name="";
+    public $polygon=array();
     public $title=array();
     public $provider="";
     public $updated="";
     public $image="";
-    public $active = True;
+    public $active = null;
     public $text=array();
     public $alertAuthority=array();
     public $expires="";
     public $id="";
-    public $status="";
+    public $severity="";
     public $areas=array();
-    public $hred="";
+    public $href="";
     
     public function __construct() {
         $this->expires = new \DateTime();
@@ -129,7 +129,8 @@ class alert{
  *
  * @author James Oliver <support@ckxu.com>
  */
-class emergencyAlert {
+class emergencyAlert extends station{
+    private $station = null;
     private $alerts = array();
     private $formatted = array();
     private $logger = Null;
@@ -145,19 +146,82 @@ class emergencyAlert {
     );
     public $location = "*";
     public $format = "json";
+    private $exactMatchLocation = False;
+    
+    private function setParams(&$alert,&$previous,$alertDate){
+        if(is_string($previous)){
+            $previous = $this->alerts[$previous];
+            assert(sizeof($previous)>0, 
+                    "Could not retrieve previous alert");
+        }
+        $previous->title($alert->title);
+        $previous->text($alert->text);
+        $previous->alertAuthority($alert->alertAuthority());
+        $previous->areas = array_merge($previous->areas,$alert->areas);
+        if($alertDate < $previous->updated){
+            return True;
+        }
+        return True;
+    }
 
-    public function __construct($station, $sources=Null, $severity="all") {
+    public function __construct($station=Null, $locations=Null, 
+            $sources=Null, $severity="all") {
         if($sources != Null && is_array($sources) ){
             $this->$providers = $sources;
         }
+        $this->location = explode(",", $locations);
         $this->logger = new \TPS\logger();
+        if($station){
+            $this->station = new \TPS\station($station);
+        }
     }
     
     public function locations($value){
         $this->location = $value;
     }
     
+    public function exactMatchLocation($bool){
+        assert(is_bool($bool), "non boolean value provided");
+        $this->exactMatchLocation = $bool;
+    }
+    
+    private function setAlertAlertSeverity(&$alert){
+        $result = "Warning";
+        if($alert->severity){
+            return $alert->severity;
+        }
+        $term = end($alert->title);
+        if(strpos($term,'Test') !== FALSE){
+            $result = "Test";
+        }
+        elseif(strpos($term,'information')!==FALSE 
+                || strpos($term,"advisory")!==FALSE
+                || strpos($term,"special weather")!==FALSE
+                || strpos($term,"bulletin météorologique spécial")!==FALSE){
+            $result = "Information";
+        }
+        elseif(strpos($term, 'watch')){
+            $result = "Watch";
+        }
+        // Otherwise return Warning (Unknown reason to downgrade)
+        
+        $alert->severity = $result;
+        return $alert->severity;
+    }
+    
+    private function setActive(&$alert){
+        if(preg_match("/(?<=\s)(in effect)/", end($alert->title))){
+            $alert->active = true;
+        }
+        elseif (preg_match("/(?<=\s)(ended)/", end($alert->title))) {
+            $alert->active = false;
+        }
+    }
+    
     private function parseAtomAlert(&$alert, &$alertObj){
+        foreach($alert->children('http://www.georss.org/georss') as $geo){
+            array_push($alertObj->polygon,end($geo));
+        }
         $idStr = $alert->id;
         $id = explode("/",$idStr);
         if(is_array($id) && sizeof($id)){
@@ -166,6 +230,7 @@ class emergencyAlert {
         else{
             
         }
+        $alertObj->id = $id;
         preg_match("/(?<=Expires:\s)([\d:\-T]+)/", #"/(?<=Expires:\s)(.+)(?=\n)/", 
                 $alert->summary, $matches);
         if(sizeof($matches)>0){
@@ -187,6 +252,7 @@ class emergencyAlert {
         $title = $alert->title;
         $alertObj->title($title);
         $alertObj->alertAuthority($alert->author->name);
+        $this->setAlertAlertSeverity($alertObj);
         
         preg_match("/(?<=Area:\s)([^\n\<]+)/", #"/(?<=Expires:\s)(.+)(?=\n)/", 
                 $alert->summary, $areas);
@@ -201,16 +267,22 @@ class emergencyAlert {
             $areas = explode(',', $areas[0]);
             $validArea = False;
             foreach ($areas as $area){
-                if($this->location == "*" || in_array($this->location,$area)){
-                    // does not include given locations
-                    $validArea = TRUE;
-                    break;
+                foreach ($this->location as $location) {
+                    if($location == "*" || strpos($area,$location) !== false){
+                        if($this->exactMatchLocation && $area != $location){
+                            continue;
+                        }
+                        // does not include given locations
+                        $validArea = TRUE;
+                        break;
+                    }
                 }
             }
             if(!$validArea){
                 return True;
             }
         }
+        $alertObj->areas = $areas;
         
         preg_match("/(?<=Description:\s)([^\n\<]+)/", #"/(?<=Expires:\s)(.+)(?=\n)/", 
                 $alert->summary, $description);
@@ -224,15 +296,28 @@ class emergencyAlert {
             $alertObj->text($description);
         }
         
-        if(key_exists($id,$this->alerts)){
-            $previousAlert = $this->alerts[$id];
-            $previousAlert->text($alert->text);
-            $alertDate = new \DateTime($alert->updated);
-            if($alertDate < $previousAlert->updated){
-                return True;
+        foreach($alert->link->attributes() as $key => $value){
+            if($key == "href"){
+                $alertObj->href = end($value);
             }
         }
         
+        $alertDate = new \DateTime($alert->updated);
+        $previousAlerts = array_map(function($x) use ($alertDate){
+            if($x->updated == $alertDate){
+                return $x;
+            }
+        },$this->alerts);
+        if(key_exists($id,$this->alerts) || sizeof($previousAlerts)>0){
+            foreach ($previousAlerts as $previous) {
+                if($previous 
+                        && sizeof($alertObj->areas) == 
+                        sizeof($previous->areas)){
+                    return $this->setParams($alertObj, $previous, $alertDate);
+                }
+            }
+        }
+        $this->setActive($alertObj);
         if(!sizeof($id)){
             array_push($this->alerts, $alertObj);
         }
@@ -241,14 +326,16 @@ class emergencyAlert {
         }
     }
     
-    private function parseAtomAlerts($source, $logo){
-        $xml = file_get_contents($source);
-        $entries = new \SimpleXmlElement($xml);
+    private function parseAtomAlerts($source, $provider, $logo){
+        //$xml = file_get_contents($source);
+        //$entries = new \SimpleXmlElement($xml);
+        $entries = simplexml_load_file($source);
         $entries->registerXPathNamespace('prefix', 'http://www.w3.org/2005/Atom');
         $results = $entries->xpath("//prefix:entry");
         foreach ($results as $entry) {
             $alertObj = new \TPS\alert();
             $alertObj->image($logo);
+            $alertObj->provider = $provider;
             $this->parseAtomAlert($entry, $alertObj);
         }
         
@@ -266,7 +353,7 @@ class emergencyAlert {
         }
         if($type == "atom"){
             try {
-                $this->parseAtomAlerts($source, $logo);
+                $this->parseAtomAlerts($source, $provider, $logo);
             } catch (Exception $exc) {
                 $exc->getTraceAsString();
             }

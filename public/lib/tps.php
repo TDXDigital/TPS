@@ -33,6 +33,9 @@ class TPS{
     
     private function getDatabaseConfig($target=NULL,
             $xmlpath="TPSBIN/XML/DBSETTINGS.xml"){
+        if(!file_exists($xmlpath)){
+            return false;
+        }
         $dbxml = simplexml_load_file($xmlpath);
         if(is_null($target)){
             // Get the default (first) server
