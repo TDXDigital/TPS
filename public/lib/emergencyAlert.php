@@ -471,7 +471,7 @@ class emergencyAlert extends station{
                 ." / ".addcslashes($alert->title[1],"\"").
                 "</a></strong><p>";
         foreach($alert->text as $key=>$text){
-            $text = str_split($text,100);
+            $text = str_split($text,200);
             $html .= addcslashes(strtoupper($alert->language[$key]),"\"") . ": "
                     .addcslashes(array_shift($text),"\"");
             if(sizeof($text)>0){
@@ -479,7 +479,7 @@ class emergencyAlert extends station{
             }
             $html.="</br>";
         }
-        $html .= "<span>Areas:" . implode(", ",$alert->areas). "</span>";
+        $html .= "<span>Areas: " . implode(", ",$alert->areas). "</span>";
         $html .= "</p>";
         $html .= "</span>";   
         $html .= "</div>";
