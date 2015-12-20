@@ -32,11 +32,21 @@ class TPS{
     protected $username;
     
     private function getDatabaseConfig($target=NULL,
-            $xmlpath="TPSBIN/XML/DBSETTINGS.xml"){
-        if(!file_exists($xmlpath)){
-            return false;
+            $xmlpath=NULL){
+        if($xmlpath === NULL){
+            $xmlpath = "TPSBIN"
+                    .DIRECTORY_SEPARATOR."XML"
+                    .DIRECTORY_SEPARATOR."DBSETTINGS.xml";
         }
-        $dbxml = simplexml_load_file($xmlpath);
+        if(!file_exists($xmlpath)){
+            $xmlpath = get_include_path() . $xmlpath;
+        }
+        try{
+            $dbxml = simplexml_load_file($xmlpath);
+        } catch (Exception $ex) {
+            error_log($ex);
+            return FALSE;
+        }
         if(is_null($target)){
             // Get the default (first) server
             foreach ($dbxml->SERVER as $server){

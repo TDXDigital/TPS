@@ -5,10 +5,12 @@ include 'public/lib/emergencyAlert.php';
 
 $station = filter_input(INPUT_GET, "station", FILTER_SANITIZE_STRING);
 $location = filter_input(INPUT_GET, "location", FILTER_SANITIZE_STRING);
+$format = filter_input(INPUT_GET, "format", FILTER_SANITIZE_STRING)?:"json";
 
-$alerts = new \TPS\emergencyAlert($station,$location);
+$alerts = new \TPS\emergencyAlert($station,$location,$format);
 print $alerts->run();
 
+restore_include_path();
 exit();
 
 function checkFeed($provider, $data, $location, $logo){

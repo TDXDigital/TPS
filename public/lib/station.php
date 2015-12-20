@@ -67,6 +67,29 @@ class station extends TPS{
         $this->log = new \TPS\logger($username);
     }
     
+    public function getAlertProviders(){
+        $con = $this->mysqli->prepare(
+                "SELECT id, provider, url, logo, locations, active, area FROM"
+                . " emergencyalertsettings WHERE station=?");
+        $con->bind_param('s',$this->callsign);
+        $con->bind_result($id, $provider, $url, $logo, 
+                $locations, $active, $area);
+        $result = array();
+        if($con->execute()){
+            while($con->fetch()){
+                $result[$provider] = array(
+                    "feed" => $url,
+                    "logo" => $logo,
+                    "locations" => $locations,
+                    "active" => $active,
+                    "area" => $area,
+                );
+            }
+            $con->close();
+        }
+        return $result;
+    }
+    
     public function updateParent(){
         if(parent::updateParent()){
             return $this->update();

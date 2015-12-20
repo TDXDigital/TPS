@@ -4,6 +4,7 @@ CREATE TABLE `emergencyalertsettings` (
   `provider` VARCHAR(60) NULL,
   `url` VARCHAR(256) NULL,
   `logo` VARCHAR(256) NULL,
+  `locations` TEXT(256) NULL,
   `active` INT UNSIGNED NULL DEFAULT 1,
   `area` GEOMETRY NULL,
   PRIMARY KEY (`id`, `station`),

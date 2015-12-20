@@ -57,13 +57,16 @@ if (i<10)
 return i;
 }
 
-function GetEAS(target,basedir,location){
+function GetEAS(target,basedir,station){
     //atom = typeof atom !== 'undefined' ? atom : "http://www.emergencyalert.alberta.ca/aeapublic/feed.atom";
     atom = basedir + "TPSBIN/XML/Emergency.php";
     //target = typeof target !== 'undefined' ? target : "EAS";
     $.ajax({
         url: atom,
-        data: {"location":location},
+        data: {
+            "station":station,
+            "format":"html",
+        },
     })
     .done(function (data) {
         var tgt_EAS = '#'.concat(target);

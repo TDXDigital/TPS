@@ -39,8 +39,13 @@ class alert{
     public $expires="";
     public $id="";
     public $severity="";
+    public $severityLevel=Null;
     public $areas=array();
-    public $href="";
+    public $href;
+    public $language = array();
+    public $category;
+    public $type;
+    public $status;
     
     public function __construct() {
         $this->expires = new \DateTime();
@@ -97,6 +102,17 @@ class alert{
         return $this->title;
     }
     
+    public function language($value=null){
+        if($value){
+            if(is_array($value)){
+                $value = array_pop($value);
+            }
+            array_push($this->language,$value);
+            #$this->title = $value;
+        }
+        return $this->language;
+    }
+    
     public function updated($value=null){
         if($value){
             $this->updated = $value;
@@ -130,7 +146,6 @@ class alert{
  * @author James Oliver <support@ckxu.com>
  */
 class emergencyAlert extends station{
-    private $station = null;
     private $alerts = array();
     private $formatted = array();
     private $providers = array(
@@ -147,13 +162,18 @@ class emergencyAlert extends station{
     public $format = "json";
     private $exactMatchLocation = False;
     
-    public function __construct($station=Null, $locations=Null, 
-            $sources=Null, $severity="all") {
+    public function __construct($station=Null, $locations=Null,
+            $format=Null, $sources=Null) {
         parent::__construct($station);
         if($sources != Null && is_array($sources) ){
             $this->$providers = $sources;
         }
+        $this->format = $format;
         $this->location = explode(",", $locations);
+        $this->providers = $this->getAlertProviders();
+        //foreach($alertProviders as $name => $values){
+        //    $this->location .= explode(',',$values['locations']);
+        //}
     }
     
     private function setParams(&$alert,&$previous,$alertDate){
@@ -165,6 +185,8 @@ class emergencyAlert extends station{
         $previous->title($alert->title);
         $previous->text($alert->text);
         $previous->alertAuthority($alert->alertAuthority());
+        $previous->href = $alert->href;
+        $previous->language($alert->language());
         $previous->areas = array_merge($previous->areas,$alert->areas);
         if($alertDate < $previous->updated){
             return True;
@@ -196,7 +218,7 @@ class emergencyAlert extends station{
                 || strpos($term,"bulletin météorologique spécial")!==FALSE){
             $result = "Information";
         }
-        elseif(strpos($term, 'watch')){
+        elseif(strpos($term, 'watch')!==FALSE){
             $result = "Watch";
         }
         // Otherwise return Warning (Unknown reason to downgrade)
@@ -214,7 +236,7 @@ class emergencyAlert extends station{
         }
     }
     
-    private function parseAtomAlert(&$alert, &$alertObj){
+    private function parseAtomAlert(&$alert, &$alertObj, $locations){
         foreach($alert->children('http://www.georss.org/georss') as $geo){
             array_push($alertObj->polygon,end($geo));
         }
@@ -245,16 +267,19 @@ class emergencyAlert extends station{
         }
         $updated = new \DateTime($alert->updated);
         $alertObj->updated($updated);
-        $title = $alert->title;
-        $alertObj->title($title);
-        $alertObj->alertAuthority($alert->author->name);
+        $alertObj->title((string)$alert->title);
+        $alertObj->alertAuthority((string)$alert->author->name);
         $this->setAlertAlertSeverity($alertObj);
+        $alertObj->href = (string)$alert->link->attributes()->href;
         
         preg_match("/(?<=Area:\s)([^\n\<]+)/", #"/(?<=Expires:\s)(.+)(?=\n)/", 
                 $alert->summary, $areas);
+        $stationLocations = explode(",", $locations);
+        $alertValidAreas = array_merge($stationLocations, $this->location);
+        //$match = array_shift($alertValidAreas);
         if(sizeof($areas)<1){
             $areas = $alert->summary;
-            if(!in_array($this->location,$area)){
+            if(!in_array($alertValidAreas, $areas)){
                 // does not include given locations
                 return FALSE;
             }
@@ -263,8 +288,16 @@ class emergencyAlert extends station{
             $areas = explode(',', $areas[0]);
             $validArea = False;
             foreach ($areas as $area){
-                foreach ($this->location as $location) {
-                    if($location == "*" || strpos($area,$location) !== false){
+                $area = trim($area);
+                foreach ($alertValidAreas as $location) {
+                    $location = trim($location);
+                    if($location == NULL){
+                        // if no station wide locations are defined a null
+                        // entry will exist, skip it when we get here
+                        continue;
+                    }
+                    if(strpos($area, $location)!==false || $location == "*"){
+                        
                         if($this->exactMatchLocation && $area != $location){
                             continue;
                         }
@@ -286,15 +319,35 @@ class emergencyAlert extends station{
             $description = $alert->summary;
         }
         if(!is_string($description)){
-            $alertObj->text($description[0]);
+            $alertObj->text(end($description));
         }
         else{
             $alertObj->text($description);
         }
-        
-        foreach($alert->link->attributes() as $key => $value){
-            if($key == "href"){
-                $alertObj->href = end($value);
+        foreach ($alert->category as $category){
+            // special Pelmorex feed info
+            foreach($category->attributes() as $valueRaw){
+                $raw = (string)$valueRaw[0];
+                if($raw == ""){
+                    continue;
+                }
+                $value = explode("=", $raw);
+                $key = array_shift($value);
+                if($key == "language"){
+                    $alertObj->language(end($value));
+                }
+                elseif ($key == "category") {    
+                    $alertObj->category = end($value);
+                }
+                elseif ($key == "msgType") {
+                    $alertObj->type = end($value);
+                }
+                elseif ($key == "status") {
+                    $alertObj->status = end($value);
+                }
+                elseif ($key == "severity") {
+                    $alertObj->severityType = end($value);
+                }
             }
         }
         
@@ -309,7 +362,22 @@ class emergencyAlert extends station{
                 if($previous 
                         && sizeof($alertObj->areas) == 
                         sizeof($previous->areas)){
-                    return $this->setParams($alertObj, $previous, $alertDate);
+                    // msgType Alert = new, Update
+                    if($alertObj->type!=NULL 
+                            && strtolower($alertObj->type)!="alert"){
+                        if(in_array($alertObj->language,$previous->language)){
+                            // this update replaces the old alert
+                            if($alertObj->expires<$previous->expires){
+                                unset($alert->alerts[$previous->id]);
+                            }
+                        }
+                        else{
+                            return $this->setParams($alertObj, $previous, $alertDate);
+                        }
+                    }
+                    else{
+                        return $this->setParams($alertObj, $previous, $alertDate);
+                    }
                 }
             }
         }
@@ -322,7 +390,7 @@ class emergencyAlert extends station{
         }
     }
     
-    private function parseAtomAlerts($source, $provider, $logo){
+    private function parseAtomAlerts($source, $locations, $provider, $logo){
         //$xml = file_get_contents($source);
         //$entries = new \SimpleXmlElement($xml);
         $entries = simplexml_load_file($source);
@@ -332,7 +400,7 @@ class emergencyAlert extends station{
             $alertObj = new \TPS\alert();
             $alertObj->image($logo);
             $alertObj->provider = $provider;
-            $this->parseAtomAlert($entry, $alertObj);
+            $this->parseAtomAlert($entry, $alertObj, $locations);
         }
         
     }
@@ -343,13 +411,14 @@ class emergencyAlert extends station{
         }
         $source = $data["feed"];
         $logo = $data["logo"];
+        $locations = $data["locations"];
         $type = "atom";
         if(key_exists("type", $data)){
             $type = strtolower($data['type']);
         }
         if($type == "atom"){
             try {
-                $this->parseAtomAlerts($source, $provider, $logo);
+                $this->parseAtomAlerts($source, $locations, $provider, $logo);
             } catch (Exception $exc) {
                 $exc->getTraceAsString();
             }
@@ -375,22 +444,116 @@ class emergencyAlert extends station{
     }
 
     protected function formatAlerts(){
-        $this->formatted = $this->alerts;
     }
     
-    protected function printAlert($index){
-        
+    protected function printAlert($alert){
+        $html = "";
+        switch (strtolower($alert->severity)) {
+            case "test":
+                $html .= "<div class=\"ui-state-highlight\" style=\"background-color:green\">";
+                break;
+            case "warning":
+                $html .= "<div class=\"ui-state-error\">";
+                break;
+            case "watch":
+                $html .= "<div class=\"ui-state-highlight\">";
+                break;
+
+            default:
+                $html .= "<div class=\"ui-state-highlight\" style=\"background-color:grey\">";
+                break;
+        }
+        $html .= "<span class='emergency_logo'><img src='"
+                .addcslashes($alert->image,"\"")."'/></span>";
+        $html .= "<span class='alert_info'><strong><a href=\""
+                .addcslashes($alert->href?:"#","\"").
+                "\" target=\"_blank\">".addcslashes($alert->title[0],"\"")
+                ." / ".addcslashes($alert->title[1],"\"").
+                "</a></strong><p>";
+        foreach($alert->text as $key=>$text){
+            $text = str_split($text,100);
+            $html .= addcslashes(strtoupper($alert->language[$key]),"\"") . ": "
+                    .addcslashes(array_shift($text),"\"");
+            if(sizeof($text)>0){
+                $html .= "&hellip;";
+            }
+            $html.="</br>";
+        }
+        $html .= "<span>Areas:" . implode(", ",$alert->areas). "</span>";
+        $html .= "</p>";
+        $html .= "</span>";   
+        $html .= "</div>";
+        return $html;
     }
     
     protected function printAlerts(){
-        
+        $html = "<style>.emergency_logo{
+            background-color:white;
+            display: inline-block;
+            float: left;
+            width: 120px;
+            /*height: 100px;*/
+            max-height: 100px;
+            max-width: 100px;
+        }
+        .emergency_logo img{
+            max-height: 100px;
+            max-width: 100px;
+        }
+        .alert_info{
+            display: inline-block;
+            /*float: left;*/
+            padding: 0 0 0 0;
+            margin: 0 0 0 0;
+            width: 85%;
+            height:100%;
+            min-height: 100px;
+            /*rgin-left:110px;*/
+        }
+        .alert_info a{
+            font-size: large;
+            color: lightgrey;
+        }
+        </style>";
+        $i = 0;
+        foreach($this->alerts as $alert){
+            if($i>0){
+                $html .= "<hr/>";
+            }
+            $html .= $this->printAlert($alert);
+            $i++;
+        }
+        print $html;
+    }
+    
+    private function removeOldUpdates(){
+        $duplicates = array();
+        foreach($this->alerts as $k1=>$a1){
+            if(in_array($k1, $duplicates)){
+                continue;
+            }
+            foreach($this->alerts as $k2=>$a2){
+                if($a1->areas == $a2->areas && $k1!=$k2){
+                    // the alerts SHOULD be in order
+                    if($a1->alertAuthority == $a2->alertAuthority
+                            && $a1->provider == $a1->provider){
+                        $duplicates[$a2->id] = true;
+                    }
+                }
+            }
+        }
+        foreach($duplicates as $key=>$value){
+            if($value){
+                unset($this->alerts[$key]);
+            }
+        }
     }
 
     public function run(){
         $this->checkAlerts();
-        $this->formatAlerts();
+        $this->removeOldUpdates();
         if($this->format == "json"){
-            return json_encode($this->formatted);
+            return json_encode($this->alerts);
         }
         else{
             return $this->printAlerts();
