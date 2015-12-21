@@ -46,6 +46,7 @@ class alert{
     public $category;
     public $type;
     public $status;
+    public $urgency; // Future, Expected, Unknown
     
     public function __construct() {
         $this->expires = new \DateTime();
@@ -148,6 +149,7 @@ class alert{
 class emergencyAlert extends station{
     private $alerts = array();
     private $formatted = array();
+    private $expiredAlerts = array();
     private $providers = array(
         "AEMA" => array(
             "feed" => "http://www.emergencyalert.alberta.ca/aeapublic/feed.atom",
@@ -258,7 +260,8 @@ class emergencyAlert extends station{
                     $now = new\DateTime();
                     if($now > $expires){
                         # expired, no need to process
-                        return true;
+                        
+                        //return true;
                     }
                     $alertObj->expires($expires);
                 }
@@ -271,6 +274,36 @@ class emergencyAlert extends station{
         $alertObj->alertAuthority((string)$alert->author->name);
         $this->setAlertAlertSeverity($alertObj);
         $alertObj->href = (string)$alert->link->attributes()->href;
+        
+        foreach ($alert->category as $category){
+            // special Pelmorex feed info
+            foreach($category->attributes() as $valueRaw){
+                $raw = (string)$valueRaw[0];
+                if($raw == ""){
+                    continue;
+                }
+                $value = explode("=", $raw);
+                $key = array_shift($value);
+                if($key == "language"){
+                    $alertObj->language(end($value));
+                }
+                elseif ($key == "category") {    
+                    $alertObj->category = end($value);
+                }
+                elseif ($key == "msgType") {
+                    $alertObj->type = end($value);
+                }
+                elseif ($key == "status") {
+                    $alertObj->status = end($value);
+                }
+                elseif ($key == "severity") {
+                    $alertObj->severityLevel = end($value);
+                }
+                elseif ($key == "urgency") {
+                    $alertObj->urgency = end($value);
+                }
+            }
+        }
         
         preg_match("/(?<=Area:\s)([^\n\<]+)/", #"/(?<=Expires:\s)(.+)(?=\n)/", 
                 $alert->summary, $areas);
@@ -316,39 +349,13 @@ class emergencyAlert extends station{
         preg_match("/(?<=Description:\s)([^\n\<]+)/", #"/(?<=Expires:\s)(.+)(?=\n)/", 
                 $alert->summary, $description);
         if(sizeof($description)<1){
-            $description = $alert->summary;
+            $description = "";
         }
         if(!is_string($description)){
             $alertObj->text(end($description));
         }
         else{
             $alertObj->text($description);
-        }
-        foreach ($alert->category as $category){
-            // special Pelmorex feed info
-            foreach($category->attributes() as $valueRaw){
-                $raw = (string)$valueRaw[0];
-                if($raw == ""){
-                    continue;
-                }
-                $value = explode("=", $raw);
-                $key = array_shift($value);
-                if($key == "language"){
-                    $alertObj->language(end($value));
-                }
-                elseif ($key == "category") {    
-                    $alertObj->category = end($value);
-                }
-                elseif ($key == "msgType") {
-                    $alertObj->type = end($value);
-                }
-                elseif ($key == "status") {
-                    $alertObj->status = end($value);
-                }
-                elseif ($key == "severity") {
-                    $alertObj->severityType = end($value);
-                }
-            }
         }
         
         $alertDate = new \DateTime($alert->updated);
@@ -537,6 +544,10 @@ class emergencyAlert extends station{
                     // the alerts SHOULD be in order
                     if($a1->alertAuthority == $a2->alertAuthority
                             && $a1->provider == $a1->provider){
+                        if($a1->active == false && $a2->active == true){
+                            // alert ended; 
+                            $duplicates[$a1->id] = false;
+                        }
                         $duplicates[$a2->id] = true;
                     }
                 }
