@@ -64,7 +64,7 @@
         text-align: center;
     }
     </style>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="vendor/components/font-awesome/css/font-awesome.min.css">
 </head>
 <body>
     <div class="no-print">Please use top and bottom margin of 0.5" and 0.0" sides. some printers may vary, adjust as needed</div>

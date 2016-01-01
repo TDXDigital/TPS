@@ -116,7 +116,11 @@ class station extends TPS{
         $callsign = strtoupper($callsign);
         $this->setStation($callsign);
         $stations = $this->getStation($callsign);
-        $params = $stations[$callsign];
+        try {
+            $params = $stations[$callsign];
+        } catch (Exception $exc) {
+            return FALSE;
+        }
         if(sizeof($params)>0){
             # set params
             $this->stationName = $params["name"];

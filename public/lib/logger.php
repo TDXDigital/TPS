@@ -185,8 +185,9 @@ class logger extends TPS{
         }
         if(isset($con) && $con){
             try{
+                $resTrunk = substr($result,0,45);
                 $con->bind_param("sssss",
-                    $this->usernameLog,$event, $source, $result,$severity);
+                    $this->usernameLog,$event, $source, $resTrunk ,$severity);
                 $con->execute();
             } catch (Exception $ex) {
                 error_log($this->formatPHPlogLine(
