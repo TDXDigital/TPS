@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/TDXDigital/TPS.svg)](https://travis-ci.org/TDXDigital/TPS)
+
 # Digital Program Logs
 
 # LICENSE
