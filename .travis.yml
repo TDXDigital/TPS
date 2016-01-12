@@ -4,4 +4,4 @@ php:
     - 5.5
     - 5.6
     - 7
-script: phpunit TestFiles/public/lib/tpsTest.php
+script: phpunit Test Files/public/lib/tpsTest.php
