@@ -29,6 +29,10 @@
         "fperucic/treant-js": "*",
         "onokumus/metismenu": "dev-master"
     },
+    "require-dev": {
+        "phpunit/phpunit-skeleton-generator": "*",
+        "phpunit/phpunit": "*"
+    },
     "autoload":{
         "psr-0":{
             "TPS//": "router/",
