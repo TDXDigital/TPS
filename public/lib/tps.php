@@ -34,8 +34,7 @@ class TPS{
     protected $username;
     private $requirePDO;
     
-    private function getDatabaseConfig($target=NULL,
-            $xmlpath=NULL){
+    private function getDatabaseConfig($target=NULL,$xmlpath=NULL){
         if($xmlpath === NULL){
             $xmlpath = dirname(__FILE__).DIRECTORY_SEPARATOR."../../TPSBIN"
                     .DIRECTORY_SEPARATOR."XML"
@@ -86,24 +85,27 @@ class TPS{
                         $database["DBHOST"] = $server->IPV4;
                     }
                 }
-                $database["USER"] = easy_decrypt(ENCRYPTION_KEY,(string)$server->USER);
-                $database["PASSWORD"] = easy_decrypt(ENCRYPTION_KEY,(string)$server->PASSWORD);
+                $database["USER"] = easy_decrypt(
+                        ENCRYPTION_KEY,(string)$server->USER);
+                $database["PASSWORD"] = easy_decrypt(
+                        ENCRYPTION_KEY,(string)$server->PASSWORD);
                 $database["DATABASE"] = (string)$server->DATABASE;
+                $database["TYPE"] = $server->DBTYPE;
             }
         }
         return $database;
     }
     
     /**
-     * @access private
+     * @access public
      * @param int $pagination current page index
      * @param int $maxResult number of items to in response
      */
-    protected function sanitizePagination(&$pagination,&$maxResult){
-        if( !is_int($maxResult) || $maxResult > 1000):
+    public static function sanitizePagination(&$pagination,&$maxResult){
+        if( !is_int($maxResult) || $maxResult > 1000 || $maxResult<1):
             $maxResult = 1000;
         endif;
-        if( !is_int($pagination)):
+        if( !is_int($pagination) || $pagination<1):
             $pagination = 1;
         endif;
         $floor = abs(($pagination*$maxResult))-($maxResult+1);
@@ -119,7 +121,8 @@ class TPS{
         $maxResult = $ceil;
     }
 
-    public function __construct($enableDbReporting=FALSE, $requirePDO=FALSE) {
+    public function __construct($enableDbReporting=FALSE, $requirePDO=FALSE,
+            $settingsTarget=NULL, $settingsPath=NULL) {
         global $mysqli;
         global $db;
         $mysqli=$mysqli?:$GLOBALS['mysqli'];
@@ -128,16 +131,22 @@ class TPS{
         if(!$mysqli || !$db){
             // Establish DB connection
             $database = NULL;
-            if($database = $this->getDatabaseConfig()){
+            if($database = $this->getDatabaseConfig($settingsTarget,
+                    $settingsPath)){
+                if($database['TYPE']=="PDO"){
+                    $this->requirePDO = TRUE;
+                }
                 $databaseHost = $database['DBHOST'];
                 $databaseName = $database['DATABASE'];
                 if($this->requirePDO){
-                    $this->db = new \PDO("mysql:host=$databaseHost;dbname=$databaseName",
+                    $this->db = new \PDO(
+                            "mysql:host=$databaseHost;dbname=$databaseName",
                         $database['USER'], $database['PASSWORD']);
                     $this->mysqli = $this->db;
                 }
                 else{
-                    $this->db = new \PDO("mysql:host=$databaseHost;dbname=$databaseName",
+                    $this->db = new \PDO(
+                            "mysql:host=$databaseHost;dbname=$databaseName",
                         $database['USER'], $database['PASSWORD']);
                     $this->mysqli = new \mysqli(
                         $database['DBHOST'], 
@@ -154,11 +163,13 @@ class TPS{
                 }
             }
             else{
-                $this->mysqli = NULL;
+                $this->mysqli = $mysqli?:NULL;
+                $this->db = $db?:NULL;
             }
         }
         else{
             $this->mysqli = $mysqli;
+            $this->db = $db;
         }
         if(!$this->mysqliDriver){
             $this->mysqliDriver = new \mysqli_driver();
@@ -185,7 +196,8 @@ class TPS{
     public function getStations(){
         $callsign = null;
         $name = null;
-        if($con = $this->mysqli->prepare("SELECT callsign, stationname FROM station")){
+        if($con = $this->mysqli->prepare(
+                "SELECT callsign, stationname FROM station")){
             $stations = array();
             $con->execute();
             $con->bind_result($callsign,$name);
