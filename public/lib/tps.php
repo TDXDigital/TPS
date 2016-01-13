@@ -24,17 +24,20 @@ namespace TPS;
  * THE SOFTWARE.
  */
 
-require_once 'TPSBIN'.DIRECTORY_SEPARATOR."functions.php";
+require_once dirname(__FILE__).DIRECTORY_SEPARATOR.
+        '../../TPSBIN'.DIRECTORY_SEPARATOR."functions.php";
 
 class TPS{
     protected $mysqli;
+    protected $db; //USE PDO database
     protected $mysqliDriver;
     protected $username;
+    private $requirePDO;
     
     private function getDatabaseConfig($target=NULL,
             $xmlpath=NULL){
         if($xmlpath === NULL){
-            $xmlpath = "TPSBIN"
+            $xmlpath = dirname(__FILE__).DIRECTORY_SEPARATOR."../../TPSBIN"
                     .DIRECTORY_SEPARATOR."XML"
                     .DIRECTORY_SEPARATOR."DBSETTINGS.xml";
         }
@@ -110,21 +113,38 @@ class TPS{
         $maxResult = $ceil;
     }
 
-    public function __construct($enableDbReporting=FALSE) {
+    public function __construct($enableDbReporting=FALSE, $requirePDO=FALSE) {
         global $mysqli;
+        global $db;
         $mysqli=$mysqli?:$GLOBALS['mysqli'];
-        if(!$mysqli){
+        $db=$db?:$GLOBALS['db'];
+        $this->requirePDO = $requirePDO;
+        if(!$mysqli || !$db){
             // Establish DB connection
-            $database = NULL    ;
+            $database = NULL;
             if($database = $this->getDatabaseConfig()){
-                $this->mysqli = new \mysqli(
+                $databaseHost = $database['DBHOST'];
+                $databaseName = $database['DATABASE'];
+                if($this->requirePDO){
+                    $this->db = new \PDO("mysql:host=$databaseHost;dbname=$databaseName",
+                        $database['USER'], $database['PASSWORD']);
+                    $this->mysqli = $this->db;
+                }
+                else{
+                    $this->db = new \PDO("mysql:host=$databaseHost;dbname=$databaseName",
+                        $database['USER'], $database['PASSWORD']);
+                    $this->mysqli = new \mysqli(
                         $database['DBHOST'], 
                         $database['USER'], 
                         $database['PASSWORD'], 
                         $database['DATABASE']
                         );
+                }
                 if(!$this->mysqli->connect_error){
                     $GLOBALS['mysqli'] = $this->mysqli;
+                }
+                if(!$this->db->errorCode()){
+                    $GLOBALS['db'] = $this->db;
                 }
             }
             else{
