@@ -55,7 +55,7 @@ $app->get("/login", function () use ($app) {
    if (isset($_SESSION['urlRedirect'])) {
       $urlRedirect = $_SESSION['urlRedirect'];
    }
-   $email_value = $email_error = $password_error = '';
+   $email_value = $email_error = $srvId = $password_error = '';
    if (isset($flash['Username'])) {
       $email_value = $flash['Username'];
    }
@@ -65,8 +65,15 @@ $app->get("/login", function () use ($app) {
    if (isset($flash['errors']['password'])) {
       $password_error = $flash['errors']['password'];
    }
+   if (isset($flash['errors']['srvId'])) {
+      $srvId = $flash['errors']['srvId'];
+   }
    $log->debug("presented login to user via IP:",NULL,$_SERVER['REMOTE_ADDR']);
-   $app->render('login.html.twig', array('error' => $error, 'Username' => $email_value, 'Username_error' => $email_error, 'password_error' => $password_error, 'urlRedirect' => $urlRedirect));
+   $app->render('login.html.twig', 
+           array('error' => $error, 'Username' => $email_value, 
+               'Username_error' => $email_error, 
+               'password_error' => $password_error, 
+               'urlRedirect' => $urlRedirect, 'srvId'=>$srvId));
 });
 
 $app->group("/system", array($authenticate($app,[2]), $requiresHttps),
@@ -210,6 +217,7 @@ $app->post("/login", function () use ($app) {
     endforeach;
     $duration = $log->timerDuration();
     if (count($errors) > 0) {
+        $errors['srvId']=$databaseID;
         $app->flash('errors', $errors);
         $log->info("Login attempt failed (took $duration s)",
                 json_encode($errors),$app->request->getIp());

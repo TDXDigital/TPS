@@ -607,7 +607,7 @@ else{
             if($Foobar_Enabled){ print("Foobar2000();"); };
          ?>
          // Load Emergency Information
-         EASlocation = "lethbridge";
+         EASlocation = "<?php print $CALLSHOW;?>";
         GetEAS('EAS', '../', EASlocation);
         var EAS_fail = 0;
         var RDS_fail = 0;

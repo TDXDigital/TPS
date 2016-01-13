@@ -1,0 +1,17 @@
+{
+    "TPS_Errno": "EMER-001",
+    "type" : "database",
+    "execute" : "SQL",
+    "SQL_QRY" : {
+        "TEST": "SHOW COLUMNS FROM `emergencyalertsettings` WHERE `Field` = 'id';",
+        "RESULT" : {
+            "Field" : [
+                "id"
+            ]
+        },
+        "Negate": 0,
+        "createMode": 1,
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "emergencyAlertInstall.sql"
+    }
+}

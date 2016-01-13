@@ -1,6 +1,5 @@
 <?php
 //if (session_status() !== PHP_SESSION_ACTIVE) {session_start();}
-
 // Set variables
 $debug = False;
 $basepath = dirname(__DIR__).DIRECTORY_SEPARATOR;

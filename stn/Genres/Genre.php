@@ -26,6 +26,16 @@ include_once dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR."TPSBIN".
             }
         }
     }*/
+    $NAME = ""; 
+    $UID = ""; 
+    $CCNUM = "1";
+    $CCPERC = '40';
+    $CCTYPE = "";
+    $PLNUM = "1";
+    $PLPERC = "35";
+    $PLTYPE = "";
+    $FemCon = "1";
+    $FemConPerc = "20";
 ?>
 
 <!DOCTYPE html>
@@ -56,8 +66,8 @@ include_once dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR."TPSBIN".
                     <fieldset>
                         <div class="left">
                             <label for="name">Name</label>
-                            <br/><input type="text" required placeholder="Unique Name" id="name" name="name"  value="<?php echo $NAME;?>"/>
-                            <input type="hidden" value="<?php echo $UID?>" name="UID"/>
+                            <br/><input type="text" required placeholder="Unique Name" id="name" name="name"  value="<?php echo $NAME?:"";?>"/>
+                            <input type="hidden" value="<?php echo $UID?:""?>" name="UID"/>
                         </div>
                         <div class="left">
                             <label for="station">Station</label>
@@ -83,18 +93,18 @@ include_once dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR."TPSBIN".
                         </div>
                         <div class="left">
                             <label for="cangen">CanCon</label>
-                            <br/><input type="radio" name="cctype" value="1"><input type="number" id="cangen" min="0" name="cangen" placeholder="Defined Number" required value="<?php echo $CCNUM;?>"/>
+                            <br/><input type="radio" name="cctype" value="1"><input type="number" id="cangen" min="0" name="cangen" placeholder="Defined Number" required value="<?php echo $CCNUM?:"";?>"/>
                             <br/><input type="radio" name="cctype" value="0" checked="checked"><input type="number" step="1" min="0" max="100" id="ccperc" name="canper" placeholder="Percent" required value="<?php echo $CCPERC;?>"/><label for="ccperc">%</label>
                         </div>
                         <div class="left">
                             <label for="Plgen">Playlist</label>
-                            <br/><input type="radio" name="pltype" value="1"><input type="number" id="Plgen" min="0" name="plgen" placeholder="Defined Number" required value="<?php echo $PLNUM?>"/>
+                            <br/><input type="radio" name="pltype" value="1"><input type="number" id="Plgen" min="0" name="plgen" placeholder="Defined Number" required value="<?php echo $PLNUM?:""?>"/>
                             <br/><input type="radio" name="pltype" value="0" checked="checked"><input type="number" step="1" min="0" max="100" id="plperc" name="plperc" placeholder="Percent" required value="<?php echo $PLPERC;?>"/><label for="plperc">%</label>
                         </div>
                         <div class="left">
                             <label for="fcgen">FemCon</label>
-                            <br/><input disabled='disabled' type="radio" name="fctype" value="1"><input type="number" id="fcgen" min="0" name="fcgen" disabled='disabled' placeholder="Not Implemented" required value="<?php echo $PLNUM?>"/>
-                            <br/><input disabled='disabled' type="radio" name="fctype" value="0" checked="chedked"><input type="number" step="1" min="0" disabled='disabled' max="100" id="plperc" name="fcperc" placeholder="Percent" required value="<?php echo $PLPERC;?>"/><label for="plperc">%</label>
+                            <br/><input disabled='disabled' type="radio" name="fctype" value="1"><input type="number" id="fcgen" min="0" name="fcgen" disabled='disabled' placeholder="Not Implemented" required value="<?php echo $FemCon?:""?>"/>
+                            <br/><input disabled='disabled' type="radio" name="fctype" value="0" checked="chedked"><input type="number" step="1" min="0" disabled='disabled' max="100" id="plperc" name="fcperc" placeholder="Percent" required value="<?php echo $FemConPerc;?>"/><label for="plperc">%</label>
                         </div>
                     </fieldset>
                 <div>

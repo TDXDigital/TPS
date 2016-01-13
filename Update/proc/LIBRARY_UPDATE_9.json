@@ -2,15 +2,22 @@
     "TPS_Errno": "DRLB-001",
     "type" : "database",
     "execute" : "SQL",
-    "description" : "Adds parent company attribute to recordlabel",
+    "description" : "Adds parent company constraint to recordlabel",
     "SQL_QRY" : {
-        "TEST": "SHOW COLUMNS FROM `recordlabel` WHERE `Field` = 'parentCompany';",
+        "TEST": "SHOW index FROM `recordlabel` where Key_name = \"parentCompanyFK_idx\";",
         "RESULT" : {
-            "Field" : [
+            "Key_name" : [
+                "parentCompanyFK_idx"
+            ],
+            "Null" : [
+                "YES"
+            ],
+            "Column_name" : [
                 "parentCompany"
             ]
         },
         "UPDATE_TYPE" : "FILE",
         "UPDATE" : "LIBRARY_UPDATE_9.sql"
-    }
+    },
+    "requires": "RCRD-001"
 }

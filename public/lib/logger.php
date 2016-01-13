@@ -140,11 +140,15 @@ class logger extends TPS{
     static protected function formatPHPlogLine($level, $string, $trace=True){
         try{
             if($trace){
-                $btrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 0);
-                $traceStrFmt = " [%s, %s L%i] in %s]";
-                $traceStr = sprintf($traceStrFmt, date("Y-m-d H:i:s"), 
+                try {
+                    $btrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 0);
+                    $traceStrFmt = " [%s, %s L%i] in %s]";
+                    $traceStr = sprintf($traceStrFmt, date("Y-m-d H:i:s"), 
                         $btrace[3]['file'], $btrace[3]['line'],
                         $btrace[3]['function']);
+                } catch (\Exception $exc) {
+                    $traceStr = "";
+                }
             }
             else{
                 $traceStr = " ";
@@ -181,8 +185,9 @@ class logger extends TPS{
         }
         if(isset($con) && $con){
             try{
+                $resTrunk = substr($result,0,45);
                 $con->bind_param("sssss",
-                    $this->usernameLog,$event, $source, $result,$severity);
+                    $this->usernameLog,$event, $source, $resTrunk ,$severity);
                 $con->execute();
             } catch (Exception $ex) {
                 error_log($this->formatPHPlogLine(

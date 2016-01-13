@@ -529,7 +529,7 @@ else{
     <!--<div id="hdw_prompt" style="margin: 0 auto 0 auto; width: 1354px; background-color: #000; color: white; display:none;"><button onclick="ShowHardware()" title="Show"><span class="ui-icon ui-icon-carat-1-s"></span></button><span>Hardware Control</span></div>-->
     <div id="hdw" style="margin: 0 auto 0 auto; width: 1354px; background-color: #000; color: white; text-align: left;">
         <?php
-            if(TRUE){
+            if(False){
                 echo "<span id=\"HDW_title_open\"><!--<button onclick=\"HideHardware()\" title=\"Hide\"><span class=\"ui-icon ui-icon-carat-1-n\"></span></button>--><span>Hardware Control</span></span>";
                 if($_SESSION['access']==2){
                     $Hardware_Query="SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='$CALL' and in_service='1' and ipv4_address IS NOT NULL group by hardware.hardwareid order by friendly_name ASC";
@@ -991,6 +991,9 @@ else{
 		</table>
 	</div>
     <script type="text/javascript">
+        <?php
+        print "station = \"$CALL\";\n";
+        ?>
      function SetRem(chk, ID, ROW, COUNT) {
          if (chk == true) {
              document.getElementById(ID).style.background = 'red';
@@ -1034,9 +1037,9 @@ else{
      }
      $(document).ready(function () {
          // Load Emergency Information
-         GetEAS('EAS', '../../', "lethbridge");
+         GetEAS('EAS', '../../', station);
          setInterval(function () {
-            GetEAS('EAS', '../../', "lethbridge");
+            GetEAS('EAS', '../../', station);
          }, 15000);
      });
 	</script>
