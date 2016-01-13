@@ -45,7 +45,13 @@ class TPS{
             $xmlpath = get_include_path() . $xmlpath;
         }
         try{
-            $dbxml = simplexml_load_file($xmlpath);
+            if(file_exists($xmlpath))
+            {
+                $dbxml = simplexml_load_file($xmlpath);
+            }
+            else{
+                return FALSE;
+            }
         } catch (Exception $ex) {
             error_log($ex);
             return FALSE;
