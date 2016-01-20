@@ -15,6 +15,7 @@ class genreTest extends \PHPUnit_Extensions_Database_TestCase {
      * @var genre
      */
     protected $object;
+    protected $tps;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -22,6 +23,7 @@ class genreTest extends \PHPUnit_Extensions_Database_TestCase {
      */
     protected function setUp() {
         $GLOBALS['pdo'] = $this->getConnection();
+        $this->tps = new \TPS\TPS(FALSE, TRUE);
         $this->object = new \TPS\genre("NCRA");
     }
 
