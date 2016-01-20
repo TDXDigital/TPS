@@ -19,7 +19,7 @@ class TPSTest extends \PHPUnit_Extensions_Database_TestCase {
      * This method is called before a test is executed.
      */
     protected function setUp() {
-        $GLOBALS['db'] = $this->getConnection();
+        $GLOBALS['pdo'] = $this->getConnection();
         $this->object = new \TPS\TPS(FALSE,FALSE,NULL,
                 dirname(__FILE__).'/_files/DBSETTINGS.xml');
     }
@@ -29,7 +29,7 @@ class TPSTest extends \PHPUnit_Extensions_Database_TestCase {
      * This method is called after a test is executed.
      */
     protected function tearDown() {
-        unset($GLOBALS['db']);
+        unset($GLOBALS['pdo']);
     }
 
     /**

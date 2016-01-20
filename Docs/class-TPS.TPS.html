@@ -7,7 +7,7 @@
 	<title>Class TPS\TPS | TPS_GIT</title>
 
 	<script type="text/javascript" src="resources/combined.js?3604910170"></script>
-	<script type="text/javascript" src="elementlist.js?3705013715"></script>
+	<script type="text/javascript" src="elementlist.js?2765883830"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360">
 
 </head>
@@ -36,7 +36,11 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
+				<li><a href="class-TPS.alert.html">alert</a></li>
+				<li><a href="class-TPS.emergencyAlert.html">emergencyAlert</a></li>
 				<li><a href="class-TPS.episode.html">episode</a></li>
+				<li><a href="class-TPS.genre.html">genre</a></li>
+				<li><a href="class-TPS.genreTest.html">genreTest</a></li>
 				<li><a href="class-TPS.label.html">label</a></li>
 				<li><a href="class-TPS.library.html">library</a></li>
 				<li><a href="class-TPS.logger.html">logger</a></li>
@@ -47,6 +51,7 @@
 				<li><a href="class-TPS.station.html">station</a></li>
 				<li><a href="class-TPS.submissionTracking.html">submissionTracking</a></li>
 				<li class="active"><a href="class-TPS.TPS.html">TPS</a></li>
+				<li><a href="class-TPS.TPSTest.html">TPSTest</a></li>
 			</ul>
 
 
@@ -103,6 +108,7 @@
 
 	<div>
 		<h4>Direct known subclasses</h4>
+			<a href="class-TPS.genre.html">TPS\genre</a>, 
 			<a href="class-TPS.label.html">TPS\label</a>, 
 			<a href="class-TPS.logger.html">TPS\logger</a>, 
 			<a href="class-TPS.Report.html">TPS\Report</a>, 
@@ -111,6 +117,7 @@
 
 	<div>
 		<h4>Indirect known subclasses</h4>
+			<a href="class-TPS.emergencyAlert.html">TPS\emergencyAlert</a>, 
 			<a href="class-TPS.episode.html">TPS\episode</a>, 
 			<a href="class-TPS.library.html">TPS\library</a>, 
 			<a href="class-TPS.program.html">TPS\program</a>, 
@@ -129,7 +136,7 @@
 		<b>Namespace:</b> <a href="namespace-TPS.html">TPS</a><br>
 		
 
-		<b>Located at</b> <a href="source-class-TPS.TPS.html#29-167" title="Go to source code">public/lib/tps.php</a><br>
+		<b>Located at</b> <a href="source-class-TPS.TPS.html#30-218" title="Go to source code">public/lib/tps.php</a><br>
 	</div>
 
 
@@ -139,7 +146,7 @@
 	<tr data-order="sanitizePagination" id="_sanitizePagination">
 
 		<td class="attributes"><code>
-			 protected 
+			 public static
 			
 			
 			</code>
@@ -147,7 +154,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_sanitizePagination">#</a>
-		<code><a href="source-class-TPS.TPS.html#75-98" title="Go to source code">sanitizePagination</a>( <span>integer <var>&amp; $pagination</var></span>, <span>integer <var>&amp; $maxResult</var></span> )</code>
+		<code><a href="source-class-TPS.TPS.html#99-122" title="Go to source code">sanitizePagination</a>( <span>integer <var>&amp; $pagination</var></span>, <span>integer <var>&amp; $maxResult</var></span> )</code>
 
 		<div class="description short">
 			
@@ -183,7 +190,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-TPS.TPS.html#100-133" title="Go to source code">__construct</a>( <span>mixed <var>$enableDbReporting</var> = <span class="php-keyword1">FALSE</span></span> )</code>
+		<code><a href="source-class-TPS.TPS.html#124-183" title="Go to source code">__construct</a>( <span>mixed <var>$enableDbReporting</var> = <span class="php-keyword1">FALSE</span></span>, <span>mixed <var>$requirePDO</var> = <span class="php-keyword1">FALSE</span></span>, <span>mixed <var>$settingsTarget</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$settingsPath</var> = <span class="php-keyword1">NULL</span></span> )</code>
 
 		<div class="description short">
 			
@@ -212,7 +219,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_updateParent">#</a>
-		<code><a href="source-class-TPS.TPS.html#135-140" title="Go to source code">updateParent</a>( )</code>
+		<code><a href="source-class-TPS.TPS.html#185-190" title="Go to source code">updateParent</a>( )</code>
 
 		<div class="description short">
 			
@@ -241,7 +248,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getStations">#</a>
-		<code><a href="source-class-TPS.TPS.html#146-163" title="Go to source code">getStations</a>( )</code>
+		<code><a href="source-class-TPS.TPS.html#196-214" title="Go to source code">getStations</a>( )</code>
 
 		<div class="description short">
 			
@@ -281,11 +288,34 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.TPS.html#30" title="Go to source code"><var>$mysqli</var></a>
+				<a href="source-class-TPS.TPS.html#31" title="Go to source code"><var>$mysqli</var></a>
 		</td>
 		<td class="value"><code></code></td>
 		<td class="description"><div>
 			<a href="#$mysqli" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="db" id="$db">
+		<td class="attributes"><code>
+			protected  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-TPS.TPS.html#32" title="Go to source code"><var>$db</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$db" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -304,7 +334,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.TPS.html#31" title="Go to source code"><var>$mysqliDriver</var></a>
+				<a href="source-class-TPS.TPS.html#33" title="Go to source code"><var>$mysqliDriver</var></a>
 		</td>
 		<td class="value"><code></code></td>
 		<td class="description"><div>
@@ -327,7 +357,7 @@
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-TPS.TPS.html#32" title="Go to source code"><var>$username</var></a>
+				<a href="source-class-TPS.TPS.html#34" title="Go to source code"><var>$username</var></a>
 		</td>
 		<td class="value"><code></code></td>
 		<td class="description"><div>

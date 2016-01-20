@@ -7,7 +7,7 @@
 	<title>Class TPS\library | TPS_GIT</title>
 
 	<script type="text/javascript" src="resources/combined.js?3604910170"></script>
-	<script type="text/javascript" src="elementlist.js?3705013715"></script>
+	<script type="text/javascript" src="elementlist.js?2765883830"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360">
 
 </head>
@@ -36,7 +36,11 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
+				<li><a href="class-TPS.alert.html">alert</a></li>
+				<li><a href="class-TPS.emergencyAlert.html">emergencyAlert</a></li>
 				<li><a href="class-TPS.episode.html">episode</a></li>
+				<li><a href="class-TPS.genre.html">genre</a></li>
+				<li><a href="class-TPS.genreTest.html">genreTest</a></li>
 				<li><a href="class-TPS.label.html">label</a></li>
 				<li class="active"><a href="class-TPS.library.html">library</a></li>
 				<li><a href="class-TPS.logger.html">logger</a></li>
@@ -47,6 +51,7 @@
 				<li><a href="class-TPS.station.html">station</a></li>
 				<li><a href="class-TPS.submissionTracking.html">submissionTracking</a></li>
 				<li><a href="class-TPS.TPS.html">TPS</a></li>
+				<li><a href="class-TPS.TPSTest.html">TPSTest</a></li>
 			</ul>
 
 
@@ -138,7 +143,7 @@
 		<b>Namespace:</b> <a href="namespace-TPS.html">TPS</a><br>
 		
 
-		<b>Located at</b> <a href="source-class-TPS.library.html#34-592" title="Go to source code">public/lib/library.php</a><br>
+		<b>Located at</b> <a href="source-class-TPS.library.html#34-622" title="Go to source code">public/lib/library.php</a><br>
 	</div>
 
 
@@ -624,7 +629,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_searchLibrary">#</a>
-		<code><a href="source-class-TPS.library.html#384-436" title="Go to source code">searchLibrary</a>( <span>string <var>$term</var></span>, <span>boolean <var>$exact</var> = <span class="php-keyword1">False</span></span> )</code>
+		<code><a href="source-class-TPS.library.html#384-438" title="Go to source code">searchLibrary</a>( <span>string <var>$term</var></span>, <span>boolean <var>$exact</var> = <span class="php-keyword1">False</span></span>, <span>mixed <var>$page</var> = <span class="php-num">1</span></span>, <span>mixed <var>$limit</var> = <span class="php-num">1000</span></span> )</code>
 
 		<div class="description short">
 			<p>More general search of the library that matches on any of the following
@@ -644,6 +649,10 @@ columns: artist, album, note, Locale, or Genre</p>
 					<dd><code>string</code><br>$term</dd>
 					<dt><var>$exact</var></dt>
 					<dd><code>boolean</code><br>$exact</dd>
+					<dt><var>$page</var></dt>
+					<dd></dd>
+					<dt><var>$limit</var></dt>
+					<dd></dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -661,6 +670,35 @@ columns: artist, album, note, Locale, or Genre</p>
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="countSearchLibrary" id="_countSearchLibrary">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_countSearchLibrary">#</a>
+		<code><a href="source-class-TPS.library.html#440-466" title="Go to source code">countSearchLibrary</a>( <span>mixed <var>$term</var> = <span class="php-quote">&quot;&quot;</span></span>, <span>mixed <var>$exact</var> = <span class="php-keyword1">False</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="searchLibraryWithAlbum" id="_searchLibraryWithAlbum">
 
 		<td class="attributes"><code>
@@ -672,7 +710,7 @@ columns: artist, album, note, Locale, or Genre</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_searchLibraryWithAlbum">#</a>
-		<code><a href="source-class-TPS.library.html#438-499" title="Go to source code">searchLibraryWithAlbum</a>( <span>type <var>$artist</var></span>, <span>type <var>$album</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$exact</var> = <span class="php-keyword1">FALSE</span></span> )</code>
+		<code><a href="source-class-TPS.library.html#468-529" title="Go to source code">searchLibraryWithAlbum</a>( <span>type <var>$artist</var></span>, <span>type <var>$album</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$exact</var> = <span class="php-keyword1">FALSE</span></span> )</code>
 
 		<div class="description short">
 			
@@ -714,7 +752,7 @@ columns: artist, album, note, Locale, or Genre</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_ListAll">#</a>
-		<code><a href="source-class-TPS.library.html#501-519" title="Go to source code">ListAll</a>( )</code>
+		<code><a href="source-class-TPS.library.html#531-549" title="Go to source code">ListAll</a>( )</code>
 
 		<div class="description short">
 			
@@ -751,7 +789,7 @@ columns: artist, album, note, Locale, or Genre</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_GetFullAlbum">#</a>
-		<code><a href="source-class-TPS.library.html#521-591" title="Go to source code">GetFullAlbum</a>( <span>type <var>$term</var></span> )</code>
+		<code><a href="source-class-TPS.library.html#551-621" title="Go to source code">GetFullAlbum</a>( <span>type <var>$term</var></span> )</code>
 
 		<div class="description short">
 			<p>Takes a RefCode and returns an array with all library information
@@ -795,6 +833,7 @@ included</p>
 			<a href="class-TPS.station.html#_PlaylistReportingGrouping">PlaylistReportingGrouping()</a>, 
 			<a href="class-TPS.station.html#_PlaylistReportingGroupingOff">PlaylistReportingGroupingOff()</a>, 
 			<a href="class-TPS.station.html#_PlaylistReportingGroupingOn">PlaylistReportingGroupingOn()</a>, 
+			<a href="class-TPS.station.html#_create">create()</a>, 
 			<a href="class-TPS.station.html#_forceAlbum">forceAlbum()</a>, 
 			<a href="class-TPS.station.html#_forceAlbumOff">forceAlbumOff()</a>, 
 			<a href="class-TPS.station.html#_forceAlbumOn">forceAlbumOn()</a>, 
@@ -804,16 +843,19 @@ included</p>
 			<a href="class-TPS.station.html#_forceComposer">forceComposer()</a>, 
 			<a href="class-TPS.station.html#_forceComposerOff">forceComposerOff()</a>, 
 			<a href="class-TPS.station.html#_forceComposerOn">forceComposerOn()</a>, 
+			<a href="class-TPS.station.html#_getAlertProviders">getAlertProviders()</a>, 
 			<a href="class-TPS.station.html#_getAllProgramIds">getAllProgramIds()</a>, 
 			<a href="class-TPS.station.html#_getStation">getStation()</a>, 
 			<a href="class-TPS.station.html#_hourlyPSA">hourlyPSA()</a>, 
 			<a href="class-TPS.station.html#_hourlyTraffic">hourlyTraffic()</a>, 
+			<a href="class-TPS.station.html#_login">login()</a>, 
 			<a href="class-TPS.station.html#_playlistLiveGrouping">playlistLiveGrouping()</a>, 
 			<a href="class-TPS.station.html#_playlistLiveGroupingOff">playlistLiveGroupingOff()</a>, 
 			<a href="class-TPS.station.html#_playlistLiveGroupingOn">playlistLiveGroupingOn()</a>, 
 			<a href="class-TPS.station.html#_programCounters">programCounters()</a>, 
 			<a href="class-TPS.station.html#_programCountersOff">programCountersOff()</a>, 
 			<a href="class-TPS.station.html#_programCountersOn">programCountersOn()</a>, 
+			<a href="class-TPS.station.html#_registerUser">registerUser()</a>, 
 			<a href="class-TPS.station.html#_setDefaultSortOrder">setDefaultSortOrder()</a>, 
 			<a href="class-TPS.station.html#_setHourlyPSA">setHourlyPSA()</a>, 
 			<a href="class-TPS.station.html#_setHourlyTraffic">setHourlyTraffic()</a>, 
@@ -876,6 +918,7 @@ included</p>
 			<a href="class-TPS.station.html#$forceAlbum"><var>$forceAlbum</var></a>, 
 			<a href="class-TPS.station.html#$forceArtist"><var>$forceArtist</var></a>, 
 			<a href="class-TPS.station.html#$forceComposer"><var>$forceComposer</var></a>, 
+			<a href="class-TPS.station.html#$genres"><var>$genres</var></a>, 
 			<a href="class-TPS.station.html#$log"><var>$log</var></a>, 
 			<a href="class-TPS.station.html#$perHourPSA"><var>$perHourPSA</var></a>, 
 			<a href="class-TPS.station.html#$perHourTraffic"><var>$perHourTraffic</var></a>, 
@@ -895,6 +938,7 @@ included</p>
 	<caption>Properties inherited from <a href="class-TPS.TPS.html#properties">TPS\TPS</a></caption>
 	<tr>
 		<td><code>
+			<a href="class-TPS.TPS.html#$db"><var>$db</var></a>, 
 			<a href="class-TPS.TPS.html#$mysqli"><var>$mysqli</var></a>, 
 			<a href="class-TPS.TPS.html#$mysqliDriver"><var>$mysqliDriver</var></a>, 
 			<a href="class-TPS.TPS.html#$username"><var>$username</var></a>

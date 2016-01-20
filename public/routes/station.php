@@ -218,6 +218,8 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
         $app->get('/:station', $authenticate($app,[1,2]), 
                 function ($callsign) use ($app){
             $station = new \TPS\station($callsign);
+            $isXHR = $app->request->isAjax();
+            header("Content-Type: application/json");
             print json_encode($station->genres->all());
         });
         $app->post('/:station', $authenticate($app,[2]),
