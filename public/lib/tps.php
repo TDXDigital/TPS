@@ -164,7 +164,7 @@ class TPS{
             }
             else{
                 $this->mysqli = $mysqli?:NULL;
-                $this->db = $db?:NULL;
+                $this->db = $pdo?:NULL;
             }
         }
         else{
