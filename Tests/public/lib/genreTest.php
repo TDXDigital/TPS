@@ -22,7 +22,8 @@ class genreTest extends \PHPUnit_Extensions_Database_TestCase {
      * This method is called before a test is executed.
      */
     protected function setUp() {
-        $GLOBALS['pdo'] = $this->getConnection();
+        #http://stackoverflow.com/questions/25901470/phpunit-extensions-database-testcase-returns-undefined-method
+        $GLOBALS['pdo'] = $this->getConnection()->getConnection();
         $this->tps = new \TPS\TPS(FALSE, TRUE);
         $this->object = new \TPS\genre("NCRA");
     }
