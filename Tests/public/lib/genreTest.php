@@ -115,7 +115,7 @@ class genreTest extends \PHPUnit_Extensions_Database_TestCase {
      */
     public function getDataSet()
     {
-        return $this->createFlatXMLDataSet(dirname(__FILE__).'/_files/genreTestSeed.xml');
+        return $this->createXMLDataSet(dirname(__FILE__).'/_files/genreTestSeed.xml');
     }
 
 
