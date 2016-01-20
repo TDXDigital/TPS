@@ -5,3 +5,4 @@ php:
     - 5.6
     - 7
 script: phpunit TPSTest Tests/public/lib/tpsTest.php
+script: phpunit TPSTest Tests/public/lib/genreTest.php
