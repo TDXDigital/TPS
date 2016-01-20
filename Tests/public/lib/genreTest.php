@@ -22,7 +22,7 @@ class genreTest extends \PHPUnit_Extensions_Database_TestCase {
      */
     protected function setUp() {
         $GLOBALS['pdo'] = $this->getConnection();
-        $this->object = new \TPS\genre;
+        $this->object = new \TPS\genre("NCRA");
     }
 
     /**
@@ -93,9 +93,9 @@ class genreTest extends \PHPUnit_Extensions_Database_TestCase {
         $this->assertEquals($result1,$compare1,
                 "result returned for genre differs from expected result for"
                 . "test result #1 (Test)");
-        $this->assertEquals($result2,$compare2,
+        $this->assertEquals($result2,array(),
                 "result returned for genre differs from expected result for"
-                . "test result #1 (Test)");
+                . "test result #2 (Test)");
     }
     
     /**
