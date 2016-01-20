@@ -1,4 +1,3 @@
-composer install
 language: php
 php:
     - 5.4
@@ -7,3 +6,8 @@ php:
     - 7
 script: phpunit TPSTest Tests/public/lib/tpsTest.php
 script: phpunit TPSTest Tests/public/lib/genreTest.php
+
+
+before_script:
+    - composer install
+    
