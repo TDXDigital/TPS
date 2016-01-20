@@ -26,14 +26,14 @@
 
 namespace TPS;
 
-require "tps.php";
+require_once "tps.php";
 /**
  * Genre handles communications with the database
  * for retrieving 
  *
  * @author support@ckxu.com
  */
-class genre {
+class genre extends TPS{
     private $callsign = null;
       
     public function __construct($callsign) {
@@ -41,17 +41,53 @@ class genre {
         $this->callsign = $callsign;
     }
     
+    public function create($name, $govReq=0, $govReqPerc=0, $govReqType=1,
+            $playslist=0, $playlistperc=0, $plType=1){
+        try {
+            $stmt = $this->db->prepare("INSERT INTO genre (genreid, cancon, "
+                    . "playlist, canconperc, playlistperc, PlType, CCType, "
+                    . "Station) VALUES (:name, :canCon, :playlist, :canConPerc,"
+                    . " :plType, :playlistPerc :ccType, :station)");
+            $this->db->beginTransaction(); 
+            $stmt->bindParam(":name", $name, \PDO::PARAM_STR);
+            $stmt->bindParam(":station", $this->callsign, \PDO::PARAM_STR);
+
+            $stmt->bindParam(":canCon", $govReq);
+            $stmt->bindParam(":canConPerc", $govReqPerc);
+            $stmt->bindParam(":ccType", $govReqType);
+
+            $stmt->bindParam(":playlist", $playslist);
+            $stmt->bindParam(":playlistPerc", $playlistperc);
+            $stmt->bindParam(":plType", $plType);
+            
+            $stmt->execute();
+            $result = $this->db->lastInsertId()?:
+                    $stmt->fetch(\PDO::FETCH_ASSOC)['genreid']; 
+            $this->db->commit(); 
+            $stmt = null;
+            return $result;
+
+        } catch (PDOException $exc) {
+            $this->db->rollback(); 
+            error_log(sprintf("PDO Exception, %s: %s"
+                    ,$exc->getMessage(), $exc->getTraceAsString()));
+            return FALSE;
+        }
+
+    }
+    
     public function all(){
-        $stmt = $this->mysqli->prepare(
+        $stmt = $this->db->prepare(
                 "SELECT genreid, cancon, playlist, canconperc, playlistperc,"
-                . " UID, CCType, PlType, Station FROM genre WHERE station=? order by"
+                . " UID, CCType, PlType, Station FROM genre "
+                . "WHERE station = :callsign order by"
                 . "genreid asc");
-        $stmt->bind_param("s",$this->callsign);
+        $stmt->bindParam(":callsign", $this->callsign, \PDO::PARAM_STR);
         $stmt->execute();
-        $stmt->bind_result($genreId, $govRec, $playlist, $govRecPerc, 
-                $playlistPerc, $UID, $CcType, $PlType, $station);
         $result = array();
-        while($stmt->fetch()){
+        while(list($genreId, $govRec, $playlist, $govRecPerc, 
+                $playlistPerc, $UID, $CcType, $PlType, $station) = 
+                $stmt->fetch( \PDO::FETCH_NUM )){
             $result[$genreId] = array(
                 "governmentRequirements" => array(
                     "type" => $CcType,
@@ -67,24 +103,25 @@ class genre {
                 "station" => $station,
             );
         }
-        $stmt->close();
+        $stmt = null; #close statement
         return $result;
     }
     
     public function get($id){
-        $stmt = $this->mysqli->prepare(
+        $stmt = $this->db->prepare(
                 "SELECT genreid, cancon, playlist, canconperc, playlistperc,"
-                . " UID, CCType, PlType, Station FROM genre WHERE station=? "
-                . "and genreId=? order by"
+                . " UID, CCType, PlType, Station FROM genre "
+                . "WHERE station = :callsign "
+                . "and genreId = :id order by "
                 . "genreid asc");
-        $stmt->bind_param("ss",$this->callsign, $id);
+        $stmt->bindParam(":callsign", $this->callsign, \PDO::PARAM_STR);
+        $stmt->bindParam(":id", $id , \PDO::PARAM_INT);
         $stmt->execute();
-        $stmt->bind_result($genreId, $govRec, $playlist, $govRecPerc, 
-                $playlistPerc, $UID, $CcType, $PlType, $station);
         $result = array();
-        while($stmt->fetch()){
-            $result = array(
-                "id" => $genreId,
+        while(list($genreId, $govRec, $playlist, $govRecPerc, 
+                $playlistPerc, $UID, $CcType, $PlType, $station) = 
+                $stmt->fetch( \PDO::FETCH_NUM )){
+            $result[$genreId] = array(
                 "governmentRequirements" => array(
                     "type" => $CcType,
                     "numeric" => $govRec,
@@ -99,7 +136,7 @@ class genre {
                 "station" => $station,
             );
         }
-        $stmt->close();
+        $stmt = null; #close statement
         return $result;
     }
 }

@@ -25,6 +25,7 @@ namespace TPS;
  */
 
 require_once 'logger.php';
+require_once 'genre.php';
 require_once 'tps.php';
 class station extends TPS{
     protected $callsign = null;
@@ -52,6 +53,7 @@ class station extends TPS{
     protected $perHourPSA = null;
     protected $timezone = "UTC";
     public $log = null;
+    public $genres = null;
             
     function __construct($callsign=null) {
         parent::__construct();
@@ -65,6 +67,7 @@ class station extends TPS{
             $username="AnonamousUser";
         }
         $this->log = new \TPS\logger($username);
+        $this->genres = new \TPS\genre($this->callsign);
     }
     
     public function getAlertProviders(){

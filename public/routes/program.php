@@ -46,7 +46,8 @@ $app->group('/programs', $authenticate, function () use ($app,$authenticate){
                 'station'=>$stn,
                 'programs'=>$programs,
                 );
-            $app->render('notSupported.twig',$params);
+            var_dump($params);
+            #$app->render('notSupported.twig',$params);
         });
         $app->get('/:station/all',$authenticate($app,2), 
                 function ($callsign) use ($app,$authenticate){

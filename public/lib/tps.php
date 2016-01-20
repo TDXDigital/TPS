@@ -124,11 +124,11 @@ class TPS{
     public function __construct($enableDbReporting=FALSE, $requirePDO=FALSE,
             $settingsTarget=NULL, $settingsPath=NULL) {
         global $mysqli;
-        global $db;
+        global $pdo;
         $mysqli=$mysqli?:$GLOBALS['mysqli'];
-        $db=$db?:$GLOBALS['db'];
+        $pdo=$pdo?:$GLOBALS['pdo'];
         $this->requirePDO = $requirePDO;
-        if(!$mysqli || !$db){
+        if(!$mysqli || !$pdo){
             // Establish DB connection
             $database = NULL;
             if($database = $this->getDatabaseConfig($settingsTarget,
@@ -159,7 +159,7 @@ class TPS{
                     $GLOBALS['mysqli'] = $this->mysqli;
                 }
                 if(!$this->db->errorCode()){
-                    $GLOBALS['db'] = $this->db;
+                    $GLOBALS['pdo'] = $this->db;
                 }
             }
             else{
@@ -169,7 +169,7 @@ class TPS{
         }
         else{
             $this->mysqli = $mysqli;
-            $this->db = $db;
+            $this->db = $pdo;
         }
         if(!$this->mysqliDriver){
             $this->mysqliDriver = new \mysqli_driver();

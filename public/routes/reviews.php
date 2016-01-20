@@ -191,8 +191,13 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
                 'area'=>'Search',
                 'title'=>'Reviews',
                 );
-            #$app->render('reviewList.twig',$params);
-            print json_encode($reviewList);
+            $isXHR = $app->request->isAjax();
+            if($isXHR){
+                print json_encode($reviewList);
+            }
+            else{
+                $app->render('reviewList.twig',$params);
+            }
         });
         $app->get('/', $authenticate, function () use ($app){
             $params=array(

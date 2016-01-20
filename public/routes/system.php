@@ -69,11 +69,18 @@ $app->get("/login", function () use ($app) {
       $srvId = $flash['errors']['srvId'];
    }
    $log->debug("presented login to user via IP:",NULL,$_SERVER['REMOTE_ADDR']);
-   $app->render('login.html.twig', 
+   $isXHR = $app->request->isAjax();
+    if($isXHR){
+        print "Login Required, please post username, password, "
+        . "and serverId (srvId), See GitHub project for more information.";
+    }
+    else{
+        $app->render('login.html.twig', 
            array('error' => $error, 'Username' => $email_value, 
                'Username_error' => $email_error, 
                'password_error' => $password_error, 
                'urlRedirect' => $urlRedirect, 'srvId'=>$srvId));
+    }
 });
 
 $app->group("/system", array($authenticate($app,[2]), $requiresHttps),
@@ -232,6 +239,10 @@ $app->post("/login", function () use ($app) {
     $isXHR = $app->request->isAjax();
     if(!$isXHR){
         $app->redirect('/');
+    }
+    else{
+        print "Login Required, please post username, password, "
+        . "and serverId (srvId), See GitHub project for more information.";
     }
 });
 
