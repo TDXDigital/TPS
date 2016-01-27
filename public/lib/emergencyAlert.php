@@ -561,8 +561,23 @@ class emergencyAlert extends station{
     }
 
     public function run(){
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
         $this->checkAlerts();
         $this->removeOldUpdates();
+        if(sizeof($this->alerts)){
+            $this->log->info(sizeof($this->alerts)." found for "
+                    .$this->callsign.", sent to ".$ip);
+        }
+        foreach ($this->alerts as $key => $value) {
+            $this->log->info($value->provider." alert '$key' provided to "
+                    . $id);
+        }
         if($this->format == "json"){
             return json_encode($this->alerts);
         }
