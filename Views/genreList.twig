@@ -47,9 +47,10 @@
                 </div>
                 <div class="panel-body">
                     <div id="morris-donut-chart" class="donut200"></div>
-                    <!--<div class="text-right">
-                        <a href="#">View Details <i class="fa fa-arrow-circle-right"></i></a>
-                    </div>-->
+                    <div class="text-right">
+                        <i title="based on programs marked active" 
+                           class="fa fa-info-circle" style="color:grey;"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -60,9 +61,10 @@
                 </div>
                 <div class="panel-body">
                     <div id="morris-donut-chart-gov" class="donut200"></div>
-                    <!--<div class="text-right">
-                        <a href="#">View Details <i class="fa fa-arrow-circle-right"></i></a>
-                    </div>-->
+                    <div class="text-right">
+                        <i title="estimated total contribution toward average" 
+                           class="fa fa-info-circle" style="color:green;"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -73,9 +75,10 @@
                 </div>
                 <div class="panel-body">
                     <div id="morris-donut-chart-playlist" class="donut200"></div>
-                    <!--<div class="text-right">
-                        <a href="#">View Details <i class="fa fa-arrow-circle-right"></i></a>
-                    </div>-->
+                    <div class="text-right">
+                        <i title="estimated total contribution toward average" 
+                           class="fa fa-info-circle" style="color:green;"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -145,7 +148,8 @@
             element: 'morris-donut-chart-gov',
             data: [
                 {% for id, genre in genres %}
-                    {label: "{{id}}", value: {{(genre.governmentRequirements.percentage*100)
+                    {label: "{{id}}", value: {{(genre.governmentRequirements.percentage*100
+                    / genre.statistics.totalPrograms)
                     *(genre.statistics.percentPrograms)}}},
                 {% endfor %}
             ],
@@ -155,7 +159,8 @@
             element: 'morris-donut-chart-playlist',
             data: [
                 {% for id, genre in genres %}
-                    {label: "{{id}}", value: {{(genre.playlistRequirements.percentage*100)
+                    {label: "{{id}}", value: {{(genre.playlistRequirements.percentage*100
+                    / genre.statistics.totalPrograms)
                     *(genre.statistics.percentPrograms)}}},
                 {% endfor %}
             ],
