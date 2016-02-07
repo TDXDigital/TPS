@@ -145,9 +145,14 @@ class TPS{
                     $this->mysqli = $this->db;
                 }
                 else{
-                    $this->db = new \PDO(
+                    try{
+                        $this->db = new \PDO(
                             "mysql:host=$databaseHost;dbname=$databaseName",
-                        $database['USER'], $database['PASSWORD']);
+                            $database['USER'], $database['PASSWORD']);
+                    } catch (\PDOException $ex) {
+                        error_log($ex->getMessage());
+                        $this->db = NULL;
+                    }
                     $this->mysqli = new \mysqli(
                         $database['DBHOST'], 
                         $database['USER'], 

@@ -260,8 +260,21 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
         $app->get('/:station/:id', $authenticate($app,[1,2]),
                 function ($callsign,$id) use ($app){
             $station = new \TPS\station($callsign);
-            header("Content-Type: application/json");
-            print json_encode($station->genres->get($id));
+            $genre = $station->genres->get($id);
+            $isXHR = $app->request->isAjax();
+            if($isXHR){
+                header("Content-Type: application/json");
+                json_decode($genre);
+            }
+            else{
+                $params = array(
+                    'area'=>'Station Management',
+                    'title'=>'Genre',
+                    'genres' => $genre,
+                    'callsign' => $callsign
+                );
+                $app->render("genre.twig", $params);
+            }
         });
         $app->put('/:station/:id', $authenticate($app,[2]),
                 function ($callsign,$id) use ($app){

@@ -46,9 +46,10 @@
     </form>-->
     <table class='table table-bordered table-hover' >
         <thead>
-            <th>Name</th>
-            <th>GovReq</th>
-            <th>PlPerc</th>
+            <th>Genre<br>Name</th>
+            <th>Government<br>Requirements</th>
+            <th>Playlist<br>Requirements</th>
+            <th>Program<br>Statistics</th>
             <th>Edit</th>
         </thead>
         <tbody>
@@ -65,6 +66,9 @@
                     {% else %}
                         <td>{{genre.playlistRequirements.numeric*100}}%</td>
                     {% endif %}
+                    <td>{{genre.statistics.activePrograms}}/
+                        {{genre.statistics.totalPrograms}}&nbsp;
+                        ({{genre.statistics.percentPrograms}}%)
                     <td><a href="{{callsign}}/{{id|lower}}"><i class="fa fa-edit"></i></a></td>
                 </tr>
             {% endfor %}

@@ -79,14 +79,21 @@ class genre extends TPS{
     public function all(){
         $stmt = $this->db->prepare(
                 "SELECT genreid, cancon, playlist, canconperc, playlistperc,"
-                . " UID, CCType, PlType, Station FROM genre "
-                . "WHERE LOWER(station) = LOWER(:callsign) order by "
+                . " UID, CCType, PlType, Station, (SELECT count(programname)"
+                . " FROM program WHERE program.genre=genre.genreid AND"
+                . " program.active='1' AND LOWER(program.callsign) = "
+                . "LOWER(genre.Station)) AS PGM_Count, (SELECT count(*)"
+                . " FROM program where program.active='1' AND "
+                . "LOWER(program.callsign) = LOWER(genre.Station)) AS Total"
+                . ", (SELECT PGM_Count / Total) AS Percent FROM genre"
+                . " WHERE LOWER(station) = LOWER(:callsign) order by "
                 . "genreid asc");
         $stmt->bindParam(":callsign", $this->callsign, \PDO::PARAM_STR);
         $stmt->execute();
         $result = array();
         while(list($genreId, $govRec, $playlist, $govRecPerc, 
-                $playlistPerc, $UID, $CcType, $PlType, $station) = 
+                $playlistPerc, $UID, $CcType, $PlType, $station,
+                $activePrograms, $totalPrograms, $percentPrograms) = 
                 $stmt->fetch( \PDO::FETCH_NUM )){
             $result[$genreId] = array(
                 "governmentRequirements" => array(
@@ -98,6 +105,11 @@ class genre extends TPS{
                     "type" => $PlType,
                     "numeric" => $playlist,
                     "percentage" => $playlistPerc,
+                ),
+                "statistics" => array(
+                    "activePrograms" => $activePrograms,
+                    "totalPrograms" => $totalPrograms,
+                    "percentPrograms" => $percentPrograms
                 ),
                 "UID" => $UID,
                 "station" => $station,
@@ -110,8 +122,14 @@ class genre extends TPS{
     public function get($id){
         $stmt = $this->db->prepare(
                 "SELECT genreid, cancon, playlist, canconperc, playlistperc,"
-                . " UID, CCType, PlType, Station FROM genre "
-                . "WHERE station = :callsign "
+                . " UID, CCType, PlType, Station, (SELECT count(programname)"
+                . " FROM program WHERE program.genre=genre.genreid AND"
+                . " program.active='1' AND LOWER(program.callsign) = "
+                . "LOWER(genre.Station)) AS PGM_Count, (SELECT count(*)"
+                . " FROM program where program.active='1' AND "
+                . "LOWER(program.callsign) = LOWER(genre.Station)) AS Total"
+                . ", (SELECT PGM_Count / Total) AS Percent FROM genre"
+                . " WHERE LOWER(station) = LOWER(:callsign) "
                 . "and genreId = :id order by "
                 . "genreid asc");
         $stmt->bindParam(":callsign", $this->callsign, \PDO::PARAM_STR);
@@ -119,7 +137,8 @@ class genre extends TPS{
         $stmt->execute();
         $result = array();
         while(list($genreId, $govRec, $playlist, $govRecPerc, 
-                $playlistPerc, $UID, $CcType, $PlType, $station) = 
+                $playlistPerc, $UID, $CcType, $PlType, $station,
+                $activePrograms, $totalPrograms, $percentPrograms) = 
                 $stmt->fetch( \PDO::FETCH_NUM )){
             $result[$genreId] = array(
                 "governmentRequirements" => array(
@@ -131,6 +150,11 @@ class genre extends TPS{
                     "type" => $PlType,
                     "numeric" => $playlist,
                     "percentage" => $playlistPerc,
+                ),
+                "statistics" => array(
+                    "activePrograms" => $activePrograms,
+                    "totalPrograms" => $totalPrograms,
+                    "percentPrograms" => $percentPrograms
                 ),
                 "UID" => $UID,
                 "station" => $station,
