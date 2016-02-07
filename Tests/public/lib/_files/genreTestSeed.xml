@@ -28,6 +28,7 @@ THE SOFTWARE.
         <column>cancon</column>
         <column>playlist</column>
         <column>playlistperc</column>
+        <column>canconperc</column>
         <column>UID</column>
         <column>PlType</column>
         <column>CCType</column>

@@ -128,7 +128,7 @@ class TPS{
         $mysqli=$mysqli?:$GLOBALS['mysqli'];
         $pdo=$pdo?:$GLOBALS['pdo'];
         $this->requirePDO = $requirePDO;
-        if(!$mysqli || !$pdo){
+        if(!($requirePDO && is_object($pdo)) && !($mysqli || $pdo)){
             // Establish DB connection
             $database = NULL;
             if($database = $this->getDatabaseConfig($settingsTarget,
@@ -155,11 +155,12 @@ class TPS{
                         $database['DATABASE']
                         );
                 }
-                if(!$this->mysqli->connect_error){
-                    $GLOBALS['mysqli'] = $this->mysqli;
+                if($this->mysqli instanceof \mysqli && 
+                        !$this->mysqli->connect_error){
+                    $GLOBALS['mysqli'] = $mysqli?:$this->mysqli;
                 }
                 if(!$this->db->errorCode()){
-                    $GLOBALS['pdo'] = $this->db;
+                    $GLOBALS['pdo'] = $pdo?:$this->db;
                 }
             }
             else{
@@ -168,7 +169,10 @@ class TPS{
             }
         }
         else{
-            $this->mysqli = $mysqli;
+            if($requirePDO){
+                $mysqli = $pdo;
+            }
+            $this->mysqli = $mysqli?:$pdo;
             $this->db = $pdo;
         }
         if(!$this->mysqliDriver){
@@ -194,6 +198,7 @@ class TPS{
     }
     
     public function getStations(){
+        global $pdo;
         $callsign = null;
         $name = null;
         if($con = $this->mysqli->prepare(

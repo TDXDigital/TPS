@@ -80,7 +80,7 @@ class genre extends TPS{
         $stmt = $this->db->prepare(
                 "SELECT genreid, cancon, playlist, canconperc, playlistperc,"
                 . " UID, CCType, PlType, Station FROM genre "
-                . "WHERE station = :callsign order by"
+                . "WHERE LOWER(station) = LOWER(:callsign) order by "
                 . "genreid asc");
         $stmt->bindParam(":callsign", $this->callsign, \PDO::PARAM_STR);
         $stmt->execute();

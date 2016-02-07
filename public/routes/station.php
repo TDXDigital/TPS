@@ -218,9 +218,21 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
         $app->get('/:station', $authenticate($app,[1,2]), 
                 function ($callsign) use ($app){
             $station = new \TPS\station($callsign);
+            $genres = $station->genres->all();
             $isXHR = $app->request->isAjax();
-            header("Content-Type: application/json");
-            print json_encode($station->genres->all());
+            if($isXHR){
+                header("Content-Type: application/json");
+                print json_encode($genres);
+            }
+            else{
+                $params = array(
+                    'area'=>'Station Management',
+                    'title'=>'Genres',
+                    'genres' => $genres,
+                    'callsign' => $callsign
+                );
+                $app->render("genreList.twig", $params);
+            }
         });
         $app->post('/:station', $authenticate($app,[2]),
                 function ($callsign) use ($app){
@@ -234,9 +246,13 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
             $playlistType = $app->request->post('playlistType')?:1;
             $id = $station->genres->create($name,$govReq, $govReq, $govReqType,
                     $playlist, $playlist, $playlistType);
-            print $id;
-            if($id){
-                
+            $isXHR = $app->request->isAjax();
+            if($isXHR){
+                header("Content-Type: application/json");
+                json_encode($id);
+            }
+            else{
+                $app->redirect("./$callsign/$id");
             }
         });
 
