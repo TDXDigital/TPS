@@ -28,6 +28,7 @@
     <!--<span>SUCCESS: {{success}}, ERROR: {{error}}, ID: {{PRINTID}}| {% for id in PRINTID %}{{id}},{% endfor %}</span>-->
 {% endblock %}
 {% block content %}
+{% genre = genres|first %}
 <form role="form" method="post"> <!-- action="/Playlist/playlist.induct.php" -->
     <div class="row">
         <div class="col-lg-6">
@@ -35,14 +36,14 @@
                 <div id="name-group" class="form-group input-group">
                     <label class="input-group-addon" for="brand_field">Brand<span style="color:red">*</span></label>
                     <input name="brand" id="brand_field" type="text" required 
-                           {% if station.name is not null %} value="{{genre.keys()[0]}}" {% endif %}
+                           {% if genres is not null %} value="{{genres|keys|first}}" {% endif %}
                            placeholder="required common name/brand"
                            class="form-control" autofocus="autofocus">
                 </div>
                 <div id="address_group" class="form-group input-group">
                     <label class="input-group-addon" for="address_field">Address<span style="color:red">*</span></label>
                     <input name="address" id="address_field" type="text" required 
-                           {% if station.address is not null %} value="{{station.address}}" {% endif %}
+                           {% if genre is not null %} value="{{genre.}}" {% endif %}
                            placeholder="please enter an address" class="form-control">
                 </div>
                 <div class="row">
@@ -62,52 +63,6 @@
                                    placeholder="eg. 202 A1" class="form-control">
                         </div>
                     </div>               
-                </div>
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div id="web_group" class="form-group input-group">
-                            <label for="website_field" class="input-group-addon">Website</label>
-                            <input name="website" id="website_field" type="url" 
-                                   {% if station.website is not null %} value="{{station.website}}" {% endif %}
-                                   placeholder="http://www.google.ca" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div id="web_group" class="form-group input-group">
-                            <label for="perHourTraffic_field" class="input-group-addon" title="Traffic per Hour">Traffic/Hr</label>
-                            <input name="perHourTraffic" id="perHourTraffic_field" type="number" min="0"
-                                   value="{{station.perHourTraffic|default(1)}}" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div id="web_group" class="form-group input-group">
-                            <label for="perHourPSAs_field" class="input-group-addon" title="PSA per Hour">PSA/Hr</label>
-                            <input name="perHourPSAs" id="perHourPSAs_field" type="number" min="0"
-                                   value="{{station.perHourPSAs|default(1)}}" class="form-control">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div id="frequency_group" class="form-group input-group">
-                            <label class="input-group-addon" for="callsign_field">Call sign<span style="color:red">*</span></label>
-                            <input name="callsign" id="callsign_field" type="text" required 
-                                   {% if station.callsign is not null %} readonly value="{{station.callsign}}" {% endif %}
-                                   placeholder="eg. CAAA-FM" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div id="ind_group" class="form-group input-group">
-                            <label for="timezone" class="input-group-addon">TimeZone</label>
-                            <select id="timezone" class="form-control" name="timezone">
-                                {% for key,value in timezones %}
-                                    <option value='{{value}}' 
-                                            {% if station.timezone|default('UTC') == value %} selected {% endif %}
-                                            > {{value|default('Unknown TimeZone')}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
                 </div>
             </fieldset>
         </div>
@@ -168,58 +123,6 @@
                         </select>
                     </div>
                 </div>
-            </div><div class="row">
-                <div class="col-lg-3">
-                    <div id="designation_group" class="form-group input-group">
-                        <label class="input-group-addon" for="passColor_field"
-                               title="Pass/OK">
-                            <i class="fa fa-check" style="color:{{station.colorPass|default("#A0D468")}}"></i>
-                        </label>
-                        <input name="passColor" id="passColor_field" type="text" 
-                               value="{{station.colorPass|default("#A0D468")}}"
-                               placeholder="Hex Color Codes" pattern="\#[0-9A-Fa-f]+"
-                               class="form-control">
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div id="designation_group" class="form-group input-group">
-                        <label class="input-group-addon" for="noteColor_field"
-                               title="Note/Info">
-                            <i class="fa fa-info" style="color:{{station.colorNote|default("#4FC1E9")}}"></i>
-                            </label>
-                        <input name="noteColor" id="noteColor_field" type="text" 
-                               value="{{station.colorNote|default("#4FC1E9")}}"
-                               placeholder="Hex Color Codes" pattern="\#[0-9A-Fa-f]+"
-                               class="form-control">
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div id="designation_group" class="form-group input-group">
-                        <label class="input-group-addon" for="warningColor_field"
-                               title="Warning">
-                            <i class="fa fa-exclamation" style="color:{{station.colorWarning|default("#FFCE54")}}"></i>
-                            </label>
-                        <input name="warningColor" id="warningColor_field" type="text" 
-                               value="{{station.colorWarning|default("#FFCE54")}}"
-                               placeholder="Hex Color Codes" pattern="\#([0-9A-Fa-f])+"
-                               {% if station.colorWarning is null %}
-                                   readonly
-                                {% endif %}
-                               class="form-control">
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div id="designation_group" class="form-group input-group">
-                        <label class="input-group-addon" for="failColor_field"
-                               title="Error">
-                            <i class="fa fa-close" style="color:{{station.colorFail|default("#FC6E51")}}"></i>
-                            </label>
-                        <input name="failColor" id="failColor_field" type="text" 
-                               value="{{station.colorFail|default("#FC6E51")}}"
-                               placeholder="Hex Color Codes" pattern="\#[0-9A-Fa-f]+"
-                               class="form-control">
-                    </div>
-                </div>
             </div>
             <div class="row">
                 <div class="col-lg-4">
@@ -256,50 +159,6 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-4">
-                    <div id="gen_group" class="form-group input-group">
-                        <label for="RequireArtist" class="input-group-addon">Require Artist</label>
-                        <select id="RequireArtist" class="form-control"
-                                name="forceArtist">
-                            {% set forceArtist=forceArtist?:{"0":"No","1":"Yes"} %}
-                            {% for key,value in forceArtist %}
-                                <option value='{{key}}' 
-                                        {% if station.forceArtist == key %} selected {% endif %}
-                                        >{{value|default('Unknown Option')}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div id="gen_group" class="form-group input-group">
-                        <label for="RequireAlbum" class="input-group-addon">Require Album</label>
-                        <select id="RequireAlbum" class="form-control"
-                                name="forceAlbum">
-                            {% set forceAlbum=forceAlbum?:{"0":"No","1":"Yes"} %}
-                            {% for key,value in forceAlbum %}
-                                <option value='{{key}}' 
-                                        {% if station.forceAlbum == key %} selected {% endif %}
-                                        >{{value|default('Unknown Option')}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div id="gen_group" class="form-group input-group">
-                        <label for="RequireComposer" class="input-group-addon">Req. Composer</label>
-                        <select id="RequireComposer" class="form-control"
-                                name="forceComposer">
-                            {% set forceComposer=forceComposer?:{"0":"No","1":"Yes"} %}
-                            {% for key,value in forceComposer %}
-                                <option value='{{key}}' 
-                                        {% if station.forceComposer == key %} selected {% endif %}
-                                        >{{value|default('Unknown Option')}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
     <hr>
@@ -312,11 +171,6 @@
                 <input type="hidden" name="_METHOD" value="PUT"/>
             {% endif %}
             <input class="btn btn-primary" type="submit" >
-            <input id="print_btn" class="btn btn-success"
-            {% if PRINTID is null %}
-                disabled="disabled" 
-            {% endif %}
-                type="button" value="Upload IC CSV">
             <input id="print_btn" class="btn btn-danger" 
                    onclick="ClearPrintQueue();"
             {% if PRINTID is null %}
