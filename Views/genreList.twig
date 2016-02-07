@@ -148,9 +148,9 @@
             element: 'morris-donut-chart-gov',
             data: [
                 {% for id, genre in genres %}
-                    {label: "{{id}}", value: {{(genre.governmentRequirements.percentage*100
+                    {label: "{{id}}", value: {{((genre.governmentRequirements.percentage*100
                     / genre.statistics.totalPrograms)
-                    *(genre.statistics.percentPrograms)*100}}},
+                    *(genre.statistics.percentPrograms)*100)|number_format(2,'.',' ')}}},
                 {% endfor %}
             ],
             formatter: function (y, data) { return y+"%" },
@@ -159,9 +159,9 @@
             element: 'morris-donut-chart-playlist',
             data: [
                 {% for id, genre in genres %}
-                    {label: "{{id}}", value: {{(genre.playlistRequirements.percentage*100
+                    {label: "{{id}}", value: {{((genre.playlistRequirements.percentage*100
                     / genre.statistics.totalPrograms)
-                    *(genre.statistics.percentPrograms)*100}}},
+                    *(genre.statistics.percentPrograms)*100)|number_format(2,'.',' ')}}},
                 {% endfor %}
             ],
             formatter: function (y, data) { return y+"%" },
