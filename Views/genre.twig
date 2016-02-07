@@ -11,7 +11,10 @@
         <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
     </li>
     <li>
-        <i class="fa fa-dashboard"></i>  <a href="/station/">Stations</a>
+        <i class="fa fa-globe"></i>  <a href="/station/{{station}}">Station</a>
+    </li>
+    <li>
+        <i class="fa fa-folder"></i>  <a href="/station/genre/{{station}}">Genres</a>
     </li>
     <li class="active">
         <i class="fa fa-bolt"></i>
@@ -28,7 +31,7 @@
     <!--<span>SUCCESS: {{success}}, ERROR: {{error}}, ID: {{PRINTID}}| {% for id in PRINTID %}{{id}},{% endfor %}</span>-->
 {% endblock %}
 {% block content %}
-{% genre = genres|first %}
+{% set genre = genres|first %}
 <form role="form" method="post"> <!-- action="/Playlist/playlist.induct.php" -->
     <div class="row">
         <div class="col-lg-6">
@@ -40,126 +43,39 @@
                            placeholder="required common name/brand"
                            class="form-control" autofocus="autofocus">
                 </div>
-                <div id="address_group" class="form-group input-group">
-                    <label class="input-group-addon" for="address_field">Address<span style="color:red">*</span></label>
-                    <input name="address" id="address_field" type="text" required 
-                           {% if genre is not null %} value="{{genre.}}" {% endif %}
-                           placeholder="please enter an address" class="form-control">
-                </div>
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div id="frequency_group" class="form-group input-group">
-                            <label class="input-group-addon" for="frequency_field">Frequency<span style="color:red">*</span></label>
-                            <input name="frequency" id="frequency_field" type="text" required 
-                                   {% if station.frequency is not null %} value="{{station.frequency}}" {% endif %}
-                                   placeholder="eg. 94.1 FM" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div id="designation_group" class="form-group input-group">
-                            <label class="input-group-addon" for="designation_field">Designation</label>
-                            <input name="designation" id="designation_field" type="text" 
-                                   {% if station.designation is not null %} value="{{station.designation}}" {% endif %}
-                                   placeholder="eg. 202 A1" class="form-control">
-                        </div>
-                    </div>               
+            </fieldset>
+        </div>
+        <div class="col-lg-6">
+            <fieldset>
+                <div id="sort_group" class="form-group input-group">
+                    <label for="defaultSort" class="input-group-addon">Gov. Req. Type</label>
+                    <select id="defaultSort" class="form-control" name="defaultSort" style="min-width: 150px;">
+                        {% set sortOrder=sortOrder?:{0:"Percentage",1:"Numeric"} %}
+                        {% for key,value in sortOrder %}
+                            <option value='{{key}}' 
+                                    {% if genre.governmentRequirements.type|lower == key|lower %} selected {% endif %}
+                                    >{{value|default('Unknown Option')}}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </fieldset>
         </div>
         <div class="col-lg-6">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div id="sort_group" class="form-group input-group">
-                        <label for="defaultSort" class="input-group-addon">Default List Order&nbsp;</label>
-                        <select id="defaultSort" class="form-control" name="defaultSort" style="min-width: 150px;">
-                            {% set sortOrder=sortOrder?:{"asc":"Ascending","desc":"Descending"} %}
-                            {% for key,value in sortOrder %}
-                                <option value='{{key}}' 
-                                        {% if station.defaultSort|lower == key|lower %} selected {% endif %}
-                                        >{{value|default('Unknown Genre')}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+            <fieldset>
+                <div id="sort_group" class="form-group input-group">
+                    <label for="defaultSort" class="input-group-addon">Gov. Req. Type</label>
+                    <select id="defaultSort" class="form-control" name="defaultSort" style="min-width: 150px;">
+                        {% set sortOrder=sortOrder?:{0:"Percentage",1:"Numeric"} %}
+                        {% for key,value in sortOrder %}
+                            <option value='{{key}}' 
+                                    {% if genre.playlistRequirements.type|lower == key|lower %} selected {% endif %}
+                                    >{{value|default('Unknown Option')}}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-                <div class="col-lg-6">
-                    <div id="gen_group" class="form-group input-group">
-                        <label for="displayCounters" class="input-group-addon">Programming Counters</label>
-                        <select id="displayCounters" class="form-control" name="displayCounters" style="min-width: 150px;">
-                            {% set displayCounters=displayCounters?:{"1":"Visible","0":"Hidden"} %}
-                            {% for key,value in displayCounters %}
-                                <option value='{{key}}' 
-                                        {% if station.displayCounters == key %} selected {% endif %}
-                                        >{{value|default('Unknown Option')}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-            </div><div class="row">
-                <div class="col-lg-6">
-                    <div id="gen_group" class="form-group input-group">
-                        <label for="groupPlaylistProgramming" class="input-group-addon">Group Playlist for Programs</label>
-                        <select id="groupPlaylistProgramming" class="form-control"
-                                name="groupPlaylistProgramming">
-                            {% set groupPlaylistProgramming=groupPlaylistProgramming?:{"0":"No","1":"Yes"} %}
-                            {% for key,value in groupPlaylistProgramming %}
-                                <option value='{{key}}' 
-                                        {% if station.groupPlaylistProgramming == key %} selected {% endif %}
-                                        >{{value|default('Unknown Option')}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div id="gen_group" class="form-group input-group">
-                        <label for="groupPlaylistReporting" class="input-group-addon">Group Playlist for Reporting</label>
-                        <select id="groupPlaylistReporting" class="form-control"
-                                name="groupPlaylistReporting">
-                            {% set groupPlaylistReporting=groupPlaylistReporting?:{"0":"No","1":"Yes"} %}
-                            {% for key,value in groupPlaylistReporting %}
-                                <option value='{{key}}' 
-                                        {% if station.groupPlaylistReporting == key %} selected {% endif %}
-                                        >{{value|default('Unknown Option')}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4">
-                    <div id="phoneMain_group" class="form-group input-group">
-                        <label class="input-group-addon" for="phoneMain_field"
-                               title="Main,Central, or Request Phone Number">
-                            <i class="fa fa-phone"></i> Main</label>
-                        <input name="phoneMain" id="phoneMain_field" type="text" 
-                               value="{{station.phone.main}}"
-                               placeholder="(123) 456-7890" pattern="[0-9\-\(\)s]+"
-                               class="form-control">
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div id="phoneMgr_group" class="form-group input-group">
-                        <label class="input-group-addon" for="phoneManager_field"
-                               title="Manager Phone">
-                            <i class="fa fa-phone" style="color:#00AA88"></i> GM</label>
-                        <input name="phoneManager" id="phoneManager_field" type="text" 
-                               value="{{station.phone.manager}}"
-                               placeholder="(123) 456-7890" pattern="[0-9\-\(\)s]+"
-                               class="form-control">
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div id="phoneDir_group" class="form-group input-group">
-                        <label class="input-group-addon" for="phoneDir_field"
-                               title="Director Phone">
-                            <i class="fa fa-phone" style="color:#CD1818"></i> MD/PD</label>
-                        <input name="phoneDirector" id="phoneDir_field" type="text" 
-                               value="{{station.phone.director}}"
-                               placeholder="(123) 456-7890" pattern="[0-9\-\(\)s]+"
-                               class="form-control">
-                    </div>
-                </div>
-            </div>
+            </fieldset>
         </div>
+        
     </div>
     <hr>
 <div class="row">
