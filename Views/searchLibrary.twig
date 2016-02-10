@@ -107,7 +107,16 @@
             {% endfor %}
         </tbody>
     </table>
-    <input type="submit" class="btn btn-primary btn-xs"/>
+    <div>
+        <span>Batch Edit</span>
+        <select name="action" required>
+            <option value="">Select</option>
+            <option value="print">Print</option>
+            <option value="approve" disabled>Approve</option>
+            <option value="reject" disabled>Reject</option>
+        </select>
+        <input type="submit" class="btn btn-primary btn-xs"/>
+    </div>
 {% endblock %}
 {% block lastScripts %}
 <script>

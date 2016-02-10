@@ -293,10 +293,19 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $library = new \TPS\library();
         $XHR = $app->request->isAjax();
         $bulkIds = $app->request->put('bulkEditId');
+        $action = $app->request->put('action');
         foreach( $bulkIds as $bulk ){
-            $libCode=$library->getLibraryCodeByRefCode($bulk);
-            $_SESSION['PRINTID'][] = array("RefCode"=>$bulk,
-                "LibCode"=>$libCode);
+            switch ($action) {
+                case "print":
+                    $libCode = $library->getLibraryCodeByRefCode($bulk);
+                    $_SESSION['PRINTID'][] = array("RefCode"=>$bulk, "LibCode"=>$libCode);
+                    break;
+                case "approve":
+                    #$libCode = $library->#getLibraryCodeByRefCode($bulk);
+                    break;
+                default:
+                    break;
+            }
         }
         if($XHR){
             
