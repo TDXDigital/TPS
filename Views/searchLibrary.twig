@@ -53,6 +53,8 @@
             </div>
         </div>
     </form>
+    <form role="form" method="POST" action="/library/batch">
+    <input type="hidden" name="_METHOD" value="PUT"/>
     <table class='table table-bordered table-hover' >
         <thead>
             {% if permissions > 1 or BulkEdit in permssions %}
@@ -105,6 +107,7 @@
             {% endfor %}
         </tbody>
     </table>
+    <input type="submit" class="btn btn-primary btn-xs"/>
 {% endblock %}
 {% block lastScripts %}
 <script>

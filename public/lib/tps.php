@@ -109,7 +109,7 @@ class TPS{
             $pagination = 1;
         endif;
         $floor = abs(($pagination*$maxResult))-($maxResult+1);
-        $ceil = abs(($pagination*$maxResult));
+        $ceil = abs($maxResult);#abs(($pagination*$maxResult));
         // Simply for security. should never happen
         if ($floor < 0):
             $floor=0;

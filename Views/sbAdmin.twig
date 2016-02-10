@@ -188,14 +188,14 @@
                         <ul class="pagination">
                           {% set limit = limit?:25 %}
                           {% set page = page?:1 %}
-                          {% set startPage = startPage?:(page|default(1)-2) %}
+                          {% set startPage = startPage?:(page|default(1)-5) %}
                           {% if startPage < 2 %}
                               {% set controlPrevious = "disabled" %}
                               {% set startPage = 1 %}
                           {% else %}
                               {% set controlPrevious = "" %}
                           {% endif %}
-                          {% set endPage = pages|default(startPage) %}
+                          {% set endPage = min(pages, page+5)|default(startPage) %}
                           {% if page >= endPage %}
                               {% set endPage = page %}
                               {% set controlNext = "disabled" %}

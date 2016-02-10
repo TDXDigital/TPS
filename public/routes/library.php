@@ -235,57 +235,77 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         #var_dump($_SESSION);
         $app->redirect('./new');
     });
-    $app->get('/search/', $authenticate, function () use ($app){
-        $format = $app->request->get("format");
-        $page = (int)$app->request->get("p")?:1;
-        $limit = (int)$app->request->get("l")?:25;
+    $app->group('/search', $authenticate($app, array(1,2)), function () use ($app, $authenticate){
+        $app->get('/', $authenticate, function () use ($app){
+            $format = $app->request->get("format");
+            $page = (int)$app->request->get("p")?:1;
+            $limit = (int)$app->request->get("l")?:25;
+            $library = new \TPS\library();
+            $library->log->startTimer();
+            $result = $library->searchLibrary("",False,$page,$limit);
+            $pages = ceil($library->countSearchLibrary()/$limit);
+            $library->log->info("Search basic retrieval took ".
+                    $library->log->timerDuration(). "s");
+            $params = array(
+                "area"=>"Library",
+                "albums"=>$result,
+                "title"=>"Search",
+                "page"=>$page,
+                "pages"=>$pages,
+                "limit"=>$limit,
+            );
+            $isXHR = $app->request->isAjax();
+            if($isXHR || $format=="json"){
+                print json_encode($params);
+            }
+            else{
+                $app->render('searchLibrary.twig',$params);
+            }
+        });
+        $app->post('/', $authenticate, function () use ($app){
+            $term = $app->request()->post('q');
+            $term = urlencode($term);
+            $app->redirect("/library/search/$term");
+        });
+        $app->get('/:value', $authenticate, function ($term) use ($app){
+            $format = $app->request->get("format");
+            $page = (int)$app->request->get("p")?:1;
+            $limit = (int)$app->request->get("l")?:25;
+            $library = new \TPS\library();
+            $time_start = microtime(true); 
+            $result = $library->SearchLibrary($term,False,$page,$limit);
+            $pages = ceil($library->countSearchLibrary($term)/$limit);
+            $time_end = microtime(true); 
+            $library->log->info("Search basic retrieval took ".
+                    ($time_end - $time_start). "s");
+            $params = array(
+                "title"=>"Search $term",
+                "albums"=>$result,
+                "search"=>$term,
+                "page"=>$page,
+                "pages"=>$pages,
+                "limit"=>$limit,
+            );
+            $app->render('searchLibrary.twig',$params);
+        });
+    });
+    $app->put('/batch', $authenticate($app, array(2)), function () use ($app){
         $library = new \TPS\library();
-        $library->log->startTimer();
-        $result = $library->searchLibrary("",False,$page,$limit);
-        $pages = ceil($library->countSearchLibrary()/$limit);
-        $library->log->info("Search basic retrieval took ".
-                $library->log->timerDuration(). "s");
-        $params = array(
-            "area"=>"Library",
-            "albums"=>$result,
-            "title"=>"Search",
-            "page"=>$page,
-            "pages"=>$pages,
-            "limit"=>$limit,
-        );
-        $isXHR = $app->request->isAjax();
-        if($isXHR || $format=="json"){
-            print json_encode($params);
+        $XHR = $app->request->isAjax();
+        $bulkIds = $app->request->put('bulkEditId');
+        foreach( $bulkIds as $bulk ){
+            $libCode=$library->getLibraryCodeByRefCode($bulk);
+            $_SESSION['PRINTID'][] = array("RefCode"=>$bulk,
+                "LibCode"=>$libCode);
+        }
+        if($XHR){
+            
         }
         else{
-            $app->render('searchLibrary.twig',$params);
+            $app->flash('success',"Batch Update Successful");
+            $app->redirect($app->request->getReferrer());
+#            print "added to print queue";
         }
-    });
-    $app->post('/search/', $authenticate, function () use ($app){
-        $term = $app->request()->post('q');
-        $term = urlencode($term);
-        $app->redirect("/library/search/$term");
-    });
-    $app->get('/search/:value', $authenticate, function ($term) use ($app){
-        $format = $app->request->get("format");
-        $page = (int)$app->request->get("p")?:1;
-        $limit = (int)$app->request->get("l")?:25;
-        $library = new \TPS\library();
-        $time_start = microtime(true); 
-        $result = $library->SearchLibrary($term,False,$page,$limit);
-        $pages = ceil($library->countSearchLibrary($term)/$limit);
-        $time_end = microtime(true); 
-        $library->log->info("Search basic retrieval took ".
-                ($time_end - $time_start). "s");
-        $params = array(
-            "title"=>"Search $term",
-            "albums"=>$result,
-            "search"=>$term,
-            "page"=>$page,
-            "pages"=>$pages,
-            "limit"=>$limit,
-        );
-        $app->render('searchLibrary.twig',$params);
     });
     $app->get('/:RefCode', $authenticate($app,array(1,2)), function ($RefCode) use ($app){
         $library = new \TPS\library();
