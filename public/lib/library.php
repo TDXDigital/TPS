@@ -179,6 +179,13 @@ class library extends station{
                     "35"=>"Religious",
                     )
                 ),
+            "9" => array(
+                "Title"=>"System",
+                "Genre"=>null,
+                "SubGenres" => array(
+                    "45"=>"Tech Test"
+                )
+            )
         );
         return $codes;
     }

@@ -297,7 +297,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         foreach( $bulkIds as $bulk ){
             switch ($action) {
                 case "print":
-                    $libCode = $library->getLibraryCodeByRefCode($bulk);
+                    $libCode = $library->getLibraryCodeByRefCode($bulk)?:9;
                     $_SESSION['PRINTID'][] = array("RefCode"=>$bulk, "LibCode"=>$libCode);
                     break;
                 case "approve":
