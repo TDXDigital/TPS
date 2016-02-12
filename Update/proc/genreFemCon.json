@@ -1,0 +1,17 @@
+{
+    "TPS_Errno": "Genre-001",
+    "type" : "database",
+    "execute" : "SQL",
+    "SQL_QRY" : {
+        "TEST": "SHOW COLUMNS FROM `genre` WHERE `Field` = 'femcon';",
+        "RESULT" : {
+            "Field" : [
+                "femcon"
+            ]
+        },
+        "Negate": 0,
+        "createMode": 0,
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "genreFemCon.sql"
+    }
+}
