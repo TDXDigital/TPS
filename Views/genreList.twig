@@ -120,7 +120,7 @@
         </thead>
         <tbody>
             {% for id,genre in genres %}
-                <tr>
+                <tr style="background-color: {{genre.color|default('#FFF')}};">
                     <td>{{id}}</td>
                     {% if genre.governmentRequirements.type == 0 %}
                         <td>{{(genre.governmentRequirements.percentage*100)|number_format(2,"."," ")}}%</td>

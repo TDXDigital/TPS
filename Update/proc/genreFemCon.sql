@@ -12,9 +12,9 @@ CREATE TRIGGER defaultColor
 BEFORE INSERT ON `genre`
 FOR EACH ROW
 BEGIN
-	IF (NEW.colorPrimary IS NULL) THEN
-		SET NEW.colorPrimary = CONCAT('#',string(CONV(ROUND((RAND() * (16777215-1118481))+1118481), 10, 16)));
-	END IF;
+    IF NEW.colorPrimary IS NULL THEN
+        SET NEW.colorPrimary = CONCAT('#',CONV(ROUND((RAND() * (16777215-1118481))+1118481), 10, 16));
+    END IF;
 END$$
 /* This is now "END$$" not "END;" */
 
