@@ -47,8 +47,7 @@ class genre extends TPS{
             $stmt = $this->db->prepare("INSERT INTO genre (genreid, cancon, "
                     . "playlist, canconperc, playlistperc, PlType, CCType, "
                     . "Station) VALUES (:name, :canCon, :playlist, :canConPerc,"
-                    . " :plType, :playlistPerc :ccType, :station)");
-            $this->db->beginTransaction(); 
+                    . " :plType, :playlistPerc, :ccType, :station)");
             $stmt->bindParam(":name", $name, \PDO::PARAM_STR);
             $stmt->bindParam(":station", $this->callsign, \PDO::PARAM_STR);
 
@@ -60,12 +59,17 @@ class genre extends TPS{
             $stmt->bindParam(":playlistPerc", $playlistperc);
             $stmt->bindParam(":plType", $plType);
             
-            $stmt->execute();
-            $result = $this->db->lastInsertId()?:
-                    $stmt->fetch(\PDO::FETCH_ASSOC)['genreid']; 
-            $this->db->commit(); 
+            $stmt->execute(); 
+            $id = $this->db->lastInsertId();
+            $genre = FALSE;
+            foreach($this->db->query("SELECT genreid FROM genre WHERE UID=$id or genreid=$name") as $result){
+                $genre = $result['genreid'];
+            } 
+            if(!$genre){
+                throw new \Exception("Genre Not Created");
+            }
             $stmt = null;
-            return $result;
+            return $genre;
 
         } catch (PDOException $exc) {
             $this->db->rollback(); 

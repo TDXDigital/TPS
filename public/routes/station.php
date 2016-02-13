@@ -234,7 +234,7 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
                 $app->render("genreList.twig", $params);
             }
         });
-        $app->post('/:station', $authenticate($app,[2]),
+        $app->post('/:station/', $authenticate($app,[2]),
                 function ($callsign) use ($app){
             $station = new \TPS\station($callsign);
             $name = $app->request->post('name');
@@ -244,19 +244,35 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
             $playlist = $app->request->post('playlist')?:0;
             $playlistPerc = $app->request->post('playlistPerc')?:0;
             $playlistType = $app->request->post('playlistType')?:1;
-            $id = $station->genres->create($name,$govReq, $govReq, $govReqType,
-                    $playlist, $playlist, $playlistType);
+            $id = $station->genres->create($name,$govReq, $govReqPerc, $govReqType,
+                    $playlist, $playlistPerc, $playlistType);
             $isXHR = $app->request->isAjax();
             if($isXHR){
                 header("Content-Type: application/json");
                 json_encode($id);
             }
             else{
-                $app->redirect("./$callsign/$id");
+                $app->redirect("./$id");
             }
         });
-
         // station/genre/####/$$$$
+        $app->get('/:station/', $authenticate($app,[2]),
+                function ($callsign) use ($app){
+            $station = new \TPS\station($callsign);
+            $isXHR = $app->request->isAjax();
+            if($isXHR){
+                header("Content-Type: application/json");
+                print json_encode([]);
+            }
+            else{
+                $params = array(
+                    'area'=>'Station Management',
+                    'title'=>'Genre',
+                    'callsign' => $callsign
+                );
+                $app->render("genre.twig", $params);
+            }
+        });
         $app->get('/:station/:id', $authenticate($app,[1,2]),
                 function ($callsign,$id) use ($app){
             $station = new \TPS\station($callsign);

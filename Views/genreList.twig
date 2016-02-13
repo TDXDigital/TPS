@@ -84,7 +84,7 @@
             </div>
         </div>
         <div class="col-lg-3">
-            <div class="panel panel-blue">
+            <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title"><i class="fa fa-long-arrow-right"></i> FemCon Requirements</h3>
                 </div>
@@ -123,23 +123,23 @@
                 <tr style="background-color: {{genre.color|default('#FFF')}};">
                     <td>{{id}}</td>
                     {% if genre.governmentRequirements.type == 0 %}
-                        <td>{{(genre.governmentRequirements.percentage)|number_format(2,"."," ")}}%</td>
+                        <td>{{(genre.governmentRequirements.percentage*100)|number_format(2,"."," ")}}%</td>
                     {% else %}
                         <td>{{genre.governmentRequirements.numeric}}/hr</td>
                     {% endif %}
                     {% if genre.playlistRequirements.type == 0 %}
-                        <td>{{(genre.playlistRequirements.percentage)|number_format(2,"."," ")}}%</td>
+                        <td>{{(genre.playlistRequirements.percentage*100)|number_format(2,"."," ")}}%</td>
                     {% else %}
                         <td>{{genre.playlistRequirements.numeric}}/hr</td>
                     {% endif %}
                     {% if genre.femconRequirements.type == 0 %}
-                        <td>{{(genre.femconRequirements.percentage)|number_format(2,"."," ")}}%</td>
+                        <td>{{(genre.femconRequirements.percentage*100)|number_format(2,"."," ")}}%</td>
                     {% else %}
                         <td>{{genre.femconRequirements.numeric}}/hr</td>
                     {% endif %}
                     <td>{{genre.statistics.activePrograms}}/
                         {{genre.statistics.totalPrograms}}&nbsp;
-                        ({{(genre.statistics.percentPrograms)|number_format(2,"."," ")}}%)
+                        ({{(genre.statistics.percentPrograms*100)|number_format(2,"."," ")}}%)
                     <td><a href="{{callsign}}/{{id|lower}}"><i class="fa fa-edit"></i></a></td>
                 </tr>
             {% endfor %}
@@ -150,7 +150,8 @@
     </div>
     <div class="col-lg-6">
         <div class="pull-right">
-            <a class="btn btn-success" href="{{callsign}}">Refresh</a>
+            <a class="btn btn-success" href="{{callsign}}/">New</a>
+            <a class="btn btn-primary" href="{{callsign}}">Refresh</a>
         </div>
     </div>
 </div>
@@ -169,8 +170,7 @@
             element: 'morris-donut-chart-gov',
             data: [
                 {% for id, genre in genres %}
-                    {label: "{{id}}", value: {{((genre.governmentRequirements.percentage*100
-                    / genre.statistics.totalPrograms)
+                    {label: "{{id}}", value: {{(genre.governmentRequirements.percentage*100
                     *(genre.statistics.percentPrograms))|number_format(2,'.','')}}},
                 {% endfor %}
             ],
@@ -180,8 +180,7 @@
             element: 'morris-donut-chart-playlist',
             data: [
                 {% for id, genre in genres %}
-                    {label: "{{id}}", value: {{((genre.playlistRequirements.percentage*100
-                    / genre.statistics.totalPrograms)
+                    {label: "{{id}}", value: {{(genre.playlistRequirements.percentage*100
                     *(genre.statistics.percentPrograms))|number_format(2,'.','')}}},
                 {% endfor %}
             ],
@@ -191,8 +190,7 @@
             element: 'morris-donut-chart-femcon',
             data: [
                 {% for id, genre in genres %}
-                    {label: "{{id}}", value: {{((genre.femconRequirements.percentage*100
-                    / genre.statistics.totalPrograms)
+                    {label: "{{id}}", value: {{(genre.femconRequirements.percentage*100
                     *(genre.statistics.percentPrograms))|number_format(2,'.','')}}},
                 {% endfor %}
             ],
