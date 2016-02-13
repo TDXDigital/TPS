@@ -35,6 +35,7 @@
 <form role="form" method="post"> <!-- action="/Playlist/playlist.induct.php" -->
     {% if genres is defined %}
         <input type="hidden" name="_METHOD" value="PUT"/>
+        <input type="hidden" name="UID" value="{{genre.UID}}"/>
     {% endif %}
     <div class="row">
         <div class="col-lg-6">
@@ -140,8 +141,8 @@
             <div class="row">
                 <fieldset>
                     <div id="sort_group" class="form-group input-group">
-                        <label for="defaultSort" class="input-group-addon">FemCon Type</label>
-                        <select id="defaultSort" class="form-control" name="defaultSort" style="min-width: 75px;">
+                        <label for="femconType" class="input-group-addon">FemCon Type</label>
+                        <select id="femconType" class="form-control" name="femconType" style="min-width: 75px;">
                             {% set sortOrder=sortOrder?:{0:"Percentage",1:"Numeric"} %}
                             {% for key,value in sortOrder %}
                                 <option value='{{key}}' 
@@ -155,8 +156,8 @@
             <div class="row">
                 <fieldset>
                     <div id="sort_group" class="form-group input-group">
-                        <label for="defaultSort" class="input-group-addon">FemCon</label>
-                        <input type="number" min="0" id="defaultSort" class="form-control text-right" name="defaultSort" 
+                        <label for="femcon" class="input-group-addon">FemCon</label>
+                        <input type="number" min="0" id="defaultSort" class="form-control text-right" name="femcon" 
                                 style="min-width: 75px;" value='{{genre.femconRequirements.numeric|default(0)}}'/>
                         <span class="input-group-addon">/ Hr</span>
                     </div>
@@ -165,8 +166,8 @@
             <div class="row">
                 <fieldset>
                     <div id="sort_group" class="form-group input-group">
-                        <label for="govperc" class="input-group-addon">FemCon</label>
-                        <input type="number" min=0 max=100 id="defaultSort" class="form-control text-right" name="defaultSort" 
+                        <label for="femperc" class="input-group-addon">FemCon</label>
+                        <input type="number" min=0 max=100 id="femperc" class="form-control text-right" name="femconPerc" 
                                 style="min-width: 75px;" value='{{genre.femconRequirements.percentage*100|default(0)}}'/>
                         <span class="input-group-addon"> % </span>
                     </div>

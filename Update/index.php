@@ -163,17 +163,22 @@ function DatabaseUpdateApply($Update_PKG,$path){
                         error_log("could not open ".__DIR__.DIRECTORY_SEPARATOR.
                             'proc'.DIRECTORY_SEPARATOR.$sql_file);#$path.$sql_file");
                         http_response_code(400);
+                        return FALSE;
                     }
-                    else{
-                        $sql = str_replace(array("\r\n", "\n"), " ", $sql);
-                        if(!$mysqli->query($sql)){
+                    $mysqli->autocommit(FALSE);
+                    $mysqli->begin_transaction();
+                    foreach(explode("||",$sql) as $query){
+                        //$sql = str_replace(array("\r\n", "\n"), " ", $sql);
+                        if(!$mysqli->query($query)){
                             //http_response_code(400);
-                            return json_encode(array("Status"=>false,"Result"=>array("SQL"=>$sql,"ERROR"=>$mysqli->error,"CODE"=>$mysqli->errno)));
-                        }
-                        else{
-                            return json_encode(array("Status"=>true,"Result"=>array("")));
+                            $mysqli->rollback();
+                            $mysqli->commit();
+                            return json_encode(array("Status"=>false,"Result"=>array("SQL"=>$query,"ERROR"=>$mysqli->error,"CODE"=>$mysqli->errno)));
                         }
                     }
+                    $mysqli->commit();
+                    $mysqli->autocommit(TRUE);
+                    return json_encode(array("Status"=>true,"Result"=>array("")));
                 }
             }
         /*}

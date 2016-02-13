@@ -42,14 +42,18 @@ class genre extends TPS{
     }
     
     public function create($name, $govReq=0, $govReqPerc=0, $govReqType=1,
-            $playslist=0, $playlistperc=0, $plType=1){
+            $playslist=0, $playlistperc=0, $plType=1, 
+            $femcon=0, $femconType=1, $femconPerc=0, $color=Null){
         try {
             $stmt = $this->db->prepare("INSERT INTO genre (genreid, cancon, "
                     . "playlist, canconperc, playlistperc, PlType, CCType, "
-                    . "Station) VALUES (:name, :canCon, :playlist, :canConPerc,"
-                    . " :plType, :playlistPerc, :ccType, :station)");
+                    . "Station, femcon, femconperc, FcType, colorPrimary"
+                    . ") VALUES (:name, :canCon, :playlist, :canConPerc,"
+                    . " :playlistPerc, :plType, :ccType, :station, "
+                    . ":femcon, :femconPerc, :femconType, :colorPrimary)");
             $stmt->bindParam(":name", $name, \PDO::PARAM_STR);
             $stmt->bindParam(":station", $this->callsign, \PDO::PARAM_STR);
+            $stmt->bindParam(":colorPrimary", $color);
 
             $stmt->bindParam(":canCon", $govReq);
             $stmt->bindParam(":canConPerc", $govReqPerc);
@@ -59,12 +63,65 @@ class genre extends TPS{
             $stmt->bindParam(":playlistPerc", $playlistperc);
             $stmt->bindParam(":plType", $plType);
             
+            $stmt->bindParam(":femcon", $femcon);
+            $stmt->bindParam(":femconType", $femconType);
+            $stmt->bindParam(":femconPerc", $femconPerc);
+            
             $stmt->execute(); 
             $id = $this->db->lastInsertId();
             $genre = FALSE;
-            foreach($this->db->query("SELECT genreid FROM genre WHERE UID=$id or genreid=$name") as $result){
-                $genre = $result['genreid'];
-            } 
+            $query = $this->db->prepare("SELECT genreid FROM genre WHERE UID=? or genreid=?");
+            $query->execute(array($id,$name));
+            $genre = $query->fetchColumn();
+            if(!$genre){
+                throw new \Exception("Genre Not Created");
+            }
+            $stmt = null;
+            return $genre;
+
+        } catch (PDOException $exc) {
+            $this->db->rollback(); 
+            error_log(sprintf("PDO Exception, %s: %s"
+                    ,$exc->getMessage(), $exc->getTraceAsString()));
+            return FALSE;
+        }
+
+    }
+    
+    public function change($name, $UID, $govReq=0, $govReqPerc=0, $govReqType=1,
+            $playslist=0, $playlistperc=0, $plType=1, 
+            $femcon=0, $femconType=1, $femconPerc=0, $color=Null){
+        try {
+            $stmt = $this->db->prepare("UPDATE genre SET genreid=:name,"
+                    . " cancon=:canCon, playlist=:playlist,"
+                    . " canconperc=:canConPerc, playlistperc=:playlistPerc,"
+                    . " PlType=:plType, CCType=:ccType, Station=:station,"
+                    . " femcon=:femcon, femconperc=:femconPerc,"
+                    . " FcType=:femconType, colorPrimary=:colorPrimary"
+                    . " WHERE UID=:UID");
+            $stmt->bindParam(":name", $name, \PDO::PARAM_STR);
+            $stmt->bindParam(":station", $this->callsign, \PDO::PARAM_STR);
+            $stmt->bindParam(":colorPrimary", $color);
+
+            $stmt->bindParam(":canCon", $govReq);
+            $stmt->bindParam(":canConPerc", $govReqPerc);
+            $stmt->bindParam(":ccType", $govReqType);
+
+            $stmt->bindParam(":playlist", $playslist);
+            $stmt->bindParam(":playlistPerc", $playlistperc);
+            $stmt->bindParam(":plType", $plType);
+            
+            $stmt->bindParam(":femcon", $femcon);
+            $stmt->bindParam(":femconType", $femconType);
+            $stmt->bindParam(":femconPerc", $femconPerc);
+            $stmt->bindParam(":UID", $UID);
+            
+            $stmt->execute(); 
+            $id = $this->db->lastInsertId();
+            $genre = FALSE;
+            $query = $this->db->prepare("SELECT genreid FROM genre WHERE UID=? or genreid=?");
+            $query->execute(array($id,$name));
+            $genre = $query->fetchColumn();
             if(!$genre){
                 throw new \Exception("Genre Not Created");
             }
@@ -83,7 +140,8 @@ class genre extends TPS{
     public function all(){
         $stmt = $this->db->prepare(
                 "SELECT genreid, cancon, playlist, canconperc, playlistperc,"
-                . " UID, CCType, PlType, Station, (SELECT count(programname)"
+                . " UID, CCType, PlType, femcon, femconPerc, FcType,"
+                . " colorPrimary, Station, (SELECT count(programname)"
                 . " FROM program WHERE program.genre=genre.genreid AND"
                 . " program.active='1' AND LOWER(program.callsign) = "
                 . "LOWER(genre.Station)) AS PGM_Count, (SELECT count(*)"
@@ -96,7 +154,8 @@ class genre extends TPS{
         $stmt->execute();
         $result = array();
         while(list($genreId, $govRec, $playlist, $govRecPerc, 
-                $playlistPerc, $UID, $CcType, $PlType, $station,
+                $playlistPerc, $UID, $CcType, $PlType, $femcon, $femconPerc,
+                $femconType, $colorPrimary, $station,
                 $activePrograms, $totalPrograms, $percentPrograms) = 
                 $stmt->fetch( \PDO::FETCH_NUM )){
             $result[$genreId] = array(
@@ -110,12 +169,18 @@ class genre extends TPS{
                     "numeric" => $playlist,
                     "percentage" => $playlistPerc,
                 ),
+                "femconRequirements" => array(
+                    "type" => $femconType,
+                    "numeric" => $femcon,
+                    "percentage" => $femconPerc,
+                ),
                 "statistics" => array(
                     "activePrograms" => $activePrograms,
                     "totalPrograms" => $totalPrograms,
                     "percentPrograms" => $percentPrograms
                 ),
                 "UID" => $UID,
+                "colorPrimary" => $colorPrimary,
                 "station" => $station,
             );
         }
@@ -126,7 +191,8 @@ class genre extends TPS{
     public function get($id){
         $stmt = $this->db->prepare(
                 "SELECT genreid, cancon, playlist, canconperc, playlistperc,"
-                . " UID, CCType, PlType, Station, (SELECT count(programname)"
+                . " UID, CCType, PlType, femcon, femconPerc, FcType,"
+                . " colorPrimary, Station, (SELECT count(programname)"
                 . " FROM program WHERE program.genre=genre.genreid AND"
                 . " program.active='1' AND LOWER(program.callsign) = "
                 . "LOWER(genre.Station)) AS PGM_Count, (SELECT count(*)"
@@ -141,7 +207,8 @@ class genre extends TPS{
         $stmt->execute();
         $result = array();
         while(list($genreId, $govRec, $playlist, $govRecPerc, 
-                $playlistPerc, $UID, $CcType, $PlType, $station,
+                $playlistPerc, $UID, $CcType, $PlType, $femcon, $femconPerc,
+                $femconType, $colorPrimary, $station,
                 $activePrograms, $totalPrograms, $percentPrograms) = 
                 $stmt->fetch( \PDO::FETCH_NUM )){
             $result[$genreId] = array(
@@ -155,12 +222,18 @@ class genre extends TPS{
                     "numeric" => $playlist,
                     "percentage" => $playlistPerc,
                 ),
+                "femconRequirements" => array(
+                    "type" => $femconType,
+                    "numeric" => $femcon,
+                    "percentage" => $femconPerc,
+                ),
                 "statistics" => array(
                     "activePrograms" => $activePrograms,
                     "totalPrograms" => $totalPrograms,
                     "percentPrograms" => $percentPrograms
                 ),
                 "UID" => $UID,
+                "colorPrimary"=>$colorPrimary,
                 "station" => $station,
             );
         }

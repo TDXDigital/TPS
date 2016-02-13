@@ -239,13 +239,18 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
             $station = new \TPS\station($callsign);
             $name = $app->request->post('name');
             $govReq = $app->request->post('govReq')?:0;
-            $govReqPerc = $app->request->post('govReqPerc')?:0;
+            $govReqPerc = $app->request->post('govReqPerc')/100?:0;
             $govReqType = $app->request->post('govReqType')?:1;
             $playlist = $app->request->post('playlist')?:0;
-            $playlistPerc = $app->request->post('playlistPerc')?:0;
+            $playlistPerc = $app->request->post('playlistPerc')/100?:0;
             $playlistType = $app->request->post('playlistType')?:1;
-            $id = $station->genres->create($name,$govReq, $govReqPerc, $govReqType,
-                    $playlist, $playlistPerc, $playlistType);
+            $femcon = $app->request->post('femcon')?:0;
+            $femconPerc = $app->request->post('femconPerc')/100?:0;
+            $femconType = $app->request->post('femconType')?:1;
+            $colorPrimary = $app->request->post('colorPrimary');
+            $id = $station->genres->create($name,$govReq, $govReqPerc, 
+                    $govReqType, $playlist, $playlistPerc, $playlistType, 
+                    $femcon, $femconType, $femconPerc, $colorPrimary);
             $isXHR = $app->request->isAjax();
             if($isXHR){
                 header("Content-Type: application/json");
@@ -295,6 +300,29 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
         $app->put('/:station/:id', $authenticate($app,[2]),
                 function ($callsign,$id) use ($app){
             $station = new \TPS\station($callsign);
+            $name = $app->request->put('name');
+            $UID = $app->request->put('UID');
+            $govReq = $app->request->put('govReq')?:0;
+            $govReqPerc = $app->request->put('govReqPerc')/100?:0;
+            $govReqType = $app->request->put('govReqType')?:0;
+            $playlist = $app->request->put('playlist')?:0;
+            $playlistPerc = $app->request->put('playlistPerc')/100?:0;
+            $playlistType = $app->request->put('playlistType')?:0;
+            $femcon = $app->request->put('femcon')?:0;
+            $femconPerc = $app->request->put('femconPerc')/100?:0;
+            $femconType = $app->request->put('femconType')?:0;
+            $colorPrimary = $app->request->put('genreColor');
+            $id = $station->genres->change($name, $UID, $govReq, $govReqPerc, 
+                    $govReqType, $playlist, $playlistPerc, $playlistType, 
+                    $femcon, $femconType, $femconPerc, $colorPrimary);
+            $isXHR = $app->request->isAjax();
+            if($isXHR){
+                header("Content-Type: application/json");
+                json_encode($id);
+            }
+            else{
+                $app->redirect("./$id");
+            }
         });
         $app->delete('/:station/:id', $authenticate($app,[2]),
                 function ($callsign,$id) use ($app){
