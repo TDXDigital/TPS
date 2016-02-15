@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/TDXDigital/TPS.svg?branch=master)](https://travis-ci.org/TDXDigital/TPS)
-# Digital Program Logs
+# Technical Program Schedule  
+_(Previously Digital Program Logs)_
 
 # LICENSE
 [The MIT License (MIT)](http://opensource.org/licenses/MIT)
