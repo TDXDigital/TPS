@@ -119,6 +119,8 @@ $app->post("/login", function () use ($app) {
     $access = 0;
     $errors = array();
     $log = new \TPS\logger($username);
+    $stations = $log->getStations();
+    $defaultStation = key($stations);
     $log->debug("Login attempt received");
     $log->startTimer();
     
@@ -196,6 +198,7 @@ $app->post("/login", function () use ($app) {
                                 $_SESSION['DBHOST'] = (string)$server->IPV4;
                             }
                             $_SESSION['SRVPOST'] = (string)$server->ID;
+                            $_SESSION['CALLSIGN'] = $defaultStation;
                             $_SESSION['logo']=$logo;
                             $_SESSION['m_logo']=$m_logo;
                             $_SESSION['account'] = $username;
