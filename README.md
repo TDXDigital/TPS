@@ -4,7 +4,7 @@
 # LICENSE
 [The MIT License (MIT)](http://opensource.org/licenses/MIT)
 
-Copyright (c) 2014 James Oliver, [CKXU Radio Society](http://www.ckxu.com/development/tps)
+Copyright (c) 2016 James Oliver, [CKXU Radio Society](http://www.ckxu.com/development/tps)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
