@@ -34,3 +34,4 @@ php_errors.log
 /public/slimConfig.php
 .forcetwig
 /slimConfig.php
+/.idea/

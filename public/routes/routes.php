@@ -25,6 +25,7 @@
  */
 
 #load page groups
+require_once 'environment.php';
 require_once 'library.php';
 require_once 'reviews.php';
 require_once 'station.php';

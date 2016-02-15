@@ -43,9 +43,13 @@
                 <div id="name-group" class="form-group input-group">
                     <label class="input-group-addon" for="genre">Genre Name<span style="color:red">*</span></label>
                     <input name="name" id="genre" type="text" required 
-                           {% if genres is not null %} value="{{genres|keys|first}}" disabled{% endif %}
+                           {% if genres is not null %} value="{{genres|keys|first}}" disabled
+                           {% endif %}
                            placeholder="required common name/brand"
                            class="form-control" autofocus="autofocus">
+                    {% if genres is not null %}
+                        <input type="hidden" name="name" value="{{genres|keys|first}}"/>
+                    {% endif %}
                 </div>
             </fieldset>
         </div>

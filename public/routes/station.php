@@ -175,6 +175,7 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
     
     $app->post('/new/', $authenticate($app,2), function() use ($app){
         $brand = $app->request->post('brand');
+        $callsign = $app->request->post('callsign');
         $address = $app->request->post('address');
         $designation = $app->request->post('designation');
         $frequency = $app->request->post('frequency');
@@ -198,7 +199,23 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
         $perHourTraffic = $app->request->post('perHourTraffic');
         $perHourPSAs = $app->request->post('perHourPSAs');
         $timezone = $app->request->post('timezone');
-        $app->render("notSupported.twig");
+        $stationId = \TPS\station::create(
+                $callsign, $brand, $designation, $frequency, $website, 
+                $address, $phoneMain, $phoneManager);
+        $station = new \TPS\station($callsign);
+        $station->setStationPhoneDirector($phoneDirector);
+        $station->setDefaultSortOrder($defaultSort);
+        $station->forceComposer($forceComposer);
+        $station->forceArtist($forceArtist);
+        $station->forceAlbum($forceAlbum);
+        $groupPlaylistReporting?$station->PlaylistReportingGroupingOn():
+            $station->PlaylistReportingGroupingOff();
+        $groupPlaylistProgramming?$station->playlistLiveGroupingOn():
+            $station->playlistLiveGroupingOff();
+        $displayCounters?$station->programCountersOn():
+            $station->programCountersOff();
+        //$app->render("notSupported.twig");
+        $app->redirect("../$callsign");
     });
     
     $app->post('/',$authenticate($app,2), function () use ($app,$authenticate){

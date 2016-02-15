@@ -1,6 +1,133 @@
 <?php
 //if (session_status() !== PHP_SESSION_ACTIVE) {session_start();}
 // Set variables
+
+/**
+ * The standardResult provides a quick method to format SLIM responses
+ * @example <br/>
+ * standardRequest::error($app, "Descriptive Error")
+ * @version 1.0
+ * @since 2016-02-15
+ * @package TPS
+ * @license https://opensource.org/licenses/MIT MIT
+ * @author James Oliver <support@ckxu.com>
+ */
+class standardResult{
+    
+    /**
+     * return an expected format for the standardRequest
+     * @param type $app
+     * @param type $data
+     * @param type $code
+     * @param type $key
+     * @param type $isJSON
+     * @return type
+     */
+    static private function encode($app, $data, $code, $key, $isJSON){
+        $app->response->setStatus($code);
+        if($isJSON){
+            $app->response->headers->set('Content-Type', 'application/json');
+            $data = json_encode(array($key=>$data));
+        }
+        return $data;
+    }
+
+    /**
+     * print error response 500 (if not prevented by 404)
+     * 
+     * @author James Oliver <support@ckxu.com>
+     * @version 1.0
+     * @since 2016-02-15
+     * @license https://opensource.org/licenses/MIT MIT
+     * 
+     * @param object $app Slim Application
+     * @param string $data message for user / response
+     * @param string $key key of message, uses message as default
+     * @param int $code httpResponseCode value
+     * @param bool $isJSON Boolean to disable setting content type
+     */
+    static public function error($app, $data=NULL, $key="message", $code=500,
+            $isJSON=True){
+        print static::encode($app, $data, $code, $key, $isJSON);
+    }
+    
+    /**
+     * print error 400
+     * 
+     * @author James Oliver <support@ckxu.com>
+     * @version 1.0
+     * @since 2016-02-15
+     * @license https://opensource.org/licenses/MIT MIT
+     * 
+     * @param object $app Slim Application
+     * @param string $data message for user / response
+     * @param string $key key of message, uses message as default
+     * @param int $code httpResponseCode value
+     * @param bool $isJSON Boolean to disable setting content type
+     */
+    static public function badRequest($app, $data=NULL, $key="message", 
+            $code=400, $isJSON=True){
+        print static::encode($app, $data, $code, $key, $isJSON);
+    }
+    
+    /**
+     * response 202
+     * 
+     * @author James Oliver <support@ckxu.com>
+     * @version 1.0
+     * @since 2016-02-15
+     * @license https://opensource.org/licenses/MIT MIT
+     * 
+     * @param object $app Slim Application
+     * @param string $data message for user / response
+     * @param string $key key of message, uses message as default
+     * @param int $code httpResponseCode value
+     * @param bool $isJSON Boolean to disable setting content type
+     */
+    static public function accepted($app, $data=NULL, $key="message", $code=202,
+            $isJSON=True){
+        print static::encode($app, $data, $code, $key, $isJSON);
+    }
+    
+    /**
+     * response 201
+     * 
+     * @author James Oliver <support@ckxu.com>
+     * @version 1.0
+     * @since 2016-02-15
+     * @license https://opensource.org/licenses/MIT MIT
+     * 
+     * @param object $app Slim Application
+     * @param string $data message for user / response
+     * @param string $key key of message, uses message as default
+     * @param int $code httpResponseCode value
+     * @param bool $isJSON Boolean to disable setting content type
+     */
+    static public function created($app, $data=NULL, $key="message", $code=201,
+            $isJSON=True){
+        print static::encode($app, $data, $code, $key, $isJSON);
+    }
+    
+    /**
+     * response 200
+     * 
+     * @author James Oliver <support@ckxu.com>
+     * @version 1.0
+     * @since 2016-02-15
+     * @license https://opensource.org/licenses/MIT MIT
+     * 
+     * @param object $app Slim Application
+     * @param string $data message for user / response
+     * @param string $key key of message, uses message as default
+     * @param int $code httpResponseCode value
+     * @param bool $isJSON Boolean to disable setting content type
+     */
+    static public function ok($app, $data=NULL, $key="message", $code=200,
+            $isJSON=True){
+        print static::encode($app, $data, $code, $key, $isJSON);
+    }
+}
+
 $debug = False;
 $basepath = dirname(__DIR__).DIRECTORY_SEPARATOR;
 $autoload_path = $basepath."vendor".DIRECTORY_SEPARATOR."autoload.php";
@@ -90,6 +217,12 @@ $requiresHttps = function () use ($app,$debug) {
 
 $app->hook('slim.before.dispatch', function() use ($app) { 
    $user = null;
+   #$callsign = filter_input(INPUT_SESSION, "CALLSIGN")?:NULL;
+   try{
+       $callsign = $_SESSION['CALLSIGN'];
+   } catch (Exception $ex) {
+       $callsign = NULL;
+   }
    if (isset($_SESSION['fname'])) {
       $user = $_SESSION['fname'];
    }
@@ -104,6 +237,7 @@ $app->hook('slim.before.dispatch', function() use ($app) {
    $app->view()->setData('userName',$user);
    $app->view()->setData('userId',$uid);
    $app->view()->setData('permissions',$access);
+   $app->view()->setData('callsign', $callsign);
 });
 /*
 $app->hook('slim.after', function() use ($app){

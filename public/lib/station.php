@@ -702,7 +702,7 @@ class station extends TPS{
     public static function create($callsign, $name, $designation,
             $frequency, $website, $address, $mainPhone, $mgrPhone){
         $tps = new \TPS\TPS();
-        $con = $this->mysqli->prepare(
+        $con = $tps->mysqli->prepare(
                 "insert into `station` (callsign,stationname,Designation,"
                 . "frequency,website,address,boothphone,directorphone) "
                 . "values ( ?, ?, ?, ?, ?, ?, ?, ?)"
