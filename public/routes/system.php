@@ -118,16 +118,17 @@ $app->post("/login", function () use ($app) {
     $databaseID = $app->request()->post('SRVID');
     $access = 0;
     $errors = array();
-    $log = new \TPS\logger($username);
-    $stations = $log->getStations();
-    $defaultStation = key($stations);
-    $log->debug("Login attempt received");
-    $log->startTimer();
     
     require_once ("TPSBIN".DIRECTORY_SEPARATOR."functions.php");
     $dbxml = simplexml_load_file("TPSBIN".DIRECTORY_SEPARATOR."XML"
             .DIRECTORY_SEPARATOR."DBSETTINGS.xml");
     // check auth type
+    $log = new \TPS\logger($username);
+    $log->debug("Login attempt received");
+    $log->startTimer();
+    
+    $stations = $log->getStations();
+    $defaultStation = key($stations);
     foreach($dbxml->SERVER as $server):
         if((string)$server->ID==$databaseID):
             if((string)$server->AUTH == strtoupper("LDAP")){

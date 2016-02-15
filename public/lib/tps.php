@@ -123,6 +123,22 @@ class TPS{
 
     public function __construct($enableDbReporting=FALSE, $requirePDO=FALSE,
             $settingsTarget=NULL, $settingsPath=NULL) {
+        if(is_null($settingsTarget) && 
+                (isset($_REQUEST["SRVID"]) || isset($_SESSION["SRVPOST"]))){
+            try{
+                // Try and get the SERVERID if it is not provided
+                // INPUT_REQUEST not yet implemented, use superglobal
+                //$settingsTarget = filter_input(INPUT_REQUEST, "SRVID");
+                if(isset($_REQUEST["SRVID"])){
+                    $settingsTarget = $_REQUEST["SRVID"];
+                }
+                if(isset($_SESSION["SRVPOST"])){
+                    $settingsTarget = $_SESSION["SRVPOST"];
+                }
+            } catch (\Exception $ex) {
+                $settingsTarget = NULL;
+            }
+        }
         global $mysqli;
         global $pdo;
         $mysqli=$mysqli?:$GLOBALS['mysqli'];
