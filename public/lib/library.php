@@ -335,6 +335,45 @@ class library extends station{
     }
     
     /**
+     * set status of refcode(s)
+     * @param array $refcodes
+     * @param int $status
+     * @return boolean
+     */
+    protected function setStatus($refcodes, $status){
+        if(!is_array($refcodes)){
+            $refcodes = array($refcodes);
+        }
+        $refcode = NULL;
+        $stmt = $this->db->prepare("UPDATE library SET status=:status"
+            . " WHERE RefCode=:refcode");
+        $stmt->bindParam(":refcode", $refcode, \PDO::PARAM_STR);
+        $stmt->bindParam(":status", $status, \PDO::PARAM_INT);
+        foreach($refcodes as $refcode){
+            $stmt->execute();
+        }
+        return true;
+    }
+    
+    /**
+     * enable library entries by refcode
+     * @param type $refcodes
+     * @return type
+     */
+    public function enable($refcodes){
+        return $this->setStatus($refcodes, 1);
+    }
+    
+    /**
+     * disable library entries by refcodes
+     * @param type $refcodes
+     * @return type
+     */
+    public function disable($refcodes){
+        return $this->setStatus($refcodes, 0);
+    }
+    
+    /**
      * 
      * @abstract get album information from library by RefCode
      * @global \TPS\mysqli $mysqli

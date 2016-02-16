@@ -294,17 +294,33 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $XHR = $app->request->isAjax();
         $bulkIds = $app->request->put('bulkEditId');
         $action = $app->request->put('action');
-        foreach( $bulkIds as $bulk ){
-            switch ($action) {
-                case "print":
-                    $libCode = $library->getLibraryCodeByRefCode($bulk)?:9;
-                    $_SESSION['PRINTID'][] = array("RefCode"=>$bulk, "LibCode"=>$libCode);
+        $value = $app->request->put('value');
+        $bulkActions = array("status");
+        if(in_array($action, $bulkActions)){
+            switch ($action){
+                case "status":
+                    if($value==TRUE){
+                        $library->enable($bulkIds);
+                        break;
+                    }
+                    $library->disable($bulkIds);
                     break;
-                case "approve":
-                    #$libCode = $library->#getLibraryCodeByRefCode($bulk);
-                    break;
-                default:
-                    break;
+            }
+        }
+        else{
+            foreach( $bulkIds as $bulk ){
+                switch ($action) {
+                    case "print":
+                        $libCode = $library->getLibraryCodeByRefCode($bulk)?:9;
+                        $_SESSION['PRINTID'][] = array("RefCode"=>$bulk, "LibCode"=>$libCode);
+                        break;
+                    case "status":
+                        $libCode = $library->getAlbumByRefcode($bulk, True);
+
+                        break;
+                    default:
+                        break;
+                }
             }
         }
         if($XHR){
@@ -315,6 +331,34 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $app->redirect($app->request->getReferrer());
 #            print "added to print queue";
         }
+    });
+    $app->group('/batch', function () use ($authenticate, $app){
+        $app->get('/options', $authenticate($app, array(1,2)), function () use ($app){
+            $options = array(
+                // Option => Completes Transaction (No More Options)
+                "print" => "Print",
+                "status" => "Status", 
+                "normalize" => "Normalize / Clean",
+                "attribute" => "Attribute",
+            );
+            $app->response->headers->set('Content-Type', 'application/json');
+            print json_encode($options);
+        });
+        $app->group('/options', function () use ($authenticate, $app){
+            $app->get('/print', $authenticate($app, [1,2]), function () use ($app){
+                print json_encode(True);
+            });
+            $app->get('/status', $authenticate($app, [1,2]), function () use ($app){
+                $options = array(
+                    "inputType"=>"select",
+                    "values"=>array(
+                        1=>"Approve",
+                        0=>"Reject"
+                    )
+                );
+                print json_encode($options);
+            });
+        });
     });
     $app->get('/:RefCode', $authenticate($app,array(1,2)), function ($RefCode) use ($app){
         $library = new \TPS\library();

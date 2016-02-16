@@ -107,16 +107,16 @@
             {% endfor %}
         </tbody>
     </table>
-    <div>
+    {% if permissions > 1 or BulkEdit in permssions %}
+    <div class="row">
         <span>Batch Edit</span>
-        <select name="action" required>
+        <select name="action" required id="batchSelect">
             <option value="">Select</option>
-            <option value="print">Print</option>
-            <option value="approve" disabled>Approve</option>
-            <option value="reject" disabled>Reject</option>
         </select>
+        <span id="batchExtension"></span>
         <input type="submit" class="btn btn-primary btn-xs"/>
     </div>
+        {% endif %}
 {% endblock %}
 {% block lastScripts %}
 <script>
@@ -126,5 +126,74 @@ function toggle(source) {
       checkboxes[i].checked = source.checked;
     }
   }
+
+function getBatchOptions(){
+    var batch = $.ajax("../batch/options")
+        .done(function(data){
+            if ( console && console.log ) {
+                console.log( data );
+            }
+            $.each(data,function (key, value){
+                $("#batchSelect")
+                    .append($("<option></option>")
+                    .attr("value", key)
+                    .text(value));
+            });
+    });
+}
+
+function batchChange(element, url){
+    console.log(element);
+    var val = element.val();
+    if(!val){
+        alert (val);
+        return true;
+    }
+    console.log(val);
+    
+    var batch = $.ajax({
+        url:"../batch/options/"+val, 
+        dataType: "json"
+    })
+    .done(function(data){
+        if ( console && console.log ) {
+            console.log( data );
+        }
+        if($.type(data) === "boolean"){
+            $("#batchExtension").html("");
+            return true;
+        }
+        if ( console && console.log ) {
+            console.log($.type(data));
+            console.log(data.inputType);
+            console.log(data.values);
+        }
+        if(data.inputType==="select"){
+            $("#batchExtension").html(
+                "<select name='value' id='beval' required>"+
+                "<option>Select</option></select>");
+            $.each(data.values, function(key, value){
+                $("#beval")
+                    .append($("<option></option>")
+                    .attr("value", key)
+                    .text(value));
+            });
+        }
+        //$("#batchExtension").html("THIS IS A TEST");
+    })
+    .fail(function(data){
+        if ( console && console.log ) {
+            console.log( data );
+        }
+    });
+    
+}
+ 
+$(function () {
+    getBatchOptions();
+    $(document).on("change", "#batchSelect", function() {
+        batchChange($("#batchSelect option:selected"));
+    });
+});
 </script>
 {% endblock %}
