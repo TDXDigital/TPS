@@ -385,9 +385,12 @@ class library extends station{
             $refcodes = array($refcodes);
         }
         //$quote = $this->db->quote($attribute);
-        $quote = $attribute;
+        $quote = "`"+$attribute+"`";
+        if(strpos($quote, ";")){
+            throw new \Exception("Invalid Request");
+        }
         $refcode = NULL;
-        $stmt = $this->db->prepare("UPDATE library SET `$quote`=:value"
+        $stmt = $this->db->prepare("UPDATE library SET $quote=:value"
             . " WHERE RefCode=:refcode");
         $stmt->bindParam(":refcode", $refcode, \PDO::PARAM_STR);
         $stmt->bindParam(":value", $value);
