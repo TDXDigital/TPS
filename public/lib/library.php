@@ -385,7 +385,8 @@ class library extends station{
             $refcodes = array($refcodes);
         }
         //$quote = $this->db->quote($attribute);
-        $quote = "`"+$attribute+"`";
+        #$quote = "`"+$attribute+"`";
+        $quote = $attribute;
         if(strpos($quote, ";")){
             throw new \Exception("Invalid Request");
         }
