@@ -295,7 +295,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $bulkIds = $app->request->put('bulkEditId');
         $action = $app->request->put('action');
         $value = $app->request->put('value');
-        $bulkActions = array("status");
+        $attribute = $app->request->put('attribute');
+        $bulkActions = array("status", "attribute");
         if(in_array($action, $bulkActions)){
             switch ($action){
                 case "status":
@@ -305,6 +306,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     }
                     $library->disable($bulkIds);
                     break;
+                case "attribute":
+                    $library->attribute($bulkIds, $attribute, $value);
             }
         }
         else{
@@ -314,11 +317,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                         $libCode = $library->getLibraryCodeByRefCode($bulk)?:9;
                         $_SESSION['PRINTID'][] = array("RefCode"=>$bulk, "LibCode"=>$libCode);
                         break;
-                    case "status":
-                        $libCode = $library->getAlbumByRefcode($bulk, True);
-
-                        break;
                     default:
+                        throw new \Exception("Unknown Attribute");
                         break;
                 }
             }
@@ -354,6 +354,17 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     "values"=>array(
                         1=>"Approve",
                         0=>"Reject"
+                    )
+                );
+                print json_encode($options);
+            });
+            $app->get('/attribute', $authenticate($app, [1,2]), function () use ($app){
+                $options = array(
+                    "inputType"=>"attribute",
+                    "values"=>array(
+                        "album" => "Album",
+                        "artist" => "Artist",
+                        "date" => "Date",
                     )
                 );
                 print json_encode($options);

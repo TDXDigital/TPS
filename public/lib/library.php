@@ -374,6 +374,30 @@ class library extends station{
     }
     
     /**
+     * Change an Attribute
+     * @param type $refcodes
+     * @param type $attribute
+     * @param type $value
+     * @return boolean
+     */
+    public function attribute($refcodes, $value, $attribute){
+        if(!is_array($refcodes)){
+            $refcodes = array($refcodes);
+        }
+        //$quote = $this->db->quote($attribute);
+        $quote = $attribute;
+        $refcode = NULL;
+        $stmt = $this->db->prepare("UPDATE library SET `$quote`=:value"
+            . " WHERE RefCode=:refcode");
+        $stmt->bindParam(":refcode", $refcode, \PDO::PARAM_STR);
+        $stmt->bindParam(":value", $value);
+        foreach($refcodes as $refcode){
+            $stmt->execute();
+        }
+        return true;
+    }
+    
+    /**
      * 
      * @abstract get album information from library by RefCode
      * @global \TPS\mysqli $mysqli

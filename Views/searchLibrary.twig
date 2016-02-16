@@ -179,6 +179,19 @@ function batchChange(element, url){
                     .text(value));
             });
         }
+        else if(data.inputType==="attribute"){
+            $("#batchExtension").html(
+                "Attribute: <select name='value' id='beval' required>"+
+                "<option>Select</option></select>"+
+                "&nbsp;<input type='text' name='attribute' "+
+                "placeholder='value' required/>");
+            $.each(data.values, function(key, value){
+                $("#beval")
+                    .append($("<option></option>")
+                    .attr("value", key)
+                    .text(value));
+            });
+        }
         //$("#batchExtension").html("THIS IS A TEST");
     })
     .fail(function(data){
