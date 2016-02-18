@@ -362,12 +362,30 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 $options = array(
                     "inputType"=>"attribute",
                     "values"=>array(
-                        "album" => "Album",
-                        "artist" => "Artist",
-                        "date" => "Date",
+                        "album" => array(
+                                "value"=>"Album",
+                                "input"=>"text"
+                            ),
+                        "artist"=>array(
+                                "value"=>"Artist",
+                                "input"=>"text"
+                            ),
+                        "date"=>array(
+                                "value"=>"Date",
+                                "input"=>"text"
+                            ),
+                        "genre"=>array(
+                            "value"=>"Genre",
+                            "input"=>"select"
+                        )
                     )
                 );
                 print json_encode($options);
+            });
+            $app->get('/genre', $authenticate($app,[1,2]), function () use ($app){
+                $library = new \TPS\library();
+                $genres = $library->getLibraryGenres();
+                print json_encode($genres);
             });
         });
     });

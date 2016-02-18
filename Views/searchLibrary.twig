@@ -183,15 +183,17 @@ function batchChange(element, url){
             $("#batchExtension").html(
                 "Attribute: <select name='value' id='beval' required>"+
                 "<option>Select</option></select>"+
-                "&nbsp;<input type='text' name='attribute' "+
-                "placeholder='value' required/>");
+                "&nbsp;<span id='beattr'></span>");
             $.each(data.values, function(key, value){
                 $("#beval")
                     .append($("<option></option>")
                     .attr("value", key)
-                    .text(value));
+                    .attr("class", value.input)
+                    .text(value.value));
             });
+            
         }
+        changeAttrOptions("#beval option:selected", "#beattr");
         //$("#batchExtension").html("THIS IS A TEST");
     })
     .fail(function(data){
@@ -201,11 +203,52 @@ function batchChange(element, url){
     });
     
 }
+
+function changeAttrOptions(divId, targetObj){
+    console.log("ChangeAttr"+divId.selector);
+    console.log(divId);
+    console.log(targetObj);
+    var divId=$(divId);
+    var targetObj = $(targetObj);
+    var classList = divId.attr('class');//.split(/\s+/);
+    console.log(classList);
+    if(divId.hasClass('text')){
+        console.log("TEXT");
+        targetObj.html("<input type='text' name='attribute' "+
+        "placeholder='attribute value' required/>");
+    }
+    else if(divId.hasClass("select")){
+        console.log("SELECT");
+        var urlVal = "../batch/options/"+divId.val();
+        var data3 = $.ajax({
+            url: urlVal,
+            dataType: "json"
+        }).done(function (data2){
+            targetObj.html("<select name='attribute' id='beattersel'"+
+                    "required><option>Select</option></select>");
+            console.log(data2);
+            $.each(data2, function(key2, value2){
+                $("#beattersel")
+                    .append(
+                    $("<option></option>")
+                    .attr("value", key2)
+                    .text(value2)
+                    );
+            });
+        }).fail(function (jqXhr, status, exception){
+            console.log(status);
+        });
+    }
+}
  
 $(function () {
     getBatchOptions();
     $(document).on("change", "#batchSelect", function() {
         batchChange($("#batchSelect option:selected"));
+    });
+    $(document).on("change", "#beval", function() {
+        console.log("setting onchange for beval");
+        changeAttrOptions("#beval option:selected", "#beattr");
     });
 });
 </script>
