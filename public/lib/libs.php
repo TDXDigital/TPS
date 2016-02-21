@@ -13,3 +13,5 @@ require_once 'program.php';
 require_once 'episode.php';
 require_once 'label.php';
 require_once 'submissionTracking.php';
+require_once 'playlist.php';
+

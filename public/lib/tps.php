@@ -120,6 +120,12 @@ class TPS{
         $pagination = $floor;
         $maxResult = $ceil;
     }
+    
+    public static function validateIsoDate($date)
+    {
+        $d = DateTime::createFromFormat('Y-m-d', $date);
+        return $d && $d->format('Y-m-d') == $date;
+    }
 
     public function __construct($enableDbReporting=FALSE, $requirePDO=FALSE,
             $settingsTarget=NULL, $settingsPath=NULL) {
@@ -157,14 +163,18 @@ class TPS{
                 if($this->requirePDO){
                     $this->db = new \PDO(
                             "mysql:host=$databaseHost;dbname=$databaseName",
-                        $database['USER'], $database['PASSWORD']);
+                        $database['USER'], $database['PASSWORD'], array(
+                            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+                        ));
                     $this->mysqli = $this->db;
                 }
                 else{
                     try{
                         $this->db = new \PDO(
                             "mysql:host=$databaseHost;dbname=$databaseName",
-                            $database['USER'], $database['PASSWORD']);
+                            $database['USER'], $database['PASSWORD'],array(
+                                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+                            ));
                     } catch (\PDOException $ex) {
                         error_log($ex->getMessage());
                         $this->db = NULL;

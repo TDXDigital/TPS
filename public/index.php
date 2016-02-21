@@ -27,9 +27,11 @@ class standardResult{
         $app->response->setStatus($code);
         if($isJSON){
             $app->response->headers->set('Content-Type', 'application/json');
-            $data = json_encode(array($key=>$data));
+            if(!is_null($key)){
+                return json_encode(array($key=>$data));
+            }
+            return json_encode($data);
         }
-        return $data;
     }
 
     /**
@@ -48,7 +50,8 @@ class standardResult{
      */
     static public function error($app, $data=NULL, $key="message", $code=500,
             $isJSON=True){
-        print static::encode($app, $data, $code, $key, $isJSON);
+        $str = static::encode($app, $data, $code, $key, $isJSON);
+        $app->error(new \Exception($str), $code);
     }
     
     /**
@@ -67,7 +70,8 @@ class standardResult{
      */
     static public function badRequest($app, $data=NULL, $key="message", 
             $code=400, $isJSON=True){
-        print static::encode($app, $data, $code, $key, $isJSON);
+        $str = static::encode($app, $data, $code, $key, $isJSON);
+        $app->error(new \Exception($str), $code);
     }
     
     /**

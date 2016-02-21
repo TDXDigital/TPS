@@ -33,8 +33,8 @@ require_once 'station.php';
 
 class library extends station{
     
-    public function __construct(){
-        parent::__construct();
+    public function __construct($callsign=null){
+        parent::__construct($callsign);
     }
     #protected $RefCode;
     

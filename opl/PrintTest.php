@@ -11,7 +11,7 @@
 <head>
     <meta charset="utf-8">
     <title>Print Labels</title>
-    <link href="../Playlist/CSS_Labels/<?php
+    <link href="../opl/CSS_Labels/<?php
     $type = filter_input(INPUT_GET,'type', FILTER_SANITIZE_NUMBER_INT)?:5160;
     $indent = filter_input(INPUT_GET,'start', FILTER_SANITIZE_NUMBER_INT) ?: 0;
     $outline = filter_input(INPUT_GET,'outline',FILTER_SANITIZE_STRING) ?: 'false';
@@ -91,15 +91,15 @@
             $padded= join('', array($genreCode,str_pad($BCD['RefCode'], 10, "0", STR_PAD_LEFT)));
             
             //echo "<img src='barcode/createBarcode.php?bcd=$BCD'/>";
-            echo "<div class=\"label\"><span ><img style='float:left; margin:0px;' src='../Playlist/barcode/barcode.php?bcd=$padded' alt='$padded'/>";
+            echo "<div class=\"label\"><span ><img style='float:left; margin:0px;' src='../opl/barcode/barcode.php?bcd=$padded' alt='$padded'/>";
             if($locale=="Country"){
-                echo "<img style='float: left; margin: 0px;' src='../Playlist/maple.gif' alt='CC'/>";
+                echo "<img style='float: left; margin: 0px;' src='../opl/maple.gif' alt='CC'/>";
             }
             else if ($locale=="Province"){
-                echo "<img style='float: right; margin: 0px;' width='25px' src='../Playlist/ab_ttm.png' alt='PRO'/>";
+                echo "<img style='float: right; margin: 0px;' width='25px' src='../opl/ab_ttm.png' alt='PRO'/>";
             }
             else if ($locale=="Local"){
-                echo "<img style='float: right; margin: 0px;' width='25px' src='../Playlist/pointer.png' alt='PRO'/>";
+                echo "<img style='float: right; margin: 0px;' width='25px' src='../opl/pointer.png' alt='PRO'/>";
             }
             substr("abcdef", -1);
             if(strlen($artist)>20){

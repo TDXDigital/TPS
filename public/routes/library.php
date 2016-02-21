@@ -338,7 +338,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 // Option => Completes Transaction (No More Options)
                 "print" => "Print",
                 "status" => "Status", 
-                "normalize" => "Normalize / Clean",
+                //"normalize" => "Normalize / Clean",
                 "attribute" => "Attribute",
             );
             $app->response->headers->set('Content-Type', 'application/json');
@@ -372,6 +372,10 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                             ),
                         "date"=>array(
                                 "value"=>"Date",
+                                "input"=>"text"
+                            ),
+                        "year"=>array(
+                                "value"=>"Year",
                                 "input"=>"text"
                             ),
                         "genre"=>array(

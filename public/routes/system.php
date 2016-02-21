@@ -28,17 +28,28 @@ $app->error(function (\Exception $e) use ($app){
     $app->render("error.html.twig",$params);
 });
 
-$app->get('/', $authenticate($app), function() use ($app){
-    $app->render('dashboard.twig');
+$dashboard = function() use ($app){
+    $isXHR = $app->request->isAjax();
+    $format = $app->request->get('format')?:$isXHR;
+    if($isXHR || $format=="json"){
+        print json_encode("Login Completed");
+    }
+    else{
+        $app->render('dashboard.twig');
+    }
+};
+
+$app->get('/', $authenticate($app), function() use ($dashboard){
+    $dashboard();
 });
-$app->post('/', $authenticate($app), function() use ($app){
-    $app->render('dashboard.twig');
+$app->post('/', $authenticate($app), function() use ($dashboard){
+    $dashboard();
 });
-$app->put('/', $authenticate($app), function() use ($app){
-    $app->render('dashboard.twig');
+$app->put('/', $authenticate($app), function() use ($dashboard){
+    $dashboard();
 });
-$app->delete('/', $authenticate($app), function() use ($app){
-    $app->render('dashboard.twig');
+$app->delete('/', $authenticate($app), function() use ($dashboard){
+    $dashboard();
 });
 
 $app->get("/login", function () use ($app) {
@@ -259,5 +270,5 @@ $app->get("/logout", function () use ($app) {
 });
 
 $app->get("/labels/print", $authenticate($app,[2]), function() use ($app) {
-    require_once 'Playlist/PrintTest.php';
+    require_once 'opl/PrintTest.php';
 });

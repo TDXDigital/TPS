@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('UTC');
     session_start();
 
 $con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);

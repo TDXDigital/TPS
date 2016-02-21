@@ -1,9 +1,11 @@
 <?php
 
+namespace TPS;
+
 /* 
  * The MIT License
  *
- * Copyright 2015 James Oliver <support@ckxu.com>.
+ * Copyright 2016 J.oliver.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,34 +25,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-//function autoload_class_multiple_directory($class_name) 
-//{
-//
-//    # List all the class directories in the array.
-//    $array_paths = glob("/*", GLOB_ONLYDIR);
-//
-//    foreach($array_paths as $path)
-//    {
-//        $file = sprintf('%s/_include_.php', $path, $class_name);
-//        if(is_file($file)) 
-//        {
-//            include_once $file;
-//        } 
-//
-//    }
-//}
-#spl_autoload_register();#'autoload_class_multiple_directory');
 
-#load page groups
-require_once 'environment.php';
-require_once 'library.php';
-require_once 'reviews.php';
-require_once 'station.php';
-require_once 'program.php';
-require_once 'episode.php';
-require_once 'label.php';
-require_once 'playlist.php';
-
-#load api last;
-require_once 'api.php';
-
+spl_autoload_register(function ($class) {
+    include './' . $class . '.php';
+});
