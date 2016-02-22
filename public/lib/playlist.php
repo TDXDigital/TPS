@@ -41,32 +41,36 @@ class playlist extends TPS{
                 $settingsPath);
     }
     
-    public function setExpiry($refcodes, $date){
-        if(!is_array($refcodes)){
-            $refcodes = array($refcodes);
+    public function setExpiry($playlistIds, $date){
+       if(!is_array($playlistIds)){
+            $playlistIds = array($playlistIds);
         }
-        $refcode = NULL;
-        $stmt = $this->db->prepare("UPDATE playlist SET Expire=:date"
-            . " WHERE RefCode=:refcode");
-        $stmt->bindParam(":refcode", $refcode, \PDO::PARAM_STR);
+        $param = NULL;
+        $stmt = $this->db->prepare("UPDATE playlist SET `Expire`=:date"
+            . " WHERE PlaylistId=:param");
+        $stmt->bindParam(":param", $param);
         $stmt->bindParam(":date", $date);
-        foreach($refcodes as $refcode){
-            $stmt->execute();
+        foreach($playlistIds as $param){
+            if(!$stmt->execute()){
+                throw new Exception($stmt->errorInfo());
+            }
         }
         return true;
     }
     
-    public function setStart($refcodes, $date){
-        if(!is_array($refcodes)){
-            $refcodes = array($refcodes);
+    public function setStart($playlistIds, $date){
+        if(!is_array($playlistIds)){
+            $playlistIds = array($playlistIds);
         }
-        $refcode = NULL;
+        $param = NULL;
         $stmt = $this->db->prepare("UPDATE playlist SET Activate=:date"
-            . " WHERE RefCode=:refcode");
-        $stmt->bindParam(":refcode", $refcode, \PDO::PARAM_STR);
+            . " WHERE PlaylistId=:param");
+        $stmt->bindParam(":param", $param);
         $stmt->bindParam(":date", $date);
-        foreach($refcodes as $refcode){
-            $stmt->execute();
+        foreach($playlistIds as $param){
+            if(!$stmt->execute()){
+                throw new Exception($stmt->errorInfo());
+            }
         }
         return true;
     }
@@ -174,5 +178,11 @@ class playlist extends TPS{
             }
         }
         return $ids;
+    }
+    
+    public function change($playlistIds, $startDate, $endDate,
+            $zoneCode=Null, $zoneNumber=Null, $smallCode=NULL){
+        $this->setStart($playlistIds, $startDate);
+        $this->setExpiry($playlistIds, $endDate);
     }
 }

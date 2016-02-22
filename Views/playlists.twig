@@ -1,0 +1,88 @@
+{% extends 'baseAdmin.twig' %}
+{% block headScripts %}
+    <style>
+        .donut200{
+            height:200px;
+            width: 200px;
+          }
+    </style>
+{% endblock %}
+{% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+    </li>
+    <li class="active">
+        <i class="fa fa-folder"></i>{% if search %}
+        <a href="/station">System</a>
+    </li>
+    <li>
+        <i class="fa fa-search"></i> Playlist
+        {% else %}
+            Playslist
+        {% endif %}
+    </li>
+</ol>
+{% endblock %}
+{% block content %}
+    {% if flash.error %}
+        <div class="row">
+            <div class="alert alert-danger">
+                <strong>Error</strong> {{flash.error}}
+            </div>
+        </div>
+    {% endif %}
+    {% if flash.success %}
+        <div class="row">
+            <div class="alert alert-success">
+                <strong>Success</strong> {{flash.success}}
+            </div>
+        </div>
+    {% endif %}
+    <form role="form" method="POST" action="/playlist/search/">
+        <div class="row">
+            <div class="form-group input-group">
+                <input type="text" class="form-control" name="q" 
+                       {% if search %}
+                           value="{{search}}"
+                       {% endif %} disabled>
+                <span class="input-group-btn"><button class="btn btn-default" type="button"><i class="fa fa-search"></i></button></span>
+            </div>
+        </div>
+    </form>
+    <table class='table table-bordered table-hover' >
+        <thead>
+            <th>Id</th>
+            <th>ZoneCode</th>
+            <th>ZoneNumber</th>
+            <th>Active</th>
+            <th>Ends</th>
+            <th>Album</th>
+            <th>Edit</th>
+        </thead>
+        <tbody>
+            {% for id,playlist in playlists %}
+                <tr style="background-color: {{playlist.color|default('#FFF')}};">
+                    <td>{{id}}</td>
+                    <td>{{playlist.ZoneCode}}</td>
+                    <td>{{playlist.ZoneNumber}}</td>
+                    <td>{{playlist.Activate}}</td>
+                    <td>{{playlist.Expire}}</td>
+                    <td><a href="../library/{{playlist.RefCode}}" target="_blank"><i class="fa fa-expand"></i></a></td>
+                    <td><a href="./{{id}}"><i class="fa fa-edit"></i></a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+<div class="row">
+    <div class="col-lg-6">
+    </div>
+    <div class="col-lg-6">
+        <div class="pull-right">
+            <a class="btn btn-success" href="./new">New</a>
+            <a class="btn btn-primary" href="">Refresh</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

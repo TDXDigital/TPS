@@ -44,7 +44,15 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             standardResult::ok($app, $result, NULL);
         }
         else{
-            standardResult::ok($app, $result, NULL);
+            #standardResult::ok($app, $result, NULL);
+            $params = array(
+                "title"=>"Playlist",
+                "playlists"=>$result,
+                "page"=>$page,
+                "pages"=>9999,
+                "limit"=>$limit,
+            );
+            $app->render("playlists.twig", $params);
         }
     });
     $app->post('/', function() use ($app, $playlist){
@@ -67,12 +75,39 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
     });
     $app->get('/:id', function($refCodes) use ($app, $playlist){
         $isXHR = $app->request->isAjax();
+        $id = $app->request->get("refCode");
         $result = $playlist->get($refCodes);
+        if(sizeof($result)<1 && $id){
+            $result[null] = array("RefCode"=>$id);
+        }
+        if(sizeof($result)<1 && strtolower($refCodes)!='new'){
+            $app->notFound();
+        }
         if($isXHR){
-            standardResult::created($app, $result, NULL);
+            standardResult::ok($app, array("refCode", "startDate", "endDate"), NULL);
         }
         else{
-            standardResult::created($app, $result, NULL);
+            $params = array(
+                "title"=>"Playlist",
+                "playlists"=>$result,
+            );
+            $app->render("playlist.twig", $params);
+        }
+    });
+    $app->put('/:id', function($refCodes) use ($app, $playlist){
+        $isXHR = $app->request->isAjax();
+        $startDate = $app->request->put("startDate");
+        $endDate = $app->request->put("endDate");
+        $zoneNumber = $app->request->put("zoneNumber");
+        $zoneCode = $app->request->put("zoneCode");
+        $smallCode = $app->request->put("smallCode");
+        $result = $playlist->change($refCodes, $startDate, $endDate, 
+                $zoneCode, $zoneNumber, $smallCode);
+        if($isXHR){
+            standardResult::accepted($app, array("refCode", "startDate", "endDate"), NULL);
+        }
+        else{
+            $app->redirect("./$refCodes");
         }
     });
 });
