@@ -14,7 +14,7 @@
         <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
     </li>
     <li class="active">
-        <i class="fa fa-folder"></i>{% if search %}
+        <i class="fa fa-line-chart"></i>{% if search %}
         <a href="/station">System</a>
     </li>
     <li>
@@ -58,7 +58,9 @@
             <th>ZoneNumber</th>
             <th>Active</th>
             <th>Ends</th>
+            <th>Artist</th>
             <th>Album</th>
+            <td>Received</td>
             <th>Edit</th>
         </thead>
         <tbody>
@@ -67,9 +69,13 @@
                     <td>{{id}}</td>
                     <td>{{playlist.ZoneCode}}</td>
                     <td>{{playlist.ZoneNumber}}</td>
-                    <td>{{playlist.Activate}}</td>
-                    <td>{{playlist.Expire}}</td>
-                    <td><a href="../library/{{playlist.RefCode}}" target="_blank"><i class="fa fa-expand"></i></a></td>
+                    <td>{{playlist.Activate|date("Y-m-d")}}</td>
+                    <td>{{playlist.Expire|date("Y-m-d")}}</td>
+                    <td><a href="../library/{{playlist.RefCode}}" target="_blank">
+                            {{playlist.library.artist}}</a></td>
+                    <td><a href="../library/{{playlist.RefCode}}" target="_blank">
+                            {{playlist.library.album}}</a></td>
+                    <td>{{playlist.library.datein}}</td>
                     <td><a href="./{{id}}"><i class="fa fa-edit"></i></a></td>
                 </tr>
             {% endfor %}

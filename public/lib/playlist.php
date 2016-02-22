@@ -110,7 +110,7 @@ class playlist extends TPS{
         return $result;
     }
     
-    public function getByRefCode($refCodes, $startDate, $endDate){
+    public function getCurrentByRefCode($refCodes, $startDate, $endDate){
         if(!is_array($refCodes)){
             $params = array($refCodes);
         }
@@ -122,6 +122,26 @@ class playlist extends TPS{
         $stmt->bindParam(":param", $param, \PDO::PARAM_STR);
         $stmt->bindParam(":startDate", $startDate);
         $stmt->bindParam(":endDate", $endDate);
+        $result = array();
+        foreach($params as $param){
+            if ($stmt->execute()) {
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $result[$row['PlaylistId']] = $row;
+                }
+            }
+        }
+        return $result;
+    }
+    
+    public function getAllByRefCode($refCodes){
+        if(!is_array($refCodes)){
+            $params = array($refCodes);
+        }
+        $param = NULL;
+        $stmt = $this->db->prepare(
+                "SELECT * FROM playlist"
+            . " WHERE RefCode=:param");
+        $stmt->bindParam(":param", $param, \PDO::PARAM_STR);
         $result = array();
         foreach($params as $param){
             if ($stmt->execute()) {
@@ -184,5 +204,17 @@ class playlist extends TPS{
             $zoneCode=Null, $zoneNumber=Null, $smallCode=NULL){
         $this->setStart($playlistIds, $startDate);
         $this->setExpiry($playlistIds, $endDate);
+    }
+    
+    public function countAll(){
+        $stmt = $this->db->prepare(
+                "SELECT count(*) as count FROM playlist");
+        $result = 0;
+        if ($stmt->execute()) {
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                $result += (int)$row['count'];
+            }
+        }
+        return $result;
     }
 }

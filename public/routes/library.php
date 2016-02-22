@@ -411,6 +411,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         }
         $album['label']=$library->getLabelbyId($album['labelid'])[0];
         $album['websites']=$library->getWebsitesByRefCode($RefCode);
+        $album['playlist'] = $library->playlist->getAllByRefCode($RefCode);
         
         $params = array(
             "album"=>$album,

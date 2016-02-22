@@ -12,8 +12,7 @@
         <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
     </li>
     <li>
-        <i class="fa fa-line-chart"></i>  <a href="/playlist/{{
-playlists|keys|first|default('New')}}">Playlist</a>
+        <i class="fa fa-line-chart"></i>  <a href="/playlist/">Playlist</a>
     </li>
     <li class="active">
         <i class="fa fa-bolt"></i>
@@ -30,7 +29,7 @@ playlists|keys|first|default('New')}}">Playlist</a>
     <!--<span>SUCCESS: {{success}}, ERROR: {{error}}, ID: {{PRINTID}}| {% for id in PRINTID %}{{id}},{% endfor %}</span>-->
 {% endblock %}
 {% block content %}
-<form role="form" method="post"> <!-- action="/Playlist/playlist.induct.php" -->
+<form role="form" method="post" action="./{{playlist.PlaylistId}}" >
     {% if playlist.PlaylistId is defined %}
         <input type="hidden" name="_METHOD" value="PUT"/>
         <input type="hidden" name="UID" value="{{playlist.PlaylistId}}"/>
@@ -72,7 +71,7 @@ playlists|keys|first|default('New')}}">Playlist</a>
                 <fieldset>
                     <div id="sort_group" class="form-group input-group">
                         <label for="startDate" class="input-group-addon">Start Date</label>
-                        <input type="text" class="form-control" required
+                        <input type="text" class="form-control datepicker" required
                                name="startDate" id="startDate" placeholder="2000-01-01"
                                pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
                                value="{{playlist.Activate|date("Y-m-d")}}"
@@ -83,7 +82,7 @@ playlists|keys|first|default('New')}}">Playlist</a>
                 <fieldset>
                     <div id="sort_group" class="form-group input-group">
                         <label for="endDate" class="input-group-addon">End Date</label>
-                        <input type="text" class="form-control" required
+                        <input type="text" class="form-control datepicker" required
                                name="endDate" id="endDate" placeholder="2000-01-02"
                                pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
                                value="{{playlist.Expire|date("Y-m-d")}}"
@@ -137,7 +136,14 @@ playlists|keys|first|default('New')}}">Playlist</a>
 <script type="text/javascript" src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
 <script type="text/javascript" src="{{siteUrl}}/js/bootstrap/checkbox/js/bootstrap-checkbox.js "></script>
 <script>
-    // Activate chosen elements
-    $(".chosen-select").chosen();
+    $(function() {
+        // Activate chosen elements
+        $(".chosen-select").chosen();
+        $( ".datepicker" ).datepicker({
+            numberOfMonths: 3,
+            showButtonPanel: true,
+            dateFormat: "yy-mm-dd"
+        });
+      });
 </script>
 {% endblock %}

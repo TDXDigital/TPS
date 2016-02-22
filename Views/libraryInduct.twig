@@ -187,6 +187,41 @@
                         <input type="checkbox" data-label-prepend="Print" class="style3" name="print" value="1" />
                     </div>
                     <div class="col-lg-3">
+                        <!-- Single button -->
+                        <div class="btn-group">
+                          <button type="button" 
+                                  class="btn 
+                                    {% if album.playlist|length > 0 %}
+                                        btn-success
+                                    {% elseif album.playlist|length > 1 %}
+                                        btn-warning
+                                    {% else %}
+                                        btn-default
+                                    {% endif %}
+                                    dropdown-toggle" 
+                                  data-toggle="dropdown" aria-haspopup="true" 
+                                  aria-expanded="false">
+                            Playlist <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu">
+                            {% for playlist in album.playlist %}
+                                <li><a href="../playlist/{{playlist.PlaylistId}}" 
+                                       target="PL-{{album.RefCode}}">
+                                        {{playlist.PlaylistId}}</a></li>
+                            {% endfor %}
+                            <li role="separator" class="divider"></li>
+                            <li><a href="../playlist/new?refCode={{album.RefCode}}"
+                                   target="PL-{{album.RefCode}}">New</a></li>
+                          </ul>
+                        </div>
+                        <!--
+                        {% if album.playlist_flag != 'FALSE' %}
+                            {% if album.playlist is defined and not null %}
+                                <a href="../playlist/new?refcode={{album.RefCode}}">{{album.RefCode}}</a>
+                            {% else %}
+                                <a href="../playlist/new?refcode={{album.RefCode}}">{{album.RefCode}}</a>
+                            {% endif %}
+                        {% else %}
                         {% set playlist = playlist?:['FALSE','PENDING','COMPLETE'] %}
                         <div id="format" class="form-group input-group">
                             <label for="label" class="input-group-addon">PL</label>
@@ -198,6 +233,8 @@
                                 {% endfor %}
                             </select>
                         </div>
+                        {% endif %}
+                        -->
                     </div>    
                     {% endif %}
                 {% endif %}
@@ -467,7 +504,7 @@
         
         $('#'+id).autocomplete({
             //source: "../MusicLib/DB_Search_Artist.php",
-            source: "/Playlist/AJAX/playlist.get_artist.php?type=artist&method="+method,
+            source: "/opl/AJAX/playlist.get_artist.php?type=artist&method="+method,
             minLength: 2
         });
     }
@@ -511,7 +548,7 @@
         });
         $('#label').autocomplete({
             //source: "../MusicLib/DB_Search_Artist.php",
-            source: "/Playlist/AJAX/getlabels.php"
+            source: "/opl/AJAX/getlabels.php"
         });
         
         document.querySelector('form').onkeypress = checkEnter;
@@ -574,7 +611,7 @@
         }
         var input = {'term':$("#art_field").val()};
         $.ajax({
-            url: "/Playlist/AJAX/playlist.get_album_table.php",
+            url: "/opl/AJAX/playlist.get_album_table.php",
             data: input,
             type: "GET"
         }).done(function(html_returned){
@@ -628,7 +665,7 @@
             
         
         // Set up and make the request.
-        request.open('GET', '/Playlist/AJAX/getlabels.php?term='+input.value, true);
+        request.open('GET', '/opl/AJAX/getlabels.php?term='+input.value, true);
         request.send();
     }
     //var query = {"val":$.("#art_field").val()};

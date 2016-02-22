@@ -31,6 +31,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
         $isXHR = $app->request->isAjax();
         $page = (int)$app->request->get("p")?:1;
         $limit = (int)$app->request->get("l")?:25;
+        $count = ceil($playlist->countAll()/$limit);
         $refcodes = $app->request->get("refcodes");
         $startDate = $app->request->get("startDate")?:"1000-01-01";
         $endDate = $app->request->get("endDate")?:"9999-12-31";
@@ -45,11 +46,16 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
         }
         else{
             #standardResult::ok($app, $result, NULL);
+            $library = new \TPS\library();
+            foreach ($result as $key => $value) {
+                $lib = $library->getAlbumByRefcode($value['RefCode']);
+                $result[$key]["library"] = array_pop($lib);
+            }
             $params = array(
                 "title"=>"Playlist",
                 "playlists"=>$result,
                 "page"=>$page,
-                "pages"=>9999,
+                "pages"=>$count,
                 "limit"=>$limit,
             );
             $app->render("playlists.twig", $params);
@@ -70,7 +76,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             standardResult::created($app, $result, NULL);
         }
         else{
-            standardResult::created($app, $result, NULL);
+            $app->redirect("./".array_pop($result));
         }
     });
     $app->get('/:id', function($refCodes) use ($app, $playlist){
@@ -87,6 +93,11 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             standardResult::ok($app, array("refCode", "startDate", "endDate"), NULL);
         }
         else{
+            $library = new \TPS\library();
+            foreach ($result as $key => $value) {
+                $lib = $library->getAlbumByRefcode($value['RefCode']);
+                $result[$key]["library"] = $lib;
+            }
             $params = array(
                 "title"=>"Playlist",
                 "playlists"=>$result,

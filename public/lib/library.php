@@ -33,8 +33,11 @@ require_once 'station.php';
 
 class library extends station{
     
+    public $playlist = null;
+
     public function __construct($callsign=null){
         parent::__construct($callsign);
+        $this->playlist = new \TPS\playlist();
     }
     #protected $RefCode;
     
