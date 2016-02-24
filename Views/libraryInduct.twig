@@ -191,7 +191,7 @@
                         <div class="btn-group">
                           <button type="button" 
                                   class="btn 
-                                    {% if album.playlist|length > 0 %}
+                                    {% if album.playlist|length == 0 %}
                                         btn-success
                                     {% elseif album.playlist|length > 1 %}
                                         btn-warning
