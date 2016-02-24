@@ -184,7 +184,7 @@ class playlist extends TPS{
         $stmt->bindParam(":refcode", $refcode);
         $stmt->bindParam(":activate", $startDate);
         $stmt->bindParam(":expire", $endDate);
-        $stmt->bindParam(":smallCode", $smallCode?:$refcode);
+        $stmt->bindParam(":smallCode", $smallCode);
         $stmt->bindParam(":zoneCode", $zoneCode);
         $stmt->bindParam(":zoneNumber", $zoneNumber);
         $ids = [];
@@ -217,4 +217,5 @@ class playlist extends TPS{
         }
         return $result;
     }
+    
 }

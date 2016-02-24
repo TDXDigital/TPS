@@ -1,0 +1,128 @@
+{% extends 'baseAdmin.twig' %}
+{% block headScripts %}
+    <style>
+        .donut200{
+            height:200px;
+            width: 200px;
+          }
+    </style>
+    <link rel="stylesheet" href="{{siteUrl}}/js/chosen.css">
+    <link rel="stylesheet" href="{{siteUrl}}/js/bootstrap/checkbox/css/bootstrap-checkbox.css">
+    <link rel="stylesheet" href="{{siteUrl}}/js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>
+{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+    </li>
+    <li class="active">
+        <i class="fa fa-line-chart"></i>{% if search %}
+        <a href="/station">System</a>
+    </li>
+    <li>
+        <i class="fa fa-search"></i> Playlist
+        {% else %}
+            Playslist
+        {% endif %}
+    </li>
+</ol>
+{% endblock %}
+{% block content %}
+    {% if flash.error %}
+        <div class="row">
+            <div class="alert alert-danger">
+                <strong>Error</strong> {{flash.error}}
+            </div>
+        </div>
+    {% endif %}
+    {% if flash.success %}
+        <div class="row">
+            <div class="alert alert-success">
+                <strong>Success</strong> {{flash.success}}
+            </div>
+        </div>
+    {% endif %}
+    <form role="form" method="GET">
+        <div class="row">
+            <div class="form-group input-group" style="z-index: 0;">
+                <div class="input-group-addon">Default Date Offset</div>
+<input type="text" required class="form-control datepicker4m text-center" 
+value="{{today|default("now")|date("Y-m-d")}}" name="today"/>
+                <span class="input-group-btn"><button class="btn btn-default" type="submit">
+                        <i class="fa fa-calculator"></i>&nbsp;Update</button></span>
+            </div>
+        </div>
+    </form>
+    <form role="form" method="POST">
+    <table class='table table-bordered table-hover' >
+        <thead>
+            <th>Locale</th>
+            <th>Format</th>
+            <th>Genre</th>
+            <!--<th>Release<br/>Date</th>-->
+            <th>Date In</th>
+            <th>Artist</th>
+            <th>Album</th>
+            <th style="min-width: 150px;">On Playlist</th>
+            <th style="min-width: 150px;">Off Playlist</th>
+            <th>Short Code</th>
+            <th>Enabled</th>
+        </thead>
+        <tbody>
+            {% for playlist in playlists %}
+                <tr>
+                    <td>{{playlist.Locale}}</td>
+                    <td>{{playlist.format}}</td>
+                    <td>{{playlist.genre.Title}}</td>
+                    <!--<td>{{playlist.release_date|date("Y-m-d")}}</td>-->
+                    <td>{{playlist.datein|date("Y-m-d")}}</td>
+                    <td><a href="../../library/{{playlist.RefCode}}" target="_blank">
+                            {{playlist.artist}}</a></td>
+                    <td><a href="../../library/{{playlist.RefCode}}" target="_blank">
+                            {{playlist.album}}</a></td>
+                    <td><input type="text" required 
+                               class="form-control datepicker text-center"
+                               name="startDate[]"
+                               value="{{today|default("now")|date("Y-m-d")}}"/>
+                    <td><input type="text" required 
+                               class="form-control datepicker text-center" 
+                               name="endDate[]"
+                               value="{{today|default("now")|date_modify("+"~playlist.genre.PlaylistDuration.value~" "~playlist.genre.PlaylistDuration.unit)|date("Y-m-d")}}"</td>
+                    <td><input type="text" name="smallCode[]" class="form-control text-center"/></td>
+                    <td><input type="hidden" name="refCode[]" value="{{playlist.RefCode}}"/>
+                        <input type="checkbox" checked name="enabled[]" value="{{playlist.RefCode}}"/></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+<div class="row">
+    <div class="col-lg-6">
+    </div>
+    <div class="col-lg-6">
+        <div class="pull-right">
+            <input type="submit" class="btn btn-success" value="Submit"/>
+        </div>
+    </div>
+</div>
+    </form>
+{% endblock %}
+{% block lastScripts %}
+<script src="{{siteUrl}}/js/chosen.jquery.min.js"></script>
+<script type="text/javascript" src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{{siteUrl}}/js/bootstrap/checkbox/js/bootstrap-checkbox.js "></script>
+<script>
+    $(function() {
+        // Activate chosen elements
+        $( ".datepicker" ).datepicker({
+            numberOfMonths: 3,
+            showButtonPanel: true,
+            dateFormat: "yy-mm-dd"
+        });
+        $( ".datepicker4m" ).datepicker({
+            numberOfMonths: 4,
+            showButtonPanel: true,
+            dateFormat: "yy-mm-dd"
+        });
+      });
+</script>
+{% endblock %}

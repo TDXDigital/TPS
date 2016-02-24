@@ -105,6 +105,10 @@ class library extends station{
             "0" => array(
                 "Title"=>"Rock/Pop",
                 "Genre"=>"RP",
+                "PlaylistDuration"=>array(
+                    "unit"=>"month",
+                    "value"=>6,
+                ),
                 "SubGenres" => array(
                     "21"=>"Rock",
                     "21"=>"Pop",
@@ -118,6 +122,10 @@ class library extends station{
             "1" => array(
                 "Title"=>"Folk/Roots",
                 "Genre"=>"FR",
+                "PlaylistDuration"=>array(
+                    "unit"=>"month",
+                    "value"=>6,
+                ),
                 "SubGenres" => array(
                     "21"=>"Folk Rock",
                     "21"=>"Singer-Songwriter",
@@ -130,6 +138,10 @@ class library extends station{
             "2" => array(
                 "Title"=>"Heavy",
                 "Genre"=>"HM",
+                "PlaylistDuration"=>array(
+                    "unit"=>"month",
+                    "value"=>6,
+                ),
                 "SubGenres" => array(
                     "21"=>"Metal",
                     "21"=>"Punk",
@@ -140,6 +152,10 @@ class library extends station{
             "4" => array(
                 "Title"=>"Hip-hop/Rap",
                 "Genre"=>"HH",
+                "PlaylistDuration"=>array(
+                    "unit"=>"month",
+                    "value"=>6,
+                ),
                 "SubGenres" => array(
                     "21"=>"Hip-hop/Rap",
                     )
@@ -147,6 +163,10 @@ class library extends station{
             "5" => array(
                 "Title"=>"World",
                 "Genre"=>"WD",
+                "PlaylistDuration"=>array(
+                    "unit"=>"month",
+                    "value"=>6,
+                ),
                 "SubGenres" => array(
                     "35"=>"World Pop",
                     "35"=>"Traditional World",
@@ -156,6 +176,10 @@ class library extends station{
             "6" => array(
                 "Title"=>"Jazz/Classical",
                 "Genre"=>"JC",
+                "PlaylistDuration"=>array(
+                    "unit"=>"month",
+                    "value"=>6,
+                ),
                 "SubGenres" => array(
                     "31"=>"Classical",
                     "34"=>"Jazz",
@@ -164,6 +188,10 @@ class library extends station{
             "7" => array(
                 "Title"=>"Experimental",
                 "Genre"=>"EX",
+                "PlaylistDuration"=>array(
+                    "unit"=>"month",
+                    "value"=>9,
+                ),
                 "SubGenres" => array(
                     "36"=>"Avant composition",
                     "36"=>"Noise",
@@ -174,6 +202,10 @@ class library extends station{
             "8" => array(
                 "Title"=>"Other",
                 "Genre"=>"OT",
+                "PlaylistDuration"=>array(
+                    "unit"=>"month",
+                    "value"=>9,
+                ),
                 "SubGenres" => array(
                     "12"=>"Spoken Word",
                     "12"=>"Comedy",
@@ -185,6 +217,10 @@ class library extends station{
             "9" => array(
                 "Title"=>"System",
                 "Genre"=>null,
+                "PlaylistDuration"=>array(
+                    "unit"=>"month",
+                    "value"=>3,
+                ),
                 "SubGenres" => array(
                     "45"=>"Tech Test"
                 )
@@ -395,6 +431,41 @@ class library extends station{
         }
         $refcode = NULL;
         $stmt = $this->db->prepare("UPDATE library SET $quote=:value"
+            . " WHERE RefCode=:refcode");
+        $stmt->bindParam(":refcode", $refcode, \PDO::PARAM_STR);
+        $stmt->bindParam(":value", $value);
+        foreach($refcodes as $refcode){
+            $stmt->execute();
+        }
+        return true;
+    }
+    
+    public function pendingPlaylist(){
+        $stmt = $this->db->prepare(
+                "SELECT * FROM library"
+            . " WHERE playlist_flag='PENDING' and "
+            . " status=1");
+        $result = array();
+        if ($stmt->execute()) {
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                array_push($result,$row);
+            }
+        }
+        return $result;
+    }
+    
+    public function playlistStatus($refcodes, $value){
+        if(!is_array($refcodes)){
+            $refcodes = array($refcodes);
+        }
+        //$quote = $this->db->quote($attribute);
+        #$quote = "`"+$attribute+"`";
+        $quote = $value;
+        if(strpos($quote, ";")){
+            throw new \Exception("Invalid Request");
+        }
+        $refcode = NULL;
+        $stmt = $this->db->prepare("UPDATE library SET playlist_flag=:value"
             . " WHERE RefCode=:refcode");
         $stmt->bindParam(":refcode", $refcode, \PDO::PARAM_STR);
         $stmt->bindParam(":value", $value);

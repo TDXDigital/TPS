@@ -121,4 +121,58 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $app->redirect("./$refCodes");
         }
     });
+    $app->group('/generate', function() use ($app, $authenticate, $playlist){
+        $app->get('/', $authenticate($app, [1,2]), 
+                function() use ($app, $playlist){
+            $isXHR = $app->request->isAjax();
+            $format = $app->request->get("format");
+            $today = $app->request->get("today");
+            $getCode = function ($genre, $codes){
+                foreach ($codes as $key => $value) {
+                    if($value['Genre'] == $genre){
+                        return $value;
+                    }
+                }
+                return FALSE;
+            };
+            $library = new \TPS\library();
+            $pending = $library->pendingPlaylist();
+            $libCodes = $library->listLibraryCodes();
+            foreach ($pending as &$entry) {
+                $entry['genre'] = $getCode($entry['genre'], $libCodes);
+            }
+            if($isXHR || strtolower($format) == "json"){
+                print json_encode($pending);
+            }
+            else{
+                $params = array(
+                    "title"=>"Generation",
+                    "area"=>"Playlist",
+                    "today"=>$today,
+                    "playlists"=>$pending,
+                );
+                $app->render("playlistGeneration.twig", $params);
+            }
+        });
+        $app->post('/', $authenticate($app, [1,2]), 
+                function() use ($app, $playlist){
+            $library = new \TPS\library();
+            $isXHR = $app->request->isAjax();
+            $format = $app->request->post("format");
+            $enabled = $app->request->post("enabled");
+            $refCode = $app->request->post("refCode");
+            $endDate = $app->request->post("endDate");
+            $startDate = $app->request->post("startDate");
+            $smallCode = $app->request->post("smallCode");
+            foreach ($refCode as $key => $entry) {
+                if(!in_array($entry, $enabled)){
+                    continue;
+                }
+                $playlist->create($entry, $startDate[$key], $endDate[$key],
+                        NULL, NULL, $smallCode[$key]);
+            }
+            $library->playlistStatus($enabled, "COMPLETE");
+            $app->redirect("../");
+        });
+    });
 });
