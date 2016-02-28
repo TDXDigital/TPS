@@ -2,7 +2,6 @@
 
 namespace TPS;
 require_once dirname(__FILE__).DIRECTORY_SEPARATOR."../../TestsBase.php";
-#include dirname(__FILE__).DIRECTORY_SEPARATOR.'../../tests.php';
 include dirname(__FILE__).DIRECTORY_SEPARATOR.'../../../public/lib/libs.php';
 
 /**
