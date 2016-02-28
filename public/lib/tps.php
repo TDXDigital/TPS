@@ -33,7 +33,16 @@ class TPS{
     protected $mysqliDriver;
     protected $username;
     private $requirePDO;
-    
+    private $settingsPath;
+    private $settingsTarget;
+
+    /**
+     * Return an array with connection information for a specified server
+     * @access private
+     * @param string $target target serverId 
+     * @param string $xmlpath path to DBSETTINGS.XML
+     * @return boolean
+     */
     private function getDatabaseConfig($target=NULL,$xmlpath=NULL){
         if($xmlpath === NULL){
             $xmlpath = dirname(__FILE__).DIRECTORY_SEPARATOR."../../TPSBIN"
@@ -97,6 +106,9 @@ class TPS{
     }
     
     /**
+     * used to determine database query limits based on provided pageination
+     * page number and maxResult.
+     * Note: functon will modify input values
      * @access public
      * @param int $pagination current page index
      * @param int $maxResult number of items to in response
@@ -121,36 +133,31 @@ class TPS{
         $maxResult = $ceil;
     }
     
+    /**
+     * Check that param $date is formatted correctly to conform with ISO8601
+     * date should not be datetime, just date.
+     * @param string $date
+     * @return bool
+     */
     public static function validateIsoDate($date)
     {
         $d = DateTime::createFromFormat('Y-m-d', $date);
         return $d && $d->format('Y-m-d') == $date;
     }
-
-    public function __construct($enableDbReporting=FALSE, $requirePDO=FALSE,
-            $settingsTarget=NULL, $settingsPath=NULL) {
-        if(is_null($settingsTarget) && 
-                (isset($_REQUEST["SRVID"]) || isset($_SESSION["SRVPOST"]))){
-            try{
-                // Try and get the SERVERID if it is not provided
-                // INPUT_REQUEST not yet implemented, use superglobal
-                //$settingsTarget = filter_input(INPUT_REQUEST, "SRVID");
-                if(isset($_REQUEST["SRVID"])){
-                    $settingsTarget = $_REQUEST["SRVID"];
-                }
-                if(isset($_SESSION["SRVPOST"])){
-                    $settingsTarget = $_SESSION["SRVPOST"];
-                }
-            } catch (\Exception $ex) {
-                $settingsTarget = NULL;
-            }
-        }
+    
+    /**
+     * Setup database connections if needed
+     * @global type $mysqli
+     * @global \TPS\type $pdo
+     */
+    private function setupDatabaseConn(){
         global $mysqli;
         global $pdo;
+        $settingsPath = $this->settingsPath;
+        $settingsTarget = $this->settingsTarget;
         $mysqli=$mysqli?:$GLOBALS['mysqli'];
         $pdo=$pdo?:$GLOBALS['pdo'];
-        $this->requirePDO = $requirePDO;
-        if(!($requirePDO && is_object($pdo)) && !($mysqli || $pdo)){
+        if(!($this->requirePDO && is_object($pdo)) && !($mysqli || $pdo)){
             // Establish DB connection
             $database = NULL;
             if($database = $this->getDatabaseConfig($settingsTarget,
@@ -200,12 +207,45 @@ class TPS{
             }
         }
         else{
-            if($requirePDO){
+            if($this->requirePDO){
                 $mysqli = $pdo;
             }
             $this->mysqli = $mysqli?:$pdo;
             $this->db = $pdo;
         }
+    }
+
+    /**
+     * 
+     * @param bool $enableDbReporting enables reporting to database, otherwise
+     * report to php error_log
+     * @param bool $requirePDO Force system to use PDO (Functions witch require
+     * MySQLi will fail)
+     * @param string $settingsTarget ServerID
+     * @param string $settingsPath Path to settings file
+     */
+    public function __construct($enableDbReporting=FALSE, $requirePDO=FALSE,
+            $settingsTarget=NULL, $settingsPath=NULL) {
+        if(is_null($settingsTarget) && 
+                (isset($_REQUEST["SRVID"]) || isset($_SESSION["SRVPOST"]))){
+            try{
+                // Try and get the SERVERID if it is not provided
+                // INPUT_REQUEST not yet implemented, use superglobal
+                //$settingsTarget = filter_input(INPUT_REQUEST, "SRVID");
+                if(isset($_REQUEST["SRVID"])){
+                    $settingsTarget = $_REQUEST["SRVID"];
+                }
+                if(isset($_SESSION["SRVPOST"])){
+                    $settingsTarget = $_SESSION["SRVPOST"];
+                }
+            } catch (\Exception $ex) {
+                $settingsTarget = NULL;
+            }
+        }
+        $this->settingsPath = $settingsPath;
+        $this->settingsTarget = $settingsTarget;
+        $this->requirePDO = $requirePDO;
+        $this->setupDatabaseConn();
         if(!$this->mysqliDriver){
             $this->mysqliDriver = new \mysqli_driver();
             if($enableDbReporting){
@@ -217,17 +257,52 @@ class TPS{
         }
     }
     
+    /**
+     * The database connections cannot be serialized, therefore we need to
+     * strip them from the serializers input. removes mysqli and db[PDO]
+     * 
+     * @return null
+     */
+    public function __sleep() {
+        return array_diff(array_keys(get_object_vars($this)), 
+                array('db', 'mysqli'));
+    }
+
+    /**
+     * restores database connection aster serialization
+     */
+    public function __wakeup(){
+        $this->setupDatabaseConn();
+    }
+
+    /**
+     * Update the parent if one exists
+     * for the TPS class, there is no parent, instead just update self
+     * @return bool
+     */
     protected function updateParent(){
         /**
          * Nothing to update, start updating children
          */
-        return update();
+        return $this->update();
     }
     
+    /**
+     * perform required update to settings
+     * @return boolean
+     */
     private function update(){
         return TRUE;
     }
     
+    /**
+     * Get a list of stations and return each station within an associative
+     * array, array key is Callsign of Station
+     * @todo convert to PDO function
+     * @author James Oliver <j.oliver@ckxu.com>
+     * @global type $pdo
+     * @return boolean
+     */
     public function getStations(){
         global $pdo;
         $callsign = null;
@@ -248,7 +323,4 @@ class TPS{
         }
         
     }
-    /*
-     * should be used to create top level params such as DB connection
-     */
 }
