@@ -37,6 +37,7 @@ class TestsBase extends PHPUnit_Extensions_Database_TestCase{
             null, 
             array(PDO::ATTR_PERSISTENT => true) 
         ); 
+        $GLOBALS['pdo'] = $pdo;
         return $this->createDefaultDBConnection($pdo);
     }
 
