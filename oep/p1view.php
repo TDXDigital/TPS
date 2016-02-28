@@ -1,4 +1,6 @@
-<?php session_start();
+<?php 
+include_once "../TPSBIN/functions.php";
+include_once "../TPSBIN/db_connect.php";
 
 function getBrowser()
      {
