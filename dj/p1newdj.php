@@ -1,4 +1,8 @@
-<?php session_start(); ?>
+<?php 
+session_start(); 
+//Used to silence annoying warnings so we can load the proper timezone...
+date_default_timezone_set('UTC');
+?>
 <!DOCTYPE HTML>
 <head>
 <link rel="stylesheet" type="text/css" href="../phpstyle.css" />

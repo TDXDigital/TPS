@@ -54,6 +54,7 @@
     <table class='table table-bordered table-hover' >
         <thead>
             <th>Id</th>
+            <th>ShortCode</th>
             <th>ZoneCode</th>
             <th>ZoneNumber</th>
             <th>Active</th>
@@ -67,6 +68,7 @@
             {% for id,playlist in playlists %}
                 <tr style="background-color: {{playlist.color|default('#FFF')}};">
                     <td>{{id}}</td>
+                    <td>{{playlist.SmallCode}}</td>
                     <td>{{playlist.ZoneCode}}</td>
                     <td>{{playlist.ZoneNumber}}</td>
                     <td>{{playlist.Activate|date("Y-m-d")}}</td>

@@ -441,10 +441,23 @@ class library extends station{
     }
     
     public function pendingPlaylist(){
+        return $this->playlistFetch('PENDING');
+    }
+    
+    public function completePlaylist(){
+        return $this->playlistFetch('COMPLETE');
+    }
+    
+    public function rejectedPlaylist(){
+        return $this->playlistFetch('FALSE');
+    }
+    
+    private function playlistFetch($flag){
         $stmt = $this->db->prepare(
                 "SELECT * FROM library"
-            . " WHERE playlist_flag='PENDING' and "
+            . " WHERE playlist_flag=:flag and "
             . " status=1");
+        $stmt->bindParam(":flag", $flag);
         $result = array();
         if ($stmt->execute()) {
             while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -469,10 +482,11 @@ class library extends station{
             . " WHERE RefCode=:refcode");
         $stmt->bindParam(":refcode", $refcode, \PDO::PARAM_STR);
         $stmt->bindParam(":value", $value);
+        $status = [];
         foreach($refcodes as $refcode){
-            $stmt->execute();
+            $status[$refcode] = $stmt->execute();
         }
-        return true;
+        return $status;
     }
     
     /**

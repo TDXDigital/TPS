@@ -296,18 +296,28 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $action = $app->request->put('action');
         $value = $app->request->put('value');
         $attribute = $app->request->put('attribute');
-        $bulkActions = array("status", "attribute");
+        $bulkActions = array("status", "attribute", "playlistStatus");
+        $result = [];
         if(in_array($action, $bulkActions)){
             switch ($action){
                 case "status":
                     if($value==TRUE){
-                        $library->enable($bulkIds);
+                        $result = $library->enable($bulkIds);
                         break;
                     }
-                    $library->disable($bulkIds);
+                    $result = $library->disable($bulkIds);
                     break;
                 case "attribute":
-                    $library->attribute($bulkIds, $attribute, $value);
+                    $result = $library->attribute($bulkIds, $attribute, $value);
+                    break;
+                case "playlistStatus":
+                    if(in_array(strtolower($value),
+                                array("complete", "pending", "false"))){
+                        $result = $library->playlistStatus($bulkIds, 
+                                                           strtoupper($value));
+                        break;
+                    }
+                    throw new Exception("Invalid value for playlist flag");
             }
         }
         else{
@@ -323,14 +333,24 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 }
             }
         }
+        if(in_array(TRUE, $result)){
+            $app->flash('success',"Batch Update Performed");
+        }
+        if(in_array(FALSE, $result)){
+            $fails = array_filter($result, function($n) {
+                if($n === FALSE){
+                    return $n;
+                }
+            });
+            $app->flash("error", 
+                    "Could not set the Playlist Status for: "
+                    . implode(", ",$fails));
+        }
         if($XHR){
-            
+            print json_encode($result);
+            return TRUE;
         }
-        else{
-            $app->flash('success',"Batch Update Successful");
-            $app->redirect($app->request->getReferrer());
-#            print "added to print queue";
-        }
+        $app->redirect($app->request->getReferrer());
     });
     $app->group('/batch', function () use ($authenticate, $app){
         $app->get('/options', $authenticate($app, array(1,2)), function () use ($app){
@@ -340,6 +360,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 "status" => "Status", 
                 //"normalize" => "Normalize / Clean",
                 "attribute" => "Attribute",
+                "playlistStatus" => "Playlist Status"
             );
             $app->response->headers->set('Content-Type', 'application/json');
             print json_encode($options);
@@ -354,6 +375,17 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     "values"=>array(
                         1=>"Approve",
                         0=>"Reject"
+                    )
+                );
+                print json_encode($options);
+            });
+            $app->get('/playlistStatus', $authenticate($app, [1,2]), function () use ($app){
+                $options = array(
+                    "inputType"=>"select",
+                    "values"=>array(
+                        "PENDING"=>"Pending",
+                        "COMPLETE"=>"Completed",
+                        "FALSE"=>"Rejected"
                     )
                 );
                 print json_encode($options);

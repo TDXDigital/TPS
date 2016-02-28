@@ -184,7 +184,7 @@ class playlist extends TPS{
         $stmt->bindParam(":refcode", $refcode);
         $stmt->bindParam(":activate", $startDate);
         $stmt->bindParam(":expire", $endDate);
-        $stmt->bindParam(":smallCode", $smallCode);
+        $stmt->bindParam(":smallCode", $smallCode, \PDO::PARAM_INT);
         $stmt->bindParam(":zoneCode", $zoneCode);
         $stmt->bindParam(":zoneNumber", $zoneNumber);
         $ids = [];

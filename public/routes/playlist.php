@@ -29,6 +29,7 @@ $playlist = new \TPS\playlist();
 $app->group('/playlist', function() use ($app, $authenticate, $playlist){
     $app->get('/', function() use ($app, $playlist){
         $isXHR = $app->request->isAjax();
+        $format = (string)$app->request->get("format")?:"html";
         $page = (int)$app->request->get("p")?:1;
         $limit = (int)$app->request->get("l")?:25;
         $count = ceil($playlist->countAll()/$limit);
@@ -41,7 +42,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
         else{
             $result = $playlist->getAll( $startDate, $endDate, $page, $limit);
         }
-        if($isXHR){
+        if($isXHR || $format=="json"){
             standardResult::ok($app, $result, NULL);
         }
         else{
@@ -140,6 +141,9 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $libCodes = $library->listLibraryCodes();
             foreach ($pending as &$entry) {
                 $entry['genre'] = $getCode($entry['genre'], $libCodes);
+                $label = $library->getLabelbyId($entry['labelid']);
+                $labelName = array_pop($label)['name'];
+                $entry['labelName'] = $labelName;
             }
             if($isXHR || strtolower($format) == "json"){
                 print json_encode($pending);

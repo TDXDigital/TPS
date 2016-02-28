@@ -59,13 +59,13 @@ value="{{today|default("now")|date("Y-m-d")}}" name="today"/>
             <th>Locale</th>
             <th>Format</th>
             <th>Genre</th>
-            <!--<th>Release<br/>Date</th>-->
-            <th>Date In</th>
+            <th>Received</th>
+            <th>Label</th>
             <th>Artist</th>
             <th>Album</th>
             <th style="min-width: 150px;">On Playlist</th>
             <th style="min-width: 150px;">Off Playlist</th>
-            <th>Short Code</th>
+            <th title="A short Identifier for an album">Short Code</th>
             <th>Enabled</th>
         </thead>
         <tbody>
@@ -76,9 +76,11 @@ value="{{today|default("now")|date("Y-m-d")}}" name="today"/>
                     <td>{{playlist.genre.Title}}</td>
                     <!--<td>{{playlist.release_date|date("Y-m-d")}}</td>-->
                     <td>{{playlist.datein|date("Y-m-d")}}</td>
-                    <td><a href="../../library/{{playlist.RefCode}}" target="_blank">
+                    <td><a href="../../label/{{playlist.labelid}}" target="_pl">
+                            {{playlist.labelName}}</a></td>
+                    <td><a href="../../library/{{playlist.RefCode}}" target="_pl">
                             {{playlist.artist}}</a></td>
-                    <td><a href="../../library/{{playlist.RefCode}}" target="_blank">
+                    <td><a href="../../library/{{playlist.RefCode}}" target="_pl">
                             {{playlist.album}}</a></td>
                     <td><input type="text" required 
                                class="form-control datepicker text-center"
@@ -88,7 +90,10 @@ value="{{today|default("now")|date("Y-m-d")}}" name="today"/>
                                class="form-control datepicker text-center" 
                                name="endDate[]"
                                value="{{today|default("now")|date_modify("+"~playlist.genre.PlaylistDuration.value~" "~playlist.genre.PlaylistDuration.unit)|date("Y-m-d")}}"</td>
-                    <td><input type="text" name="smallCode[]" class="form-control text-center"/></td>
+                    <td><input type="text" min="0" max="4294967295" 
+                               name="smallCode[]" required
+                               class="form-control text-center"
+                               pattern="0\d{3,6}"/></td>
                     <td><input type="hidden" name="refCode[]" value="{{playlist.RefCode}}"/>
                         <input type="checkbox" checked name="enabled[]" value="{{playlist.RefCode}}"/></td>
                 </tr>
