@@ -21,7 +21,7 @@
         }
     }
 
-$TPSBIN = dirname(findHOME(0,__DIR__,10,"functions.php"));
+    $TPSBIN = dirname(__FILE__);#dirname(findHOME(0,__DIR__,10,"functions.php"));
 
     /*
      * 
@@ -31,69 +31,16 @@ $TPSBIN = dirname(findHOME(0,__DIR__,10,"functions.php"));
     //error_reporting(0);
     function absolute_include($file,$PHP_SELF)
     {
-        /*
-        $file is the file url relative to the root of your site.
-        Yourdomain.com/folder/file.inc would be passed as
-        "folder/file.inc"
-        */
-
-        //check for last '/', if at end strip it from string
-        /*
-        if(!isset($PHP_SELF)){
-            $PHP_SELF = $_SERVER["PHP_SELF"];
-        }
-
-        $Full_path = substr_count($PHP_SELF,"/");
-
-        //check if last char is '/'
-        $path_len = strlen($Full_path);
-        if($Full_path[$path_len]==='/'){
-            // remove last '/';
-            $Full_path = substr_replace($Full_path, "", -1);
-        }
-
-
-        $folder_depth = substr_count($Full_path,"/");
-
-
-        if($folder_depth == false)
-           $folder_depth = 1;
-
-        // disable errors for this section due to 'error' caused by checking
-
-        if(isset($rep_level)){
-            $old_error_level = error_reporting();
-        }
-        else{
-            //$old_error_level = error_reporting();
-            $old_error_level = E_ALL;
-        }
-        error_reporting(0);
-        // Set time to UTC if not set
-        if(date_default_timezone_get()=='UTC')
-        {
-            date_default_timezone_set('UTC');
-        }
-
-        //error_log("DEFAULT TIME ZONE ".date_default_timezone_get());
-        // set to correct time 
-        error_reporting($old_error_level);
-
-        $file_path = str_repeat("../", $folder_depth-1) . $file;
-        if(!file_exists($file_path)){
-            throw new Exception("File [$file_path] does not exist from path $PHP_SELF with depth $folder_depth");
-        }
-        else{
-            include_once($file_path);
-        }
-         * 
-         */
         global $TPSBIN;
         include_once $TPSBIN.DIRECTORY_SEPARATOR.$file;
     }
 
     try{
-        absolute_include('CONFIG.php',__DIR__);
+        $configFile = dirname(__FILE__).DIRECTORY_SEPARATOR."CONFIG.php";
+        if(file_exists($configFile)){
+            include $configFile;
+        }
+        #absolute_include('CONFIG.php',__DIR__);
     }
     catch (Exception $e){
         #error_log($e->getMessage()."; setting timezone to UTC as failback");
