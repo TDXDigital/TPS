@@ -157,6 +157,7 @@ class TPS{
         $settingsTarget = $this->settingsTarget;
         $mysqli=$mysqli?:$GLOBALS['mysqli'];
         $pdo=$pdo?:$GLOBALS['pdo'];
+        $dev = getenv("PdoInMemory");
         if(!($this->requirePDO && is_object($pdo)) && !($mysqli || $pdo)){
             // Establish DB connection
             $database = NULL;
@@ -212,6 +213,16 @@ class TPS{
             }
             $this->mysqli = $mysqli?:$pdo;
             $this->db = $pdo;
+        }
+        if($dev && !$pdo){
+            $pdo = new \PDO( 
+                'sqlite::memory:', 
+                null, 
+                null, 
+                array(\PDO::ATTR_PERSISTENT => true) 
+            ); 
+            $this->db = $pdo;
+            $this->mysqli = $mysqli?:$pdo;
         }
     }
 

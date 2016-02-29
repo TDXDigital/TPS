@@ -202,6 +202,10 @@ class genre extends TPS{
                 . " WHERE LOWER(station) = LOWER(:callsign) "
                 . "and genreId = :id order by "
                 . "genreid asc");
+        if(!$stmt){
+            $error = $this->db->errorInfo();
+            throw new \Exception($error[2]);
+        }
         $stmt->bindParam(":callsign", $this->callsign, \PDO::PARAM_STR);
         $stmt->bindParam(":id", $id , \PDO::PARAM_INT);
         $stmt->execute();
