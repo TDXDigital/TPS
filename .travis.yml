@@ -5,11 +5,11 @@ php:
     - 5.6
     - 7
 script: phpunit TPSTest Tests/public/lib/tpsTest.php
-script: phpunit TPSTest Tests/public/lib/genreTest.php
+script: phpunit genreTest Tests/public/lib/genreTest.php
 
 
 before_script:
-    - composer install --no-dev
+    - composer install
     
 after_script:
   - php vendor/bin/codacycoverage clover clover.xml

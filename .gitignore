@@ -35,3 +35,4 @@ php_errors.log
 .forcetwig
 /slimConfig.php
 /.idea/
+/mysqlDumpToTests.bat
