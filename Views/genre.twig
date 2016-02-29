@@ -15,7 +15,7 @@
         <i class="fa fa-globe"></i>  <a href="/station/{{callsign}}">Station</a>
     </li>
     <li>
-        <i class="fa fa-folder"></i>  <a href="/station/genre/{{callsign}}">Genres</a>
+        <i class="fa fa-folder"></i>  <a href="/station/category/{{callsign}}">Categories</a>
     </li>
     <li class="active">
         <i class="fa fa-bolt"></i>
@@ -32,7 +32,7 @@
     <!--<span>SUCCESS: {{success}}, ERROR: {{error}}, ID: {{PRINTID}}| {% for id in PRINTID %}{{id}},{% endfor %}</span>-->
 {% endblock %}
 {% block content %}
-<form role="form" method="post"> <!-- action="/Playlist/playlist.induct.php" -->
+<form role="form" method="post" id="put">
     {% if genres is defined %}
         <input type="hidden" name="_METHOD" value="PUT"/>
         <input type="hidden" name="UID" value="{{genre.UID}}"/>
@@ -41,7 +41,7 @@
         <div class="col-lg-6">
             <fieldset>
                 <div id="name-group" class="form-group input-group">
-                    <label class="input-group-addon" for="genre">Genre Name<span style="color:red">*</span></label>
+                    <label class="input-group-addon" for="genre">Category Title<span style="color:red">*</span></label>
                     <input name="name" id="genre" type="text" required 
                            {% if genres is not null %} value="{{genres|keys|first}}" disabled
                            {% endif %}
@@ -185,12 +185,22 @@
     </div>
     <div class="col-lg-6">
         <div class="pull-right">
-            <input class="btn btn-primary" type="submit" >
+            </form>
+            <form method="POST" id="delete">
+            <input type="hidden" name="_METHOD" value="POST"/>
+            {% if genres is defined %}
+            <input type="hidden" name="_METHOD" value="DELETE"/>
+            {% endif %}
+            <input type="submit" class="btn btn-danger" 
+                   value="Delete" id="btn2"/>
+        </div>
+        <div class="pull-right">
+            <input class="btn btn-primary" type="submit" id="btn1">
         </div>
     </div>
 </div>
             <br>
-</form>
+
 <style>
   .ui-autocomplete-loading {
     background: white url("../images/GIF/ajax-loader3.gif") right center no-repeat;
@@ -204,5 +214,13 @@
 <script>
     // Activate chosen elements
     $(".chosen-select").chosen();
+    $(function(){
+        $("#btn1").click(function(){  
+            $("#put").submit();
+        }
+        $("#btn2").click(function(){  
+          $("#delete").submit();
+        }
+    })
 </script>
 {% endblock %}

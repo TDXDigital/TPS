@@ -244,4 +244,24 @@ class genre extends TPS{
         $stmt = null; #close statement
         return $result;
     }
+    
+    public function delete($ids){
+        if(!is_array($ids)){
+            $ids = array($ids);
+        }
+        $ident = NULL;
+        $stmt = $this->db->prepare("DELETE FROM genre WHERE genre.genreid=:id"
+                . " and genre.Station=:station and"
+                . " NOT EXISTS (SELECT program.genre FROM program"
+                . " WHERE program.callsign=:station and program.genre=:id)");
+        $stmt->bindParam(":id", $ident);
+        $stmt->bindParam(":station", $this->callsign);
+        $result = [];
+        foreach($ids as $ident){
+            if($stmt->execute()){
+                $result[$ident] = $stmt->rowCount();
+            }
+        }
+        return $result;
+    }
 }

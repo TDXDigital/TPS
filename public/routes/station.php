@@ -230,7 +230,7 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
         $app->render('station.twig',$params);
     });
     
-    $app->group('/genre', $authenticate, 
+    $app->group('/category', $authenticate, 
             function () use ($app,$authenticate){
         $app->get('/:station', $authenticate($app,[1,2]), 
                 function ($callsign) use ($app){
@@ -238,13 +238,12 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
             $genres = $station->genres->all();
             $isXHR = $app->request->isAjax();
             if($isXHR){
-                header("Content-Type: application/json");
-                print json_encode($genres);
+                standardResult::ok($app, $genres);
             }
             else{
                 $params = array(
                     'area'=>'Station Management',
-                    'title'=>'Genres',
+                    'title'=>'Category',
                     'genres' => $genres,
                     'callsign' => $callsign
                 );
@@ -289,7 +288,7 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
             else{
                 $params = array(
                     'area'=>'Station Management',
-                    'title'=>'Genre',
+                    'title'=>'Category',
                     'callsign' => $callsign
                 );
                 $app->render("genre.twig", $params);
@@ -343,7 +342,18 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
         });
         $app->delete('/:station/:id', $authenticate($app,[2]),
                 function ($callsign,$id) use ($app){
+            $isXHR = $app->request->isAjax()?:
+                    $app->request->get("format")?:False;
             $station = new \TPS\station($callsign);
+            $result = $station->genres->delete($id);
+            if(!$result[$id]){
+                $app->flash('error', "could not delete genre '$id'");
+            }
+            if($isXHR){
+                print json_encode($result);
+                return false;
+            }
+            $app->redirect("../$callsign");            
         });
         $app->options('/:station/:id', $authenticate($app,[1,2]),
                 function ($callsign,$id) use ($app){
