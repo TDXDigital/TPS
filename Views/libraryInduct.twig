@@ -3,6 +3,12 @@
     <link rel="stylesheet" href="{{siteUrl}}/js/chosen.css">
     <link rel="stylesheet" href="{{siteUrl}}/js/bootstrap/checkbox/css/bootstrap-checkbox.css">
     <link rel="stylesheet" href="{{siteUrl}}/js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>
+    <style>
+        .chosen-results .no-results span {
+            color: #222;
+            font-weight: bold;
+        }
+    </style>
 {% endblock %}
 {% block title %}{{title|default('Library Receiving')}}{% endblock %}
 {% block breadcrumb %}
@@ -25,7 +31,7 @@
     <!--<span>SUCCESS: {{success}}, ERROR: {{error}}, ID: {{PRINTID}}| {% for id in PRINTID %}{{id}},{% endfor %}</span>-->
 {% endblock %}
 {% block content %}
-<form role="form" method="post">
+<form role="form" id="form" method="post">
     {% if album.name is not null %}
     {% endif %}
     <div class="row">
@@ -125,12 +131,16 @@
                 </div>
                 {% endif %}
                 <div class="col-lg-6">
-                    <div id="ind_group" class="form-group input-group">
-                        <label for="label" class="input-group-addon">Label</label>
-                        <input id="label" type="text" class="form-control" 
-                               {% if album.label.name is not null %} value="{{album.label.name}}" {% endif %}
-                               required="required" list="labels" name="label" placeholder="Proper Record Label Name"/>
-                    </div>
+                    <select name="label" id="label" 
+                            required="required" 
+                            class="form-control chosen-select-add">
+                        <option>Self Released</option>
+                        {% for label in labels if label!="Self Released"%}
+                            <option value="{{label}}"
+                            {% if album.label.name == label %} selected {% endif %}
+                            >{{label}}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="col-lg-6">
                     <div id="format" class="form-group input-group">
@@ -546,9 +556,47 @@
             $("#art_field").autocomplete("destroy");
             UpdateAutoArtist();
         });
-        $('#label').autocomplete({
+        /* $('#label').autocomplete({
             //source: "../MusicLib/DB_Search_Artist.php",
             source: "/opl/AJAX/getlabels.php"
+        });*/
+        var select, chosen;
+
+        // cache the select element as we'll be using it a few times
+        select = $(".chosen-select-add");
+        
+          // init the chosen plugin
+        select.chosen({ no_results_text: 'Press Enter to add new entry:' });
+
+        // init the chosen plugin
+        select.chosen();
+
+        // get the chosen object (any type, single or multiple)
+        chosen = $('.chosen-container');
+        // chosen = $('.chosen-select-single');
+        // chosen = $('.chosen-container-multi');
+
+        // Bind the keyup event to the search box input
+        chosen.find('input').keyup( function(e)
+        {
+            // if we hit Enter and the results list is empty (no matches) add the option
+            if (e.which == 13 && chosen.find('li.no-results').length > 0)
+            {
+                var option = $("<option>").val(this.value).text(this.value);
+
+                // add the new option
+                select.prepend(option);
+                // automatically select it
+                select.find(option).prop('selected', true);
+                // trigger the update
+                select.trigger("chosen:updated");
+            }
+        });
+        
+        $('#form').on('submit', function(e) {
+            if(!$("#label").valid()) {
+                e.preventDefault();
+            }
         });
         
         document.querySelector('form').onkeypress = checkEnter;

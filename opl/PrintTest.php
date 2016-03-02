@@ -73,7 +73,7 @@
             echo "<div class=\"label\" style=\"outline: none;\"></div>";
         }
         foreach($_SESSION['PRINTID'] as $BCD){
-            $albums = $library->getAlbumByRefcode($BCD['RefCode'], TRUE);
+            $albums = $library->getAlbumByRefcode($BCD, TRUE);
             if(sizeof($albums)<1){
                 continue;
             }
@@ -88,7 +88,7 @@
             
             $genreCode = $library->getLibraryCodeByRefCode($RefCode);
             #$library->createBarcode($RefCode);
-            $padded= join('', array($genreCode,str_pad($BCD['RefCode'], 10, "0", STR_PAD_LEFT)));
+            $padded= join('', array($genreCode,str_pad($BCD, 10, "0", STR_PAD_LEFT)));
             
             //echo "<img src='barcode/createBarcode.php?bcd=$BCD'/>";
             echo "<div class=\"label\"><span ><img style='float:left; margin:0px;' src='../opl/barcode/barcode.php?bcd=$padded' alt='$padded'/>";

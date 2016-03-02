@@ -6,6 +6,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $params = array(
             "govCats"=>$library->getGovernmentCodes(),
             "genres"=>$library->getLibraryGenres(),
+            "labels"=>\TPS\label::nameSearch("%",False),
             "format"=>$library->getMediaFormats(),
             "scheduleBlock"=>$library->getScheduleBlocks(),
             "title"=>"Receiving",
@@ -449,6 +450,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             "album"=>$album,
             "govCats"=>$library->getGovernmentCodes(),
             "genres"=>$library->getLibraryGenres(),
+            "labels"=>\TPS\label::nameSearch("%",False),
             "format"=>$library->getMediaFormats(),
             "scheduleBlock"=>$library->getScheduleBlocks(),
             "title"=>"Receiving",
