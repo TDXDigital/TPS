@@ -169,6 +169,7 @@ function DatabaseUpdateApply($Update_PKG,$path){
                     $mysqli->begin_transaction();
                     foreach(explode("||",$sql) as $query){
                         //$sql = str_replace(array("\r\n", "\n"), " ", $sql);
+                        $query = preg_replace('~[\r\n]+~', ' ', $query);
                         if(!$mysqli->query($query)){
                             //http_response_code(400);
                             $mysqli->rollback();

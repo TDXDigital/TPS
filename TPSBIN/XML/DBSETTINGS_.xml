@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<SERVERS>
+  <SERVER>
+    <ID>CKBD799</ID>
+    <NAME>The Bridge</NAME>
+    <LOGO_PATH>images/logo.png</LOGO_PATH>
+    <MENU_LOGO_PATH>images/logo.png</MENU_LOGO_PATH>
+    <ACTIVE>1</ACTIVE>
+    <RESOLVE>URL</RESOLVE>
+    <URL>localhost</URL>
+    <IPV4>localhost</IPV4>
+    <PORT>3306</PORT>
+    <DBTYPE>MySQL</DBTYPE>
+    <DATABASE>TPS-680tbr_65135</DATABASE>
+    <AUTH>SECL</AUTH>
+    <LDP_PORT></LDP_PORT>
+    <LDP_SERVER></LDP_SERVER>
+    <LDP_BASE_DN></LDP_BASE_DN>
+    <LDP_DOMAIN></LDP_DOMAIN>
+    <USER>DKAd4RoF6oRivrGsl2eAoJiDmWFQO6E56S5VMiqg/Jg=</USER>
+    <PASSWORD>qWISfpaTyIjnxFVUM8Hna2TjxxNyqSRKaMZeOsf47i8=</PASSWORD>
+  </SERVER>
+</SERVERS>
