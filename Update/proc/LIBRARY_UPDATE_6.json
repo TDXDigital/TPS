@@ -2,6 +2,7 @@
     "TPS_Errno": "DBUD-006",
     "type" : "database",
     "execute" : "SQL",
+    "requires": "PLFL-004",
     "SQL_QRY" : {
         "TEST": "SHOW COLUMNS FROM `library` WHERE `Field` = 'scheduleCode';",
         "RESULT" : {

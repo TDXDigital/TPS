@@ -55,6 +55,7 @@
                     <input class="btn btn-default" type="submit" value="Begin Installation" onclick="install_db(); return false"/>
                     <input class="btn btn-default" type="submit" value="Create Auth Login" onclick="install_xml(); return false"/>
                     <input class="btn btn-default" type="submit" value="Create Administrator" onclick="create_admin(); return false"/>
+                    <input class="btn btn-default" type="submit" value="Perform Updates" onclick="perform_updates(); return false"/>
                 </div>-->
             </div>
         </fieldset>
