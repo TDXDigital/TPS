@@ -440,8 +440,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $app->get('/properArtist', $authenticate($app, [1,2]), function () use ($app){
                 $optons=array(
                     "PROPER"=>"Capitalize Words",
-                    "LOWER"=>"lower case",
-                    "UPPER"=>"UPPER CASE"#,
+                    #"LOWER"=>"lower case",
+                    #"UPPER"=>"UPPER CASE"#,
                     #"CAP_FIRST"=>"Capitalize first"
                 );
                 standardResult::ok($app, $optons, NULL);
