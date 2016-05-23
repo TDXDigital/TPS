@@ -45,31 +45,78 @@ class playlist extends TPS{
     public function getGenreShortCodeRanges(){
         $ranges = array(
             "RP" => array(
-                [1,999]
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other'],
+                    "range"=>[1,599]
+                ),
+                array(
+                    "format"=>['7in', '10in', '12in'],
+                    "range"=>[600,699]
+                ),
+                array(
+                    "format"=>['Cass'],
+                    "range"=>[700,799]
+                ),
+                array(
+                    "format"=>['Digital'],
+                    "range"=>[800,999]
+                )
             ),
             "FR" => array(
-                [1000,1999]
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[1000,1999]
+                )
             ),
             "HM" => array(
-                [2000,2999]
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[2000,2999]
+                )
             ),
             "EL" => array(
-                [3000,3999]
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[3000,3999]                
+                )
             ),
             "HH" => array(
-                [4000,4999]
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[4000,4999]
+                )
             ),
             "WD" => array(
-                [5000,5999]
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[5000,5999]
+                )
             ),
             "JC" => array(
-                [6000,6999]
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[6000,6999]
+                )
             ),
             "EX" => array(
-                [7000,7999]
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[7000,7999]
+                )
             ),
             "OT" => array(
-                [8000,8999]
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[8000,8999]
+                )
             )
         );
         return $ranges;

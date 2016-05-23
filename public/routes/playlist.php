@@ -151,11 +151,15 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
                     $library->log->warn(strtotime($defaultOffset));
                     $codes = $playlist->validShortCodes(
                             $today, date("Y-m-d", strtotime($defaultOffset)),
-                            $range[0], $range[1]);
+                            $range['range'][0], $range['range'][1]);
                     if(!$codes){
                         continue;
                     }
-                    $validRanges[$genre] += $codes;
+                    array_push($validRanges[$genre], array(
+                            "formats"=>$range['format'],
+                            "shortCodes"=>$codes
+                        )
+                    );
                 }
             }
             foreach ($pending as &$entry) {
@@ -164,8 +168,17 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
                 $labelName = array_pop($label)['name'];
                 $entry['labelName'] = $labelName;
                 try{
-                    $entry['ShortCode'] = array_shift(
-                        $validRanges[$entry['genre']['Genre']]);
+                    foreach ($validRanges[$entry['genre']['Genre']] 
+                            as $key => &$value) {
+                        if(sizeof($value['shortCodes'])<1){
+                            continue;
+                        }
+                        if(in_array($entry['format'], $value['formats'])){
+                            $entry['ShortCode'] = array_shift(
+                                $value['shortCodes']);
+                            break;
+                        }
+                    }
                 } catch (Exception $ex) {
                     $library->log->error("No Available ShortCodes for "
                             . "library genre ".$entry['genre']['Genre']);
