@@ -54,19 +54,21 @@ class playlist extends TPS{
         return $result;
     }
     
-    public function getGenreShortCodeRanges($station){
-        $stmt = $this->db->prepare("SELECT * FROM playlistRanges WHERE callsign"
+    public function getGenreShortCodeRanges($station, $useDb=False){
+        if($useDb){
+            $stmt = $this->db->prepare("SELECT * FROM playlistRanges WHERE callsign"
                 . "=:callsign");
-        $stmt->bindParam(":callsign", $station);
-        $result = array();
-        if(!$stmt->execute()){
-            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                $data = $this->getRangesFormats($row['id']);
-                $row['formats'] = $data[$row['id']];
-                $result[$row['id']] = $row;
+            $stmt->bindParam(":callsign", $station);
+            $result = array();
+            if(!$stmt->execute()){
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $data = $this->getRangesFormats($row['id']);
+                    $row['formats'] = $data[$row['id']];
+                    $result[$row['id']] = $row;
+                }
             }
+            return $result;
         }
-        return $result;
         $ranges = array(
             "RP" => array(
                 array(
@@ -305,6 +307,54 @@ class playlist extends TPS{
     public function validateShortCode($startDate, $endDate, $code){
         $used = $this->getUsedShortCodes($startDate, $endDate);
         return !(key_exists((int)$code, $used));
+    }
+    
+    public function getGenreDividedValidShortCodes($station, $defaultOffsetDate, 
+            $defaultOffset=True, $genres=False, $format=False){
+        /**
+         * @param mixed $defaultOffet True to use offet proveded by genre, 
+         * string otherwise
+         */
+        if(!is_array($genres) && $genres != FALSE){
+            $genres = [$genres];
+        }
+        $playlist = new \TPS\playlist();
+        $library = new \TPS\library($station);
+        $ranges = $playlist->getGenreShortCodeRanges($station);
+        $validRanges = array();
+        foreach ($ranges as $genre => $ranges) {
+            if($genres){
+                if(!in_array($genre, $genres)){
+                    continue;
+                }
+            }
+            $validRanges[$genre] = [];
+            foreach ($ranges as $range) {
+                if($defaultOffset===TRUE){
+                    $code = $library->getLibraryCodeValueByGenre($genre);
+                    $defaultOffsetStr = "$defaultOffsetDate +".
+                            $code['PlaylistDuration']['value'] .
+                            " " . $code['PlaylistDuration']['unit'];
+                }
+                else{
+                    $defaultOffsetStr = "$defaultOffsetDate +$defaultOffset";
+                }
+                $codes = $this->validShortCodes(
+                        $defaultOffsetDate, date("Y-m-d", strtotime($defaultOffsetStr)),
+                        $range['range'][0], $range['range'][1]);
+                if(!$codes){
+                    continue;
+                }
+                if($format===FALSE || in_array($format, $range['format'])){
+                    array_push($validRanges[$genre], array(
+                            "formats"=>$range['format'],
+                            "shortCodes"=>$codes
+                        )
+                    );
+                }
+            }
+        }
+        return $validRanges;
     }
 
 

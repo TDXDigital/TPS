@@ -4,8 +4,12 @@
         .donut200{
             height:200px;
             width: 200px;
-          }
+        }
+        .ui-autocomplete-loading {
+            background: white url("{{siteUrl}}/images/GIF/ring24.gif") right center no-repeat;
+        }
     </style>
+    <link rel="stylesheet" hred="{{siteUrl}}/css/bootstrapAutoCompleteCompatibility.css"/>
     <link rel="stylesheet" href="{{siteUrl}}/js/chosen.css">
     <link rel="stylesheet" href="{{siteUrl}}/js/bootstrap/checkbox/css/bootstrap-checkbox.css">
     <link rel="stylesheet" href="{{siteUrl}}/js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>
@@ -42,6 +46,11 @@
             </div>
         </div>
     {% endif %}
+    <div class="row" id="error" style="display: none">
+        <div class="alert alert-danger">
+            <strong>Error: </strong><span id="errorText">TEST</span>
+        </div>
+    </div>
     <form role="form" method="GET">
         <div class="row">
             <div class="form-group input-group" style="z-index: 0;">
@@ -71,9 +80,19 @@ value="{{today|default("now")|date("Y-m-d")}}" name="today"/>
         <tbody>
             {% for playlist in playlists %}
                 <tr>
-                    <td>{{playlist.Locale}}</td>
-                    <td>{{playlist.format}}</td>
-                    <td>{{playlist.genre.Title}}</td>
+                    <td><div id="LC_SCI_{{playlist.RefCode}}">
+                            {{playlist.Locale}}
+                    </div></td>
+                    <td><div id="FMT_SCI_{{playlist.RefCode}}">
+                            {{playlist.format}}
+                    </div></td>
+                    <td><div id="GENRE_SCI_{{playlist.RefCode}}">
+                        {{playlist.genre.Title}}
+                        </div>
+                        <div id="GC_SCI_{{playlist.RefCode}}" 
+                             style="display: none">
+                            {{playlist.genre.Genre}}
+                        </div></td>
                     <!--<td>{{playlist.release_date|date("Y-m-d")}}</td>-->
                     <td>{{playlist.datein|date("Y-m-d")}}</td>
                     <td><a href="../../label/{{playlist.labelid}}" target="_pl">
@@ -82,20 +101,33 @@ value="{{today|default("now")|date("Y-m-d")}}" name="today"/>
                             {{playlist.artist}}</a></td>
                     <td><a href="../../library/{{playlist.RefCode}}" target="_pl">
                             {{playlist.album}}</a></td>
-                    <td><input type="text" required 
+                    <td><div id="DIV_ONP_SCI_{{playlist.RefCode}}">
+                            <input type="text" required 
+                                   id="ONP_SCI_{{playlist.RefCode}}"
                                class="form-control datepicker text-center"
                                name="startDate[]"
+                               onchange="javascript:verifyShortCode(
+                                        'SCI_{{playlist.RefCode}}')"
                                value="{{today|default("now")|date("Y-m-d")}}"/>
-                    <td><input type="text" required 
+                        </div>
+                    </td>
+                    <td><div id="DIV_OFP_SCI_{{playlist.RefCode}}">
+                            <input type="text" required 
+                                   id="OFP_SCI_{{playlist.RefCode}}"
                                class="form-control datepicker text-center" 
                                name="endDate[]"
-                               value="{{today|default("now")|date_modify("+"~playlist.genre.PlaylistDuration.value~" "~playlist.genre.PlaylistDuration.unit)|date("Y-m-d")}}"</td>
+                               onchange="javascript:verifyShortCode(
+                                        'SCI_{{playlist.RefCode}}')"
+                               value="{{today|default("now")|date_modify(
+"+"~playlist.genre.PlaylistDuration.value~" "~playlist.genre.PlaylistDuration.unit)|date("Y-m-d")}}"/>
+                        </div>
+                    </td>
                     <td>
                         <div id="DIV_SCI_{{playlist.RefCode}}">
                             <input type="text" min="0" max="4294967295" 
                                id="SCI_{{playlist.RefCode}}"
                                name="smallCode[]" required
-                               class="form-control text-center"
+                               class="form-control text-center autocomplete autoSelect"
                                pattern="\d{4,6}" 
                                {% if playlist.ShortCode %}
                                value="{{"%04d"|format(playlist.ShortCode)}}"
@@ -137,17 +169,60 @@ value="{{today|default("now")|date("Y-m-d")}}" name="today"/>
             showButtonPanel: true,
             dateFormat: "yy-mm-dd"
         });
+        var cache = {};
+        $(".autocomplete").autocomplete({
+            source: function( request, response ) {
+                var ident = $(this.element).prop("id");
+                console.log(ident);
+                var term = request.term;
+                if ( term in cache ) {
+                  response( cache[ term ] );
+                  return;
+                }
+                var url = "../shortcode/available/"+
+                        $("#GC_"+ident).text().trim()+
+                        "?format="+$("#FMT_"+ident).text().trim()+
+                        "&limit=12";
+                console.log(url);
+                $.getJSON( url,
+                request, function( data, status, xhr ) {
+                    console.log(data);
+                    cache[ term ] = data;
+                    response( data );
+                });
+            }
+        });
+        $(".autoSelect").on("click", function () {
+            $(this).select();
+        });
       });
     function verifyShortCode(ident){
-        var obj = $("#"+ident)
+        var obj = $("#"+ident);
+        var onDate = $("#ONP_"+ident).datepicker('getDate');
+        var offDate = $("#OFP_"+ident).datepicker('getDate');
+        var error = $("#error");
+        var errorText = $("#errorText");
         var val = obj.val()
+        console.log("checking "+ident+" for code "+val);
         $.ajax({
             url: "../shortcode/valid",
-            data: {"code": val},
+            data: {
+                "code": val,
+                "startDate": onDate.toJSON().substring(0,10),
+                "endDate": offDate.toJSON().substring(0,10),
+                //"startDate": onDate.getFullYear()+"-"+
+                //        onDate.getMonth()+"-"+onDate.getDay(),
+                //"endDate": offDate.getFullYear()+"-"+
+                //        offDate.getMonth()+"-"+offDate.getDay()
+            },
         }).error(function (data){
             $("#DIV_"+ident).addClass("has-error");
+            errorText.html(data.responseText);
+            error.show();
         }).success(function (data){
             $("#DIV_"+ident).removeClass();
+            errorText.html("Validation OK");
+            error.hide();
         })
     }
 </script>

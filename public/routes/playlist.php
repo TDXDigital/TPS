@@ -26,6 +26,9 @@
 
 $playlist = new \TPS\playlist();
 
+$app->get('/playlist', function () use ($app) {
+    $app->redirect('./playlist/');
+});
 $app->group('/playlist', function() use ($app, $authenticate, $playlist){
     $app->get('/', function() use ($app, $playlist){
         $isXHR = $app->request->isAjax();
@@ -122,6 +125,10 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $app->redirect("./$refCodes");
         }
     });
+    
+    $app->get('/generate', function () use ($app) {
+        $app->redirect('./generate/');
+    });
     $app->group('/generate', function() use ($app, $authenticate, $playlist){
         $app->get('/', $authenticate($app, [1,2]), 
                 function() use ($app, $playlist){
@@ -139,30 +146,8 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $library = new \TPS\library();
             $pending = $library->pendingPlaylist();
             $libCodes = $library->listLibraryCodes();
-            $ranges = $playlist->getGenreShortCodeRanges(
-                    $_SESSION['CALLSIGN']);
-            $validRanges = array();
-            foreach ($ranges as $genre => $ranges) {
-                $validRanges[$genre] = [];
-                foreach ($ranges as $range) {
-                    $code = $library->getLibraryCodeValueByGenre($genre);
-                    $defaultOffset = "$today +"
-                            . $code['PlaylistDuration']['value'] 
-                            . " " . $code['PlaylistDuration']['unit'];
-                    $library->log->warn(strtotime($defaultOffset));
-                    $codes = $playlist->validShortCodes(
-                            $today, date("Y-m-d", strtotime($defaultOffset)),
-                            $range['range'][0], $range['range'][1]);
-                    if(!$codes){
-                        continue;
-                    }
-                    array_push($validRanges[$genre], array(
-                            "formats"=>$range['format'],
-                            "shortCodes"=>$codes
-                        )
-                    );
-                }
-            }
+            $validRanges = $playlist->getGenreDividedValidShortCodes(
+                    $_SESSION['CALLSIGN'], $today);
             foreach ($pending as &$entry) {
                 $entry['genre'] = $getCode($entry['genre'], $libCodes);
                 $label = $library->getLabelbyId($entry['labelid']);
@@ -219,6 +204,10 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $app->redirect("../");
         });
     });
+    
+    $app->get('/shortcode', function () use ($app) {
+        $app->redirect('./shortcode/');
+    });
     $app->group('/shortcode', function() use ($app, $authenticate, $playlist){
         $app->get('/', $authenticate($app, [1,2]), 
                 function() use ($app, $playlist){
@@ -238,20 +227,76 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             }
             standardResult::ok($app, $result, NULL);
         });
-        $app->get('/available', $authenticate($app, [1,2]), 
-                function() use ($app, $playlist){
-            $isXHR = $app->request->isAjax();
-            $format = (string)$app->request->get("format")?:"html";
-            $page = (int)$app->request->get("p")?:1;
-            $limit = (int)$app->request->get("l")?:25;
-            $count = ceil($playlist->countAll()/$limit);
-            $startDate = $app->request->get("startDate")?:"1000-01-01";
-            $endDate = $app->request->get("endDate")?:"9999-12-31";
-            $startNum = $app->request->get('start')?:0;
-            $endNum = $app->request->get('end')?:99999;
-            $result = $playlist->validShortCodes(
-                    $startDate, $endDate, $startNum, $endNum);
-            standardResult::ok($app, $result, NULL);
+        $app->get('/available', function () use ($app) {
+            $app->redirect('./available/');
+        });
+        $app->group('/available', function() use ($app, $authenticate, $playlist){
+            $app->get('/all', $authenticate($app, [1,2]), 
+                    function() use ($app, $playlist){
+                $startDate = $app->request->get("startDate")?:"1000-01-01";
+                $endDate = $app->request->get("endDate")?:"9999-12-31";
+                $startNum = $app->request->get('start')?:0;
+                $endNum = $app->request->get('end')?:99999;
+                $result = $playlist->validShortCodes(
+                        $startDate, $endDate, $startNum, $endNum);
+                standardResult::ok($app, $result, NULL);
+            });
+            $app->get('/', $authenticate($app, [1,2]), 
+                    function() use ($app, $playlist){
+                $today = $app->request->get("date")?: date("Y-m-d");
+                $defaultOffset = $app->request->get("offset")?:True;
+                $genre = $app->request->get('genre')?:False;
+                $format = $app->request->get('format')?:False;
+                $result = $playlist->getGenreDividedValidShortCodes(
+                        $_SESSION['CALLSIGN'], $today, 
+                        $defaultOffset, $genre, $format);
+                standardResult::ok($app, $result, NULL);
+            });
+            $app->get('/:genre', $authenticate($app, [1,2]), 
+                    function($genre) use ($app, $playlist){
+                $today = $app->request->get("date")?: date("Y-m-d");
+                $defaultOffset = $app->request->get("offset")?:True;
+                $format = $app->request->get('format')?:False;
+                $term = $app->request->get('term')?:NULL;
+                $ltrim = $app->request->get('trim')?:FALSE;
+                $lpad = $app->request->get('tpad')?:TRUE;
+                $limit = $app->request->get('limit')?:FALSE;
+                $result = $playlist->getGenreDividedValidShortCodes(
+                        $_SESSION['CALLSIGN'], $today, 
+                        $defaultOffset, $genre, $format);
+                $codes = array();
+                foreach ($result as $key => $value) {
+                    foreach ($value as $entry){
+                        $codes = array_merge($codes, $entry['shortCodes']);
+                    }
+                }
+                if($term && $term != 0){
+                    $temp = array();
+                    foreach($codes as $code){
+                        if($lpad){
+                            $codeCompare = sprintf('%04d',$code);
+                        }
+                        else{
+                            $codeCompare = $code;
+                        }
+                        if($ltrim){
+                            $pos = strpos($codeCompare, (string)((int)$term));
+                        }
+                        else{
+                            $pos = strpos($codeCompare, (string)$term);
+                        }
+                        if($pos === false){
+                            continue;
+                        }
+                        array_push($temp, $codeCompare);
+                    }
+                    $codes = $temp;
+                }
+                if($limit){
+                    $codes = array_slice($codes, 0, $limit);
+                }
+                standardResult::ok($app, $codes, NULL);
+            });
         });
         $app->get('/valid', $authenticate($app, [1,2]), 
                 function() use ($app, $playlist){
@@ -278,11 +323,17 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
                 $conflict = $playlist->getCurrentByShortCode($code, 
                         $startDate, $endDate);
                 $conflict = array_pop($conflict);
-                print json_encode("$code conflicts with "
-                        ."PL#".$conflict['PlaylistId']." ".sprintf("(`%'.04d`)", 
-                                $conflict['SmallCode']));
+                $plid = $conflict['PlaylistId'];
+                $onDate = new DateTime($conflict['Activate']);
+                $offDate = new DateTime($conflict['Expire']);
+                print "$code conflicts with "
+                        ."<a href='../$plid' target='_blank'>PL#$plid</a> ".
+                        sprintf("(`%'.04d`)", 
+                            $conflict['RefCode'])." (".$onDate->format("Y-m-d")
+                        ." -> ".$offDate->format("Y-m-d").")";
                 $app->response->setStatus(406);
                 $app->response->headers->set('Content-Type', 'application/json');
+                $app->stop();
             }
         });
         $app->post('/', $authenticate($app, [1,2]), 
@@ -345,6 +396,10 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $library->playlistStatus($enabled, "COMPLETE");
             $app->redirect("../");
         });
+    });
+    
+    $app->get('/genre', function () use ($app) {
+        $app->redirect('./genre/');
     });
     $app->group('/genre', function() use ($app, $authenticate, $playlist){
         $app->get('/range', $authenticate($app, [1,2]), 
