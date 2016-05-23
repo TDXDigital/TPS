@@ -40,9 +40,33 @@ class playlist extends TPS{
         parent::__construct($enableDbReporting, $requirePDO, $settingsTarget, 
                 $settingsPath);
     }
+    public function getRangesFormats($id){
+        #@todo: expand to accept array
+        $stmt = $this->db->prepare("SELECT format, fid FROM playlistRangesFormat "
+                . "WHERE id=:id");
+        $stmt->bindParam(":id", $id);
+        $result = array();
+        if(!$stmt->execute()){
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                array_push($result[$id], $row['format']);
+            }
+        }
+        return $result;
+    }
     
-    
-    public function getGenreShortCodeRanges(){
+    public function getGenreShortCodeRanges($station){
+        $stmt = $this->db->prepare("SELECT * FROM playlistRanges WHERE callsign"
+                . "=:callsign");
+        $stmt->bindParam(":callsign", $station);
+        $result = array();
+        if(!$stmt->execute()){
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                $data = $this->getRangesFormats($row['id']);
+                $row['formats'] = $data[$row['id']];
+                $result[$row['id']] = $row;
+            }
+        }
+        return $result;
         $ranges = array(
             "RP" => array(
                 array(
@@ -122,8 +146,8 @@ class playlist extends TPS{
         return $ranges;
     }
     
-    public function getGenreShortCodeRange($code){
-        $ranges = $this->getGenreShortCodeRanges();
+    public function getGenreShortCodeRange($code, $station){
+        $ranges = $this->getGenreShortCodeRanges($station);
         if($code){
             return $ranges[$code];
         }

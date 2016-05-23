@@ -139,7 +139,8 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $library = new \TPS\library();
             $pending = $library->pendingPlaylist();
             $libCodes = $library->listLibraryCodes();
-            $ranges = $playlist->getGenreShortCodeRanges();
+            $ranges = $playlist->getGenreShortCodeRanges(
+                    $_SESSION['CALLSIGN']);
             $validRanges = array();
             foreach ($ranges as $genre => $ranges) {
                 $validRanges[$genre] = [];
@@ -351,7 +352,8 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $isXHR = $app->request->isAjax();
             $format = $app->request->post("format");
             $id = $app->request->post("id");
-            $range = $playlist->getGenreShortCodeRange($id);
+            $range = $playlist->getGenreShortCodeRange($id, 
+                    $_SESSION['CALLSIGN']);
             standardResult::ok($app, $range, NULL, 200, True);
         });
     });
