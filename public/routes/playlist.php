@@ -127,7 +127,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
                 function() use ($app, $playlist){
             $isXHR = $app->request->isAjax();
             $format = $app->request->get("format");
-            $today = $app->request->get("today");
+            $today = $app->request->get("today")?:date("Y-m-d");
             $getCode = function ($genre, $codes){
                 foreach ($codes as $key => $value) {
                     if($value['Genre'] == $genre){

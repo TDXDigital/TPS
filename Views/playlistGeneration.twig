@@ -96,7 +96,7 @@ value="{{today|default("now")|date("Y-m-d")}}" name="today"/>
                                id="SCI_{{playlist.RefCode}}"
                                name="smallCode[]" required
                                class="form-control text-center"
-                               pattern="0\d{3,6}" 
+                               pattern="\d{4,6}" 
                                {% if playlist.ShortCode %}
                                value="{{"%04d"|format(playlist.ShortCode)}}"
                                {% endif %}
