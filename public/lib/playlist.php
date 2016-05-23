@@ -41,6 +41,97 @@ class playlist extends TPS{
                 $settingsPath);
     }
     
+    
+    public function getGenreShortCodeRanges(){
+        $ranges = array(
+            "RP" => array(
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other'],
+                    "range"=>[1,599]
+                ),
+                array(
+                    "format"=>['7in', '10in', '12in'],
+                    "range"=>[600,699]
+                ),
+                array(
+                    "format"=>['Cass'],
+                    "range"=>[700,799]
+                ),
+                array(
+                    "format"=>['Digital'],
+                    "range"=>[800,999]
+                )
+            ),
+            "FR" => array(
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[1000,1999]
+                )
+            ),
+            "HM" => array(
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[2000,2999]
+                )
+            ),
+            "EL" => array(
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[3000,3999]                
+                )
+            ),
+            "HH" => array(
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[4000,4999]
+                )
+            ),
+            "WD" => array(
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[5000,5999]
+                )
+            ),
+            "JC" => array(
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[6000,6999]
+                )
+            ),
+            "EX" => array(
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[7000,7999]
+                )
+            ),
+            "OT" => array(
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[8000,8999]
+                )
+            )
+        );
+        return $ranges;
+    }
+    
+    public function getGenreShortCodeRange($code){
+        $ranges = $this->getGenreShortCodeRanges();
+        if($code){
+            return $ranges[$code];
+        }
+        else{
+            return $ranges;
+        }
+    }
+    
     public function setExpiry($playlistIds, $date){
        if(!is_array($playlistIds)){
             $playlistIds = array($playlistIds);
@@ -114,6 +205,9 @@ class playlist extends TPS{
         if(!is_array($refCodes)){
             $params = array($refCodes);
         }
+        else{
+            $params = $refCodes;
+        }
         $param = NULL;
         $stmt = $this->db->prepare(
                 "SELECT * FROM playlist"
@@ -133,6 +227,63 @@ class playlist extends TPS{
         return $result;
     }
     
+    public function getCurrentByShortCode($shortCodes, $startDate, $endDate){
+        if(!is_array($shortCodes)){
+            $params = array($shortCodes);
+        }
+        else{
+            $params = $shortCodes;
+        }
+        $param = NULL;
+        $stmt = $this->db->prepare(
+                "SELECT * FROM playlist"
+            . " WHERE SmallCode=:param and (Activate between :startDate and "
+            . " :endDate or Expire between :startDate and :endDate)");
+        $stmt->bindParam(":param", $param, \PDO::PARAM_STR);
+        $stmt->bindParam(":startDate", $startDate);
+        $stmt->bindParam(":endDate", $endDate);
+        $result = array();
+        foreach($params as $param){
+            if ($stmt->execute()) {
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $result[$row['PlaylistId']] = $row;
+                }
+            }
+        }
+        return $result;
+    }
+    
+    public function getUsedShortCodes($startDate, $endDate){
+        $stmt = $this->db->prepare(
+                "SELECT SmallCode FROM playlist"
+                . " WHERE (:startDate >= Activate AND :startDate <= Expire) OR "
+                . "(:endDate <= Expire AND :endDate >= Activate) OR "
+                . "(:startDate <= Activate AND :endDate >= Expire)");
+        $stmt->bindParam(":startDate", $startDate);
+        $stmt->bindParam(":endDate", $endDate);
+        $result = array();
+        if ($stmt->execute()) {
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                $val = (int)$row['SmallCode'];
+                $result[$val] = $val;
+            }
+        }
+        return $result;
+    }
+    
+    public function validShortCodes($startDate, $endDate, $startNum, $endNum){
+        $used = $this->getUsedShortCodes($startDate, $endDate);
+        $range = range($startNum, $endNum); 
+        $result = array_diff($range, $used);
+        return array_values($result);
+    }
+    
+    public function validateShortCode($startDate, $endDate, $code){
+        $used = $this->getUsedShortCodes($startDate, $endDate);
+        return !(key_exists((int)$code, $used));
+    }
+
+
     public function getAllByRefCode($refCodes){
         if(!is_array($refCodes)){
             $params = array($refCodes);
@@ -141,6 +292,26 @@ class playlist extends TPS{
         $stmt = $this->db->prepare(
                 "SELECT * FROM playlist"
             . " WHERE RefCode=:param");
+        $stmt->bindParam(":param", $param, \PDO::PARAM_STR);
+        $result = array();
+        foreach($params as $param){
+            if ($stmt->execute()) {
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $result[$row['PlaylistId']] = $row;
+                }
+            }
+        }
+        return $result;
+    }
+    
+    public function getAllByShortCode($shortCodes){
+        if(!is_array($shortCodes)){
+            $params = array($shortCodes);
+        }
+        $param = NULL;
+        $stmt = $this->db->prepare(
+                "SELECT * FROM playlist"
+            . " WHERE SmallCode=:param");
         $stmt->bindParam(":param", $param, \PDO::PARAM_STR);
         $result = array();
         foreach($params as $param){
