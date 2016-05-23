@@ -148,6 +148,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
                     $defaultOffset = "$today +"
                             . $code['PlaylistDuration']['value'] 
                             . " " . $code['PlaylistDuration']['unit'];
+                    $library->log->warning(strtotime($defaultOffset));
                     $codes = $playlist->validShortCodes(
                             $today, strtotime($defaultOffset), $range[0],
                             $range[1]);
