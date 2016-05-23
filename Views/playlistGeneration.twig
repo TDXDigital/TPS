@@ -90,10 +90,19 @@ value="{{today|default("now")|date("Y-m-d")}}" name="today"/>
                                class="form-control datepicker text-center" 
                                name="endDate[]"
                                value="{{today|default("now")|date_modify("+"~playlist.genre.PlaylistDuration.value~" "~playlist.genre.PlaylistDuration.unit)|date("Y-m-d")}}"</td>
-                    <td><input type="text" min="0" max="4294967295" 
+                    <td>
+                        <div id="DIV_SCI_{{playlist.RefCode}}">
+                            <input type="text" min="0" max="4294967295" 
+                               id="SCI_{{playlist.RefCode}}"
                                name="smallCode[]" required
                                class="form-control text-center"
-                               pattern="0\d{3,6}"/></td>
+                               pattern="0\d{3,6}" 
+                               {% if playlist.ShortCode %}
+                               value="{{"%04d"|format(playlist.ShortCode)}}"
+                               {% endif %}
+                               onchange="javascript:verifyShortCode(
+                                        'SCI_{{playlist.RefCode}}')"/>
+                        </div></td>
                     <td><input type="hidden" name="refCode[]" value="{{playlist.RefCode}}"/>
                         <input type="checkbox" checked name="enabled[]" value="{{playlist.RefCode}}"/></td>
                 </tr>
@@ -129,5 +138,17 @@ value="{{today|default("now")|date("Y-m-d")}}" name="today"/>
             dateFormat: "yy-mm-dd"
         });
       });
+    function verifyShortCode(ident){
+        var obj = $("#"+ident)
+        var val = obj.val()
+        $.ajax({
+            url: "../shortcode/valid",
+            data: {"code": val},
+        }).error(function (data){
+            $("#DIV_"+ident).addClass("has-error");
+        }).success(function (data){
+            $("#DIV_"+ident).removeClass();
+        })
+    }
 </script>
 {% endblock %}

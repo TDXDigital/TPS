@@ -139,11 +139,36 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $library = new \TPS\library();
             $pending = $library->pendingPlaylist();
             $libCodes = $library->listLibraryCodes();
+            $ranges = $playlist->getGenreShortCodeRanges();
+            $validRanges = array();
+            foreach ($ranges as $genre => $ranges) {
+                $validRanges[$genre] = [];
+                foreach ($ranges as $range) {
+                    $code = $library->getLibraryCodeValueByGenre($genre);
+                    $defaultOffset = "$today +"
+                            . $code['PlaylistDuration']['value'] 
+                            . " " . $code['PlaylistDuration']['unit'];
+                    $codes = $playlist->validShortCodes(
+                            $today, strtotime($defaultOffset), $range[0],
+                            $range[1]);
+                    if(!$codes){
+                        continue;
+                    }
+                    $validRanges[$genre] += $codes;
+                }
+            }
             foreach ($pending as &$entry) {
                 $entry['genre'] = $getCode($entry['genre'], $libCodes);
                 $label = $library->getLabelbyId($entry['labelid']);
                 $labelName = array_pop($label)['name'];
                 $entry['labelName'] = $labelName;
+                try{
+                    $entry['ShortCode'] = array_shift(
+                        $validRanges[$entry['genre']['Genre']]);
+                } catch (Exception $ex) {
+                    $library->log->error("No Available ShortCodes for "
+                            . "library genre ".$entry['genre']['Genre']);
+                }
             }
             if($isXHR || strtolower($format) == "json"){
                 print json_encode($pending);
@@ -177,6 +202,143 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             }
             $library->playlistStatus($enabled, "COMPLETE");
             $app->redirect("../");
+        });
+    });
+    $app->group('/shortcode', function() use ($app, $authenticate, $playlist){
+        $app->get('/', $authenticate($app, [1,2]), 
+                function() use ($app, $playlist){
+            $isXHR = $app->request->isAjax();
+            $format = (string)$app->request->get("format")?:"html";
+            $page = (int)$app->request->get("p")?:1;
+            $limit = (int)$app->request->get("l")?:25;
+            $count = ceil($playlist->countAll()/$limit);
+            $refcodes = $app->request->get("refcodes");
+            $startDate = $app->request->get("startDate")?:"1000-01-01";
+            $endDate = $app->request->get("endDate")?:"9999-12-31";
+            if($refcodes){
+                $result = $playlist->getByRefCode($refcodes, $startDate, $endDate);
+            }
+            else{
+                $result = $playlist->getAll( $startDate, $endDate, $page, $limit);
+            }
+            standardResult::ok($app, $result, NULL);
+        });
+        $app->get('/available', $authenticate($app, [1,2]), 
+                function() use ($app, $playlist){
+            $isXHR = $app->request->isAjax();
+            $format = (string)$app->request->get("format")?:"html";
+            $page = (int)$app->request->get("p")?:1;
+            $limit = (int)$app->request->get("l")?:25;
+            $count = ceil($playlist->countAll()/$limit);
+            $startDate = $app->request->get("startDate")?:"1000-01-01";
+            $endDate = $app->request->get("endDate")?:"9999-12-31";
+            $startNum = $app->request->get('start')?:0;
+            $endNum = $app->request->get('end')?:99999;
+            $result = $playlist->validShortCodes(
+                    $startDate, $endDate, $startNum, $endNum);
+            standardResult::ok($app, $result, NULL);
+        });
+        $app->get('/valid', $authenticate($app, [1,2]), 
+                function() use ($app, $playlist){
+            $isXHR = $app->request->isAjax();
+            $format = (string)$app->request->get("format")?:"html";
+            $page = (int)$app->request->get("p")?:1;
+            $limit = (int)$app->request->get("l")?:25;
+            $count = ceil($playlist->countAll()/$limit);
+            $startDate = $app->request->get("startDate")?:"1000-01-01";
+            $endDate = $app->request->get("endDate")?:"9999-12-31";
+            if(!($playlist->validateIsoDate($startDate) &&
+                    $playlist->validateIsoDate($endDate))){
+                        throw new \Exception("Invalid date format provided,"
+                                . " dates must be ISO8601 format "
+                                . " i.e. (2013-12-30)");
+            }
+            $code = $app->request->get('code')?:99999;
+            $result = $playlist->validateShortCode(
+                    $startDate, $endDate, $code);
+            if($result){
+                standardResult::ok($app, $result, NULL);
+            }
+            else{
+                $conflict = $playlist->getCurrentByShortCode($code, 
+                        $startDate, $endDate);
+                $conflict = array_pop($conflict);
+                print json_encode("$code conflicts with "
+                        ."PL#".$conflict['PlaylistId']." ".sprintf("(`%'.04d`)", 
+                                $conflict['SmallCode']));
+                $app->response->setStatus(406);
+                $app->response->headers->set('Content-Type', 'application/json');
+            }
+        });
+        $app->post('/', $authenticate($app, [1,2]), 
+                function() use ($app, $playlist){
+            $library = new \TPS\library();
+            $isXHR = $app->request->isAjax();
+            $format = $app->request->post("format");
+            $enabled = $app->request->post("enabled");
+            $refCode = $app->request->post("refCode");
+            $endDate = $app->request->post("endDate");
+            $startDate = $app->request->post("startDate");
+            $smallCode = $app->request->post("smallCode");
+            foreach ($refCode as $key => $entry) {
+                if(!in_array($entry, $enabled)){
+                    continue;
+                }
+                $playlist->create($entry, $startDate[$key], $endDate[$key],
+                        NULL, NULL, $smallCode[$key]);
+            }
+            $library->playlistStatus($enabled, "COMPLETE");
+            $app->redirect("../");
+        });
+        $app->delete('/', $authenticate($app, [1,2]), 
+                function() use ($app, $playlist){
+            $library = new \TPS\library();
+            $isXHR = $app->request->isAjax();
+            $format = $app->request->post("format");
+            $enabled = $app->request->post("enabled");
+            $refCode = $app->request->post("refCode");
+            $endDate = $app->request->post("endDate");
+            $startDate = $app->request->post("startDate");
+            $smallCode = $app->request->post("smallCode");
+            foreach ($refCode as $key => $entry) {
+                if(!in_array($entry, $enabled)){
+                    continue;
+                }
+                $playlist->create($entry, $startDate[$key], $endDate[$key],
+                        NULL, NULL, $smallCode[$key]);
+            }
+            $library->playlistStatus($enabled, "COMPLETE");
+            $app->redirect("../");
+        });
+        $app->get('/:id', $authenticate($app, [1,2]), 
+                function($id) use ($app, $playlist){
+            $library = new \TPS\library();
+            $isXHR = $app->request->isAjax();
+            $format = $app->request->post("format");
+            $enabled = $app->request->post("enabled");
+            $refCode = $app->request->post("refCode");
+            $endDate = $app->request->post("endDate");
+            $startDate = $app->request->post("startDate");
+            $smallCode = $app->request->post("smallCode");
+            foreach ($refCode as $key => $entry) {
+                if(!in_array($entry, $enabled)){
+                    continue;
+                }
+                $playlist->create($entry, $startDate[$key], $endDate[$key],
+                        NULL, NULL, $smallCode[$key]);
+            }
+            $library->playlistStatus($enabled, "COMPLETE");
+            $app->redirect("../");
+        });
+    });
+    $app->group('/genre', function() use ($app, $authenticate, $playlist){
+        $app->get('/range', $authenticate($app, [1,2]), 
+                function() use ($app, $playlist){
+            $isXHR = $app->request->isAjax();
+            $format = $app->request->post("format");
+            $id = $app->request->post("id");
+            $range = $playlist->getGenreShortCodeRange($id);
+            standardResult::ok($app, $range, NULL, 200, True);
         });
     });
 });

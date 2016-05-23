@@ -93,6 +93,7 @@ class library extends station{
         return $genres;
     }
     
+    
     /**
      * @abstract Library codes are prepended to a barcode and used 
      * for indexing and management within a physical library.
@@ -235,6 +236,17 @@ class library extends station{
         foreach ($list as $key => $value) {
             if ($value[$comVal] == $Genre){
                 return $key;
+            }
+        }
+        return False;
+    }
+    
+    public function getLibraryCodeValueByGenre($Genre) {
+        $list = $this->listLibraryCodes();
+        $comVal='Genre';
+        foreach ($list as $key => $value) {
+            if ($value[$comVal] == $Genre){
+                return $value;
             }
         }
         return False;

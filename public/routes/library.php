@@ -448,19 +448,19 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             });
             $app->get('/properAlbum', $authenticate($app, [1,2]), function () use ($app){
                 $optons=array(
-                    "PROPER"=>"Capitalize Words",
-                    "LOWER"=>"lower case",
-                    "UPPER"=>"UPPER CASE",
-                    "CAP_FIRST"=>"Capitalize first"
+                    "PROPER"=>"Capitalize Words"#,
+                    #"LOWER"=>"lower case",
+                    #"UPPER"=>"UPPER CASE",
+                    #"CAP_FIRST"=>"Capitalize first"
                 );
                 standardResult::ok($app, $optons, NULL);
             });
             $app->get('/properNotes', $authenticate($app, [1,2]), function () use ($app){
                 $optons=array(
-                    "PROPER"=>"Capitalize Words",
-                    "LOWER"=>"lower case",
-                    "UPPER"=>"UPPER CASE",
-                    "CAP_FIRST"=>"Capitalize first"
+                    "PROPER"=>"Capitalize Words"#,
+                    #"LOWER"=>"lower case",
+                    #"UPPER"=>"UPPER CASE",
+                    #"CAP_FIRST"=>"Capitalize first"
                 );
                 standardResult::ok($app, $optons, NULL);
             });
