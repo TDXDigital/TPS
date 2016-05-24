@@ -404,6 +404,37 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $shortCodes = $playlist->getPlaylist($startDate, $endDate);
             print json_encode($shortCodes);
         });
+        $app->get('/xlsx', $authenticate($app, [1,2]), 
+                function() use ($app, $playlist){
+            $filename = "playlist_".date("Y-m-d").rand(1, 9999).".xlsx";
+            header('Content-disposition: attachment; filename="'.XLSXWriter::sanitize_filename($filename).'"');
+            header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            header('Content-Transfer-Encoding: binary');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            $isXHR = $app->request->isAjax();
+            $format = $app->request->post("format");
+            $startDate = $app->request->post("startDate")?:date("Y-m-d");
+            $endDate = $app->request->post("endDate")?:date("Y-m-d");
+            $id = $app->request->post("id");
+            $shortCodes = $playlist->getPlaylist($startDate, $endDate);
+//            $data = array(
+//                "code", "StartDate", "EndDate", "Artist", "Album", "Format", 
+//                "Genre", "Locale", "Cov.Code"
+//            );
+//            foreach($shortCodes as $value){
+//                $dx = array(
+//                    $value['ShortCode'], $value['Activate'], 
+//                    $value['Expire'], $value['artist'], 
+//                    $value['album'], $value['format'], 
+//                    $value['genre'], $value['CanCon']
+//                );
+//                array_push($data, $dx);
+//            }
+            $writer = new \XLSXWriter();
+            $writer->writeSheet($shortCodes);//$data);
+            echo $writer->writeToString();
+        });
     });
     // This order is important, we need to match routes first, index second
     $app->get('/:id', function($refCodes) use ($app, $playlist){
