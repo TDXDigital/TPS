@@ -40,6 +40,79 @@ class playlist extends TPS{
         parent::__construct($enableDbReporting, $requirePDO, $settingsTarget, 
                 $settingsPath);
     }
+    
+    private function getRangeGap($start, $list){
+        sort($list);
+        $terminus = max($list);
+        foreach ($list as $val){
+            if($val < $start){
+                continue;
+            }
+            if(!in_array($start, $list)){
+                $start+=1;
+                continue;
+            }
+            break;
+        }
+        $max = $start-1;
+        foreach ($list as $iter=>$value) {
+            if($value < $start){
+                continue;
+            }
+            if($max+1==$value){
+                $max = $value;
+                continue;
+            }
+            break;
+        }
+        return $max;
+    }
+    
+    public function getRangeGaps($list, $start=FALSE){
+        if($start===FALSE){
+            $start = min($list);
+        }
+        $ranges = array();
+        while ($start < max($list)) {
+            $max = $this->getRangeGap($start, $list);
+            array_push($ranges, [$start, $max]);
+            $start = $max+2; #plus one will not work as we know 
+            # the +1 value is missing
+        }
+        return $ranges;
+    }
+    
+    public function getRangeGapsForGenres($station, $today=FALSE,
+            $genres=FALSE){
+        if(!is_array($genres) && !($genres===FALSE)){
+            $genres = [$genres];
+        }
+        $today = $today?:date("Y-m-d");
+        $genresList = $this->getGenreDividedValidShortCodes($station, 
+                $today, "0 days");
+        $gaps = array();
+        foreach ($genresList as $key => $value) {
+            if(!($genres===FALSE) && !in_array($key, $genres)){
+                continue;
+            }
+            $var = array();
+            foreach ($value as $data) {
+                if(!$data['shortCodes']){
+                    continue;
+                }
+                $res = $this->getRangeGaps($data['shortCodes']);
+                $min = min($data['shortCodes']);
+                array_push($var, array(
+                        "formats"=>$data['formats'],
+                        "gaps"=>$res
+                    )
+                );
+            }
+            $gaps[$key] = $var;
+        }
+        return $gaps;
+    }
+    
     public function getRangesFormats($id){
         #@todo: expand to accept array
         $stmt = $this->db->prepare("SELECT format, fid FROM playlistRangesFormat "
@@ -237,8 +310,10 @@ class playlist extends TPS{
         $param = NULL;
         $stmt = $this->db->prepare(
                 "SELECT * FROM playlist"
-            . " WHERE RefCode=:param and Activate <= :startDate and "
-            . " Expire >= :endDate");
+            . " WHERE RefCode=:param and (Activate <= :startDate and "
+            . " Expire >= :endDate) or "
+            . " :startDate between Activate and Expire or :endDate between"
+            . " Activate and Expire");
         $stmt->bindParam(":param", $param, \PDO::PARAM_STR);
         $stmt->bindParam(":startDate", $startDate);
         $stmt->bindParam(":endDate", $endDate);
@@ -264,7 +339,9 @@ class playlist extends TPS{
         $stmt = $this->db->prepare(
                 "SELECT * FROM playlist"
             . " WHERE SmallCode=:param and (Activate between :startDate and "
-            . " :endDate or Expire between :startDate and :endDate)");
+            . " :endDate or Expire between :startDate and :endDate) or "
+            . " :startDate between Activate and Expire or :endDate between"
+            . " Activate and Expire");
         $stmt->bindParam(":param", $param, \PDO::PARAM_STR);
         $stmt->bindParam(":startDate", $startDate);
         $stmt->bindParam(":endDate", $endDate);
@@ -274,6 +351,26 @@ class playlist extends TPS{
                 while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
                     $result[$row['PlaylistId']] = $row;
                 }
+            }
+        }
+        return $result;
+    }
+    
+    public function getPlaylist($startDate, $endDate){
+        $stmt = $this->db->prepare(
+                "SELECT * FROM playlist"
+                . " LEFT JOIN library ON playlist.RefCode=library.RefCode WHERE"
+                . " (Activate between :startDate and "
+                . " :endDate or Expire between :startDate and :endDate) "
+                . "or :startDate between Activate and Expire or :endDate "
+                . "between Activate and Expire "
+                . "order by playlist.SmallCode ASC");
+        $stmt->bindParam(":startDate", $startDate);
+        $stmt->bindParam(":endDate", $endDate);
+        $result = array();
+        if ($stmt->execute()) {
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                $result[$row['PlaylistId']] = $row;
             }
         }
         return $result;

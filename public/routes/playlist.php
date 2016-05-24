@@ -83,49 +83,6 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $app->redirect("./".array_pop($result));
         }
     });
-    $app->get('/:id', function($refCodes) use ($app, $playlist){
-        $isXHR = $app->request->isAjax();
-        $id = $app->request->get("refCode");
-        $result = $playlist->get($refCodes);
-        if(sizeof($result)<1 && $id){
-            $result[null] = array("RefCode"=>$id);
-        }
-        if(sizeof($result)<1 && strtolower($refCodes)!='new'){
-            $app->notFound();
-        }
-        if($isXHR){
-            standardResult::ok($app, array("refCode", "startDate", "endDate"), NULL);
-        }
-        else{
-            $library = new \TPS\library();
-            foreach ($result as $key => $value) {
-                $lib = $library->getAlbumByRefcode($value['RefCode']);
-                $result[$key]["library"] = $lib;
-            }
-            $params = array(
-                "title"=>"Playlist",
-                "playlists"=>$result,
-            );
-            $app->render("playlist.twig", $params);
-        }
-    });
-    $app->put('/:id', function($refCodes) use ($app, $playlist){
-        $isXHR = $app->request->isAjax();
-        $startDate = $app->request->put("startDate");
-        $endDate = $app->request->put("endDate");
-        $zoneNumber = $app->request->put("zoneNumber");
-        $zoneCode = $app->request->put("zoneCode");
-        $smallCode = $app->request->put("smallCode");
-        $result = $playlist->change($refCodes, $startDate, $endDate, 
-                $zoneCode, $zoneNumber, $smallCode);
-        if($isXHR){
-            standardResult::accepted($app, array("refCode", "startDate", "endDate"), NULL);
-        }
-        else{
-            $app->redirect("./$refCodes");
-        }
-    });
-    
     $app->get('/generate', function () use ($app) {
         $app->redirect('./generate/');
     });
@@ -225,6 +182,19 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             else{
                 $result = $playlist->getAll( $startDate, $endDate, $page, $limit);
             }
+            standardResult::ok($app, $result, NULL);
+        });
+        $app->get('/gaps', $authenticate($app, [1,2]), 
+                function() use ($app, $playlist){
+            $isXHR = $app->request->isAjax();
+            $format = (string)$app->request->get("format")?:"html";
+            $page = (int)$app->request->get("p")?:1;
+            $limit = (int)$app->request->get("l")?:25;
+            $count = ceil($playlist->countAll()/$limit);
+            $refcodes = $app->request->get("refcodes");
+            $startDate = $app->request->get("startDate")?:"1000-01-01";
+            $endDate = $app->request->get("endDate")?:"9999-12-31";
+            $result = $playlist->getRangeGapsForGenres($_SESSION['CALLSIGN']);
             standardResult::ok($app, $result, NULL);
         });
         $app->get('/available', function () use ($app) {
@@ -411,5 +381,71 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
                     $_SESSION['CALLSIGN']);
             standardResult::ok($app, $range, NULL, 200, True);
         });
+        $app->get('/', $authenticate($app, [1,2]), 
+                function() use ($app, $playlist){
+            $isXHR = $app->request->isAjax();
+            $format = $app->request->post("format");
+            $id = $app->request->post("id");
+            $range = $playlist->getGenreShortCodeRanges($_SESSION['CALLSIGN']);
+            standardResult::ok($app, $range, NULL, 200, True);
+        });
+    });
+    $app->get('/report', function () use ($app) {
+        $app->redirect('./report/');
+    });
+    $app->group('/report', function() use ($app, $authenticate, $playlist){
+        $app->get('/', $authenticate($app, [1,2]), 
+                function() use ($app, $playlist){
+            $isXHR = $app->request->isAjax();
+            $format = $app->request->post("format");
+            $startDate = $app->request->post("startDate")?:date("Y-m-d");
+            $endDate = $app->request->post("endDate")?:date("Y-m-d");
+            $id = $app->request->post("id");
+            $shortCodes = $playlist->getPlaylist($startDate, $endDate);
+            print json_encode($shortCodes);
+        });
+    });
+    // This order is important, we need to match routes first, index second
+    $app->get('/:id', function($refCodes) use ($app, $playlist){
+        $isXHR = $app->request->isAjax();
+        $id = $app->request->get("refCode");
+        $result = $playlist->get($refCodes);
+        if(sizeof($result)<1 && $id){
+            $result[null] = array("RefCode"=>$id);
+        }
+        if(sizeof($result)<1 && strtolower($refCodes)!='new'){
+            $app->notFound();
+        }
+        if($isXHR){
+            standardResult::ok($app, array("refCode", "startDate", "endDate"), NULL);
+        }
+        else{
+            $library = new \TPS\library();
+            foreach ($result as $key => $value) {
+                $lib = $library->getAlbumByRefcode($value['RefCode']);
+                $result[$key]["library"] = $lib;
+            }
+            $params = array(
+                "title"=>"Playlist",
+                "playlists"=>$result,
+            );
+            $app->render("playlist.twig", $params);
+        }
+    });
+    $app->put('/:id', function($refCodes) use ($app, $playlist){
+        $isXHR = $app->request->isAjax();
+        $startDate = $app->request->put("startDate");
+        $endDate = $app->request->put("endDate");
+        $zoneNumber = $app->request->put("zoneNumber");
+        $zoneCode = $app->request->put("zoneCode");
+        $smallCode = $app->request->put("smallCode");
+        $result = $playlist->change($refCodes, $startDate, $endDate, 
+                $zoneCode, $zoneNumber, $smallCode);
+        if($isXHR){
+            standardResult::accepted($app, array("refCode", "startDate", "endDate"), NULL);
+        }
+        else{
+            $app->redirect("./$refCodes");
+        }
     });
 });
