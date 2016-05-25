@@ -90,18 +90,39 @@
                 <li>
                     <a href="/library/new"><i class='fa fa-music'></i> Receiving</a>
                 </li>
-                {% if permissions > 1 or "libraryPlaylist" in permissions %}
+                {% if permissions > 1 or "manageLabels" in permissions %}
                 <li>
                     <a href="/label/"><i class='fa fa-globe'></i> Record Labels</a>
                 </li>
                 <li>
-                    <a href="/playlist/generate/"><i class='fa fa-calculator'></i> Playlist Gen.</a>
+                    <a href="/library/inventory/"><i class='fa fa-bar-chart-o'></i> Inventory</a>
                 </li>
                 <li>
-                    <a href="/playlist/"><i class='fa fa-line-chart'></i> Playlist</a>
+                    <a href="/labels/print?type=5160&start=1&outline=false" disabled><i class='fa fa-print'></i> Print Labels</a>
+                </li>
+                {% endif %}
+            </ul>
+        </li>
+        {% endif %}
+        {% if permissions > 0 or "playlist" in permissions %}
+        <li>
+            <a href="javascript:;" data-toggle="collapse" data-target="#playlist"><i class="fa fa-fw fa-list-alt"></i> Playlist <i class="fa fa-fw fa-caret-down"></i></a>
+            <ul id="playlist" class="{{secondLevelClass}}">
+                <li>
+                    <a href="/playlist/"><i class='fa fa-search'></i> Search</a>
+                </li>
+                {% if permissions > 1 or "managePlaylist" in permissions %}
+                <li>
+                    <a href="/playlist/generate/"><i class='fa fa-calculator'></i> Generate / Add</a>
+                </li>
+                <li>
+                    <a href="/playlist/report/"><i class='fa fa-line-chart'></i> Report</a>
                 </li>
                 <li>
                     <a href="/Reports/PlaylistRep.php"><i class='fa fa-bar-chart-o'></i> Charts</a>
+                </li>
+                <li>
+                    <a href="/playlist/labels/"><i class='fa fa-print'></i> Print Labels</a>
                 </li>
                 {% endif %}
             </ul>

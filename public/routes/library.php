@@ -1,6 +1,16 @@
 <?php
 // Library
 $app->group('/library', $authenticate, function () use ($app,$authenticate){
+    $app->get('/inventory', function () use ($app) {
+        $app->redirect('./inventory/');
+    });
+    $app->group('/inventory', $authenticate, function () use ($app) {
+        // inventory management
+        $app->get('/', function () use ($app) {
+            $app->render('notSupported.twig',array(
+                'title'=>'Library Inventory Mangement'));
+        });
+    });
     $app->get('/new', $authenticate($app,array(1,2)), function () use ($app){
         $library = new \TPS\library();
         $params = array(
@@ -236,6 +246,9 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         #var_dump($_SESSION);
         $app->redirect('./new');
     });
+    $app->get('/search', $authenticate, function () use ($app){
+        $app->redirect('./search/');
+    });
     $app->group('/search', $authenticate($app, array(1,2)), function () use ($app, $authenticate){
         $app->get('/', $authenticate, function () use ($app){
             $format = $app->request->get("format");
@@ -389,6 +402,9 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             return TRUE;
         }
         $app->redirect($app->request->getReferrer());
+    });
+    $app->get('/batch', $authenticate, function () use ($app){
+        $app->redirect('./batch/');
     });
     $app->group('/batch', function () use ($authenticate, $app){
         $app->get('/options', $authenticate($app, array(1,2)), function () use ($app){

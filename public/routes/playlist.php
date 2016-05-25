@@ -128,7 +128,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
                 }
             }
             if($isXHR || strtolower($format) == "json"){
-                print json_encode($pending);
+                standardResult::ok($app, $pending, NULL);
             }
             else{
                 $params = array(
@@ -397,12 +397,35 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
         $app->get('/', $authenticate($app, [1,2]), 
                 function() use ($app, $playlist){
             $isXHR = $app->request->isAjax();
-            $format = $app->request->post("format");
-            $startDate = $app->request->post("startDate")?:date("Y-m-d");
-            $endDate = $app->request->post("endDate")?:date("Y-m-d");
-            $id = $app->request->post("id");
-            $shortCodes = $playlist->getPlaylist($startDate, $endDate);
-            print json_encode($shortCodes);
+            $format = $app->request->get("format");
+            $startDate = $app->request->get("startDate")?:date("Y-m-d");
+            $endDate = $app->request->get("endDate")?:date("Y-m-d");
+            $id = $app->request->get("id");
+            $library = new \TPS\library($_SESSION['CALLSIGN']);
+            $playlistVals = $playlist->getPlaylist($startDate, $endDate);
+            $gaps = $playlist->getRangeGapsForGenres(
+                    $_SESSION['CALLSIGN'], $startDate);
+            foreach ($gaps as $key => &$value) {
+                $genres = $library->getLibraryGenres();
+                try{
+                    $value['genre'] = $genres[$key];
+                } catch (Exception $ex) {
+                    $value['genre'] = "`$key` is a Invalid Genre";
+                }
+            }
+            if($isXHR || strtolower($format)=="json"){
+                standardResult::ok($app, $shortCodes, NULL);
+            }
+            else{
+                $params = array(
+                    "title"=>"Report",
+                    "area"=>"Playlist",
+                    "gaps"=>$gaps,
+                    "today"=>$startDate,
+                    "playlists"=>$playlistVals,
+                );
+                $app->render("playlistReport.twig", $params);
+            }
         });
         $app->get('/xlsx', $authenticate($app, [1,2]), 
                 function() use ($app, $playlist){
@@ -418,22 +441,20 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $endDate = $app->request->post("endDate")?:date("Y-m-d");
             $id = $app->request->post("id");
             $shortCodes = $playlist->getPlaylist($startDate, $endDate);
-//            $data = array(
-//                "code", "StartDate", "EndDate", "Artist", "Album", "Format", 
-//                "Genre", "Locale", "Cov.Code"
-//            );
-//            foreach($shortCodes as $value){
-//                $dx = array(
-//                    $value['ShortCode'], $value['Activate'], 
-//                    $value['Expire'], $value['artist'], 
-//                    $value['album'], $value['format'], 
-//                    $value['genre'], $value['CanCon']
-//                );
-//                array_push($data, $dx);
-//            }
             $writer = new \XLSXWriter();
+            reset($shortCodes);
+            $firstKey = key($shortCodes);
+            $keys = array_keys($shortCodes[$firstKey]);
+            array_unshift($shortCodes, $keys);
             $writer->writeSheet($shortCodes);//$data);
             echo $writer->writeToString();
+        });
+    });
+    $app->group('/labels', $authenticate, function () use ($app) {
+        // inventory management
+        $app->get('/', function () use ($app) {
+            $app->render('notSupported.twig',array(
+                'title'=>'Playlist Label Printing'));
         });
     });
     // This order is important, we need to match routes first, index second
