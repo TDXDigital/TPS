@@ -1,0 +1,17 @@
+{
+    "TPS_Errno": "TASK-INS",
+    "type" : "database",
+    "execute" : "SQL",
+    "SQL_QRY" : {
+        "TEST": "SHOW COLUMNS FROM `task` WHERE `Field` = 'taskid';",
+        "RESULT" : {
+            "Field" : [
+                "taskid"
+            ]
+        },
+        "Negate": 0,
+        "createMode": 1,
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "taskInstall.sql"
+    }
+}

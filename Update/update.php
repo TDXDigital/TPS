@@ -167,11 +167,13 @@ function DatabaseUpdateApply($Update_PKG,$path){
                 foreach(explode("||",$sql) as $query){
                     $query = preg_replace('~[\r\n]+~', ' ', $query);
                     if(!$mysqli->query($query)){
+                        $error = $mysqli->error;
+                        $code = $mysqli->errno;
                         $mysqli->rollback();
                         $mysqli->commit();
                         return json_encode(array("Status"=>false,
                             "Result"=>array("SQL"=>$query,
-                            "ERROR"=>$mysqli->error,"CODE"=>$mysqli->errno)));
+                            "ERROR"=>$error,"CODE"=>$code)));
                     }
                 }
                 $mysqli->commit();
