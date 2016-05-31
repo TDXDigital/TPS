@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/TDXDigital/TPS.svg?branch=master)](https://travis-ci.org/TDXDigital/TPS)
+#[![Build Status](https://travis-ci.org/TDXDigital/TPS.svg?branch=master)](https://travis-ci.org/TDXDigital/TPS)
 # Technical Program Schedule  
 _(Previously Digital Program Logs)_
 
