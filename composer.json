@@ -28,7 +28,8 @@
         "nette/nette": "~2.1.3",
         "fperucic/treant-js": "*",
         "onokumus/metismenu": "dev-master",
-        "mk-j/php_xlsxwriter": "*"
+        "mk-j/php_xlsxwriter": "*",
+        "hellogerard/jobby": "*"
     },
     "require-dev": {
         "phpunit/phpunit-skeleton-generator": "*",

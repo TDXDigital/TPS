@@ -170,7 +170,6 @@ function DatabaseUpdateApply($Update_PKG,$path){
                         $error = $mysqli->error;
                         $code = $mysqli->errno;
                         $mysqli->rollback();
-                        $mysqli->commit();
                         return json_encode(array("Status"=>false,
                             "Result"=>array("SQL"=>$query,
                             "ERROR"=>$error,"CODE"=>$code)));
