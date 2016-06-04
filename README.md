@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/TDXDigital/TPS.svg?branch=master)](https://travis-ci.org/TDXDigital/TPS)
 # Technical Program Schedule  
 _(Previously Digital Program Logs)_
 
@@ -31,10 +30,9 @@ This software is designed to suit the needs of campus and community based radio 
 # Operations
 1. Installation
   1. Requirements
+  1. Tutorial
 1. Setting up a station
-1. Genres
-1. DJs and Programs
-1. Reporting
+1. Genres and Categories
 
 # 1. Installation
 Installation of this platform during the Alpha and Beta phases is to place the entire directory within a location that is available to the web server.
@@ -50,3 +48,58 @@ The user will use a web browser or other supported application to connect to the
 * mcrypt
 * mysqli
 * mysqlnd [recommended]
+* PDO
+* composer
+
+## 1.2 Tutorial
+This is a general tutorial on how to setup a server, this will be a high level overview of how to configure a production server but environments may vary. For example demo.ckxu.com uses an NGINX gateway service to multiple compute nodes on the backend with a distributed filesystem and varnish cache. yet ckxu.uleth.ca utilizes a simpler but more high powered VPS. providing walkthroughs for each one would be extermely extensive so we will assume you have a fully working and basically configured server (can load apache default page).  
+
+### 1.2.1 Useful Links:
+here are some useful pages on by [Digital Ocean](https://m.do.co/c/6965f10ddbd5), you can use this [link to get a free $10 credit](https://m.do.co/c/6965f10ddbd5) toward your servers VPS servers hosted with [Digital Ocean](https://m.do.co/c/6965f10ddbd5).
+* [Introduction to LEMP on Ubuntu 14.04](https://www.digitalocean.com/community/tutorial_series/introduction-to-nginx-and-lemp-on-ubuntu-14-04)
+* [LAMP on Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-16-04)
+* [NGINX Load Balancer](https://www.digitalocean.com/community/tutorials/how-to-set-up-nginx-load-balancing)
+* [Gluster Redundant Storage Pool](https://www.digitalocean.com/community/tutorials/how-to-create-a-redundant-storage-pool-using-glusterfs-on-ubuntu-servers)
+* [Serial Com. to TCP software](http://www.pira.cz/show.asp?art=piracom)
+ 
+### 1.2.2 Walkthrough:
+2. Clone from Git or download and extract an archive of TPS.
+2. upload files to server if needed
+2. access the server terminal (SSH)
+2. navigate to the location of the webserver root directory
+2. (Optional but Recommended) to customize your server configuration copy the config `./public/slimConfig.example.php` to the root directory and rename to `slimConfig.php`. i.e. `cp ./public/slimConfig.example.php ./slimConfig.php`
+2. (Optional but Recommended) edit slimConfig.php and change the following parameters: 
+```php
+$debug = True; #enables detailed exceptions (leave set to false on production systems)
+$sessionExpiry = "10minutes" # adjusts the length of time a session will be kept open. once defined duration is passed a user will have to sign in again
+$temp_path = false; # can be chagned to specify a cache directory for Slim (provides speed improvements)
+$sessionName = "SomeSessionName" # should be changed from default to a custom value to improve security
+$sessionSecret = "SOME_HASH_VALUE" # session secret, recommend using value from [GRC Perfect Passwords](https://www.grc.com/passwords.htm)
+```
+2. Run `composer install --no-dev` in the root directory to install external requirements
+2. open web browser and navigate to site URL. you will be automatically directed to a first time setup walkthrough. 
+2. follow the in browser steps. 
+2. after setup, login using the credentials you set in the Setup process. and go to Advanced -> Updates. apply any missing updates
+2. in the terminal edit `CONFIG.php`, if you do not have a Broadcast Tools ACS8.2 plus switcher set the following line to prevent attempts to query the switch:
+```php
+$switch_enabled = False;
+```
+  if you do have an appropriate switch change the following line:
+```php
+$switch = url_or_ip_of_tcp_com
+```
+2. party! you have installed TPS
+ 
+
+## 2.0 Setting up a(n additional) station
+Most of the process is handled by the setup script but more configuration can be done on stations to enhance reporting. To change these or to add an additional station to your TPS Broadcast navigate to management -> station. you can now either edit an existing station or create a new one.
+
+## 3.0 Genres and Categories
+In TPS Broadcast there is a distinction made between Genres and Categories but they are somewhat related. 
+
+### 3.1 Categories
+Categories are content and management groups for programs, this defines the type of content that is expected of programs and groups their reporting.
+
+### 3.2 Genres
+Genres relate to musical genres but have in the past referenced program categories as well. If you notice a reference to a `program category` in the UI please submit an issue on GitHub so it can be resolved. Genres are a group that can be expanded into Government Categories (i.e. CRTC 21 - Pop, Rock, Dance) this allows reporting on the actual content played by talent (10% Category 3 etc.)
+
