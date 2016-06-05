@@ -29,20 +29,18 @@ if($LOCAL_REPO_NAME == "REPO_NAME"){
     throw new \Exception("git webhook is not configured");
 }
 
-if ( $_POST['payload'] ) {
-  // Only respond to POST requests from Github
+// Only respond to POST requests from Github
 
-  if( file_exists($LOCAL_REPO) ) {
+if( file_exists($LOCAL_REPO) ) {
 
-    // If there is already a repo, just run a git pull to grab the latest changes
-    shell_exec("cd {$LOCAL_REPO} && git pull");
+  // If there is already a repo, just run a git pull to grab the latest changes
+  shell_exec("cd {$LOCAL_REPO} && git pull");
 
-    die("done " . mktime());
-  } else {
+  print("done " . mktime());
+} else {
 
-    // If the repo does not exist, then clone it into the parent directory
-    shell_exec("cd {$LOCAL_ROOT} && git clone {$REMOTE_REPO}");
+  // If the repo does not exist, then clone it into the parent directory
+  shell_exec("cd {$LOCAL_ROOT} && git clone {$REMOTE_REPO}");
 
-    die("done " . mktime());
-  }
+  print("done " . mktime());
 }
