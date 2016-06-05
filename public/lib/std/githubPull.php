@@ -20,7 +20,10 @@ $LOCAL_REPO_NAME    = "REPO_NAME";
 $LOCAL_REPO         = "{$LOCAL_ROOT}/{$LOCAL_REPO_NAME}";
 $REMOTE_REPO        = "https://github.com/TDXDigital/TPS.git";
 $BRANCH             = "master";
-require_once "githubConfig.php"; 
+if(!file_exists("githubConfig.php")){
+    throw new \Exception("git webhook is not configured");
+}
+require "githubConfig.php"; 
 # use this gitignored file to override repoName or other config params
 if($LOCAL_REPO_NAME == "REPO_NAME"){
     throw new \Exception("git webhook is not configured");

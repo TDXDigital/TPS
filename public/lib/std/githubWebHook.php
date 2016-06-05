@@ -5,6 +5,10 @@
  * @see  https://developer.github.com/webhooks/
  * @author  Miloslav Hůla (https://github.com/milo)
  */
+if(!file_exists("githubConfig.php")){
+    throw new \Exception("git webhook is not configured");
+}
+require "githubConfig.php"; 
 if(!isset($hookSecret)){
     $hookSecret = NULL;  # set NULL to disable check
 }
