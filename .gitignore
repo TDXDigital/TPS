@@ -36,3 +36,4 @@ php_errors.log
 /slimConfig.php
 /.idea/
 /mysqlDumpToTests.bat
+/public/lib/std/githubConfig.php

@@ -272,3 +272,11 @@ $app->get("/logout", function () use ($app) {
 $app->get("/labels/print", $authenticate($app,[2]), function() use ($app) {
     require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'../../opl/PrintTest.php';
 });
+
+$app->post("/webhook", function () use ($app){
+    require_once dirname(__FILE__).DIRECTORY_SEPARATOR."../lib/std/githubWebHook.php";
+});
+
+$app->get("/webhook", function () use ($app){
+    require_once dirname(__FILE__).DIRECTORY_SEPARATOR."../lib/std/githubWebHook.php";
+});
