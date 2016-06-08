@@ -5,10 +5,11 @@
  * @see  https://developer.github.com/webhooks/
  * @author  Miloslav Hůla (https://github.com/milo)
  */
-if(!file_exists("githubConfig.php")){
+$GHConfig = dirname(__FILE__).DIRECTORY_SEPARATOR."githubConfig.php";
+if(!file_exists($GHConfig)){
     throw new \Exception("git webhook is not configured");
 }
-require dirname(__FILE__).DIRECTORY_SEPARATOR."githubConfig.php"; 
+require $GHConfig; 
 if(!isset($hookSecret)){
     $hookSecret = NULL;  # set NULL to disable check
 }
