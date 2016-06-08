@@ -32,7 +32,7 @@
     <!--<span>SUCCESS: {{success}}, ERROR: {{error}}, ID: {{PRINTID}}| {% for id in PRINTID %}{{id}},{% endfor %}</span>-->
 {% endblock %}
 {% block content %}
-<form role="form" method="post" id="put">
+<form role="form" method="post" id="form">
     {% if genres is defined %}
         <input type="hidden" name="_METHOD" value="PUT"/>
         <input type="hidden" name="UID" value="{{genre.UID}}"/>
@@ -185,18 +185,18 @@
     </div>
     <div class="col-lg-6">
         <div class="pull-right">
-            </form>
             <form method="POST" id="delete">
             <input type="hidden" name="_METHOD" value="POST"/>
             {% if genres is defined %}
             <input type="hidden" name="_METHOD" value="DELETE"/>
-            {% endif %}
             <input type="submit" class="btn btn-danger" 
                    value="Delete" id="btn2"/>
+            {% endif %}
         </div>
         <div class="pull-right">
             <input class="btn btn-primary" type="submit" id="btn1">
         </div>
+        </form>
     </div>
 </div>
             <br>
@@ -217,10 +217,10 @@
     $(function(){
         $("#btn1").click(function(){  
             $("#put").submit();
-        }
+        });
         $("#btn2").click(function(){  
           $("#delete").submit();
-        }
+        });
     })
 </script>
 {% endblock %}
