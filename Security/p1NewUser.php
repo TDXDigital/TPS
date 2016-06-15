@@ -1,6 +1,9 @@
 <?php
+die("Not Supported");
+date_default_timezone_set("UTC");
 //"select * from adverts left join song on (adverts.AdName = song.title and song.category='51' and song.date between '2012-08-24' and '2012-08-31')"
     session_start();
+date_default_timezone_set($_SESSION['TimeZone']);
 
 function gen_trivial_password($len = 6)
 {
@@ -10,7 +13,7 @@ function gen_trivial_password($len = 6)
     return $r;
 }
 
-$con = mysql_connect('localhost',$_SESSION['usr'],$_SESSION['rpw']);
+$con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
@@ -18,9 +21,11 @@ if (!$con){
 	username=' . $_SESSION["username"]);
 }
 else if($con){
-	if(!mysql_select_db("CKXU")){header('Location: /login.php');}
-	
+	if(!mysqli_select_db($con, $_SESSION['DBNAME'])){
+        header('Location: /login.php');
     }
+
+}
 else{
 	echo 'ERROR!';
 }
@@ -29,7 +34,7 @@ else{
 
 <!DOCTYPE HTML>
 <head>
-<link rel="stylesheet" type="text/css" href="/altstyle.css" />
+<link rel="stylesheet" type="text/css" href="/css/altstyle.css" />
 <title>Statistics</title>
 </head>
 <html>
@@ -38,7 +43,7 @@ else{
            User: <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
 	<div id="header">
-		<a href="#"><img src="/images/Ckxu_logo_PNG.png" alt="CKXU" /></a>
+		<a href="#"><img src="<?php print("../".$_SESSION['logo']); ?>" alt="logo"/></a>
 	</div>
 	<div id="top">
 		<h2>New User Account / Member</h2>
@@ -92,7 +97,7 @@ else{
 					FROM information_schema.tables 
 					WHERE table_name='users'
 					AND table_schema = DATABASE();";
-					$AUTO = mysql_fetch_array(mysql_query($SQLQ));
+					$AUTO = mysqli_fetch_array(mysqli_query($con, $SQLQ));
 					//echo mysql_error();
 					echo $AUTO['Auto_increment'];
 					?>" />
@@ -118,6 +123,6 @@ else{
 			</tr>
 		</table>
 	</div>
-	<div 
+	<div
 </body>
 </html>

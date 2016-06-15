@@ -13,7 +13,7 @@ else if($con){
 
 <!DOCTYPE HTML>
 <head>
-<link rel="stylesheet" type="text/css" href="../altstyle.css" />
+<link rel="stylesheet" type="text/css" href="../css/altstyle.css" />
 <title>Missing Log Report</title>
 </head>
 <html>

@@ -1,8 +1,8 @@
 function load(){
-	 	//$.blockUI(null); 
+	 	//$.blockUI(null);
 	 	document.getElementById("DDLNormal").value = 21;// Allow for deafult option
 	 }
-	 
+
 	//http://www.coryarthus.com/ (CODE SOURCE)
 	function setSelectedIndex(s, v) {
 	    for ( var i = 0; i < s.options.length; i++ ) {
@@ -23,7 +23,7 @@ function load(){
 		document.getElementById("AdNum").value = document.getElementById("ADLis").options[document.getElementById("ADLis").selectedIndex].value;
 		//this.form.elements["AdNum"].value = "some";
 		//alert("changed");
-		
+
 	}
 	function CHAVF(){
 		//document.getElementById("ADLis").options[document.getElementById("adbox1").selectedIndex].selected = true;
@@ -35,9 +35,9 @@ function load(){
 		$("#processing").hide();
 		$("#InputAdvert").show();
 	}
-	
+
 	function CHtype(){
-		
+
 		if(document.getElementById("DDLNormal").options[document.getElementById("DDLNormal").selectedIndex].value==51){
 			$("#inputdiv").hide();
 			$("#processing").hide();
@@ -49,7 +49,7 @@ function load(){
 			document.getElementById("plbody").style.display="inline";
 			document.getElementById("spokcon").style.display="none";
 			//document.getElementById("Spokcon").required="true";
-			
+
 			document.getElementById("title001").value="";
 			document.getElementById("artin").disabled=false;
 			document.getElementById("albin").disabled=false;
@@ -70,7 +70,7 @@ function load(){
 			document.getElementById("plbody").style.display="none";
 			document.getElementById("spokcon").style.display="inline";
 			//document.getElementById("Spokcon").required="true";
-			
+
 			//document.getElementById("title001").value="";//Spoken Word / News / ID
 			document.getElementById("data1").style.display="inline";
 			document.getElementById("data1").disabled=false;
@@ -82,7 +82,7 @@ function load(){
 			//document.getElementById("ccin").disabled="true";
 			//document.getElementById("hitin").disabled="true";
 			//document.getElementById("insin").disabled="true";
-		}	
+		}
 		else if(document.getElementById("DDLNormal").options[document.getElementById("DDLNormal").selectedIndex].value!=12 || document.getElementById("DDLNormal").options[document.getElementById("DDLNormal").selectedIndex].value!=11){
 			//$("#inputdiv").hide();
 			//document.getElementById("")
@@ -96,14 +96,14 @@ function load(){
 			document.getElementById("plbody").style.display="inline";
 			document.getElementById("spokcon").style.display="none";
 			//document.getElementById("Spokcon").required="true";
-			
+
 			//document.getElementById("title001").value="";
 			document.getElementById("artin").disabled=false;
 			document.getElementById("albin").disabled=false;
 			document.getElementById("ccin").disabled=false;
 			document.getElementById("hitin").disabled=false;
 			document.getElementById("insin").disabled=false;
-			
+
 			document.getElementById("data1").style.display="none";
 			document.getElementById("data1").disabled="true";
 			document.getElementById("title001").style.display="inline";
@@ -113,7 +113,7 @@ function load(){
 			$("#InputAdvert").hide();
 			$("#InputSponsor").hide();
 		}
-		
+
 		/*else{
 			var x=document.getElementById("DDLNormal").selectedIndex;
 			var y=document.getElementById("DDLNormal").options;
@@ -131,7 +131,7 @@ function load(){
 			document.getElementById("plbody").style.display="inline";
 			document.getElementById("spokcon").style.display="none";
 			//document.getElementById("Spokcon").required="true";
-			
+
 			// SET Value of spoken minutes to Null as element is hidden
 			document.getElementById("spokenc").value="";
 			document.getElementById("title001").value="";
@@ -154,7 +154,7 @@ function load(){
 			document.getElementById("plbody").style.display="none";
 			document.getElementById("spokcon").style.display="inline";
 			//document.getElementById("Spokcon").required="true";
-			
+
 			document.getElementById("title001").value="Spoken Word / News";
 			document.getElementById("artin").disabled="true";
 			document.getElementById("albin").disabled="true";
@@ -189,9 +189,9 @@ function load(){
 	function SpokenWord(){
 		alert("Definition: \n Spoken Word \n\n defined as locally produced spoken programming");
 	}
-	
+
 	function NotSpoken(){
-		
+
 	}
 	function ClearWarning(){
 		$("#warning").html("");
@@ -201,27 +201,27 @@ function load(){
 		$("#warning").html("<span>Definition: \n Instrumental \n\n defined as music that is performed with no vocals/singers performing in the piece.</span>");
 		SetTimeout(ClearWarning(),2000);
 	}
-	
+
 	function DefineHit(){
 		alert("Definition: \n Instrumental \n\n defined as music that is performed with no vocals/singers performing in the piece.");
 	}
-	
+
 	function DefineIns(){
 		alert("Definition: \n Instrumental \n\n defined as music that is performed with no vocals/singers performing in the piece.");
 	}
-	
+
 	function fetchplaylist(){
-		
+
 	}
-	
+
 	function formsubmit(){
 		//$.blockUI({ message: '<h1><img src="/images/GIF/ajax-loader1.gif" /> Just a moment...</h1>' });
-		/*$.blockUI({ message: '<h2><image src="/images/GIF/ajax-loader2.gif"/>Processing</h2>' }); 
-        setTimeout(function() { 
-            $.unblockUI({ 
-                onUnblock: function(){ alert('The server was unable to process your request in a reasonable time. \nPlease resubmit your data'); } 
-            }); 
-        }, 4000);*/ 
+		/*$.blockUI({ message: '<h2><image src="/images/GIF/ajax-loader2.gif"/>Processing</h2>' });
+        setTimeout(function() {
+            $.unblockUI({
+                onUnblock: function(){ alert('The server was unable to process your request in a reasonable time. \nPlease resubmit your data'); }
+            });
+        }, 4000);*/
 		//if(document.getElementById("spokcon").value<600 && document.getElementById("spokcon").value>0){
 		//	$.unblockUI();
 			/*$("#inputdiv").hide();
@@ -238,8 +238,8 @@ function load(){
 
 	// -->
 
-    // unblock when ajax activity stops 
-     //$(document).ajaxStop($.unblockUI); 
+    // unblock when ajax activity stops
+     //$(document).ajaxStop($.unblockUI);
 
 
      function test() {
@@ -277,7 +277,7 @@ function load(){
              dialog("Fields not empty, please clear all input");
          }*/
      }
-     
+
      function process_foobar(np_data){
          fb2k_data = JSON.parse(np_data);
          var volume_percentage = eval(100 + (fb2k_data.volume / 35 * 100));
@@ -332,14 +332,14 @@ function load(){
               text: true
           });
      }
-     
+
         // EPV3/Switch.php
         // generate web workers to handle updating diapla
      function Display_Switch() {
          SWR_error = 0;
         if(typeof(Worker) !== "undefined") {
             if(typeof(switch_worker) == "undefined") {
-                switch_worker = new Worker("../TPSBIN/JS/Episode/switch_worker.js");
+                switch_worker = new Worker("../../TPSBIN/JS/Episode/switch_worker.js");
             }
             switch_worker.onmessage = function(event) {
                 //document.getElementById("result").innerHTML = event.data;
@@ -382,7 +382,7 @@ function load(){
     function Foobar2000(server) {
         if(typeof(Worker) !== "undefined") {
             if(typeof(foobar_worker) == "undefined") {
-                foobar_worker = new Worker("../TPSBIN/JS/Episode/foobar_worker.js");
+                foobar_worker = new Worker("../../TPSBIN/JS/Episode/foobar_worker.js");
             }
             foobar_worker.onmessage = function (event) {
                 if (event.data === "error") {

@@ -9,8 +9,8 @@ if (!$con){
 	username=' . $_SESSION["username"]);
 }
 else if($con){
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /user/login');} 
-		
+	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /user/login');}
+
 		if(!isset($_POST['PAGIN'])){
 			$PAGIN = 50;
 		}
@@ -21,7 +21,7 @@ else if($con){
 		else{
 			$PAGIN = addslashes($_POST['PAGIN']);
 		}
-		
+
 		if(!isset($_POST['page'])){
 			$pagenum = 1;
 		}
@@ -63,17 +63,17 @@ else if($con){
         //echo $PAGIN;
 		$SQL = "SELECT * from song";
 		$SQLC = "SELECT count(songid) from song";
-		
+
 		$SQLBUFF = "";
 		$CONT = false;
-		
-		
+
+
 		if($playlist!="")
 		{
 			$CONT = true;
 			$SQLBUFF.=" playlistnumber LIKE '$playlist' ";
 		}
-		
+
 		if($_POST['Artist']!="")
 		{
 			if($CONT == true){
@@ -84,7 +84,7 @@ else if($con){
 			}
 			$SQLBUFF.=" artist like '%".addslashes($_POST['Artist'])."%' ";
 		}
-		
+
 		if($_POST['Album']!="")
 		{
 			if($CONT == true){
@@ -95,7 +95,7 @@ else if($con){
 			}
 			$SQLBUFF.=" album like '%".addslashes($_POST['Album'])."%' ";
 		}
-		
+
 		if($_POST['Category']!="")
 		{
 			if($CONT == true){
@@ -106,7 +106,7 @@ else if($con){
 			}
 			$SQLBUFF.=" category like '%".addslashes($_POST['Category'])."%' ";
 		}
-		
+
 		if($_POST['Title']!="")
 		{
 			if($CONT == true){
@@ -172,8 +172,8 @@ else if($con){
 			$SQL .= " where " . $SQLBUFF ;
 			$SQLC .= " where " . $SQLBUFF;
 		}
-		
-		
+
+
 		//echo $SQLC;
 		$numrow = mysql_fetch_array(mysql_query($SQLC));
 		//echo $numrow['count(songid)'];
@@ -184,7 +184,7 @@ else if($con){
 
 		if($pagenum>$last){
             $pagenum=$last;
-		    
+
 		}
         $SQL .= " limit " . ($pagenum-1) * $PAGIN . "," . $PAGIN ;
 
@@ -194,7 +194,7 @@ else if($con){
 <!DOCTYPE HTML>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../altstyle.css" />
+<link rel="stylesheet" type="text/css" href="../css/altstyle.css" />
 <title>Search</title>
 </head>
 <body class="hasstatictop">
@@ -203,7 +203,7 @@ else if($con){
 		//use @ to differentiate
 		newwindow=window.open(url,'name','height=800,width=800');
 		if (window.focus) {newwindow.focus()}
-		return false;		
+		return false;
 	}
 	</script>
 	<div class="statictop">
@@ -216,7 +216,7 @@ if(($pagenum - 2) > 0){
 if(($pagenum - 1) > 0){
     echo "<a href='?page=".($pagenum-1)."&pagin=$PAGIN'>".($pagenum-1)."</a>&nbsp";
 }*/
- echo $pagenum ." / ".$last; 
+ echo $pagenum ." / ".$last;
  /*
 if(($pagenum + 1) < $last){
     echo "&nbsp<a href='?page=".($pagenum+1)."&pagin=$PAGIN'>".($pagenum+1)."</a>&nbsp";
@@ -290,7 +290,7 @@ if(($pagenum + 2) < $last){
         </div>
     </div>
 	<div id="header">
-		<a href="../"><img src="../images/Ckxu_logo_PNG.png" alt="CKXU" /></a>
+		<a href="../"><img src="<?php print("../".$_SESSION['logo']); ?>" alt="logo"/></a>
 	</div>
 	<div id="top">
 		<h2>Search Results - Song</h2>
@@ -308,14 +308,14 @@ if(($pagenum + 2) < $last){
 			echo "<tr";
 			if($ROW%2){
 				echo " style='background-color:#DAFFFF;' ";
-			} 
+			}
 			$ROW++;
 			echo "><td>". $row['playlistnumber'] . "</td><td>" . $row['time'] . "</td><td>" . $row['title'] . "</td><td>";
 			echo $row['artist'] . "</td><td>" . $row['album'] . "</td><td>".$row['cancon']."</td><td>".$row['hit']."</td><td>".$row['instrumental']."</td><td>";
                         echo $row['programname'] . "</td><td>";
 			echo "<button type=\"button\" onclick=\"javascript:quickview('../oep/quickview.php?args=".urlencode($row['programname'])."@".$row['date']."@".$row['starttime']."@".$row['callsign']."')\">View</button>
 			<button type=\"button\" href=\"../oep/EPV2/p3update.php?program=".urlencode($row['programname'])."&user_time=".$row['starttime']."&user_date=".$row['date']."&callsign=".$row['callsign']."\" onclick=\"javascript:window.open('../oep/EPV2/p3update.php?program=".urlencode($row['programname'])."&user_time=".$row['starttime']."&user_date=".$row['date']."&callsign=".$row['callsign']."','popUpWindow','height=800,width=1350,left=10,top=10,,scrollbars=yes,menubar=no'); return false;\">Modify</button>
-			</td></tr>"; 
+			</td></tr>";
 		}
 		echo "</table>";
 		?>
@@ -339,7 +339,7 @@ if(($pagenum + 2) < $last){
 			</tr>
 		</table>
 	</div>
-	
+
 <?php
 
 }

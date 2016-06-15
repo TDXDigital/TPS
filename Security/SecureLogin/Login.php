@@ -29,7 +29,7 @@ if (login_check($mysqli) == true) {
 <html>
     <head>
         <title>Secure Login: Log In</title>
-        <link rel="stylesheet" href="../../phpstyle.css" />
+        <link rel="stylesheet" href="../../css/phpstyle.css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
         <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>

@@ -29,7 +29,7 @@ if (file_exists('config' . DIRECTORY_SEPARATOR . $code . '.php')) {
     <head>
         <title><?php echo $barcodeName; ?> - Barcode Generator</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link type="text/css" rel="stylesheet" href="style.css" />
+        <link type="text/css" rel="stylesheet" href="../../../css/style.css" />
         <link rel="shortcut icon" href="favicon.ico" />
         <script src="jquery-1.7.2.min.js"></script>
         <script src="barcode.js"></script>

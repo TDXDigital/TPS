@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Secure Login: Registration Success</title>
-        <link rel="stylesheet" href="../../phpstyle.css" />
+        <link rel="stylesheet" href="../../css/phpstyle.css" />
     </head>
     <body>
         <h1>Registration successful!</h1>

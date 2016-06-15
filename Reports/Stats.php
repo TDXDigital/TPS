@@ -12,7 +12,7 @@ if (!$con){
 }
 else if($con){
 	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /login.php');}
-	
+
     }
 else{
 	echo 'ERROR!';
@@ -28,7 +28,7 @@ $show = "%";
 
 <!DOCTYPE HTML>
 <head>
-<link rel="stylesheet" type="text/css" href="../altstyle.css" />
+<link rel="stylesheet" type="text/css" href="../css/altstyle.css" />
 <title>Statistics</title>
 <!--Load the AJAX API-->
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -79,28 +79,28 @@ $show = "%";
 	        date("Y-m-d",strtotime("yesterday ". $NEXT ." weeks"))
 	        ."'";
 			$Count2 = mysql_fetch_array(mysql_query($SQCount2));
-			
+
 	        $SQCountCC2="select count(songid) from song where cancon='1' and category like '2%' and song.date between '".
 	        date("Y-m-d",strtotime("yesterday ". $CONTROL ." weeks"))
 	        ."' and '".
 	        date("Y-m-d",strtotime("yesterday ". $NEXT ." weeks"))
 	        ."'";
 	        $CountCC2 = mysql_fetch_array(mysql_query($SQCountCC2));
-			
+
 			$SQCountCC3="select count(songid) from song where cancon='1' and category like '3%' and song.date between '".
 	        date("Y-m-d",strtotime("yesterday ". $CONTROL ." weeks"))
 	        ."' and '".
 	        date("Y-m-d",strtotime("yesterday ". $NEXT ." weeks"))
 	        ."'";
 			$CountCC3 = mysql_fetch_array(mysql_query($SQCountCC3));
-			
+
 			$SQCount3="select count(songid) from song where category like '3%' and song.date between '".
 	        date("Y-m-d",strtotime("yesterday ". $CONTROL ." weeks"))
 	        ."' and '".
 	        date("Y-m-d",strtotime("yesterday ". $NEXT ." weeks"))
 	        ."'";
 			$Count3 = mysql_fetch_array(mysql_query($SQCount3));
-			
+
 			$SQCountTotal="select count(songid) from song where category not like '5%' and category not like '4%' and song.date between '".
 	        date("Y-m-d",strtotime("yesterday ". $CONTROL ." weeks"))
 	        ."' and '".
@@ -108,12 +108,12 @@ $show = "%";
 	        ."'";
 			//echo $SQCountTotal;
 			$CountTotal = mysql_fetch_array(mysql_query($SQCountTotal));
-			
+
 			$CCpercthree = $Count3['count(songid)']/$CountCC3['count(songid)'];
 			$Percthree = $CountTotal['count(songid)']/$Count3['count(songid)'];
 			$CCperctwo = $Count2['count(songid)'] / $countCC2['count(songid)'];
 			*/
-		
+
 			$SQ_PER_TWO = "SELECT (SELECT count(songid) from song where cancon='1' and category like '2%' and song.date between '".
 	        date("Y-m-d",strtotime("yesterday ". $CONTROL ." weeks"))
 	        ."' and '".
@@ -123,10 +123,10 @@ $show = "%";
 	        ."' and '".
 	        date("Y-m-d",strtotime("yesterday ". $NEXT ." weeks"))
 	        ."')*100 AS result";
-			
+
 			$PER_TWO = mysql_fetch_array(mysql_query($SQ_PER_TWO));
-			
-			
+
+
 			$SQ_PER_THREE = "SELECT (SELECT count(songid) from song where cancon='1' and category like '3%' and song.date between '".
 	        date("Y-m-d",strtotime("yesterday ". $CONTROL ." weeks"))
 	        ."' and '".
@@ -136,9 +136,9 @@ $show = "%";
 	        ."' and '".
 	        date("Y-m-d",strtotime("yesterday ". $NEXT ." weeks"))
 	        ."') * 100 AS result";
-			
+
 			$PER_THREE = mysql_fetch_array(mysql_query($SQ_PER_THREE));
-			
+
 			$SQ_TOT_THREE = "SELECT (SELECT count(songid) from song where category like '3%' and song.date between '".
 	        date("Y-m-d",strtotime("yesterday ". $CONTROL ." weeks"))
 	        ."' and '".
@@ -149,9 +149,9 @@ $show = "%";
 	        ."' and '".
 	        date("Y-m-d",strtotime("yesterday ". $NEXT ." weeks"))
 	        ."') * 100 AS result";
-			
+
 			$TOT_THREE = mysql_fetch_array(mysql_query($SQ_TOT_THREE));
-			
+
 			echo "['".date($DateDisplayFormat,strtotime("yesterday ". $CONTROL ." weeks"))."', ".$PER_TWO['result'].", ".$TOT_THREE['result']." , ".$PER_THREE['result']."],
 			";
 			$NEXT++;
@@ -164,7 +164,7 @@ $show = "%";
 
         var chart_Ad = new google.visualization.LineChart(document.getElementById('AdMinutes_div'));
         chart_Ad.draw(data_Ad, options_Ad);
-        
+
         var chart_CC = new google.visualization.LineChart(document.getElementById('CanCon_div'));
         chart_CC.draw(data_CC, options_CC);
       }
@@ -177,12 +177,12 @@ $show = "%";
 			echo "<div id=\"AdMinutes_div\" style=\"width: 1000px; height: 300px; margin: 0 auto;\"></div>
     	<div id=\"CanCon_div\" style=\"width: 1000px; height: 500px; margin: 0 auto;\"></div>";
 		} else {?>
-		
+
 	<div class="topbar">
            User: <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
 	<div id="header">
-		<a href="#"><img src="../images/Ckxu_logo_PNG.png" alt="CKXU" /></a>
+		<a href="#"><img src="<?php print("../".$_SESSION['logo']); ?>" alt="logo"/></a>
 	</div>
 	<div id="top">
 		<h2>Live Programming Statistics</h2>
@@ -214,7 +214,7 @@ $show = "%";
 			</tr>
 		</table>
 	</div>
-	<?php 	
+	<?php
 		}
 	?>
 </body>

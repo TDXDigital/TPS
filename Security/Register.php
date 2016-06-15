@@ -41,7 +41,7 @@ include_once '../TPSBIN/register.inc.php';
         <title>Secure Login: Registration Form</title>
         <script type="text/JavaScript" src="../TPSBIN/JS/sha512.js"></script> 
         <script type="text/JavaScript" src="../TPSBIN/JS/forms.js"></script>
-        <link rel="stylesheet" href="../phpstyle.css" />
+        <link rel="stylesheet" href="../css/phpstyle.css" />
     </head>
     <body>
         <!-- Registration form to be output if the POST variables are not

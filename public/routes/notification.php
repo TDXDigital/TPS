@@ -23,8 +23,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-$notifications = new \TPS\notification($_SESSION['CALLSIGN']);
+include_once dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."notifications.php";
+$notifications = new \TPS\notification(\TPS\util::get($_SESSION, 'CALLSIGN'));
 
 $app->get('/message', function () use ($app){
     $app->redirect('/message/');
