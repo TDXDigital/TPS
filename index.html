@@ -1,35 +1,46 @@
-<!DOCTYPE html>
-<html lang="en-us">
+<!doctype html>
+<html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>TPS Broadcast by TDXDigital</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
   <body>
-    <section class="page-header">
-      <h1 class="project-name">TPS Broadcast</h1>
-      <h2 class="project-tagline">Technical Programming Schedule</h2>
-      <a href="https://github.com/TDXDigital/TPS" class="btn">View on GitHub</a>
-      <a href="https://github.com/TDXDigital/TPS/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/TDXDigital/TPS/tarball/master" class="btn">Download .tar.gz</a>
-    </section>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">TPS Broadcast</h1>
+        <p class="header">Technical Programming Schedule</p>
 
-    <section class="main-content">
-      <p><a href="https://travis-ci.org/TDXDigital/TPS"><img src="https://travis-ci.org/TDXDigital/TPS.svg?branch=master" alt="Build Status"></a></p>
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/TDXDigital/TPS/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/TDXDigital/TPS/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/TDXDigital/TPS">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/TDXDigital">TDXDigital</a></p>
+
+
+      </header>
+      <section>
+        <h1>
+<a id="technical-program-schedule" class="anchor" href="#technical-program-schedule" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Technical Program Schedule</h1>
+
+<p><em>(Previously Digital Program Logs)</em></p>
 
 <h1>
-<a id="digital-program-logs" class="anchor" href="#digital-program-logs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Digital Program Logs</h1>
-
-<h1>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>LICENSE</h1>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>LICENSE</h1>
 
 <p><a href="http://opensource.org/licenses/MIT">The MIT License (MIT)</a></p>
 
-<p>Copyright (c) 2014 James Oliver, <a href="http://www.ckxu.com/development/tps">CKXU Radio Society</a></p>
+<p>Copyright (c) 2016 James Oliver, <a href="http://www.ckxu.com/development/tps">CKXU Radio Society</a></p>
 
 <p>Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -50,28 +61,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.</p>
 
 <h1>
-<a id="purpose" class="anchor" href="#purpose" aria-hidden="true"><span class="octicon octicon-link"></span></a>Purpose</h1>
+<a id="purpose" class="anchor" href="#purpose" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Purpose</h1>
 
 <p>This software is designed to suit the needs of campus and community based radio in Canada. Through logging and analysis of content played on air, reporting compliance will become simpler and streamlined</p>
 
 <h1>
-<a id="operations" class="anchor" href="#operations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Operations</h1>
+<a id="operations" class="anchor" href="#operations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Operations</h1>
 
 <ol>
 <li>Installation
 
 <ol>
 <li>Requirements</li>
+<li>Tutorial</li>
 </ol>
 </li>
 <li>Setting up a station</li>
-<li>Genres</li>
-<li>DJs and Programs</li>
-<li>Reporting</li>
+<li>Genres and Categories</li>
 </ol>
 
 <h1>
-<a id="1-installation" class="anchor" href="#1-installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. Installation</h1>
+<a id="1-installation" class="anchor" href="#1-installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1. Installation</h1>
 
 <p>Installation of this platform during the Alpha and Beta phases is to place the entire directory within a location that is available to the web server.
 Configuration of the XML connection file located in the TPSBIN/XML/DBSETTINGS.xml file define the connection type to the Database server
@@ -79,29 +89,103 @@ as well as the authentication type used for user login. supported methods of Log
 The database must always use a MySQL server at the current time.</p>
 
 <h2>
-<a id="11-requirements" class="anchor" href="#11-requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.1 Requirements</h2>
+<a id="11-requirements" class="anchor" href="#11-requirements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.1 Requirements</h2>
 
 <p>This program requires a Web Server (such as apache or IIS) with PHP 5.4+ installed as well as a MySQL 5.6.5+ database.
 The user will use a web browser or other supported application to connect to the database. </p>
 
 <h4>
-<a id="the-following-php-extensions-are-required" class="anchor" href="#the-following-php-extensions-are-required" aria-hidden="true"><span class="octicon octicon-link"></span></a>The following PHP extensions are required:</h4>
+<a id="the-following-php-extensions-are-required" class="anchor" href="#the-following-php-extensions-are-required" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The following PHP extensions are required:</h4>
 
 <ul>
 <li>LDAP</li>
 <li>mcrypt</li>
 <li>mysqli</li>
 <li>mysqlnd [recommended]</li>
+<li>PDO</li>
+<li>composer</li>
 </ul>
 
-      <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/TDXDigital/TPS">TPS Broadcast</a> is maintained by <a href="https://github.com/TDXDigital">TDXDigital</a>.</span>
+<h2>
+<a id="12-tutorial" class="anchor" href="#12-tutorial" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.2 Tutorial</h2>
 
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+<p>This is a general tutorial on how to setup a server, this will be a high level overview of how to configure a production server but environments may vary. For example demo.ckxu.com uses an NGINX gateway service to multiple compute nodes on the backend with a distributed filesystem and varnish cache. yet ckxu.uleth.ca utilizes a simpler but more high powered VPS. providing walkthroughs for each one would be extermely extensive so we will assume you have a fully working and basically configured server (can load apache default page).  </p>
+
+<h3>
+<a id="121-useful-links" class="anchor" href="#121-useful-links" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.2.1 Useful Links:</h3>
+
+<p>here are some useful pages on by <a href="https://m.do.co/c/6965f10ddbd5">Digital Ocean</a>, you can use this <a href="https://m.do.co/c/6965f10ddbd5">link to get a free $10 credit</a> toward your servers VPS servers hosted with <a href="https://m.do.co/c/6965f10ddbd5">Digital Ocean</a>.</p>
+
+<ul>
+<li><a href="https://www.digitalocean.com/community/tutorial_series/introduction-to-nginx-and-lemp-on-ubuntu-14-04">Introduction to LEMP on Ubuntu 14.04</a></li>
+<li><a href="https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-16-04">LAMP on Ubuntu 16.04</a></li>
+<li><a href="https://www.digitalocean.com/community/tutorials/how-to-set-up-nginx-load-balancing">NGINX Load Balancer</a></li>
+<li><a href="https://www.digitalocean.com/community/tutorials/how-to-create-a-redundant-storage-pool-using-glusterfs-on-ubuntu-servers">Gluster Redundant Storage Pool</a></li>
+<li><a href="http://www.pira.cz/show.asp?art=piracom">Serial Com. to TCP software</a></li>
+</ul>
+
+<h3>
+<a id="122-walkthrough" class="anchor" href="#122-walkthrough" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1.2.2 Walkthrough:</h3>
+
+<ol>
+<li>Clone from Git or download and extract an archive of TPS.</li>
+<li>upload files to server if needed</li>
+<li>access the server terminal (SSH)</li>
+<li>navigate to the location of the webserver root directory</li>
+<li>(Optional but Recommended) to customize your server configuration copy the config <code>./public/slimConfig.example.php</code> to the root directory and rename to <code>slimConfig.php</code>. i.e. <code>cp ./public/slimConfig.example.php ./slimConfig.php</code>
+</li>
+<li>(Optional but Recommended) edit slimConfig.php and change the following parameters: </li>
+</ol>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$debug</span> <span class="pl-k">=</span> <span class="pl-c1">True</span>; <span class="pl-c">#enables detailed exceptions (leave set to false on production systems)</span></span>
+<span class="pl-s1"><span class="pl-smi">$sessionExpiry</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>10minutes<span class="pl-pds">"</span></span> <span class="pl-c"># adjusts the length of time a session will be kept open. once defined duration is passed a user will have to sign in again</span></span>
+<span class="pl-s1"><span class="pl-smi">$temp_path</span> <span class="pl-k">=</span> <span class="pl-c1">false</span>; <span class="pl-c"># can be chagned to specify a cache directory for Slim (provides speed improvements)</span></span>
+<span class="pl-s1"><span class="pl-smi">$sessionName</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>SomeSessionName<span class="pl-pds">"</span></span> <span class="pl-c"># should be changed from default to a custom value to improve security</span></span>
+<span class="pl-s1"><span class="pl-smi">$sessionSecret</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>SOME_HASH_VALUE<span class="pl-pds">"</span></span> <span class="pl-c"># session secret, recommend using value from [GRC Perfect Passwords](https://www.grc.com/passwords.htm)</span></span></pre></div>
+
+<ol>
+<li>Run <code>composer install --no-dev</code> in the root directory to install external requirements</li>
+<li>open web browser and navigate to site URL. you will be automatically directed to a first time setup walkthrough. </li>
+<li>follow the in browser steps. </li>
+<li>after setup, login using the credentials you set in the Setup process. and go to Advanced -&gt; Updates. apply any missing updates</li>
+<li>in the terminal edit <code>CONFIG.php</code>, if you do not have a Broadcast Tools ACS8.2 plus switcher set the following line to prevent attempts to query the switch:</li>
+</ol>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$switch_enabled</span> <span class="pl-k">=</span> <span class="pl-c1">False</span>;</span></pre></div>
+
+<p>if you do have an appropriate switch change the following line:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$switch</span> <span class="pl-k">=</span> <span class="pl-c1">url_or_ip_of_tcp_com</span></span></pre></div>
+
+<ol>
+<li>party! you have installed TPS</li>
+</ol>
+
+<h2>
+<a id="20-setting-up-an-additional-station" class="anchor" href="#20-setting-up-an-additional-station" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>2.0 Setting up a(n additional) station</h2>
+
+<p>Most of the process is handled by the setup script but more configuration can be done on stations to enhance reporting. To change these or to add an additional station to your TPS Broadcast navigate to management -&gt; station. you can now either edit an existing station or create a new one.</p>
+
+<h2>
+<a id="30-genres-and-categories" class="anchor" href="#30-genres-and-categories" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>3.0 Genres and Categories</h2>
+
+<p>In TPS Broadcast there is a distinction made between Genres and Categories but they are somewhat related. </p>
+
+<h3>
+<a id="31-categories" class="anchor" href="#31-categories" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>3.1 Categories</h3>
+
+<p>Categories are content and management groups for programs, this defines the type of content that is expected of programs and groups their reporting.</p>
+
+<h3>
+<a id="32-genres" class="anchor" href="#32-genres" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>3.2 Genres</h3>
+
+<p>Genres relate to musical genres but have in the past referenced program categories as well. If you notice a reference to a <code>program category</code> in the UI please submit an issue on GitHub so it can be resolved. Genres are a group that can be expanded into Government Categories (i.e. CRTC 21 - Pop, Rock, Dance) this allows reporting on the actual content played by talent (10% Category 3 etc.)</p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
       </footer>
-
-    </section>
-
-  
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
   </body>
 </html>
