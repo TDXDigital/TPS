@@ -19,11 +19,12 @@ $LOCAL_ROOT         = dirname(dirname(dirname(dirname(__FILE__))));
 $LOCAL_REPO_NAME    = "REPO_NAME";
 $LOCAL_REPO         = "{$LOCAL_ROOT}/{$LOCAL_REPO_NAME}";
 $REMOTE_REPO        = "https://github.com/TDXDigital/TPS.git";
+$IDENT_FILE         = "./id_rsa";
 $BRANCH             = "master";
 if(!file_exists("githubConfig.php")){
     throw new \Exception("git webhook is not configured");
 }
-require "githubConfig.php"; 
+require "githubConfig.php";
 # use this gitignored file to override repoName or other config params
 if($LOCAL_REPO_NAME == "REPO_NAME"){
     throw new \Exception("git webhook is not configured");
@@ -34,13 +35,13 @@ if($LOCAL_REPO_NAME == "REPO_NAME"){
 if( file_exists($LOCAL_REPO) ) {
 
   // If there is already a repo, just run a git pull to grab the latest changes
-  shell_exec("cd {$LOCAL_REPO} && git pull");
+  print shell_exec("cd {$LOCAL_REPO} && git pull -i {$IDENT_FILE}");
 
   print("done " . mktime());
 } else {
 
   // If the repo does not exist, then clone it into the parent directory
-  shell_exec("cd {$LOCAL_ROOT} && git clone {$REMOTE_REPO}");
+  print shell_exec("cd {$LOCAL_ROOT} && git clone {$REMOTE_REPO} -i {$IDENT_FILE}");
 
   print("done " . mktime());
 }
