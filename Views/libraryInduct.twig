@@ -39,7 +39,7 @@
             <fieldset>
                 <div id="art-group" class="form-group input-group">
                     <label class="input-group-addon" for="art_field">Artist&nbsp;<span style="color:red">&nbsp;*</span></label>
-                    <input name="artist" id="art_field" type="text" required list="artists" 
+                    <input name="artist" id="art_field" type="text" required list="artists"
                            {% if album.artist is not null %} value="{{album.artist}}" {% endif %}
                            placeholder="Start typing artist name to retrieve list" autocomplete="on" class="form-control TPSAutoSearch" autofocus="autofocus" onkeyup="catch_enter(event);">
                     <span class="input-group-btn">
@@ -48,7 +48,7 @@
                 </div>
                 <div id="alb_group" class="form-group input-group">
                     <label class="input-group-addon" for="alb_field">Album<span style="color:red">*</span></label>
-                    <input name="album" id="alb_field" type="text" required 
+                    <input name="album" id="alb_field" type="text" required
                            {% if album.album is not null %} value="{{album.album}}" {% endif %}
                            placeholder="Start typing album name to retrieve list" autocomplete="on" class="form-control TPSAutoSearch">
                     <span class="input-group-btn">
@@ -71,7 +71,7 @@
                         <select id="genre" class="form-control" name="genre" data-placeholder="Album Genre" style="min-width: 150px;">
                             <!--<option value="null">Genre</option>-->
                             {% for key,value in genres %}
-                                <option value='{{key}}' 
+                                <option value='{{key}}'
                                         {% if album.genre == key %} selected {% endif %}
                                         >{{value|default('Unknown Genre')}}</option>
                             {% endfor %}
@@ -84,7 +84,7 @@
                         <label for="category" class="input-group-addon">Category</label>
                         <select id="category" class="form-control" name="category" data-placeholder="Government Category" style="min-width: 150px;">
                             {% for key,value in govCats %}
-                                <option value='{{key}}' 
+                                <option value='{{key}}'
                                         {% if album.governmentCategory == key %} selected {% endif %}
                                         >{{key}} {{value|default('Unknown Category')}}</option>
                             {% endfor %}
@@ -99,7 +99,7 @@
                         <select id="locale" class="form-control" name="locale">
                             {% set locale=locale?:["International","Country","Province","Local"] %}
                             {% for key in locale %}
-                                <option value='{{key}}' 
+                                <option value='{{key}}'
                                         {% if album.Locale == key %} selected {% endif %}
                                         > {{key|default('Unknown Category')}}</option>
                             {% endfor %}
@@ -131,8 +131,8 @@
                 </div>
                 {% endif %}
                 <div class="col-lg-6">
-                    <select name="label" id="label" 
-                            required="required" 
+                    <select name="label" id="label"
+                            required="required"
                             class="form-control chosen-select-add">
                         <option>Self Released</option>
                         {% for label in labels if label!="Self Released"%}
@@ -169,7 +169,7 @@
                 <div class="col-md-12">
                     <div id="ind_group" class="form-group input-group">
                         <label for="notes" class="input-group-addon">Notes</label>
-                        <input id="notes" type="text" 
+                        <input id="notes" type="text"
                                {% if album.note is not null %} value="{{album.note}}" {% endif %}
                                class="form-control" name="notes" placeholder="optional"/>
                     </div>
@@ -181,7 +181,7 @@
                 </div>
                 {% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
                     <div class="col-lg-3">
-                        <input type="checkbox" data-label-prepend="Keep" 
+                        <input type="checkbox" data-label-prepend="Keep"
                                {% if album.status == 1 or album.status is null %} checked="checked" {% endif %}
                                class="style3" name="accept" value="1"/>
                     </div>
@@ -199,8 +199,8 @@
                     <div class="col-lg-3">
                         <!-- Single button -->
                         <div class="btn-group">
-                          <button type="button" 
-                                  class="btn 
+                          <button type="button"
+                                  class="btn
                                     {% if album.playlist|length == 1 %}
                                         btn-success
                                     {% elseif album.playlist|length > 1 %}
@@ -208,14 +208,14 @@
                                     {% else %}
                                         btn-default
                                     {% endif %}
-                                    dropdown-toggle" 
-                                  data-toggle="dropdown" aria-haspopup="true" 
+                                    dropdown-toggle"
+                                  data-toggle="dropdown" aria-haspopup="true"
                                   aria-expanded="false">
                             Playlist <span class="caret"></span>
                           </button>
                           <ul class="dropdown-menu">
                             {% for playlist in album.playlist %}
-                                <li><a href="../playlist/{{playlist.PlaylistId}}" 
+                                <li><a href="../playlist/{{playlist.PlaylistId}}"
                                        target="PL-{{album.RefCode}}">
                                         {{playlist.PlaylistId}}</a></li>
                             {% endfor %}
@@ -245,7 +245,7 @@
                         </div>
                         {% endif %}
                         -->
-                    </div>    
+                    </div>
                     {% endif %}
                 {% endif %}
             </div>
@@ -257,7 +257,7 @@
             <div class="col-md-6">
                 <div id="web_group" class="input-group form-group">
                     <label for="website" class="input-group-addon" title="Band Website"><span class="fa fa-link"></span></label>
-                    <input id="website" type="url" 
+                    <input id="website" type="url"
                            {% if album.websites.website is not null %} value="{{album.websites.website.url}}" {% endif %}
                            class="form-control" name="website" placeholder="http://www.bandwebsite.com"/>
                 </div>
@@ -265,7 +265,7 @@
             <div class="col-md-6">
                 <div id="bnc_group" class="input-group form-group">
                     <label for="bandcamp" class="input-group-addon" title="Soundcloud / Bandcamp URL"><i class="fa fa-soundcloud"></i></label>
-                    <input id="bandcamp" 
+                    <input id="bandcamp"
                            {% if album.websites.bandcamp is not null %} value="{{album.websites.bandcamp.url}}" {% elseif album.websites.soundcloud is not null %} value="{{album.websites.soundcloud.url}}" {% endif %}
                            type="url" class="form-control"  name="bandcamp" placeholder="Soundcloud / Bandcamp"/>
                 </div>
@@ -273,7 +273,7 @@
             <div class="col-md-6">
                 <div id="bnc_group" class="input-group form-group">
                     <label for="fb" class="input-group-addon" title="Facebook URL"><i class="fa fa-facebook-f"></i></label>
-                    <input id="fb" type="url" 
+                    <input id="fb" type="url"
                            {% if album.websites.facebook is not null %} value="{{album.websites.facebook.url}}" {% endif %}
                            class="form-control" name="facebook" placeholder="http://www.facebook.com"/>
                 </div>
@@ -281,7 +281,7 @@
             <div class="col-md-6">
                 <div id="bnc_group" class="input-group form-group">
                     <label for="tw" class="input-group-addon" title="Twitter URL"><i class="fa fa-twitter"></i></label>
-                    <input id="tw" type="url" 
+                    <input id="tw" type="url"
                            {% if album.websites.twitter is not null %} value="{{album.websites.twitter.url}}" {% endif %}
                            class="form-control" name="twitter" placeholder="http://www.twitter.com"/>
                 </div>
@@ -295,7 +295,7 @@
     </div>
     <div class="col-lg-6">
         <div class="pull-right">
-            {% if album.artist is not null and 
+            {% if album.artist is not null and
                     permissions > 1 or "libraryReceivingAdvanced" in permissions
             %}
                 <input type="hidden" name="_METHOD" value="PUT"/>
@@ -306,13 +306,13 @@
             {% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
                 <input id="print_btn" class="btn btn-success" onclick="PrintModal();"
                 {% if PRINTID is null %}
-                    disabled="disabled" 
+                    disabled="disabled"
                 {% endif %}
                     type="button" value="Print Labels">
-                <input id="print_btn" class="btn btn-danger" 
+                <input id="print_btn" class="btn btn-danger"
                        onclick="ClearPrintQueue();"
                 {% if PRINTID is null %}
-                    disabled="disabled" 
+                    disabled="disabled"
                 {% endif %}
                     type="button" value="Clear Queue">
             {% endif %}
@@ -499,7 +499,7 @@
     function edit(id){
         window.open('{{siteUrl}}/library/'+id);
     }
-    
+
     function PrintLabels(){
         print_start = $("#start").val();
         media_type = $("#media-type").val();
@@ -507,24 +507,34 @@
         window.open('/labels/print?type='+media_type+'&start='+print_start+
                 '&outline='+outline, '  printwindow');
     }
-    
+
     function UpdateAutoArtist(method,id){
         method = typeof method !== 'undefined' ? method : "any";
         id = typeof id !== 'undefined' ? id : "art_field";
-        
+
         $('#'+id).autocomplete({
             //source: "../MusicLib/DB_Search_Artist.php",
-            source: "/opl/AJAX/playlist.get_artist.php?type=artist&method="+method,
+            //source: "/legacy/opl/AJAX/playlist.get_artist.php?type=artist&method="+method,
+            source: function(request, response){
+                $.ajax({
+                    url: "/library/search/"+request.term,
+                    dateType: "json",
+                    success: response,
+                    error: function(){
+                        response([]);
+                    }
+                });
+            },
             minLength: 2
         });
     }
-    
+
     function ChangeAutoComplete(id,option){
         $('#method_hidden').val(option);
         $("#"+id).autocomplete("destroy");
         UpdateAutoArtist(option,id);
     }
-    
+
     function ClearPrintQueue(){
         $( "#dialog-confirm" ).dialog({
             dialogClass: 'no-close',
@@ -564,7 +574,7 @@
 
         // cache the select element as we'll be using it a few times
         select = $(".chosen-select-add");
-        
+
           // init the chosen plugin
         select.chosen({ no_results_text: 'Press Enter to add new label:' });
 
@@ -592,13 +602,13 @@
                 select.trigger("chosen:updated");
             }
         });
-        
+
         $('#form').on('submit', function(e) {
             if(!$("#label").valid()) {
                 e.preventDefault();
             }
         });
-        
+
         document.querySelector('form').onkeypress = checkEnter;
         $.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
         $( "#indate" ).datepicker({
@@ -635,12 +645,12 @@
     function self_titled(){
         $("#alb_field").val($("#art_field").val());
     }
-    
+
     function SetVariousArtists(){
         $("#art_field").val("Various Artists");
         $("#va_checkbox label").eq(0).button('toggle');  //.prop("checked",true);
     }
-    
+
     function catch_enter (event){
         if(event.keyCode === 13){
             get_albums();
@@ -650,7 +660,7 @@
             return false;
         }
     }
-    
+
     function get_albums(){
         if($("#art_field").val()===""){
            $("#art_group").addClass(" has-error ");
@@ -659,25 +669,25 @@
         }
         var input = {'term':$("#art_field").val()};
         $.ajax({
-            url: "/opl/AJAX/playlist.get_album_table.php",
+            url: "/legacy/opl/AJAX/playlist.get_album_table.php",
             data: input,
             type: "GET"
         }).done(function(html_returned){
             $("#table_display").html(html_returned);
         });
     }
-    
+
     function checkEnter(e){
         e = e || event;
         var txtArea = /textarea/i.test((e.target || e.srcElement).tagName);
         return txtArea || (e.keyCode || e.which || e.charCode || 0) !== 13;
     }
-    
+
     function update_labels(){
         // Get the <datalist> and <input> elements.
         var dataList = document.getElementById('labels');
         var input = document.getElementById('label');
-        
+
         // Create a new XMLHttpRequest.
         var request = new XMLHttpRequest();
 
@@ -687,7 +697,7 @@
                 if (request.status === 200) {
                 // Parse the JSON
                 var jsonOptions = JSON.parse(request.responseText);
-                
+
 
                 // Loop over the JSON array.
                 jsonOptions.forEach(function(item) {
@@ -710,22 +720,12 @@
         dataList.innerHTML="";
         // Update the placeholder text.
         input.placeholder = "Loading labels...";
-            
-        
+
+
         // Set up and make the request.
-        request.open('GET', '/opl/AJAX/getlabels.php?term='+input.value, true);
+        request.open('GET', '/legacy/opl/AJAX/getlabels.php?term='+input.value, true);
         request.send();
     }
-    //var query = {"val":$.("#art_field").val()};
-    /*
-    $.ajax{
-        url: "AJAX/playlist.get_artist.php",
-        dataType: "json",
-        data: query,
-        type: "POST"
-    }.done({
-        
-    })*/
 </script>
 <script>
     // Activate chosen elements

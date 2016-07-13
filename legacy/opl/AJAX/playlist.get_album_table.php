@@ -1,12 +1,12 @@
 <?php
 //error_reporting(E_ERROR);
 
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+date_default_timezone_set("UTC");
 require_once '../barcode/validate.php';
 
 session_start();
@@ -19,8 +19,8 @@ if(validate_UPCABarcode($artist)||  validate_EAN13Barcode($artist)){
     $artist = ltrim($artist,'0');
 }
 
-include_once '../../TPSBIN/functions.php';
-include_once '../../TPSBIN/db_connect.php';
+include_once dirname(dirname(dirname(dirname(__FILE__)))).DIRECTORY_SEPARATOR."TPSBIN/functions.php";
+include_once dirname(dirname(dirname(dirname(__FILE__)))).DIRECTORY_SEPARATOR."TPSBIN/db_connect.php";
 
 $con = $mysqli->prepare("SELECT RefCode, datein, artist, album, genre, status, recordlabel.Name as label_name FROM library LEFT JOIN recordlabel on library.labelid=recordlabel.LabelNumber where artist REGEXP ? or refcode=? or barcode=? order by soundex(artist) asc limit ?;");
 $result = array();
