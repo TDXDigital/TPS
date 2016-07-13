@@ -1,18 +1,18 @@
 <?php
 date_default_timezone_set('UTC');
-include_once dirname(__DIR__).DIRECTORY_SEPARATOR."TPSBIN".
+include_once dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR."TPSBIN".
         DIRECTORY_SEPARATOR."functions.php";
-include_once dirname(__DIR__).DIRECTORY_SEPARATOR."TPSBIN".
+include_once dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR."TPSBIN".
                 DIRECTORY_SEPARATOR."db_connect.php";
 
-$GENRE = "SELECT * from GENRE order by genreid asc";
+$GENRE = "SELECT * from `genre` order by genreid asc";
 $GENRES = $mysqli->query($GENRE);
 $genop = "<OPTION VALUE=\"%\">Select Genre</option>";
 while ($genrerow=$GENRES->fetch_array(MYSQLI_ASSOC)) {
     $GENid=$genrerow["genreid"];
     $genop.="<OPTION VALUE=\"" . $GENid . "\">". $GENid ."</option>";
 }
-$djsql="SELECT * from DJ where active='1' order by djname";
+$djsql="SELECT * from `dj` where active='1' order by djname";
 $djresult=$mysqli->query($djsql);
 
 $djoptions="<option value=0>Any</option>";//<OPTION VALUE=0>Choose</option>";
@@ -34,7 +34,7 @@ while ($djrow=$djresult->fetch_array(MYSQLI_ASSOC)) {
            Welcome, <?php echo(strtoupper($_SESSION['fname'])); ?>
     </div>
 	<div id="header">
-		<a href="../../../"><img src="<?php print "../".$_SESSION['logo']; ?>" alt="logo" /></a>
+		<a href="../../../"><img src="<?php print "../../".$_SESSION['logo']; ?>" alt="logo" /></a>
 	</div>
 	<div id="top">
 		<h2>Edit Program Advanced Search</h2>
@@ -95,7 +95,7 @@ while ($djrow=$djresult->fetch_array(MYSQLI_ASSOC)) {
 				</td>
 			</tr>
 		</table>
-		
+
 		</div>
 	<div id="foot" style="bottom: 0; position: fixed; height: 50px; width: 100% ">
 		<table>
@@ -109,13 +109,13 @@ while ($djrow=$djresult->fetch_array(MYSQLI_ASSOC)) {
 			</tr>
 		</table>
 	</div>
-    
+
 	<div id="content">
 			<h4>Help</h4>
-		<span>You can enter a % into the field to enter partial information. ie, if a show you 
+		<span>You can enter a % into the field to enter partial information. ie, if a show you
 			wanted to find was called "Best Show Ever" you can put "Best%" and the system will find all shows that begin with "Best", otherwise you can put %show% to
 			find any shows that have "show" in the name or "%ever" for shows that end in "ever"</span>
-		
+
 	</div>
 	<div style="height: 50px;">&nbsp</div>
 </body>

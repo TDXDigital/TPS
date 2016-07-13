@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * The MIT License
  *
  * Copyright 2015 James Oliver <support@ckxu.com>.
@@ -26,9 +26,9 @@
 
 // Review(s)
 $app->group('/programs', $authenticate, function () use ($app,$authenticate){
-    $app->group('/list',$authenticate($app,2), 
+    $app->group('/list',$authenticate($app,2),
             function () use ($app,$authenticate){
-        $app->get('/:station/active',$authenticate($app,2), 
+        $app->get('/:station/active',$authenticate($app,2),
                 function ($callsign) use ($app,$authenticate){
             $station = new \TPS\station($callsign);
             if($stn = $station->getStation($callsign)){
@@ -37,33 +37,46 @@ $app->group('/programs', $authenticate, function () use ($app,$authenticate){
             }
             $progams=array();
             $programs = $station->getAllProgramIds(True);
-            foreach ($progams as $value) {
+            sort($programs);
+            foreach ($programs as $value) {
                 $program = new \TPS\program($station, $value);
-                $programs = $program->getValues()?:array();
+                $progams[$value] = $program->getValues()?:array();
             }
-            
+
             $params=array(
                 'station'=>$stn,
-                'programs'=>$programs,
+                'programs'=>$progams,
                 );
             var_dump($params);
             #$app->render('notSupported.twig',$params);
         });
-        $app->get('/:station/all',$authenticate($app,2), 
+        $app->get('/:station/all',$authenticate($app,2),
                 function ($callsign) use ($app,$authenticate){
             $station = new \TPS\station($callsign);
-            $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
+            //$tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
             if($stn = $station->getStation($callsign)){
                 $stn = $stn[$callsign];
                 $stn['callsign']=$callsign;
             }
+            $progams=array();
+            $programs = $station->getAllProgramIds(True);
+            sort($programs);
+            $programsInact = $station->getAllProgramIds(True);
+            sort($programsInact);
+            $allPrograms = array_merge($programs, $programsInact);
+            foreach ($allPrograms as $value) {
+                $program = new \TPS\program($station, $value);
+                $progams[$value] = $program->getValues()?:array();
+            }
             $params=array(
                 'station'=>$stn,
-                'timezones'=>$tzlist,
+                //'timezones'=>$tzlist,
                 'area'=>'Administration',
                 'title'=>'Manage Station',
+                'programs'=>$progams,
                 );
-            $app->render('notSupported.twig',$params);
+            var_dump($params);
+            //$app->render('notSupported.twig',$params);
         });
     });
 });
