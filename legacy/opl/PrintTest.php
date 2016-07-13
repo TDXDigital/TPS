@@ -5,18 +5,17 @@
     include_once 'TPSBIN/db_connect.php';
     require_once "public/lib/station.php";
     require_once "public/lib/library.php";
-    //include_once 'barcode/barcode.php';
+
+$type = filter_input(INPUT_GET,'type', FILTER_SANITIZE_NUMBER_INT)?:5160;
+$indent = filter_input(INPUT_GET,'start', FILTER_SANITIZE_NUMBER_INT) ?: 0;
+$outline = filter_input(INPUT_GET,'outline',FILTER_SANITIZE_STRING) ?: 'false';
+$library = new \TPS\library();
 ?>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <title>Print Labels</title>
-    <link href="../opl/CSS_Labels/<?php
-    $type = filter_input(INPUT_GET,'type', FILTER_SANITIZE_NUMBER_INT)?:5160;
-    $indent = filter_input(INPUT_GET,'start', FILTER_SANITIZE_NUMBER_INT) ?: 0;
-    $outline = filter_input(INPUT_GET,'outline',FILTER_SANITIZE_STRING) ?: 'false';
-    
-    
+    <link href="../legacy/opl/CSS_Labels/<?php
     if($type==="5160"){
         print "5160";
     }
@@ -25,14 +24,14 @@
     }
     ?>.css" rel="stylesheet" type="text/css" >
     <?php
-    
+
     if(strtolower($outline)==='true'){
         echo "<style type='text/css'>\xA.label{\xAoutline: 1px dashed;\xA}\xA</style>";
     }
     elseif(strtolower($outline)==='true'){
         echo "<style type='text/css'>\xA.label{\xAoutline: none;\xA}\xA</style>";
     }
-    
+
     ?>
     <style type="text/css">
     @media print{
@@ -40,24 +39,17 @@
             display: none !important;
         }
         body{
-            background-color:none;
-            background-image:none;
+            background-image: none;
             color:#000000
         }
     }
-    
+
     @page :right{
         margin: 0.0cm;
     }
-    
+
     @page :left{
         margin: 0.0cm;
-    }
-    @page :top{
-        margin: 0.5cm;
-    }
-    @page :bottom{
-        margin: 0.5cm;
     }
     .no-print, .no-print *{
         background-color: orange;
@@ -68,7 +60,6 @@
 <body>
     <div class="no-print">Please use top and bottom margin of 0.5" and 0.0" sides. some printers may vary, adjust as needed</div>
     <?php
-    $library = new \TPS\library();
         for($i=1;$i<$indent;$i++){
             echo "<div class=\"label\" style=\"outline: none;\"></div>";
         }
@@ -85,21 +76,22 @@
             $format = $albumArr['format'];
             $CanCon = $albumArr['CanCon'];
             $locale = $albumArr['Locale'];
-            
+
             $genreCode = $library->getLibraryCodeByRefCode($RefCode);
             #$library->createBarcode($RefCode);
             $padded= join('', array($genreCode,str_pad($BCD, 10, "0", STR_PAD_LEFT)));
-            
+
             //echo "<img src='barcode/createBarcode.php?bcd=$BCD'/>";
-            echo "><span ><img style='float:left; margin:0px;' src='/barcode/barcode.php?bcd=$padded' alt='$padded'/>";
+            echo "<div class=\"label\" style=\"outline: none;\">";
+            echo "<span><img style='float:left; margin:0px;' src='../legacy/opl/barcode/barcode.php?bcd=$padded' alt='$padded'/>";
             if($locale=="Country"){
-                echo "<img style='float: left; margin: 0px;' src='/maple.gif' alt='CC'/>";
+                echo "<img style='float: left; margin: 0px;' src='../legacy/opl/maple.gif' alt='CC'/>";
             }
             else if ($locale=="Province"){
-                echo "<img style='float: right; margin: 0px;' width='25px' src='/ab_ttm.png' alt='PRO'/>";
+                echo "<img style='float: right; margin: 0px;' width='25px' src='../legacy/opl/ab_ttm.png' alt='PRO'/>";
             }
             else if ($locale=="Local"){
-                echo "<img style='float: right; margin: 0px;' width='25px' src='/pointer.png' alt='PRO'/>";
+                echo "<img style='float: right; margin: 0px;' width='25px' src='../legacy/opl/pointer.png' alt='PRO'/>";
             }
             substr("abcdef", -1);
             if(strlen($artist)>20){
@@ -116,16 +108,11 @@
             }
             echo "</span><br style='clear: both'><strong style='float: left'>".substr($artist,0,20).$artpost."</strong><br><i style='float:left; font-size: small;'>".substr($album,0,20).$albpost."</i><span style='float:right;'>$genre</span><br style='clear: both'/></div>";
         }
-    /*}
-    else{
-        echo "<div class=\label>ERROR :".$mysqli->error."</div>";
-    }*/
     ?>
 <div class="page-break"></div>
 <script>
     document.addEventListener("DOMContentLoaded", function(event) {
         setTimeout(window.print(),2000);
-        //window.print();
     });
 </script>
 </body>

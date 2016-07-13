@@ -270,7 +270,7 @@ $app->get("/logout", function () use ($app) {
 });
 
 $app->get("/labels/print", $authenticate($app,[2]), function() use ($app) {
-    require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . '../../opl/PrintTest.php';
+    require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'legacy/opl/PrintTest.php';
 });
 
 $app->post("/webhook", function () use ($app){

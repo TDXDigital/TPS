@@ -514,17 +514,17 @@
 
         $('#'+id).autocomplete({
             //source: "../MusicLib/DB_Search_Artist.php",
-            //source: "/legacy/opl/AJAX/playlist.get_artist.php?type=artist&method="+method,
-            source: function(request, response){
-                $.ajax({
-                    url: "/library/search/"+request.term,
-                    dateType: "json",
-                    success: response,
-                    error: function(){
-                        response([]);
-                    }
-                });
-            },
+            source: "/legacy/opl/AJAX/playlist.get_artist.php?type=artist&method="+method,
+//            source: function(request, response){
+//                $.ajax({
+//                    url: "/library/search/"+request.term,
+//                    dateType: "json",
+//                    success: response,
+//                    error: function(){
+//                        response([]);
+//                    }
+//                });
+//            },
             minLength: 2
         });
     }

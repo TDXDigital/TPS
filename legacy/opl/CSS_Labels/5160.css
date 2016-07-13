@@ -1,6 +1,6 @@
 @font-face {
     font-family: Barcode;
-    src: url(../../TPSBIN/C39.ttf);
+    src: url(../../../TPSBIN/C39.ttf);
 }
 .barcode{
     font-family: Barcode;
@@ -13,7 +13,7 @@ body {
     /*margin-bottom: 0.5in;
     margin-bottom: 0.5in;*/
     }
-    
+
 .label-color .color-box-100 {
     width: 10px;
     height: 50%;
@@ -44,8 +44,8 @@ body {
     background: -ms-linear-gradient(left,  #ff1a00 0%,#ff1a00 5%,#ffffff 6%,#ffffff 100%);
     background: linear-gradient(to right,  #ff1a00 0%,#ff1a00 5%,#ffffff 6%,#ffffff 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff1a00', endColorstr='#ffffff',GradientType=1 );
-    */    
-    
+    */
+
     /* Avery 5160 labels -- CSS and HTML by MM at Boulder Information Services */
     width: 2.03in; /* plus .6 inches from padding */
     height: .883in; /* plus .125 inches from padding */
@@ -59,15 +59,15 @@ body {
 
     /*outline: 1px dashed; *//* outline doesn't occupy space like border does */
     }
-    
+
 .label{
-        
+
     /* Avery 5160 labels -- CSS and HTML by MM at Boulder Information Services */
     width: 2.03in; /* plus .6 inches from padding */
     height: .883in; /* plus .125 inches from padding */
     padding: .13in .3in 0;
     margin-right: .203in; /* the gutter */
-    
+
     font-family: Tahoma, Geneva, sans-serif;
 
     float: left;

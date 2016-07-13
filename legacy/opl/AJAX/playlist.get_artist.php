@@ -1,7 +1,7 @@
 <?php
 //error_reporting(E_ERROR);
-
-/* 
+date_default_timezone_set("UTC");
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -39,8 +39,8 @@ else{
     $table='artist';
 }
 
-include_once '../../TPSBIN/functions.php';
-include_once '../../TPSBIN/db_connect.php';
+include_once dirname(dirname(dirname(dirname(__FILE__)))).DIRECTORY_SEPARATOR.'TPSBIN/functions.php';
+include_once dirname(dirname(dirname(dirname(__FILE__)))).DIRECTORY_SEPARATOR.'TPSBIN/db_connect.php';
 
 $query = "SELECT $table FROM library where $table $method or refcode='$value' "
         . "group by soundex($table) order by soundex($table) asc LIMIT 10";
