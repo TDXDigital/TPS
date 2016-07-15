@@ -12,7 +12,8 @@ if(isset($_SESSION["DBHOST"])){
             $messages = \TPS\notification::convertToMessageFormat($broadcasts);
             $app->view()->setData('messages', $messages);
         } catch (Exception $e) {
-            if($app->router()->getCurrentRoute()!="/updates") {
+            $route = $app->router()->getCurrentRoute()->getPattern();
+            if($route!="/updates") {
                 $app->flash("error", "Critical Exception Occured: ".$e->getMessage()."<br>Updates Likely Required");
                 $app->redirect('/updates');
             }
