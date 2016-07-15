@@ -6,10 +6,22 @@ if(isset($_SESSION["DBHOST"])){
     require_once 'lib_api'.DIRECTORY_SEPARATOR.'LibraryAPI.php';
     require_once dirname(__FILE__).DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."notifications.php";
     $app->hook('slim.before.dispatch', function() use ($app) {
-        $notifications = new \TPS\notification(\TPS\util::get($_SESSION, 'CALLSIGN'));
-        $broadcasts = $notifications->listUserNotifications();
-        $messages = \TPS\notification::convertToMessageFormat($broadcasts);
-        $app->view()->setData('messages',$messages);
+        try {
+            $notifications = new \TPS\notification(\TPS\util::get($_SESSION, 'CALLSIGN'));
+            $broadcasts = $notifications->listUserNotifications();
+            $messages = \TPS\notification::convertToMessageFormat($broadcasts);
+            $app->view()->setData('messages', $messages);
+        } catch (Exception $e) {
+            if($app->router()->getCurrentRoute()!="/updates") {
+                $app->flash("error", "Critical Exception Occured: ".$e->getMessage()."<br>Updates Likely Required");
+                $app->redirect('/updates');
+            }
+            $app->view()->setData('messages', \TPS\notification::convertToMessageFormat([
+            array(
+                "message"=>"Critical: ".$e->getMessage()
+            )
+            ]));
+        }
     });
 }
 require_once 'routes'.DIRECTORY_SEPARATOR.'system.php';
