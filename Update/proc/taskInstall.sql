@@ -11,6 +11,6 @@ CREATE TABLE `notification` ( `notificationid` INT UNSIGNED NOT NULL AUTO_INCREM
   `tag` TEXT NULL DEFAULT NULL,
   `image` INT(11) NULL,
   `acknowledged` DATETIME NULL,
-  `station` VARCHAR(4) NOT NULL DEFAULT '*';
+  `station` VARCHAR(4) NOT NULL DEFAULT '*',
   PRIMARY KEY (`notificationid`),
   INDEX `perm_idx` (`permissionRequired` ASC))
