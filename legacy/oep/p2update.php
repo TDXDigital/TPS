@@ -1,13 +1,19 @@
-<?php session_start(); ?>
+<?php
+date_default_timezone_set("UTC");
+require_once dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."TPSBIN/functions.php";
+require_once dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."TPSBIN/db_connect.php";
+sec_session_start();
+?>
 <!DOCTYPE HTML>
 <head>
 <link rel="stylesheet" type="text/css" href="../../css/phpstyle.css" />
-<title>DPL Administration</title>
+<title>TPS Broadcast</title>
 </head>
 <html>
 <body>
       <div class="topbar">
-           <a class="right" href="../../logout.php"> Logout </a>Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
+           <a class="right" href="../../logout.php"> Logout </a>Welcome, <?php echo(strtoupper(
+              filter_input(INPUT_SERVER, 'fname'))); ?>
            </div>
 
       <table border="0" align="center" width="1000">
@@ -16,121 +22,73 @@
       </tr>
       <tr style="background-color:white;">
       <td colspan="2">
-<?php
-
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
-if (!$con){
-	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
-	}
-else if($con){
-        ?>
-
-        <table align="left" border="0" height="100">
-        <tr><td colspan="5">
         <h2>Update Program Log</h2>
-        </td></tr>
-
-        <tr><th width="250">
-        Program Name
-        </th><th width="100">
-        Date
-        </th><th width="100">
-        PreRecord
-        </th><th width="100">
-        Air Time
-        </th>
-        <th width="250">
-        Decription
-        </th>
+        <table align="left" border="0" height="100">
+        <tr>
+        <th>Station</th>
+        <th width="250">Program Name</th>
+        <th width="100">Date</th>
+        <th width="100">PreRecord</th>
+        <th width="100">Air Time</th>
+        <th width="250">Decription</th>
+        <th>Edit</th>
         </tr>
         <?php
-             if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../login.php');}
-             
-             if($_POST['date']!=""){
-             	$date = $_POST['date'];
-             }
-			 else{
-			 	$date = '%';
-			 }
-			 
-			 if($_POST['prerecord']!=""){
-             	$pr = $_POST['prerecord'];
-             }
-			 else{
-			 	$pr = '%';
-			 }
-			 
-             $sql = "select * from Episode where date like '". $date ."'  and programname like '".$_POST['name']."'";
-
-             $result = mysql_query($sql) or die(mysql_error());
-             if(mysql_num_rows($result)=="0"){
-               echo '<tr><td colspan="100%" style="background-color:yellow;">';
-               echo 'No Results Found';
-               echo '</tr></td>';
-               echo $sql;
-               echo $result;
-             }
-             else{
-
-               while($row=mysql_fetch_array($result)) {
-  
-               //begin row
-               echo '<form name="view" action="EPV2/p3update.php" method="POST"><tr><td>';
-               //column 1
-                   echo $row['programname'];
-                   echo '<input name="program" hidden="true" value="' . $row['programname'] . '" />';
+        $date = filter_input(INPUT_POST, "date", FILTER_SANITIZE_STRING)?:"%";
+        $pr = filter_input(INPUT_POST, "prerecord", FILTER_SANITIZE_STRING)?:"%";
+        $episodes = array();
+        if($stmt = $mysqli->prepare(
+            "select programname, date, prerecorddate, starttime, EpNum, callsign, description from `episode`".
+            "where date like ?  and programname like ?")) {
+            $stmt->bind_param("ss", $date, $pr);
+            $stmt->execute();
+            $stmt->bind_result($programName, $date, $preRecordDate, $startTime, $epNum, $callsign, $description);
+            while($stmt->fetch()) {
+                $episodes[$epNum] = [$callsign, $programName, $date, $preRecordDate, $startTime, $description];
+            }
+            $stmt->close();
+        }
+        foreach ($episodes as $epNum=>$row){
+                echo '<form name="view" action="EPV2/p3update.php" method="POST">
+                <tr class="striped"><td>';
+                //column 1
+                   echo $row[0];
+                   echo '<input name="callsign" hidden value="'.$row[0].'" />';
 
                echo '</td><td>';
                //column 2
-                   echo $row['date'];
-                   echo '<input name="user_date" hidden="true" value="' . $row['date'] . '" />';
+                   echo $row[1];
+                   echo '<input name="program" hidden value="'.$row[1].'" />';
 
                echo '</td><td>';
                //column 3
-                   echo $row['prerecorddate'];
+                   echo $row[2];
+                    echo '<input name="user_date" hidden value="'.$row[2].'" />';
 
                echo '</td><td>';
-               //column 4
-                   echo $row['starttime'];
-                   echo '<input name="user_time" hidden="true" value="' . $row['starttime'] . '" />';
+                    //column 4
+                   echo $row[3];
 
                echo '</td><td>';
                //column 5
-                   echo $row['description'];
-                   echo '<input name="callsign" hidden="true" value="' . $row['callsign'] . '" />';
+                   echo $row[4];
+                   echo '<input name="user_time" hidden="true" value="' . $row[4] . '" />';
+                echo '</td><td>';
+                //column 6
+                echo $row[5];
 
                echo '</td><td>';
-               //$djrow = mysql_fetch_array($djresult);
-               //column 5
+               echo "<input type=\"submit\" value=\" Edit \" />";
 
-               //$djname = mysql_query("SELECT * from PERFORMS where Alias LIKE '" . $_POST['dj1'] . "' and callsign LIKE '" . $row['callsign'] . "' and programname LIKE '" . $row['programname'] . "'");
-               //    $djrow = mysql_fetch_array($djname);
-                   //echo $djname;
-                   echo "<input type=\"submit\" value=\" Edit \" />";//$djrow['Alias'];
-  
                echo'</td></tr></form>';
-               //end row
-               }
-             }
+         }
         echo '</table>';
-
-
-
-}
-else{
-	echo 'ERROR!';
-}
-
-echo '</tr><tr height="40" valign="bottom"><td colspan="2" style="text-align:bottom;"><hr/><a href="../masterpage.php"> Return to main Admin Page</a></td></tr>';
-
+echo '</tr><tr height="40" valign="bottom"><td colspan="2" style="text-align: center;"><hr/><a href="../">
+Return to main Admin Page</a></td></tr>';
 ?>
         </td><tr>
-        <!-- <hr />
-        <a href="/logout.php" align='center' >Logout</a><br/> --><td height="10" style="text-align:left">
-        <img src="../../images/mysqls.png" alt="MySQL"></td><td height="10" style="text-align:right">Internet Simulcast Server status: <span id="cc_stream_info_server"></span>
-<script language="javascript" type="text/javascript" src="http://cent4.serverhostingcenter.com/system/streaminfo.js"></script>
-<script language="javascript" type="text/javascript" src="http://cent4.serverhostingcenter.com/js.php/zuomcwvv/streaminfo/rnd0"></script>
+<td height="10" style="text-align:left">
+<img src="../../images/mysqls.png" alt="MySQL"></td></span>
 </td></tr>
 </table>
 </body>

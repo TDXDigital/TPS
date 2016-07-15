@@ -1,5 +1,6 @@
 <?php
     //error_reporting(E_ERROR);
+    date_default_timezone_set("UTC");
     include_once "../../TPSBIN/functions.php";
     include_once "../../TPSBIN/db_connect.php";
 
@@ -9,32 +10,11 @@
     error_reporting(E_ERROR &~ E_DEPRECATED); // mysql is known to be deprecated
       sec_session_start();
 
-      //session_start();
-      $ADIDS = array();
-      $ADOPT = "";
-      $END_TIME_VAL="00:00:00";
-      //$DEBUG = TRUE; // OVERRIDE
-      $FINALIZED = FALSE;//!isset($EPINFO['endtime']);
-      $DESCRIPTION = filter_input(INPUT_POST,'Description',FILTER_SANITIZE_STRING)?:"";
-      /*
-      if(isset($_POST['Description'])){
-        $DESCRIPTION = addslashes($_POST['Description']);
-      }
-      else{
-          $DESCRIPTION = "";
-      }*/
-
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
-if (!$con){
-	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
-	}
-else if($con){
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../logout.php');}
-}
-else{
-	echo 'ERROR! cannot obtain access... this terminal may not be authorised for access';
-}
+    $ADIDS = array();
+    $ADOPT = "";
+    $END_TIME_VAL="00:00:00";
+    $FINALIZED = FALSE;//!isset($EPINFO['endtime']);
+    $DESCRIPTION = filter_input(INPUT_POST,'Description',FILTER_SANITIZE_STRING)?:"";
 	$error = array();
 	$warning = array();
 
@@ -52,94 +32,75 @@ else{
 	if($RadioDJ == "1"){
 		array_push($warning,"<strong><br/>Warning: At " . substr($switchArray['timestamp'],-8,5) . " the 24 Hour system was live to air<br/><br/></strong>");
 	}
-        elseif ($booth2 == "1"){
-            array_push($warning,"<strong><br/>Notice: Booth 2 is on air<br/><br/></strong>");
-        }
-        elseif($booth1 == "0"){
-            //array_push($warning,"<strong><br/>Notice: No valid audio source is to air. pleae check switch or warning settings<br/><br/></strong>");
-        }
+    elseif ($booth2 == "1"){
+        array_push($warning,"<strong><br/>Notice: Booth 2 is on air<br/><br/></strong>");
+    }
+    elseif($booth1 == "0"){
+        //array_push($warning,"<strong><br/>Notice: No valid audio source is to air. pleae check switch or warning settings<br/><br/></strong>");
+    }
 	// END Switch Check
 	//$pgm_name = filter_input(INPUT_POST, 'program', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        //$pgm_name = addslashes($_POST['program']);
-        $pgm_name = filter_input(INPUT_POST,'program');
-        if ( urlencode(urldecode($pgm_name)) === $pgm_name){
-            //data is urlencoded
-            $pgm_name = urldecode($pgm_name);
-        } else {
-            //data is NOT urlencoded
-            // nothing needed
-        }
-        $pgm_date = filter_input(INPUT_POST,'user_date');
-        $pgm_time = filter_input(INPUT_POST,'user_time');
-        $pgm_type = filter_input(INPUT_POST,'brType');
-        $pgm_pr_date = filter_input(INPUT_POST,'prdate')?:NULL;
+    //$pgm_name = addslashes($_POST['program']);
+    $pgm_name = filter_input(INPUT_POST,'program');
+    if ( urlencode(urldecode($pgm_name)) === $pgm_name){
+        //data is urlencoded
+        $pgm_name = urldecode($pgm_name);
+    } else {
+        //data is NOT urlencoded
+        // nothing needed
+    }
+    $pgm_date = filter_input(INPUT_POST,'user_date');
+    $pgm_time = filter_input(INPUT_POST,'user_time');
+    $pgm_type = filter_input(INPUT_POST,'brType');
+    $pgm_pr_date = filter_input(INPUT_POST,'prdate')?:NULL;
 
-        /*
-         * GET CALLSIGN FROM PGM in DB
-         */
-        $post_callsign = filter_input(INPUT_POST,'callsign');
+    /*
+     * GET CALLSIGN FROM PGM in DB
+     */
+    $post_callsign = filter_input(INPUT_POST,'callsign');
 
-        $call_stmt = $mysqli->prepare("select callsign from program where programname=? ");
-        if(!$call_stmt->bind_param('s',$pgm_name)){
-            error_log("encountered error on callsign bind in episode ".$call_stmt->error);
-            $CALLSHOW = $post_callsign;
+    $call_stmt = $mysqli->prepare("select callsign from program where programname=? ");
+    if(!$call_stmt->bind_param('s',$pgm_name)){
+        error_log("encountered error on callsign bind in episode ".$call_stmt->error);
+        $CALLSHOW = $post_callsign;
+    }
+    else{
+        if($call_stmt->execute()){
+            $call_stmt->bind_result($CALLSHOW);
+            $call_stmt->fetch();
+            if($CALLSHOW<>$post_callsign){
+                error_log("could not verify callsign for $pgm_name with callsign $CALLSHOW and POST value $post_callsign ");
+                $CALLSHOW=$post_callsign;
+
+            }
         }
         else{
-            if($call_stmt->execute()){
-                $call_stmt->bind_result($CALLSHOW);
-                $call_stmt->fetch();
-                if($CALLSHOW<>$post_callsign){
-                    //$pgm_name = urldecode($pgm_name);
-                    error_log("could not verify callsign for $pgm_name with callsign $CALLSHOW and POST value $post_callsign ");
-                    $CALLSHOW=$post_callsign;
-
-                }
-            }
-            else{
-                $CALLSHOW = $post_callsign;
-                //echo "determined callsign";
-            }
+            $CALLSHOW = $post_callsign;
         }
-        $call_stmt->close();
-
-        /*
-         * GET existing entries
-         */
-        /*$GET_Episodes = $mysqli->query("select EpNum,programname, from episode LEFT JOIN program on program.programname=episode.programname where episode.callsign=? and episode.programname=? and episode.date=? and episode.starttime=? order by episode.date");
-        $GET_Episodes->bind_param('ssss',$CALLSHOW,$pgm_name,$pgm_date,$pgm_time);
-
-        //$RESEPSEL=$mysqli->query($INSEPSEL);
-        $EPINFO=$RESEPSEL->fetch_array(MYSQLI_ASSOC);
-        $ADINS=FALSE;*/
-
-        //$INSEPSEL = "select * from episode LEFT JOIN program on program.programname=episode.programname where episode.callsign='" . addslashes($CALLSHOW) . "' and episode.programname='" . $pgm_name . "' and episode.date='" . addslashes($_POST['user_date']) . "' and episode.starttime='" . addslashes($_POST['user_time']) . "' order by episode.date";
-        $INSEPSEL = "select episode.callsign,episode.programname,"
-                . " episode.`date`, episode.EndStamp, episode.starttime, episode.endtime, "
-                . "episode.prerecorddate, episode.totalspokentime, "
-                . "episode.description, episode.lock, episode.type, "
-                . "episode.EpNum, program.length, program.genre, "
-                . "program.active, program.CCX, program.PLX,"
-                . "program.HitLimit, program.SponsId, program.displayorder,"
-                . "program.theme, program.ProgramID, program.Display_Order,"
-                . "program.reviewable from episode LEFT JOIN program on "
-                . "program.programname=episode.programname where "
-                . "episode.callsign=? and episode.programname=? "
-                . "and episode.date=? and episode.starttime=? "
-                . "order by episode.date";
-        if(!$check_episode = $mysqli->prepare($INSEPSEL)){
-            die("Terminal error, could not prepare query, please reload page [".$check_episode->error." : $INSEPSEL]");
-        }
+    }
+    $call_stmt->close();
+    $INSEPSEL = "select episode.callsign,episode.programname,"
+            . " episode.`date`, episode.EndStamp, episode.starttime, episode.endtime, "
+            . "episode.prerecorddate, episode.totalspokentime, "
+            . "episode.description, episode.lock, episode.type, "
+            . "episode.EpNum, program.length, program.genre, "
+            . "program.active, program.CCX, program.PLX,"
+            . "program.HitLimit, program.SponsId, program.displayorder,"
+            . "program.theme, program.ProgramID, program.Display_Order,"
+            . "program.reviewable from episode LEFT JOIN program on "
+            . "program.programname=episode.programname where "
+            . "episode.callsign=? and episode.programname=? "
+            . "and episode.date=? and episode.starttime=? "
+            . "order by episode.date";
+    if(!$check_episode = $mysqli->prepare($INSEPSEL)){
+        die("Terminal error, could not prepare query, please reload page [".$check_episode->error." : $INSEPSEL]");
+    }
         if(!$check_episode->bind_param('ssss',$CALLSHOW,$pgm_name,$pgm_date,$pgm_time)){
             die("Bind Error, (133)");
         }
         if(!$check_episode->execute()){
             die ("Execution Error, (136)");
         }
-        /*$check_episode->bind_result(
-                $EPINFO['callsign'],
-                $EPINFO['programname'],
-                $EPINFO['date'],
-                $EPINFO['starttime'])*/
         if(!$check_episode->bind_result(
                 $ep_callsign, $ep_name,
                 $ep_date,$ep_end,$ep_start, $ep_EndStamp,
@@ -166,33 +127,6 @@ else{
                 $pgm_ID, $pgm_Disp_Order, $pgm_reviewable);
         echo "<br>";
         }
-        /*if($check_episode->fetch()===FALSE){
-            die("Terminal Error: could not fetch information, ".$check_episode->error);
-        }*/
-        /*
-        $EPINFO['callsign'] = $ep_callsign;
-        $EPINFO['programname'] = $ep_name;
-        $EPINFO['date'] = $ep_date;
-        $EPINFO['starttime'] = $ep_start;
-        $EPINFO['endtime'] = $ep_end;
-        $EPINFO['prerecorddate'] = $ep_pr_date;*/
-        /*if(!$EPINFO=$check_episode->fetch()){
-
-        }*/
-        //$EPINFO=//$check_episode->fetch_array(MYSQLI_ASSOC);
-        //$check_episode->close();
-        /*if(!$RESEPSEL=$mysqli->query($INSEPSEL)){
-            die($mysqli->error);
-        }
-        $EPINFO=$RESEPSEL->fetch_array(MYSQLI_ASSOC);
-        $ADINS=FALSE;
-        */
-
-
-        //echo $_POST['title'];
-        /*if($DEBUG){
-            echo "<h2>NUM_ROWS: ".$RESEPSEL->num_rows."</h2>";
-        }*/
         if($pgm_ID===NULL){
             $pgm_null = $pgm_pr_date;
             $pr_string = ($pgm_null?NULL:true)?'NULL':"'".$pgm_pr_date."'";
@@ -207,8 +141,6 @@ else{
             {
                 echo 'Could not create episode<br /> PgmID:'.var_dump($pgm_ID)."<br>";
                 echo $mysqli->error."<br/>";
-                //console.log("ERROR MYSQL: ".mysql_error());
-                //die($inep . "<br/>");
                 echo "<br>$inep<br>";
             }
             else{
@@ -226,16 +158,8 @@ else{
                 $pgm_ID, $pgm_Disp_Order, $pgm_reviewable);
                 echo "<br>";
             }
-            //$RESEPSEL=$mysqli->query($INSEPSEL);
-            //$EPINFO=$RESEPSEL->fetch_array(MYSQLI_ASSOC);
-
-        }
-        else if($RESEPSEL->num_rows>1){
-          echo 'warning, multiple episodes with same information!';
         }
         $check_episode->close();
-
-
         $query_settings = "select callsign,"
                 . "stationname, ST_DefaultSort,ST_PLLG,ST_ForceComposer,"
                 . "ST_ForceArtist, ST_ForceAlbum,ST_ColorFail,ST_ColorPass"
@@ -273,24 +197,26 @@ else{
           //echo 'no title';
         }
         else{
-          if($_POST['title']!=""){
-			//echo "<p>VER NOT EMPTY</p>";
+          if(filter_input(INPUT_POST, 'title')!=""){
               //dynamic SQL CREATION
-
               $indyns = "insert into `song` (callsign, programname, date, starttime";
-              $BUFFS = "'" . addslashes($CALLSHOW) . "' , '" . mysql_escape_string($pgm_name) . "' , '" . addslashes($_POST['user_date']) . "' , '" . addslashes($_POST['user_time']) . "'";
+              $BUFFS = "'" . addslashes($CALLSHOW) . "' , '" . addslashes($pgm_name) .
+                  "' , '" . addslashes(filter_input(INPUT_POST, 'user_date')) .
+                  "' , '" . addslashes(filter_input(INPUT_POST, 'user_time')) . "'";
               if (isset($_POST['instrumental'])){
                 $indyns.=", instrumental";
                 $BUFFS.=", '1' ";
               }
               if ($_POST['time']!=""){
                 $indyns.=", time";
-                $BUFFS.=", '" . addslashes($_POST['time']) . "' ";
+                $BUFFS.=", '" . addslashes(filter_input(INPUT_POST, 'time')) . "' ";
               }
 
               if (isset($_POST['title'])){
                 	if($_POST['cat']=="51"){
-                		$QRR = mysql_fetch_array(mysql_query("select AdName, Language from adverts where AdId='".addslashes($_POST['title'])."' "));
+                        $QRResut = $mysqli->query("select AdName, Language from adverts where AdId='".
+                            addslashes($_POST['title'])."' ");
+                		$QRR = $QRResut->fetch_array(MYSQLI_ASSOC);
 						$BUFFS.=", '" . $QRR['AdName'] . "' ";
                 	}
 					else{
@@ -326,115 +252,100 @@ else{
                 $indyns.=", playlistnumber";
                 $BUFFS.=", '" . addslashes($_POST['playlist']) . "' ";
               }
+              if ($_POST['type']!=""){
+                  $indyns.=", type";
+                  $BUFFS.=", '" . addslashes($_POST['type']) . "' ";
+              }
               if (isset($_POST['cat'])){
               	if($_POST['cat']=='51'){
               		if(isset($_POST['AdNum'])){
 
                             // UPDATE Playcount
-                            $SPupSQL = "select SponsId from program where programname='" . $pgm_name . "' and callsign='" . addslashes($CALLSHOW) . "' and SponsId is not null";
-                            if(!$SPup = mysql_query($SPupSQL)){
-                                    array_push($error, mysql_errno() . "</td><td>" . mysql_error());
+                            $SPupSQL = "select SponsId from program where programname='" . $pgm_name .
+                                "' and callsign='" . addslashes($CALLSHOW) . "' and SponsId is not null";
+                            if(!$SPup = $mysqli->query($SPupSQL)){
+                                    array_push($error, $mysqli->errno . "</td><td>" . $mysqli->error);
                             }
                             //echo mysql_num_rows($SPup);
                             if(mysql_num_rows($SPup)==0){
-                                    $playcountsql = "SELECT Playcount+1 as result from adverts where AdId='".addslashes($_POST['AdNum'])."'";
-                                    if(!$playcount_arr = mysql_query($playcountsql)){
-                                            echo mysql_error();
+                                    $playcountsql = "SELECT Playcount+1 as result from adverts where AdId='".
+                                        addslashes($_POST['AdNum'])."'";
+                                    if(!$playcount_arr = $mysqli->query($playcountsql)){
+                                            echo $mysqli->error;
                                     }
-                                    $playcount = mysql_fetch_array($playcount_arr);
-                                    //echo $playcount['result'];
-                                    $UPAD = "UPDATE adverts SET Playcount='".$playcount['result']."' where AdId='".addslashes($_POST['AdNum'])."' or XREF='".addslashes($_POST['AdNum'])."'";
-                                    /*$UPAD = "update adverts set Playcount=Playcount+1 where AdId=\"" . $_POST['AdNum'] . "\" ";
-                                    $ADQN = mysql_query("select XREF from adverts where AdId='" . $_POST['AdNum'] . "' and XREF IS NOT NULL");
-                                    if(mysql_num_rows($ADQN)!=0){
-                                            $XREF=mysql_fetch_array($ADQN);
-                                            $UPXREF = "update adverts set Playcount=(select Playcount as result where AdId=\"" . $_POST['AdNum'] . "\") where AdId=\"" . $XREF['XREF'] . "\" ";
-                                    }*/
-                                    /*else{
-                                            //Not Required to report as many ads do not have XREF
-                                            //array_push($error, mysql_errno() . "</td><td>" . mysql_error());
-                                            array_push($error,"999</td><td> XREF not Defined (ignore for now)");
-                                    }*/
-                                            // SET FLAG IF NOT AVAILABLE
-                    $result_Flag = mysql_query("select Playcount from adverts where AdId='" . addslashes($_POST['AdNum']) . "' and Category='51'");
-                    //$result_AdType = mysql_query("selet Playcount from adverts where AdId='" . addslashes($_POST['AdNum']) . "' and Category='51'");
-                    $FlCheck = mysql_fetch_array($result_Flag);
-                                    //echo $FlCheck['Playcount'];
-                                    $Sel51Flag = $minplaysql51 = "select MIN(Playcount) from adverts where Category='51' and Active='1' and Friend='1' ";
-                                    $Min51Flag = mysql_query($Sel51Flag);
-                                    $flagLevel = mysql_fetch_array($Min51Flag);
-                                    //echo $flagLevel['MIN(Playcount)'];
-                                    if($FlCheck['Playcount']>$flagLevel['MIN(Playcount)']){
-                                        $indyns.=", AdViolationFlag";
-                                        $BUFFS.=", '1' ";
-                                    }
+                                    $playcount = $playcount_arr->fetch_array(MYSQLI_ASSOC);
+                                    $UPAD = "UPDATE adverts SET Playcount='".$playcount['result']."' where AdId='".
+                                        addslashes($_POST['AdNum'])."' or XREF='".addslashes($_POST['AdNum'])."'";
+                    $result_Flag = $mysql->query("select Playcount from adverts where AdId='" .
+                        addslashes($_POST['AdNum']) . "' and Category='51'");
+                    $FlCheck = $result_Flag->fetch_array(MYSQLI_ASSOC);
+                    $Sel51Flag = $minplaysql51 = "select MIN(Playcount) from adverts where Category='51' and ".
+                        "Active='1' and Friend='1' ";
+                    $Min51Flag = $mysqli->query($Sel51Flag);
+                    $flagLevel = $Min51Flag->fetch_array(MYSQLI_ASSOC);
+                    if($FlCheck['Playcount']>$flagLevel['MIN(Playcount)']){
+                        $indyns.=", AdViolationFlag";
+                        $BUFFS.=", '1' ";
+                    }
 
-                                    if(!mysql_query($UPAD)){
-                                            echo "<div class='error'>AD ERROR: ".mysql_error() . " <br/>Using: $UPAD</div>";
-                                    }
-                                    else{
-                                        $ADINS=TRUE;
-                                            /*if($UPXREF!=""){
-                                                    if(!mysql_query($UPXREF)){
-                                                            echo $UPXREF;
-                                                            echo "XREF ERROR:" . mysql_error();
-                                                    }
-                                            }*/
-                                    }
-                            }
-
-            }
-            /*else {
-                    $UPAD = "update adverts set Playcount=Playcount+1 where AdName LIKE \"%" . $_POST['title'] . "%\" and Category!='51'";
-            }*/
-
-            //echo $UPAD;
-
-              	}
-                else{
-                    $ADINS=FALSE;
+                    if(!$mysqli->query($UPAD)){
+                            echo "<div class='error'>AD ERROR: ".$mysqli->error . " <br/>Using: $UPAD</div>";
+                    }
+                    else{
+                        $ADINS=TRUE;
+                    }
                 }
-                $indyns.=", category";
-                $BUFFS.=", '" . addslashes($_POST['cat']) . "' ";
-              }
-              if (isset($_POST['hit'])){
-                $indyns.=", hit";
-                $BUFFS.=", '1' ";
-              }
-              $BUFFS.=" )";
-              $indyns.=") values ( ";
-              $DYNAMIC = $indyns . $BUFFS;
-			  //echo $DYNAMIC;
-              if(!mysql_query($DYNAMIC,$con))
-              {
-                echo 'SQL Error - Song Insert<br />';
-                echo mysql_error();
-              }
-              else //This is executed if the song is inserted
-              {
-              			$LASTLINK =  mysql_insert_id($con);
-			  			if(!isset($QRR['Language'])){
-			  				$LANGIN = addslashes($_POST['lang']);
-						}
-						else{
-							$LANGIN = $QRR['Language'];
-						}
-                          $langDef = "insert into language values ('" . addslashes($CALLSHOW) . "', '". mysql_escape_string($pgm_name) ."', '" . addslashes($_POST['user_date']) . "', '". addslashes($_POST['user_time']) . "', '" . addslashes($LASTLINK) . "', '" . $LANGIN . "')";
-                          if(!mysql_query($langDef,$con))
-                          {
-                              echo 'SQL Error, Language Insertion<br />';
-                              echo mysql_error();
-                          }
-                          if($ADINS){
-                            $TRAFFIC_SQL="insert into trafficaudit (`songid`,`advertid`) values ('".addslashes($LASTLINK)."','".addslashes($_POST['AdNum'])."')";
-                            if(!mysql_query($TRAFFIC_SQL,$con)){
-                              echo 'SQL Error, traffic error - Generation<br />';
-                              echo mysql_error();
-                            }
-                          }
-              }
+
             }
+            }
+            else{
+                $ADINS=FALSE;
+            }
+            $indyns.=", category";
+            $BUFFS.=", '" . addslashes($_POST['cat']) . "' ";
+          }
+          if (isset($_POST['hit'])){
+            $indyns.=", hit";
+            $BUFFS.=", '1' ";
+          }
+          $BUFFS.=" )";
+          $indyns.=") values ( ";
+          $DYNAMIC = $indyns . $BUFFS;
+          //echo $DYNAMIC;
+          if(!$mysqli->query($DYNAMIC))
+          {
+            echo 'SQL Error - Song Insert<br />';
+            echo $mysqli->error();
+          }
+          else //This is executed if the song is inserted
+          {
+              $LASTLINK = $mysqli->insert_id;
+              if(!isset($QRR['Language'])){
+                  $LANGIN = addslashes($_POST['lang']);
+              }
+              else{
+                  $LANGIN = $QRR['Language'];
+              }
+              $langDef = "insert into language values ('" . addslashes($CALLSHOW) . "', '".
+                  $mysqli->real_escape_string($pgm_name) .
+                  "', '" . addslashes($_POST['user_date']) . "', '". addslashes($_POST['user_time']) . "', '" .
+                  addslashes($LASTLINK) . "', '" . $LANGIN . "')";
+              if(!$mysqli->query($langDef))
+              {
+                  echo 'SQL Error, Language Insertion<br />';
+                  echo $mysqli->error;
+              }
+              if($ADINS){
+                $TRAFFIC_SQL="insert into trafficaudit (`songid`,`advertid`) values ('".addslashes($LASTLINK)."','".
+                    addslashes($_POST['AdNum'])."')";
+                if(!$mysqli->query($TRAFFIC_SQL)){
+                  echo 'SQL Error, traffic error - Generation<br />';
+                  echo $mysqli->error;
+                }
+              }
+          }
         }
+    }
 
         /*////////////////////////////////////////////
         //              GENRE SELECTION             //
@@ -444,19 +355,22 @@ else{
         // This information is needed by either method
         // Using updated code
 
-		$SQLProg = "SELECT `genre`.*, `program`.length from `genre`, `program` where `program`.programname=\"" . mysql_escape_string($pgm_name) . "\" and `program`.callsign=\"" . mysql_escape_string($CALLSHOW) . "\" and `program`.genre=`genre`.genreid";
-		if(!($result = mysql_query($SQLProg,$con))){
-			echo "Program Error 001 " . mysql_error();
+		$SQLProg = "SELECT `genre`.*, `program`.length from `genre`, `program` where `program`.programname=\"" .
+            addslashes($pgm_name) . "\" and `program`.callsign=\"" . addslashes($CALLSHOW) .
+            "\" and `program`.genre=`genre`.genreid";
+		if(!($result = $mysqli->query($SQLProg))){
+			echo "Program Error 001 " . $mysqli->error;
 		}
-		if(!($Requirements = mysql_fetch_array($result))){
-			echo "Program Error 002 " . mysql_error();
+		if(!($Requirements = $result->fetch_array(MYSQLI_ASSOC))){
+			echo "Program Error 002 " . $mysqli->error;
 		}
-		$SQL2PR = "SELECT * from `program` where programname=\"" . mysql_escape_string($pgm_name) . "\" and callsign=\"" . addslashes($CALLSHOW) . "\" ";
-		if(!($result2 = mysql_query($SQL2PR,$con))){
-			echo "Program Error 003 " . mysql_error();
+		$SQL2PR = "SELECT * from `program` where programname=\"" . addslashes($pgm_name) .
+            "\" and callsign=\"" . addslashes($CALLSHOW) . "\" ";
+		if(!($result2 = $mysqli->query($SQL2PR))){
+			echo "Program Error 003 " . $mysqli->error;
 		}
-		if(!($Req2 = mysql_fetch_array($result2))){
-			echo "Program Error 004 " . mysql_error();
+		if(!($Req2 = $result2->fetch_array(MYSQLI_ASSOC))){
+			echo "Program Error 004 " . $mysqli->error;
 		}
 
 		if($Req2['CCX']!='-1'){
@@ -481,37 +395,52 @@ else{
 		}
 
 		// COUNT CANCON
-		$SQLCOUNTCC = "Select songid from `song` where callsign='" . addslashes($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and cancon='1' ";
-		$resultCC = mysql_query($SQLCOUNTCC);
-		$RECCC = mysql_num_rows($resultCC);
+		$SQLCOUNTCC = "Select songid from `song` where callsign='" . addslashes($CALLSHOW) .
+            "' and programname='" . $mysqli->real_escape_string($pgm_name) . "' and date='" .
+            addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) .
+            "' and cancon='1' ";
+		$resultCC = $mysqli->query($SQLCOUNTCC);
+		$RECCC = mysqli_num_rows($resultCC);
 
 		// COUNT PLAYLIST
-		$SQLCOUNTPL = "Select songid from `song` where callsign='" . addslashes($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and playlistnumber IS NOT NULL ";
+		$SQLCOUNTPL = "Select songid from `song` where callsign='" . addslashes($CALLSHOW) .
+            "' and programname='" . $mysqli->real_escape_string($pgm_name) . "' and date='" .
+            addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) .
+            "' and playlistnumber IS NOT NULL ";
 		if($SETTINGS['ST_PLLG']=='1'){
 			$SQLCOUNTPL .="group by playlistnumber";
 		}
-		$resultPL = mysql_query($SQLCOUNTPL);
-		$RECPL = mysql_num_rows($resultPL);
+		$resultPL = $mysqli->query($SQLCOUNTPL);
+		$RECPL = mysqli_num_rows($resultPL);
 
 		//COUNT ADS
-		$SQLCOUNT51 = "Select songid from `song` where callsign='" . addslashes($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category='51' and AdViolationFlag is null";
-		$result51 = mysql_query($SQLCOUNT51);
-		$REC51 = mysql_num_rows($result51);
+		$SQLCOUNT51 = "Select songid from `song` where callsign='" . addslashes($CALLSHOW) .
+            "' and programname='" . $mysqli->real_escape_string($pgm_name) . "' and date='" .
+            addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) .
+            "' and category='51' and AdViolationFlag is null";
+		$result51 = $mysqli->query($SQLCOUNT51);
+		$REC51 = mysqli_num_rows($result51);
 
 		//COUNT PSA
-		$SQLCOUNTPROMO = "Select songid from `song` where callsign='" . addslashes($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category='45'";
-		$SQLCOUNTPSA = "Select songid from `song` where callsign='" . addslashes($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category like '1%' and (title like '%PSA%' or Artist like 'Station PSA')";
-		//$SQLCOUNTPSA = "Select songid from SONG where callsign='" . addslashes($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and category like '1%' and title like '%Promo%' ";
-		$resultPSA = mysql_query($SQLCOUNTPSA);
-		$resultPROMO = mysql_query($SQLCOUNTPROMO);
-		$RECPSA = mysql_num_rows($resultPROMO);
-		$RECPSA += mysql_num_rows($resultPSA);
+		$SQLCOUNTPROMO = "Select songid from `song` where callsign='" . addslashes($CALLSHOW) .
+            "' and programname='" . $mysqli->real_escape_string($pgm_name) . "' and date='" .
+            addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) .
+            "' and category='45'";
+		$SQLCOUNTPSA = "Select songid from `song` where callsign='" . addslashes($CALLSHOW) .
+            "' and programname='" . $mysqli->real_escape_string($pgm_name) . "' and date='" .
+            addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) .
+            "' and category like '1%' and (title like '%PSA%' or Artist like 'Station PSA')";
+		$resultPSA = $mysqli->query($SQLCOUNTPSA);
+		$resultPROMO = $mysqli->query($SQLCOUNTPROMO);
+		$RECPSA = mysqli_num_rows($resultPROMO);
+		$RECPSA += mysqli_num_rows($resultPSA);
 
 
         /*[TODO] update function to include system check (JSON)*/
-        $Foobar_Enabled_Query = "SELECT hardwareid from hardware where `device_code`='Foobar2000' and `ipv4_address`='".$_SERVER['REMOTE_ADDR']."' and `in_service`='1';";
-        $Foobar_array = mysql_query($Foobar_Enabled_Query);
-        if(mysql_num_rows($Foobar_array)>0){
+        $Foobar_Enabled_Query = "SELECT hardwareid from hardware where `device_code`='Foobar2000' and ".
+            "`ipv4_address`='".$_SERVER['REMOTE_ADDR']."' and `in_service`='1';";
+        $Foobar_array = $mysqli->query($Foobar_Enabled_Query);
+        if(mysqli_num_rows($Foobar_array)>0){
             $Foobar_Enabled=TRUE;
         }
         else{
@@ -537,26 +466,6 @@ else{
             background: white url('../../images/GIF/ajax-loader3.gif') right center no-repeat;
           }
     </style>
-	<!--<script src="../js/jquery/js/jquery-ui-1.10.0.custom.min.js"></script>-->
-    <!--<script>
-        <?php
-        if($Foobar_Enabled){
-            //echo "<p>FB2K Disabled (".$_SERVER['HTTP_REFERER'].")</p>";
-        }
-        else{
-            //echo "<p>FB2K ENABLED (".$_SERVER['HTTP_REFERER'].")</p>";
-        }
-            if(!isset($_SESSION['hardware_prompt'])){
-                $_SESSION['hardware_prompt']="TRUE";
-            }
-            if($_SESSION['hardware_prompt']=="FALSE"){
-                echo "global var hardware=off;";
-            }
-            else{
-                echo "global var hardware=on;";
-            }
-         ?>
-    </script>-->
 	<script src="../../js/jquery-blockui.js"></script>
 	<script type="text/javascript">
 
@@ -640,36 +549,12 @@ else{
          }, 30000);
 
          Display_Switch();
-         /*var STC_ctl = setInterval(function () {
-             if(!Display_Switch()){
-                 STC_fail++;
-                 if(STC_fail>2){
-                     console.log("Switch check has failed three times in a row, cancelling further requests")
-                 }
-             }
-             else{
-                 STC_fail=0;
-             }
-         }, 20000);*/
-         /*$('input[name=sub]').click(function() {
-         $.blockUI({ message: '<h1><img src="/images/GIF/ajax-loader1.gif" />Processing...</h1>' });
-         //test();
-         //$.blockUI({ message: '<h1><image src="/images/GIF/ajax-loader1.gif"/>Processing...</h1>' });
-         setTimeout(function() {
-         $.unblockUI({
-         onUnblock: function(){ alert('The server was unable to process your request in a reasonable time. \nPlease resubmit your data'); }
-         });
-         }, 4000);
-         }); */
          $('form').submit(function () {
              $.blockUI({ message: "<h1 style='width:width: max-content; text-align: center;' >Processing...</h1><progress id='pb_form_submit'></progress>" });
-             //test();
-             //$.blockUI({ message: '<h1><image src="/images/GIF/ajax-loader1.gif"/>Processing...</h1>' });
              setTimeout(function () {
                  $.unblockUI({
                      onUnblock: function () {
-                         /*alert('The server was unable to process your request in a reasonable time.');*/
-                         $("#Alert").html("Something didn't go as planned... the server was being moody, or you pressed cancel...");
+                         $("#Alert").html("server timeout encountered or cancel event");
                          $("#Alert").slideDown("slow", function () {
                              $("#Alert").slideUp(600);
                          }).delay(3000);
@@ -730,12 +615,8 @@ else{
                     "Confirm": function () {
                         var bValid = true;
                         allFields.removeClass("ui-state-error");
-
-                        //bValid = bValid && (time.val() != "");
                         bValid = bValid && checkLength($("#time_final_confirm"), "time", 3, 9);
-
                         if (bValid) {
-                            //alert($("#time_final_confirm").val());
                             $("#end_time").val($("#time_final_confirm").val());
                             $(this).dialog("close");
                             $("#Complete").submit();
@@ -767,14 +648,11 @@ if(false){
 }
 ?>
 >
-
-    <!--<div class="topbar">
-           User: <?php echo(strtoupper($_SESSION['usr'])); ?>
-           </div>-->
+<div>User: <?php echo(strtoupper($_SESSION['fname'])); ?></div>
 
         <table border="0" style="text-align:center; width:1350px;">
         <tr><td colspan="6">
-           <img src="../../<?php echo $_SESSION['logo']; ?>" alt="ckxu" height="90px"/>
+           <img src="../../<?php echo $_SESSION['logo']; ?>" alt="logo" height="90px"/>
         </td>
         <td style="width: 250px; height: 110px;" id="switchstat" colspan="1">
         	<!--<iframe src="EPV3/Switch.php" height="100px" width="100%" seamless="seamless" style="border:none">Iframe Not Supported</iframe>-->
@@ -790,7 +668,8 @@ if(false){
 		if(isset($Req2['SponsId'])){
 			echo "style=\"background-color:".$SETTINGS['ST_ColorNote'].";\" /><span>Sponsor : ";
 			$SPONS_SQL = " select * from adverts where AdId='".$Req2['SponsId']."' ";
-			$SPONS = mysql_fetch_array(mysql_query($SPONS_SQL));
+            $SPONSRES = $mysqli->query($SPONS_SQL);
+			$SPONS = $SPONSRES->fetch_array(MYSQLI_ASSOC);
 			echo $SPONS['AdName'];
 		}
 		else{
@@ -826,15 +705,20 @@ if(false){
 	// ################ REQ CC PL ##################
     if($Requirements['CCType']=='0'){
         $SQL_CC_COUNT = "SELECT 
-        (SELECT count(*) FROM song WHERE callsign='" . mysql_escape_string($ep_callsign) . "' and programname='" . mysql_escape_string($ep_name) . "' and date='" . mysql_escape_string($ep_date) . "' and starttime='" . mysql_escape_string($ep_start). "' and category not like '1%' and category not like '4%' and category not like '5%') AS Total,
-        (SELECT count(*) FROM song WHERE callsign='" . mysql_escape_string($ep_callsign) . "' and programname='" . mysql_escape_string($ep_name) . "' and date='" . mysql_escape_string($ep_date) . "' and starttime='" . mysql_escape_string($ep_start). "' and category not like '1%' and category not like '4%' and category not like '5%' and cancon='1') AS CC_Num,
-        (SELECT round(((CC_Num / Total)*100),2)) AS Percent";
-        if(!$CC_PER_RES = mysql_query($SQL_CC_COUNT)){
-            echo "<span class='ui-state-highlight ui-corner-all'>".mysql_error()."</span>";
+        (SELECT count(*) FROM song WHERE callsign='" . addslashes($ep_callsign) . "' and programname='" .
+            addslashes($ep_name) . "' and date='" . addslashes($ep_date) . "' and starttime='" .
+            addslashes($ep_start). "' and category not like '1%' and category not like '4%' and category not like".
+            " '5%') AS Total,
+        (SELECT count(*) FROM song WHERE callsign='" . addslashes($ep_callsign) . "' and programname='" .
+            addslashes($ep_name) . "' and date='" . addslashes($ep_date) . "' and starttime='" . addslashes($ep_start).
+            "' and category not like '1%' and category not like '4%' and category not like '5%' and cancon='1') ".
+            "AS CC_Num, (SELECT round(((CC_Num / Total)*100),2)) AS Percent";
+        if(!$CC_PER_RES = $mysqli->query($SQL_CC_COUNT)){
+            echo "<span class='ui-state-highlight ui-corner-all'>".$mysqli->error."</span>";
             //break;
         }
         else{
-            $PER_CC = mysql_fetch_array($CC_PER_RES);
+            $PER_CC = $CC_PER_RES->fetch_array(MYSQLI_ASSOC);
             echo "<span ";
             if(floatval($PER_CC['Percent']) < floatval($Requirements['canconperc'])*100){
                 echo "style=\"background-color:".$SETTINGS['ST_ColorFail'].";text-align:center;\" >";
@@ -867,16 +751,18 @@ if(false){
         // GET PERCENTAGE FROM DB
 
         $SQL_PL_COUNT = "SELECT 
-        (SELECT count(*) FROM song WHERE callsign='" . mysql_escape_string($ep_callsign) . "' and programname='" . mysql_escape_string($ep_name) . "' and date='" . mysql_escape_string($ep_date) . "' and starttime='" . mysql_escape_string($ep_start). "' and category not like '1%' and category not like '4%' and category not like '5%') AS Total,
-        (SELECT count(*) FROM song WHERE callsign='" . mysql_escape_string($ep_callsign) . "' and programname='" . mysql_escape_string($ep_name) . "' and date='" . mysql_escape_string($ep_date) . "' and starttime='" . mysql_escape_string($ep_start). "' and category not like '1%' and category not like '4%' and category not like '5%' and Playlistnumber IS NOT NULL) AS Count,
-        (SELECT round(((Count / Total)*100),2)) AS Percent";
-        if(!$PL_PER_RES = mysql_query($SQL_PL_COUNT)){
+        (SELECT count(*) FROM song WHERE callsign='" . addslashes($ep_callsign) . "' and programname='" .
+            addslashes($ep_name) . "' and date='" . addslashes($ep_date) . "' and starttime='" .
+            addslashes($ep_start). "' and category not like '1%' and category not like '4%' and category not like ".
+            "'5%') AS Total, (SELECT count(*) FROM song WHERE callsign='" . addslashes($ep_callsign) .
+            "' and programname='" . addslashes($ep_name) . "' and date='" . addslashes($ep_date) . "' and starttime='".
+            addslashes($ep_start). "' and category not like '1%' and category not like '4%' and category not like ".
+            "'5%' and Playlistnumber IS NOT NULL) AS Count, (SELECT round(((Count / Total)*100),2)) AS Percent";
+        if(!$PL_PER_RES = $mysqli->query($SQL_PL_COUNT)){
             echo "style=\"background-color:".$SETTINGS['ST_ColorFail'].";\" >";
-            //echo "<span class='ui-state-highlight ui-corner-all'>".mysql_error()."</span>";
-            //break;
         }
         else{
-            $PER_PL = mysql_fetch_array($PL_PER_RES);
+            $PER_PL = $PL_PER_RES->fetch_array(MYSQLI_ASSOC);
             echo "<span ";
             if(floatval($PER_PL['Percent']) < floatval($Requirements['playlistperc'])*100){
                 echo "style=\"background-color:".$SETTINGS['ST_ColorFail']."; text-align:center;\" >";
@@ -902,42 +788,26 @@ if(false){
 		echo "Playlist Required:  <strong>" . $RECPL. "/" . $PL . "</strong>";
     }
 	echo "</td></tr>";
-             /*
-             $br = strtolower($_SERVER['HTTP_USER_AGENT']); // what browser they use.
-            if(ereg("safari", $br)) {
-              echo "<tr><td>
-              <h3 width=\"100%\" style=\"background-color:yellow; color:black;\"><strong>WARNING: This browser does not support the needed HTML5 forms on Windows<br />
-              please launch or download opera that supports these required forms. This does not apply to MAC OS</strong></h3>
-              </td></tr>";
-            }
-            else {
-              echo "<tr><td>
-              <h3 width=\"100%\" style=\"background-color:red; color:white;\"><strong>WARNING: This browser does not support the needed HTML5 forms
-              please launch or download opera that supports these required forms</strong></h3>
-              </td></tr>";
-            }
-            */
-
-			$SOCANC = "select Statement from socan where Enabled='1' and '" . addslashes($_POST['user_date']) ."' between start and end";
-			$SOCANA = mysql_query($SOCANC);
-			if(mysql_num_rows($SOCANA)>0){
-                while($audit_entity=mysql_fetch_array($SOCANA)){
-				    echo "<tr style=\"background-color:red; height:30px; color:white;\"><th style=\"text-align:center; font-size: 110%; font-familt:Verdana;\" colspan=\"100%\">";
+			$SOCANC = "select Statement from socan where Enabled='1' and '" . addslashes($_POST['user_date']) .
+                "' between start and end";
+			$SOCANA = $mysqli->query($SOCANC);
+			if(mysqli_num_rows($SOCANA)>0){
+                while($audit_entity= $SOCANA->fetch_array(MYSQLI_ASSOC)){
+				    echo "<tr style=\"background-color:red; height:30px; color:white;\">
+<th style=\"text-align:center; font-size: 110%; font-familt:Verdana;\" colspan=\"100%\">";
 				    echo $audit_entity['Statement'];
 				    echo "</th></tr>";
                 }
-                //echo "<tr style=\"background-color:red; height:30px; color:white;\"><th colspan=\"100%\">";
 			}
 			if(sizeof($error) > 0){
 				echo "<tr style=\"background-color:black; color:red;\"><th colspan=\"100%\">Errors</th></tr><tr>";
 				$counter = 0;
-				while($VAL = $error[$counter]){//array_pop($error)){
+				while($VAL = $error[$counter]){
 					echo "<tr style=\"background-color:white; color:red;\"><td>".$VAL."</td></tr>";
 					$counter++;
 				}
 			}
 			if(sizeof($warning) > 0){
-                // style=\"background-color:Black; color:yellow;\"
 				echo "<tr class='ui-state-error'><th colspan=\"100%\">Warnings &amp; Information</th></tr>";
 				while($VAL = array_pop($warning)){
 					echo "<tr class='ui-state-error'\"><td colspan=\"100%\"><span>".$VAL."<span></td></tr>";
@@ -945,30 +815,40 @@ if(false){
 			}
         ?>
         </table>
-    <div id="hdw_prompt" style="margin: 0 auto 0 auto; width: 1354px; background-color: #000; color: white; display:none;"><button onclick="ShowHardware()" title="Show"><span class="ui-icon ui-icon-carat-1-s"></span></button><span>Hardware Control</span></div>
+    <div id="hdw_prompt" style="margin: 0 auto 0 auto; width: 1354px; background-color: #000; color: white; display:none;">
+        <button onclick="ShowHardware()" title="Show"><span class="ui-icon ui-icon-carat-1-s">
+            </span></button><span>Hardware Control</span></div>
     <div id="hdw" style="margin: 0 auto 0 auto; width: 1354px; background-color: #000; color: white">
         <?php
             if(FALSE){//implement system variable to determine if shown (stored in station)
                 if($_SESSION['access']==2){
-                    $Hardware_Query="SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='".mysql_escape_string($ep_callsign)."' and in_service='1' and ipv4_address IS NOT NULL group by hardware.hardwareid order by friendly_name ASC";
+                    $Hardware_Query="SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN ".
+                        "device_codes ON hardware.device_code=device_codes.Device WHERE station ='".
+                        addslashes($ep_callsign)."' and in_service='1' and ipv4_address IS NOT NULL group by ".
+                        "hardware.hardwareid order by friendly_name ASC";
                 }
                 else{
-                $Hardware_Query="SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='".mysql_escape_string($ep_callsign)."' and in_service='1' and ipv4_address IS NOT NULL and hardware.room=(SELECT `hardware`.`room` AS `room_ip` FROM hardware WHERE hardware.ipv4_address='".$_SERVER['REMOTE_ADDR']."' and `hardware`.`hardware_type`='1' and `hardware`.`in_service`='1' order by `hardware`.`hardwareid` LIMIT 1) group by hardware.hardwareid order by friendly_name ASC";
+                    $Hardware_Query="SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN ".
+                        "device_codes ON hardware.device_code=device_codes.Device WHERE station ='".
+                        addslashes($ep_callsign)."' and in_service='1' and ipv4_address IS NOT NULL and ".
+                        "hardware.room=(SELECT `hardware`.`room` AS `room_ip` FROM hardware WHERE ".
+                        "hardware.ipv4_address='".$_SERVER['REMOTE_ADDR']."' and `hardware`.`hardware_type`='1' ".
+                        "and `hardware`.`in_service`='1' order by `hardware`.`hardwareid` LIMIT 1) group by ".
+                        "hardware.hardwareid order by friendly_name ASC";
                 }
-                if(!$Equipment_List = mysql_query($Hardware_Query)){
-                    error_log("Encountered Error: p2indexEP.php, Query HArdware_Query returned invalid result: ".mysql_error());
+                if(!$Equipment_List = $mysqli->query($Hardware_Query)){
+                    error_log("Encountered Error: p2indexEP.php, Query HArdware_Query returned invalid result: ".
+                        $mysqli->error);
                 }
                 $BOOTH = 0;
                 $hardware_number=0;
-                $hardware_buffer="<span id=\"HDW_title_open\"><button onclick=\"HideHardware()\" title=\"Hide\"><span class=\"ui-icon ui-icon-carat-1-n\"></span></button><span>Hardware Control</span></span>";
+                $hardware_buffer="<span id=\"HDW_title_open\">
+<button onclick=\"HideHardware()\" title=\"Hide\"><span class=\"ui-icon ui-icon-carat-1-n\"></span></button>
+<span>Hardware Control</span></span>";
 
-                while($Equipment_row = mysql_fetch_array($Equipment_List)){
+                while($Equipment_row = $Equipment_List->fetch_array(MYSQLI_ASSOC)){
                     if($Equipment_row['ipv4_address']==$_SERVER['REMOTE_ADDR'] || $_SESSION['access']==2){
                         $hardware_number++;
-                        /*echo "<script>
-                        setInterval(function(){
-                            Query_Device('RES".$Equipment_row['hardwareid']."','8','".$Equipment_row['hardwareid']."');
-                            },'".$Equipment_row['hardwareid']."0000');</script>";*/
                         $hardware_buffer += "<hr><div id=\"toolbar".$Equipment_row['hardwareid']."\"  style=\"color: white; background:#000; width:100%; display:block\">
                         <span >".strtoupper($Equipment_row['Manufacturer'])." ".$Equipment_row['device_code']." - ".$Equipment_row['friendly_name']."</span><span style='width:100%'>&nbsp</span>
                         <span id='RES".$Equipment_row['hardwareid']."' style=\"color: white; background: #7690a3; width:100%; text-align: center; background-color: #7690a3;\">&nbsp;- DENON - </span>
@@ -988,7 +868,6 @@ if(false){
                     }
                 }
             }
-
         ?>
     </div>
         <table style="background-color:white; width:1350px;">
@@ -1005,30 +884,20 @@ if(false){
         </th><th style="width:8%">
         Pre-Record
         </th><th style="width:5%">
-
         </th>
         </tr>
-
         <tr><td style="vertical-align:top">
-
-
 	    <?php echo $ep_date; ?>
         </td><td style="vertical-align:top">
-
 	    <?php echo $ep_start; ?>
         </td><td style="vertical-align:top">
-
              <?php echo $ep_name;?>
         </td><td style="vertical-align:top">
-
              <?php echo $ep_callsign;?>
         </td><td style="vertical-align:top">
-
              <?php echo $ep_description; ?>
         </td><td style="vertical-align:top">
 	    <?php
-
-	     	//chec if not enabled
 	      if(!isset($_POST['enprerec']))
               {
                 echo ' ';
@@ -1044,7 +913,6 @@ if(false){
         <tr><td colspan="100%">
         	<hr>
             <div id="EAS">
-                <?php /*require_once "../TPSBIN/XML/Emergency.php"*/ ?>
             </div>
         </td></tr>
         <!-- Row for displaying Ads and Friends -->
@@ -1066,26 +934,31 @@ if(false){
 					(select AdIdRef from addays where  Day='".date('l')."' and adrotation.RotationNum = addays.AdIdRef) and
 					(select count(songId) from song where song.title=(select AdName from adverts where adverts.AdId=adrotation.AdId)
 					and song.time between adrotation.startTime and adrotation.endTime) < adrotation.BlockLimit";*/
-					//$REQAD_SQL = "SELECT adverts.*,adrotation.* FROM adrotation,addays,adverts WHERE '".date('H').":00:00' BETWEEN adrotation.startTime AND adrotation.endTime AND addays.AdIdRef=adrotation.RotationNum AND adrotation.AdId=adverts.AdId AND addays.Day='".date('l')."' AND adverts.active='1'";
-					$REQAD_SQL = "SELECT adverts.*,adrotation.* FROM adrotation,addays,adverts WHERE '".date('H:i:s')."' BETWEEN adrotation.startTime AND adrotation.endTime AND addays.AdIdRef=adrotation.RotationNum AND adrotation.AdId=adverts.AdId AND addays.Day='".date('l')."' AND adverts.active='1' AND '".date('Y-m-d')."' BETWEEN adverts.StartDate AND adverts.EndDate";
-
+					$REQAD_SQL = "SELECT adverts.*,adrotation.* FROM adrotation,addays,adverts WHERE '".
+                        date('H:i:s')."' BETWEEN adrotation.startTime AND adrotation.endTime AND addays.AdIdRef=".
+                        "adrotation.RotationNum AND adrotation.AdId=adverts.AdId AND addays.Day='".date('l').
+                        "' AND adverts.active='1' AND '".date('Y-m-d')."' BETWEEN adverts.StartDate AND ".
+                        "adverts.EndDate";
 					$RQADSIDS = array();
 					$REQAD = "";
-					if(!$READS = mysql_query($REQAD_SQL))
+					if(!$READS = $mysqli->query($REQAD_SQL))
 					{
 						$REQAD .= "<option value='-1'>ERROR - AdRotation</option>";
 					}
-					else if(mysql_num_rows($READS)==0){
+					else if(mysqli_num_rows($READS)==0){
 						$REQAD .= "<option value='-1'>No Paid Commercials</option>";
 					}
 					else if(!isset($SPONS)){
-						while($PdAds=mysql_fetch_array($READS)){
+						while($PdAds=$READS->fetch_array(MYSQLI_ASSOC)){
 							if($PdAds['Limit'] == NULL || $PdAds['Playcount'] < $PdAds['Limit']){
 								// Check BlockLimit (BLIM)
-								$CHECKBLIM = "SELECT count(song.songid) FROM adrotation,song WHERE adrotation.AdId='".mysql_escape_string($PdAds['AdId'])."' AND song.title='".mysql_escape_string($PdAds['AdName'])."' and song.date='".mysql_escape_string($ep_date)."' and song.time BETWEEN '".mysql_escape_string($PdAds['startTime'])."' AND '".mysql_escape_string($PdAds['endTime'])."' ";
-								$BL_lim_R = mysql_query($CHECKBLIM);
-								$BL_lim = mysql_fetch_array($BL_lim_R);
-								if(mysql_error()){
+								$CHECKBLIM = "SELECT count(song.songid) FROM adrotation,song WHERE adrotation.AdId='".
+                                    addslashes($PdAds['AdId'])."' AND song.title='".addslashes($PdAds['AdName']).
+                                    "' and song.date='".addslashes($ep_date)."' and song.time BETWEEN '".
+                                    addslashes($PdAds['startTime'])."' AND '".addslashes($PdAds['endTime'])."' ";
+								$BL_lim_R = $mysqli->query($CHECKBLIM);
+								$BL_lim = $BL_lim_R->fetch_array(MYSQLI_ASSOC);
+								if($mysqli->errno){
 									echo "<option value='-3'>ERROR SQL</option>";
 								}
 								if($BL_lim['count(song.songid)']<$PdAds['BlockLimit']){
@@ -1093,10 +966,11 @@ if(false){
 									$REQAD .= "<option value='".$PdAds['AdId']."'>".$PdAds['AdName']."</option>";
 									array_push($RQADSIDS,$PdAds['AdId']);
                                     array_push($ADIDS,$PdAds['AdId']);
-                                    $SQL_PL_AD = "INSERT INTO promptlog (EpNum,AdNum) VALUES (".mysql_escape_string($ep_num).",".addslashes($PdAds['AdId']).")";
-                                    if(!mysql_query($SQL_PL_AD)){
-                                        echo "<!-- ERROR: " . mysql_error() . "-->";
-                                        error_log("TPS Error; Line 951: Could not perform SQL Query - ".mysql_error());
+                                    $SQL_PL_AD = "INSERT INTO promptlog (EpNum,AdNum) VALUES (".
+                                        addslashes($ep_num).",".addslashes($PdAds['AdId']).")";
+                                    if(!$mysqli->query($SQL_PL_AD)){
+                                        echo "<!-- ERROR: " . $mysqli->error . "-->";
+                                        error_log("TPS Error; Line 963: Could not perform SQL Query - ".$mysqli->error);
                                     }
                                     else{
                                         echo "<!-- Inserted into Log -->";
@@ -1105,33 +979,6 @@ if(false){
 								}
 							}
 						}
-
-						/*while($RQADS = mysql_fetch_array($READS)){
-							if(!$ADINFOARR = mysql_query("select * from adverts where AdId='".$RQADS['AdId']."'")){
-								$REQAD .= "<option value='-1'>ERROR - Adverts</option>";
-							}
-							else{
-								$adinf = mysql_fetch_array($ADINFOARR);
-								$HR = date('H');
-								$HRN = $HR+1;
-								$SQL_ADS_HR = "select count(songid) from song where category = '".$adinf['Category']."' and title='".$adinf['AdName']."' and time between '".$HR.":00' and '".$HRN.":00'";
-								//echo $SQL_ADS_HR;
-								if(!$adcount = mysql_query($SQL_ADS_HR)){
-									$REQAD .= "<option value=\"-1\">ERROR - Hourly Limit</option>";//mysql_error();
-								}
-								$ADCO = mysql_fetch_array($adcount);
-								if($ADCO['count(songid)']<$RQADS['HourlyLimit']){
-									$ADCO['count(songid)'];
-									//echo $RQADS['HourlyLimit'];
-									echo "<option value=\"".$adinf['AdId']."\">".$adinf['AdName']."</option>";
-									array_push($RQADSIDS,$adinf['AdId']);
-								}
-								else{
-									//echo "<option value='-1'>No Paid Commercials [#E2]</option>";
-								}
-								//echo "<option value=\"".$ADCO['count(songid)']."\">".$ADCO['count(songid)']."</option>";
-							}
-						}*/
 					}
 
 				// Friends Ads
@@ -1146,27 +993,30 @@ if(false){
 					}
 					else{
 						//$selcom51 is origin
-						$minplaysql51 = "select MIN(Playcount) from adverts where Category='51' and Active='1' and Friend='1' ";
-						if(!$minplay51Array = mysql_fetch_array(mysql_query($minplaysql51))){
+						$minplaysql51 = "select MIN(Playcount) from adverts where Category='51' ".
+                            "and Active='1' and Friend='1' ";
+                        $advertResult = $mysqli->query($minplaysql51);
+						if(!$minplay51Array = $advertResult->fetch_array(MYSQLI_ASSOC)){
 							$selcom51 = "select * from adverts where Category='51'";
 						}
 						else{
 							$minplay51 = $minplay51Array['MIN(Playcount)'];
-							$selcom51 = "select * from adverts where Category='51' and '" . addslashes($_POST['user_date']) . "' between StartDate and EndDate and Friend='1' and Active='1' and Playcount='".$minplay51."' ";
-							//echo $minplay51;
+							$selcom51 = "select * from adverts where Category='51' and '" .
+                            addslashes($_POST['user_date']) . "' between StartDate and EndDate and Friend='1' ".
+                            "and Active='1' and Playcount='".$minplay51."' ";
 						}
-						$selspon = "select MIN(Playcount) from adverts where Category!='51' and '" . addslashes($_POST['user_date']) . "' is between EndDate and StartDate ";
+						$selspon = "select MIN(Playcount) from adverts where Category!='51' and '" .
+                            addslashes($_POST['user_date']) . "' is between EndDate and StartDate ";
 
-						if($comsav=mysql_query($selcom51)){
+						if($comsav = $mysqli->query($selcom51)){
 							$ADOPT = "";
-							while($avadi = mysql_fetch_array($comsav)){
+							while($avadi = $comsav->fetch_array(MYSQLI_ASSOC)){
 								$ADOPT .= "<option value=\"" . $avadi['AdId'] . "\">" . $avadi['AdName'] . "</option>";
 								array_push($ADIDS,$avadi['AdId']);
 							}
 						}
 						else{
 							$ADOPT = "<option value=\"-1\">ERROR - SQL Command</option>";
-							//echo mysql_error();
 						}
 					}
 				}
@@ -1256,78 +1106,78 @@ if(false){
             <table style="width: 1350px; vertical-align: top; background-color:white;">
                   <tr><!-- Header Definitions for Advertisements -->
 
-                       <th style="width:5%">
-                           Type  <input type="button" value="Define" onclick="return popitup('../help/definetype.html')"/>
-                       </th>
-                       <th style="width:5%" id="Adnumer">
-                           Identifier
-                       </th>
-                       <th id="Adtime">
-                           Time
-                       </th>
-                       <th id="Adname">
-                           All Commercials
-                       </th colspan="100%">
-                       <!--<th id="arHead">
-                           Artist
-                       </th>
-                       <th>
-                           Album (Release Title)
-                       </th>
+                   <th style="width:5%">
+                       Type  <input type="button" value="Define" onclick="return popitup('../help/definetype.html')"/>
+                   </th>
+                   <th style="width:5%" id="Adnumer">
+                       Identifier
+                   </th>
+                   <th id="Adtime">
+                       Time
+                   </th>
+                   <th id="Adname">
+                       All Commercials
+                   </th colspan="100%">
+                   <!--<th id="arHead">
+                       Artist
+                   </th>
+                   <th>
+                       Album (Release Title)
+                   </th>
 
-                       <th width="2%">
-                           CC
-                       </th>
-                       <th width="2%">
-                           Hit
-                       </th>
-                       <th width="2%">
-                           Ins
-                       </th>
-                       <th width="5 %">
-                           Language
-                       </th>
-                       <th width="5%">-->
+                   <th width="2%">
+                       CC
+                   </th>
+                   <th width="2%">
+                       Hit
+                   </th>
+                   <th width="2%">
+                       Ins
+                   </th>
+                   <th width="5 %">
+                       Language
+                   </th>
+                   <th width="5%">-->
 
-                       </th>
+                   </th>
               </tr>
               <tr ><!-- Blank Row for song insertion -->
-                       <td>
-                           <select name="cat" id="DDLAdvert" onchange="UnCHtype()">
-                                   <!--
-                                   <OPTION VALUE="5">5, Commercial</OPTION>
-                                   <OPTION VALUE="4">4, Musical Production</option>
-                                   <OPTION VALUE="3">3, Special Interest</option>
-                                   <OPTION VALUE="2" selected="selected">2, Popular Music</option>
-                                   <option value="1">1, Spoken</option>
-                                   -->
-                                   <!-- Using Sub Categories -->
+                   <td>
+                      <select name="cat" id="DDLAdvert" onchange="UnCHtype()">
+                          <!--
+                          <OPTION VALUE="5">5, Commercial</OPTION>
+                          <OPTION VALUE="4">4, Musical Production</option>
+                          <OPTION VALUE="3">3, Special Interest</option>
+                          <OPTION VALUE="2" selected="selected">2, Popular Music</option>
+                          <option value="1">1, Spoken</option>
+                          -->
+                          <!-- Using Sub Categories -->
 
-                                   <option value="53">53, Sponsored Promotion</option>
-                                   <OPTION value="52">52, Sponsor Indentification</OPTION>
-                                   <OPTION VALUE="51">51, Commercial</OPTION>
-                                   <option value="45">45, Show Promo</option>
-                                   <option value="44">44, Programmer/Show ID</option>
-                                   <option value="43">43, Musical Station ID</option>
-                                   <option value="42">42, Tech Test</option>
-                                   <option value="41">41, Themes</option>
-                                   	<option value="36">36, Experimental</option>
-                                   	<option value="35">35, NonClassical Religious</option>
-                                   	<option value="34">34, Jazz and Blues</option>
-                                   	<option value="33">33, World/International</option>
-                                   	<option value="32">32, Folk</option>
-                                   	<option value="31">31, Concert</option>
-                                   	<!--<option value="3">3, Special Interest</option>-->
-                                   	<option value="24">24, Easy Listening</option>
-                                   	<option value="23">23, Acoustic</option>
-                                   	<option value="22">22, Country</option>
-                                   	<option value="21">21, Pop, Rock and Dance</option>
-                                   	<!--<option value="2" selected="True">2, Popular Music</option>-->
-                                   <option value="12">12, PSA/Spoken Word Other</option>
-                                   <OPTION VALUE="11">11, News</option>
+                          <option value="53">53, Sponsored Promotion</option>
+                          <OPTION value="52">52, Sponsor Indentification</OPTION>
+                          <OPTION VALUE="51">51, Commercial</OPTION>
+                          <option value="45">45, Show Promo</option>
+                          <option value="44">44, Programmer/Show ID</option>
+                          <option value="43">43, Musical Station ID</option>
+                          <option value="42">42, Tech Test</option>
+                          <option value="41">41, Themes</option>
+                          <option value="36">36, Experimental</option>
+                          <option value="35">35, NonClassical Religious</option>
+                          <option value="34">34, Jazz and Blues</option>
+                          <option value="33">33, World/International</option>
+                          <option value="32">32, Folk</option>
+                          <option value="31">31, Concert</option>
+                          <!--<option value="3">3, Special Interest</option>-->
+                          <option value="24">24, Easy Listening</option>
+                          <option value="23">23, Acoustic</option>
+                          <option value="22">22, Country</option>
+                          <option value="21">21, Pop, Rock and Dance</option>
+                          <!--<option value="2" selected="True">2, Popular Music</option>-->
+                          <option value="12">12, PSA/Spoken Word Other</option>
+                          <OPTION VALUE="11">11, News</option>
 
-                           </select>
-                       </th>
+                      </select>
+                  </th>
                        <th id="plcont">
                            <input type="text" id="AdNum" name="AdNum" readonly="true" size="10"/>
                        </th>
@@ -1353,15 +1203,17 @@ if(false){
                            <?php
                            //<input type="text" name="title" id="title001" size="33" required="true" maxlength="45">
                            	echo "<select id=\"ADLis\" name=\"title\" onChange=\"ADCH()\" >";
-								$SLADS = "select * from adverts where Category='51' and '" . addslashes($_POST['user_date']) . "' between StartDate and EndDate and Active='1' order by AdName";
-                           		if(!$SRZ = mysql_query($SLADS)){
+								$SLADS = "select * from adverts where Category='51' and '" .
+                                    addslashes($_POST['user_date']) . "' between StartDate and EndDate and Active='1' ".
+                                    "order by AdName";
+                           		if(!$SRZ = $mysqli->query($SLADS)){
                            			echo "<option value='0'>NO ADS AVAILABLE</option>";
                            		}
 								else{
                                     $ADGR_AVAIL = array();
                                     $ADGR_REQUI = array();
                                     $ADGR_INVAL = array();
-									while($ADZL=mysql_fetch_array($SRZ)){
+									while($ADZL = $SRZ->fetch_array(MYSQLI_ASSOC)){
                                         $AVAIL=FALSE;
                                         $REQUIRE=FALSE;
 										$TEMP = "<option value=\"" . $ADZL['AdId'] . "\" ";
@@ -1523,12 +1375,14 @@ if(false){
                            <?php
                            //<input type="text" name="title" id="title001" size="33" required="true" maxlength="45">
                            	echo "<select id=\"ADLis\" name=\"title\" onChange=\"ADCH()\" >";
-								$SLADS = "select * from adverts where Category='53' and '" . addslashes($_POST['user_date']) . "' between StartDate and EndDate and Active='1' order by AdName";
-                           		if(!$SRZ = mysql_query($SLADS)){
+								$SLADS = "select * from adverts where Category='53' and '" .
+                                    addslashes($_POST['user_date']) . "' between StartDate and EndDate and Active='1' "
+                                    ."order by AdName";
+                           		if(!$SRZ = $mysqli->query($SLADS)){
                            			echo "<option value='0'>NO ADS AVAILABLE</option>";
                            		}
 								else{
-									while($ADZL=mysql_fetch_array($SRZ)){
+									while($ADZL=$SRZ->fetch_array(MYSQLI_ASSOC)){
 										echo "<option value=\"" . $ADZL['AdId'] . "\" ";
 										if(in_array($ADZL['AdId'], $ADIDS)){
 											echo " style=\"background-color:green; color:white\" ";
@@ -1566,7 +1420,6 @@ if(false){
         <div id="inputdiv" style="width: 100%; text-align: center; ">
             <table colspan="7" width="1350" valign="top" style="background-color:white;">
                   <tr><!-- Header Definitions for songs -->
-
                        <th width="5%">
                            Type  <input type="button" value="Define" onclick="return popitup('../help/definetype.html')"/> <input type="button" value="Notes" name="NButton" onclick="GetNotes();" />
                        </th>
@@ -1580,10 +1433,12 @@ if(false){
                            Time
                        </th>
                       <?php if($pgm_Disp_Order==0){
-                            echo "<th style=\"width:40px;\">Title</th><th id=\"arHead\">Artist</th><th>Album (Release Title)</th>";
+                            echo "<th style=\"width:40px;\">Title</th><th id=\"arHead\">Artist</th>
+<th>Album (Release Title)</th>";
                         }
                         elseif($pgm_Disp_Order==1){
-                            echo "<th style=\"width:40px;\"id=\"arHead\">Artist</th><th>Album (Release Title)</th><th>Title</th>";
+                            echo "<th style=\"width:40px;\"id=\"arHead\">Artist</th><th>Album (Release Title)</th>
+<th>Title</th>";
                         }
                         else{
                             echo "<th>Title</th><th id=\"arHead\">Artist</th><th>Album (Release Title)</th>";
@@ -1602,6 +1457,9 @@ if(false){
                        <th width="2%">
                            Ins
                        </th>
+                      <th width="2%">
+                          Type
+                      </th>
                        <th width="5 %">
                            Language
                        </th>
@@ -1730,6 +1588,13 @@ if(false){
                            <input type="checkbox" id="insin" name="instrumental" value="1"/>
                        </th>
                        <th>
+                           <select name="type" id="type">
+                               <option value="NA">---</option>
+                               <option value="BACKGROUND">BG</option>
+                               <option value="THEME">TH</option>
+                           </select>
+                       </th>
+                       <th>
                            <input list="lang" name="lang" required value="English" size="10" maxlength="40"/>
                            <datalist id="lang">
                            		<option value="English">
@@ -1758,31 +1623,36 @@ if(false){
                             }
 
                         ?>
-                      <th style="width:250px;">Composer</th><th style="width:20px;">CC</th><th width="20px">Hit</th><th width="20px">Ins</th><th width="200px">Language</th></tr></thead>
+                      <th style="width:250px;">Composer</th><th style="width:20px;">CC</th><th width="20px">Hit</th><th width="20px">Ins</th><th>Type</th><th width="200px">Language</th></tr></thead>
                <tbody class="striped"><tr> <!-- Row for displaying already entered data -->
                    <?php
-                   	$ORDERque = "select displayorder from program where callsign='" . addslashes($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' ";
-					$ORDER = mysql_fetch_array(mysql_query($ORDERque));
-                    $query = "select * from `song` where callsign='" . addslashes($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' order by time " . $ORDER['displayorder'] .", songid " . $ORDER['displayorder'];
-                    $listed=mysql_query($query,$con);
-                     if(mysql_num_rows($listed)=="0"){
+                   	$ORDERque = "select displayorder from program where callsign='" . addslashes($CALLSHOW) .
+                        "' and programname='" . addslashes($pgm_name) . "' ";
+                    $ORDERRes = $mysqli->query($ORDERque);
+					$ORDER = $ORDERRes->fetch_array(MYSQLI_ASSOC);
+                    $query = "select * from `song` where callsign='" . addslashes($CALLSHOW) . "' and programname='" .
+                        addslashes($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='".
+                        addslashes($_POST['user_time']) . "' order by time " . $ORDER['displayorder'] .", songid " .
+                        $ORDER['displayorder'];
+                    $listed=$mysqli->query($query);
+                     if(mysqli_num_rows($listed)=="0"){
                        echo "<tr><td colspan=\"100%\" style=\"background-color:".$SETTINGS['ST_ColorFail'].";\">No Songs Recorded Yet</td></tr>";
                      }
-					 else if(mysql_errno())
+					 else if($mysqli->errno)
 					 {
-					 	echo mysql_error();
+					 	echo $mysqli->error;
 					 }
                      else
                      {
-                         while ($list=mysql_fetch_array($listed))
+                         while ($list=$listed->fetch_array(MYSQLI_ASSOC))
                          {
                            echo "<tr>";
                            echo "<td>";
                                 echo $list['category'];
-							/*if($list['AdViolationFlag']=='1'){
+							if($list['AdViolationFlag']=='1' && $_SESSION['access']>1){
 						   		echo "<img src=\"/images/ICONS/ERROR.PNG\" alt=\"notice\" height=\"15px\" width=\"15px\"
 						   		onclick=\"alert('Notice \\n \\nThis ad was not listed in the available friends list, \\nthis will not be counted toward your requirements\\n\\nplease only play ads from the required and available friends lists\\n This Ad's Priority has been decreased')\" />";
-						   	}*/
+						   	}
                            echo "</td><td>";
                                 echo $list['playlistnumber'];
                            echo "</td><td>";
@@ -1850,15 +1720,29 @@ if(false){
                                    else{
                                        echo "<span class=\"ui-icon ui-icon-notice\"></span>";
                                    }
+                               echo "</td><td>";
+                                   if($list['type'] == "BACKGROUND"){
+                                       echo "BG";
+                                   }
+                                   elseif ($list['type'] == "THEME"){
+                                       echo "TH";
+                                   }
+                                   else{
+                                       echo "SA";
+                                   }
                            }
-                           $songlang = mysql_query("select languageid from LANGUAGE where callsign='" . addslashes($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and songid='". addslashes($list['songid']) ."'");
-                           $rowlang = mysql_fetch_array($songlang);
+                           $songlang = $mysqli->query("select languageid from language where callsign='" .
+                               addslashes($CALLSHOW) . "' and programname='" . addslashes($pgm_name) .
+                               "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" .
+                               addslashes($_POST['user_time']) . "' and songid='". addslashes($list['songid']) ."'");
+                           $rowlang = $songlang->fetch_array(MYSQLI_ASSOC);
                            echo "</td><td>";
                                 echo $rowlang['languageid'];
                            echo "</td>";
                            echo "</tr>";
 						   if(isset($list['note'])){
-						   	echo "<tr  style=\"background-color:".$SETTINGS['ST_ColorNote']."\"><td colspan=\"100%\">".$list['note']."</td></tr>";
+						   	echo "<tr  style=\"background-color:".$SETTINGS['ST_ColorNote']."\"><td colspan=\"100%\">".
+                                $list['note']."</td></tr>";
 						   }
                          }
                      }
@@ -1894,16 +1778,20 @@ if(false){
 
         	<?php
         	if($ep_end===NULL){
-        		echo "<td colspan=\"2\" style=\"background-color:white; color:darkred;\"><span>Active:<br>Not Finalized</span>";
+        		echo "<td colspan=\"2\" style=\"background-color:white; color:darkred;\">
+<span>Active:<br>Not Finalized</span>";
         	}
             elseif($ep_EndStamp!=NULL){
-                echo "<td colspan=\"2\" style=\"background-color: #BB6599; color: black;\"><span>Complete:<br>Finalized - No Audit</span>";
+                echo "<td colspan=\"2\" style=\"background-color: #BB6599; color: black;\">
+<span>Complete:<br>Finalized - No Audit</span>";
             }
             elseif(strtotime($ep_EndStamp)>strtotime('yesterday')){
-                echo "<td colspan=\"2\" style=\"background-color: #FFFF00; color: black;\"><span>Complete:<br>Finalized - Editable</span>";
+                echo "<td colspan=\"2\" style=\"background-color: #FFFF00; color: black;\">
+<span>Complete:<br>Finalized - Editable</span>";
             }
 			else{
-				echo "<td colspan=\"2\" style=\"background-color:red; color:white;\"><span>Complete:<br>Finalized - Locked</span>";
+				echo "<td colspan=\"2\" style=\"background-color:red; color:white;\">
+<span>Complete:<br>Finalized - Locked</span>";
 			}
         	?>
         </td>
@@ -1913,8 +1801,13 @@ if(false){
                              echo "\"" . $ep_sp_time . "\" readonly=\"true\"";
                            }
                            else{
-                           	$SUMAR = "select sum(Spoken) from `song` where callsign='" . mysql_escape_string($CALLSHOW) . "' and programname='" . mysql_escape_string($pgm_name) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' order by time desc";
-							   if($spokensum = mysql_fetch_array(mysql_query($SUMAR))){
+                           	$SUMAR = "select sum(Spoken) from `song` where callsign='" .
+                                $mysqli->real_escape_string($CALLSHOW)
+                                . "' and programname='" . $mysqli->real_escape_string($pgm_name) . "' and date='" .
+                                addslashes($_POST['user_date']) . "' and starttime='" .
+                                addslashes($_POST['user_time']) . "' order by time desc";
+                               $spokensumResult = $mysqli->query($SUMAR);
+							   if($spokensum = $spokensumResult->fetch_array(MYSQLI_ASSOC)){
 							   	if($spokensum['sum(Spoken)'] > 0){
                            			echo " \"".$spokensum['sum(Spoken)'] . "\" readonly=\"true\"";
 								}
@@ -2017,8 +1910,9 @@ if(false){
         <!--<img src="../images/mysqls.png" alt="MySQL Powered" />-->
         </td></tr>
         <?php
-        $PROML = mysql_query("SELECT count(*) AS Result FROM `promptlog` WHERE EpNum='".mysql_escape_string($ep_num)."' ");
-        $PROMPTS = mysql_fetch_array($PROML);
+        $PROML = $mysqli->query("SELECT count(*) AS Result FROM `promptlog` WHERE EpNum='".
+            $mysqli->real_escape_string($ep_num)."' ");
+        $PROMPTS = $PROML->fetch_array(MYSQLI_ASSOC);
             if($_SESSION['access']=='2'){
                 if(isset($_POST['IPOR'])){
                     $LOCATION = addslashes($_POST['IPOR']);
@@ -2029,8 +1923,11 @@ if(false){
                 if(empty($LOCATION)){
                     $LOCATION = $_SERVER['REMOTE_ADDR'];
                 }
-                $QUERY_HWD = "SELECT count(*) AS hardware FROM hardware WHERE ipv4_address='".mysql_escape_string($LOCATION)."' and in_service='1' and station='".mysql_escape_string($ep_callsign)."'";
-                $Equipment = mysql_fetch_array(mysql_query($QUERY_HWD));
+                $QUERY_HWD = "SELECT count(*) AS hardware FROM hardware WHERE ipv4_address='".
+                    $mysqli->real_escape_string($LOCATION)."' and in_service='1' and station='".
+                    $mysqli->real_escape_string($ep_callsign)."'";
+                $HDWR = $mysqli->query($QUERY_HWD);
+                $Equipment = $HDWR->fetch_array(MYSQLI_ASSOC);
 
                 echo "<tr style=\"background-color:#FFD633;\"><td colspan='2'>ADMINISTRATOR ACCESS</td><td colspan='2'>EPISODE: ".$ep_num."</td><td colspan='1'>Prompt Records: ".$PROMPTS['Result']."</td>
                 <td><a href='javascript:void(0)'>Hardware Count: ".$Equipment['hardware']."</a><button onclick='Foobar2000()'>StartFoobarWorker</button><button onclick='Foobar2000_stop()'>StopFoobarWorker</button></td>

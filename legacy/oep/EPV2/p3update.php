@@ -209,8 +209,8 @@ else if($con){
 	$CANC = $_POST['cc'];//filter_input(INPUT_POST,'cc',FILTER_SANITIZE_NUMBER_INT);//
 	$HITZ = $_POST['hit'];//filter_input(INPUT_POST,'hit',FILTER_SANITIZE_NUMBER_INT);//
 	$INST = $_POST['ins'];//filter_input(INPUT_POST,'ins',FILTER_SANITIZE_NUMBER_INT);//
-        $FINI = $_POST['complete'];//filter_input(INPUT_POST,'complete',FILTER_SANITIZE_NUMBER_INT);//
-        $TYPE = $_POST['type'];//filter_input(INPUT_POST,'type',FILTER_SANITIZE_STRING);//
+	$FINI = $_POST['complete'];//filter_input(INPUT_POST,'complete',FILTER_SANITIZE_NUMBER_INT);//
+	$TYPE = $_POST['type'];//filter_input(INPUT_POST,'type',FILTER_SANITIZE_STRING);//
 	$LANG = $_POST['language'];//filter_input(INPUT_POST,'languages',FILTER_SANITIZE_STRING);//
 	$NOTE = $_POST['note'];//filter_input(INPUT_POST,'note',FILTER_SANITIZE_STRING);//
 	$REMO = $_POST['remove'];//filter_input(INPUT_POST,'remove',FILTER_SANITIZE_NUMBER_INT);//
@@ -224,21 +224,21 @@ else if($con){
 		$SQROW = "UPDATE song SET category='".$CATS[$INDEX]."' ";
 		// PLAYLIST
 		if($PLAY[$INDEX]!=""){
-			$SQROW .= ", playlistnumber='".$PLAY[$INDEX]."' ";
+			$SQROW .= ", playlistnumber='".addslashes($PLAY[$INDEX])."' ";
 		}
 		else{
 			$SQROW .=", playlistnumber=NULL ";
 		}
 		// SPOKEN
 		if($SPOK[$INDEX]!=""){
-			$SQROW .= ", Spoken='".$SPOK[$INDEX]."' ";
+			$SQROW .= ", Spoken='".addslashes($SPOK[$INDEX])."' ";
 		}
 		else{
 			$SQROW .=", Spoken=NULL ";
 		}
 		// NOTE
 		if($NOTE[$INDEX]!=""){
-			$SQROW .= ", note='".$NOTE[$INDEX]."' ";
+			$SQROW .= ", note='".addslashes($NOTE[$INDEX])."' ";
 
 		}
 		else{
@@ -269,9 +269,16 @@ else if($con){
 			$SQROW .= ", instrumental='0' ";
 		}
 
+		if($TYPE[$INDEX]!=""){
+			$SQROW .= " , type='".addslashes($TYPE[$INDEX])."' ";
+		}
+		else{
+			$SQROW .= " , type='NA'";
+		}
+
 		//TIME
 		if($TIME[$INDEX]!=""){
-			$SQROW .= " , time='".$TIME[$INDEX]."' ";
+			$SQROW .= " , time='".addslashes($TIME[$INDEX])."' ";
 		}
 		else{
 			$SQROW .= " , time=NULL ";
@@ -916,24 +923,24 @@ else{
                         }
 			echo "/></td> ";
 			echo "<td>"; // Put Type Here
-	        echo "<select disabled name=type[] onChange=\"SetEdit('EDI".$CONT."')\">";
+	        echo "<select name=type[] onChange=\"SetEdit('EDI".$CONT."')\">";
             echo "\n<option ";
             if(isset($SONGS['type'])){
-                if($SONGS['type']=="B"){
+                if($SONGS['type']=="BACKGROUND"){
                     echo " selected ";
                 }
 
-                echo " value='Background'>BG</option>";
+                echo " value='BACKGROUND'>BG</option>";
                 echo "\n<option ";
-                if($SONGS['type']=="F" || !isset($SONGS['type'])){
+                if($SONGS['type']=="NA" || !isset($SONGS['type'])){
                     echo " selected ";
                 }
-                echo "value='FG'>FG</option>";
+                echo "value='NA'>SA</option>";
                 echo "\n<option ";
-                if($SONGS['type']=="T"){
+                if($SONGS['type']=="THEME"){
                     echo " selected ";
                 }
-                echo "value='theme'>THM</option>";
+                echo "value='THEME'>TH</option>";
                 echo "\n</select>";
             }
             else{

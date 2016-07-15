@@ -1,0 +1,17 @@
+{
+  "TPS_Errno": "SOCN-THM",
+  "type" : "database",
+  "execute" : "SQL",
+  "SQL_QRY" : {
+    "TEST": "SHOW COLUMNS FROM `song` WHERE `Field` = 'type';",
+    "RESULT" : {
+      "Field" : [
+        "type"
+      ]
+    },
+    "Negate": 0,
+    "createMode": 0,
+    "UPDATE_TYPE" : "FILE",
+    "UPDATE" : "addTheme.sql"
+  }
+}
