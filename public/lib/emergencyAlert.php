@@ -189,7 +189,7 @@ class atomAlert extends alert{
 
     protected function parse(&$alert, $locations, $stnTimeZone='UTC'){
         foreach($alert->children('http://www.georss.org/georss') as $geo){
-            array_push($this->polygon, end($geo));
+            array_push($this->polygon,end($geo));
         }
         $idStr = $alert->id;
         $id = explode("/",$idStr);
@@ -296,6 +296,9 @@ class atomAlert extends alert{
                 return False;
             }
         }
+        foreach ($areas as &$area){
+            $area = trim($area);
+        }
         $this->areas = $areas;
 
         preg_match("/(?<=Description:\s)([^\n\<]+)/", #"/(?<=Expires:\s)(.+)(?=\n)/",
@@ -318,10 +321,11 @@ class atomAlert extends alert{
         //$xml = file_get_contents($source);
         //$entries = new \SimpleXmlElement($xml);
         $entries = simplexml_load_file($source);
+        $nameSpaces = $entries->getNameSpaces(true);
         $entries->registerXPathNamespace('prefix', 'http://www.w3.org/2005/Atom');
         $results = $entries->xpath("//prefix:entry");
         $alerts = array();
-        foreach ($results as $entry) {
+        foreach ($results as &$entry) {
             $alertObj = new \TPS\atomAlert();
             $alertObj->exactMatchLocation($exactLocation);
             $alertObj->image($logo);
@@ -420,8 +424,24 @@ class emergencyAlert extends station{
                     }
                     array_push($alerts[$t->id], $t);
                 },$x);
-                usort($x, function($a,$b){return $a->expires > $b->expires;});
-                $this->alerts = $x;
+                $results = array();
+                foreach ($alerts as $alertMatch){
+                    if(sizeof($alertMatch) != 2){
+                        foreach ($alertMatch as $y){
+                            array_push($results, $y);
+                        }
+                        continue;
+                    }
+                    $AMC = $alertMatch[0];
+                    $AMC->title = array_merge($AMC->title, $alertMatch[1]->title);
+                    $AMC->text = array_merge($AMC->text, $alertMatch[1]->text);
+                    $AMC->alertAuthority = array_merge($AMC->alertAuthority, $alertMatch[1]->alertAuthority);
+                    $AMC->language = array_merge($AMC->language, $alertMatch[1]->language);
+                    $AMC->areas = array_merge($AMC->areas, $alertMatch[1]->areas);
+                    array_push($results, $AMC);
+                }
+                usort($results, function($a,$b){return $a->expires > $b->expires;});
+                $this->alerts = $results;
             } catch (Exception $exc) {
                 $exc->getTraceAsString();
             }
