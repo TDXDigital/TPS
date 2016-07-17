@@ -13,7 +13,7 @@ sec_session_start();
 <body>
       <div class="topbar">
            <a class="right" href="../../logout.php"> Logout </a>Welcome, <?php echo(strtoupper(
-              filter_input(INPUT_SERVER, 'fname'))); ?>
+              $_SESSION['fname'])); ?>
            </div>
 
       <table border="0" align="center" width="1000">

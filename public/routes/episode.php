@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * The MIT License
  *
  * Copyright 2015 J.oliver.
@@ -24,10 +24,32 @@
  * THE SOFTWARE.
  */
 
-// Review(s)
-$app->group('/episode', $authenticate($app,[1,2]), 
+$app->get('/episode', function() use ($app){
+    $app->redirect("/episode/");
+});
+$app->group('/episode', $authenticate($app,[1,2]),
         function () use ($app,$authenticate){
-    $app->get('/new',$authenticate($app,[1,2]), 
+    $app->get('/', $authenticate($app, [1,2]), function() use ($app, &$station){
+        $callsign = $app->request->get('callsign')?:$_SESSION['CALLSIGN'];
+        $programId = $app->request->get('program')?:NULL;
+        $episodeId = $app->request->get('episode')?:NULL;
+        $type = $app->request->get('type')?:0;
+        $station= new \TPS\station($callsign);
+        if(!is_null($programId)){
+            $program = new \TPS\program($station, $programId);
+        }
+        if(!is_null($episodeId)){
+            $program = new \TPS\episode($station, $episodeId);
+        }
+        $episodes = new \TPS\episodes($station->getCallsign());
+        $allEpisodes = $episodes->getAllEpisodes();
+        $result = [];
+        foreach ($allEpisodes as $key=>&$episode){
+            array_push($result, $episode->getEpisode());
+        }
+        print standardResult::ok($app, $result, NULL, 200, true);
+    });
+    $app->get('/new',$authenticate($app,[1,2]),
             function () use ($app){
         $params=array(
             'area'=>'Episode',
@@ -75,7 +97,7 @@ $app->group('/episode', $authenticate($app,[1,2]),
     });
     $app->post('/new', $authenticate($app,[1,2]), function() use ($app){
         $allParams = $app->request->params();
-        
+
         $callsign = $app->request->post('callsign')?:NULL;
         $programID = $app->request->post('program')?:NULL;
         $airDate = $app->request->post('airDate')?:NULL;
@@ -83,11 +105,11 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $airTime = $app->request->post('airTime')?:NULL;
         $type = $app->request->post('type')?:0;
         $description = $app->request->post('description')?:NULL;
-        
+
         if($type==2 && is_null($airDate)){
             $airDate="1973-01-01";
         }
-        
+
         $station = new \TPS\station($callsign);
         $program = new \TPS\program($station, $programID);
         $episode = new \TPS\episode($program, NULL, $airDate, $airTime,
@@ -96,7 +118,7 @@ $app->group('/episode', $authenticate($app,[1,2]),
                 $description, $type, $recordDate);
         if( $type == 2){
             while($episodeCheck->getEpisode()["id"] != Null){
-                $airTime = date("H:i", 
+                $airTime = date("H:i",
                         strtotime("$airDate $airTime + 1 minutes"));
                 $episodeCheck = new \TPS\episode($program, NULL, $airDate, $airTime,
                     $description, $type, $recordDate);

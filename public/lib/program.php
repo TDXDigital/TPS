@@ -76,7 +76,7 @@ class program extends station{
         else{
             $trace = debug_backtrace();
             trigger_error(
-                'Undefined property via __get(): ' . $name .
+                'Undefined property via __get(): ' .
                 ' in ' . $trace[0]['file'] .
                 ' on line ' . $trace[0]['line'],
                 E_USER_NOTICE);
@@ -175,9 +175,9 @@ class program extends station{
         return $instance;
     }
 
-    public static function getId($callsign = Null, $name = Null){
-        $callsign = $callsign?: $this->callsign;
-        $name = $name?: $this->name;
+    public static function getId($callsign, $name){
+        $callsign = $callsign;
+        $name = $name;
         $result = null;
         $tmpstn = new station($callsign);
         $con = $tmpstn->mysqli->prepare(
@@ -185,7 +185,7 @@ class program extends station{
                 . "programname=? and callsign=?"
                 );
         if($con === false){
-            $this->log->debug("Error Occured in getting ID");
+            $tmpstn->log->debug("Error Occured in getting ID");
         }
         $con->bind_param('ss',$name,$tmpstn->callsign);
         $con->bind_result($result);
@@ -194,9 +194,9 @@ class program extends station{
         return $result;
     }
 
-    public static function getName($callsign = Null, $id = Null){
-        $callsign = $callsign?:$this->callsign;
-        $id = $id?:$this->id;
+    public static function getName($callsign, $id){
+        $callsign = $callsign;
+        $id = $id;
         $result = null;
         $tmpstn = new station($callsign);
         $con = $tmpstn->mysqli->prepare(
@@ -261,7 +261,7 @@ class program extends station{
 
     public function getProgram($station = null, $Id){
         $station = $station?:$this;
-        return TPS\program::withID($station,$Id);
+        return \TPS\program::withID($station,$Id);
     }
 
     public function getProgramId(){

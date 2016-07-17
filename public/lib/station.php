@@ -1,6 +1,6 @@
 <?php
 namespace TPS;
-/* 
+/*
  * The MIT License
  *
  * Copyright 2015 James Oliver <support@ckxu.com>.
@@ -41,7 +41,7 @@ class station extends TPS{
     protected $GroupPlaylist = False;
     protected $GroupPlaylistReporting = False;
     #https://bootstrapbay.com/blog/bootstrap-ui-kit/
-    protected $colorFail = "#FC6E51"; 
+    protected $colorFail = "#FC6E51";
     protected $colorWarning = "#FFCE54";
     protected $colorPass = "#A0D468";
     protected $colorNote = "#4FC1E9";
@@ -54,7 +54,7 @@ class station extends TPS{
     protected $timezone = "UTC";
     public $log = null;
     public $genres = null;
-            
+
     function __construct($callsign=null) {
         parent::__construct();
         if(!is_null($callsign)){
@@ -69,13 +69,13 @@ class station extends TPS{
         $this->log = new \TPS\logger($username);
         $this->genres = new \TPS\genre($this->callsign);
     }
-    
+
     public function getAlertProviders(){
         $con = $this->mysqli->prepare(
                 "SELECT id, provider, url, logo, locations, active, area FROM"
                 . " emergencyalertsettings WHERE station=?");
         $con->bind_param('s',$this->callsign);
-        $con->bind_result($id, $provider, $url, $logo, 
+        $con->bind_result($id, $provider, $url, $logo,
                 $locations, $active, $area);
         $result = array();
         if($con->execute()){
@@ -92,7 +92,7 @@ class station extends TPS{
         }
         return $result;
     }
-    
+
     public function updateParent(){
         if(parent::updateParent()){
             return $this->update();
@@ -100,21 +100,21 @@ class station extends TPS{
         else{
             $trace = debug_backtrace();
             trigger_error(
-                'Undefined property via __get(): ' . $name .
+                'Undefined property via __get(): ' .
                 ' in ' . $trace[0]['file'] .
                 ' on line ' . $trace[0]['line'],
                 E_USER_NOTICE);
             return False;
         }
     }
-    
+
     public function update(){
         if(!is_null($this->callsign)){
             return $this->setupParams($this->callsign);
         }
         return True;
     }
-    
+
     public function setupParams($callsign){
         $callsign = strtoupper($callsign);
         $this->setStation($callsign);
@@ -138,31 +138,31 @@ class station extends TPS{
             $this->colorPass = $params["colorPass"];
             $this->colorNote = $params["colorNote"];
             $this->colorFail = $params["colorFail"];
-            
+
             if($params['displayCounters'] == 1){
                 $this->ProgramCounters = True;}
             else {$this->ProgramCounters = False;}
-            
+
             if($params["groupPlaylistProgramming"] == 1){
                 $this->GroupPlaylist = True;}
             else {$this->GroupPlaylist = False;}
-            
+
             if($params["groupPlaylistReporting"] == 1){
                 $this->GroupPlaylistReporting = True;}
             else {$this->GroupPlaylistReporting = False;}
-            
+
             if($params["forceComposer"] == 1){
                 $this->forceComposer = True;}
             else {$this->forceComposer = False;}
-            
+
             if($params["forceArtist"] == 1){
                 $this->forceArtist = True;}
             else {$this->forceArtist = False;}
-            
+
             if($params["forceAlbum"] == 1){
                 $this->forceAlbum = True;}
             else {$this->forceAlbum = False;}
-            
+
             $this->perHourTraffic = $params["perHourTraffic"];
             $this->perHourPSA = $params["perHourPSAs"];
             $this->timezone = $params['timezone'];
@@ -172,7 +172,11 @@ class station extends TPS{
             return FALSE;
         }
     }
-    
+
+    public function getCallsign(){
+        return $this->callsign;
+    }
+
     public function getStation($callsign,$page=1,$maxResult=50){
         $this->sanitizePagination($page,$maxResult);
         if($con = $this->mysqli->prepare("SELECT stationname,Designation,"
@@ -184,10 +188,10 @@ class station extends TPS{
                 . "limit ?,?;")){
             $con->bind_param('sii',$callsign,$page,$maxResult);
             if($con->execute()){
-                $con->bind_result($stationname, $Designation, $frequency, 
-                      $website, $address, $boothphone, $directorphone, 
-                      $DefaultSort, $PLLG, $ForceComposer, $ForceArtist, 
-                      $ForceAlbum, $ColorFail, $ColorPass, $PLRG, $DispCount, 
+                $con->bind_result($stationname, $Designation, $frequency,
+                      $website, $address, $boothphone, $directorphone,
+                      $DefaultSort, $PLLG, $ForceComposer, $ForceArtist,
+                      $ForceAlbum, $ColorFail, $ColorPass, $PLRG, $DispCount,
                       $ColorNote, $ManagerPhone, $ADSH, $PSAH, $timezone
                     );
                 if($con->num_rows>1){
@@ -232,7 +236,7 @@ class station extends TPS{
             return false;
         }
     }
-    
+
     public function setStation($callsign){
         $callsign = strtoupper($callsign);
         $stations = $this->getStations();
@@ -259,7 +263,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     /**
      * Changes Station Designation in DB and Class
      * @param type $Designation
@@ -275,7 +279,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     /**
      * Changes Station Frequency in DB and Class
      * @param type $frequency
@@ -291,7 +295,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     /**
      * Changes Director Phone in DB and Class
      * @param type $phone
@@ -307,7 +311,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     /**
      * Changes Request Line number in DB and Class
      * @param type $phone
@@ -323,7 +327,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     /**
      * Changes Station Manager Phone in DB and Class
      * @param type $phone
@@ -339,7 +343,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     /**
      * Changes Station website in DB and Class
      * @param type $url
@@ -355,7 +359,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     /**
      * Changes Station Address in DB and Class
      * @param type $address
@@ -371,11 +375,11 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     public function hourlyTraffic(){
         return $this->perHourTraffic;
     }
-    
+
     public function setHourlyTraffic($hourly) {
         $con = $this->mysqli->prepare(
                 "Update station SET ST_ADSH=? where callsign=?");
@@ -386,11 +390,11 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     public function hourlyPSA(){
         return $this->perHourPSA;
     }
-    
+
     public function setHourlyPSA($hourly) {
         $con = $this->mysqli->prepare(
                 "Update station SET ST_PSAH=? where callsign=?");
@@ -401,7 +405,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     /**
      * Changes Station TimeZone in DB and Class
      * @param type $tz
@@ -422,7 +426,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     private function setPlaylistLiveGrouping($gp){
         assert(in_array($gp, ['1','0',1,0,True,False]),'invalid paramater');
         if(is_bool($gp) || is_int($gp)){
@@ -442,25 +446,25 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     public function playlistLiveGroupingOn(){
         $result = $this->setPlaylistLiveGrouping("1");
         $this->log->info("Playlist Live Grouping enabled",
                 $result?"pass":"fail");
         return $result;
     }
-    
+
     public function playlistLiveGroupingOff(){
         $result = $this->setPlaylistLiveGrouping("0");
         $this->log->info("Playlist Live Grouping disabled",
                 $result?"pass":"fail");
         return $result;
     }
-    
+
     public function playlistLiveGrouping(){
         return $this->GroupPlaylist;
     }
-    
+
     public function togglePlaylistLiveGrouping(){
         if($this->playlistLiveGrouping()){
             return $this->playlistLiveGroupingOff();
@@ -469,7 +473,7 @@ class station extends TPS{
             return $this->playlistLiveGroupingOn();
         }
     }
-    
+
     private function setPlaylistReportingGrouping($gp){
         assert(in_array($gp, ['1','0',1,0,True,False]),'invalid paramater');
         if(is_bool($gp) || is_int($gp)){
@@ -489,19 +493,19 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     public function PlaylistReportingGroupingOn(){
         return $this->setPlaylistReportingGrouping("1");
     }
-    
+
     public function PlaylistReportingGroupingOff(){
         return $this->setPlaylistReportingGrouping("0");
     }
-    
+
     public function PlaylistReportingGrouping(){
         return $this->GroupPlaylistReporting;
     }
-    
+
     public function togglePlaylistReportingGrouping(){
         if($this->PlaylistReportingGrouping()){
             return $this->PlaylistReportingGroupingOff();
@@ -510,7 +514,7 @@ class station extends TPS{
             return $this->PlaylistReportingGroupingOn();
         }
     }
-    
+
     public function setDefaultSortOrder($SortOrder){
         $con = $this->mysqli->prepare(
                 "Update station SET ST_DefaultSort=? where callsign=?");
@@ -521,7 +525,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     private function setProgramCounters($SortOrder){
         $con = $this->mysqli->prepare(
                 "Update station SET ST_DispCount=? where callsign=?");
@@ -531,7 +535,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     public function programCountersOn(){
         if($this->setProgramCounters("1")){
             $this->ProgramCounters = True;
@@ -539,7 +543,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     public function programCountersOff(){
         if($this->setProgramCounters("0")){
             $this->ProgramCounters = False;
@@ -547,11 +551,11 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     public function programCounters(){
         return $this->ProgramCounters;
     }
-    
+
     public function toggleProgramCounters(){
         if($this->programCounters()){
             return $this->programCountersOff();
@@ -560,7 +564,7 @@ class station extends TPS{
             return $this->programCountersOn();
         }
     }
-    
+
     private function setForceComposer($value){
         $con = $this->mysqli->prepare(
                 "Update station SET ST_ForceComposer=? where callsign=?");
@@ -570,7 +574,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-        
+
     public function forceComposerOn(){
         if($this->setForceComposer("1")){
             $this->forceComposer = True;
@@ -578,7 +582,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     public function forceComposerOff(){
         if($this->setForceComposer("0")){
             $this->forceComposer = True;
@@ -586,11 +590,11 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     public function forceComposer(){
         return $this->forceComposer;
     }
-    
+
     public function toggleForceComposer(){
         if($this->forceComposer()){
             return $this->forceComposerOff();
@@ -599,7 +603,7 @@ class station extends TPS{
             return $this->forceComposerOn();
         }
     }
-    
+
     private function setForceArtist($value){
         $con = $this->mysqli->prepare(
                 "Update station SET ST_ForceArtist=? where callsign=?");
@@ -609,7 +613,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-        
+
     public function forceArtistOn(){
         if($this->setForceArtist("1")){
             $this->forceArtist = True;
@@ -617,7 +621,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     public function forceArtistOff(){
         if($this->setForceArtist("0")){
             $this->forceArtist = True;
@@ -625,11 +629,11 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     public function forceArtist(){
         return $this->forceArtist;
     }
-    
+
     public function toggleForceArtist(){
         if($this->forceArtist()){
             return $this->forceArtistOff();
@@ -638,7 +642,7 @@ class station extends TPS{
             return $this->forceArtistOn();
         }
     }
-    
+
     private function setForceAlbum($value){
         $con = $this->mysqli->prepare(
                 "Update station SET ST_ForceAlbum=? where callsign=?");
@@ -648,7 +652,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-        
+
     public function forceAlbumOn(){
         if($this->setForceAlbum("1")){
             $this->forceAlbum = True;
@@ -656,7 +660,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     public function forceAlbumOff(){
         if($this->setForceAlbum("0")){
             $this->forceAlbum = True;
@@ -664,11 +668,11 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     public function forceAlbum(){
         return $this->forceAlbum;
     }
-    
+
     public function toggleForceAlbum(){
         if($this->forceAlbum()){
             return $this->forceAlbumOff();
@@ -677,7 +681,7 @@ class station extends TPS{
             return $this->forceAlbumOn();
         }
     }
-    
+
     public function getAllProgramIds($active = TRUE){
         /**
          * gets the ID associated with a program
@@ -698,7 +702,7 @@ class station extends TPS{
         }
         else{return false;}
     }
-    
+
     public static function create($callsign, $name, $designation,
             $frequency, $website, $address, $mainPhone, $mgrPhone){
         $tps = new \TPS\TPS();
@@ -720,9 +724,9 @@ class station extends TPS{
         $con->close();
         return $result;
     }
-    
+
     public function login($email, $password, $server) {
-        // Using prepared statements means that SQL injection is not possible. 
+        // Using prepared statements means that SQL injection is not possible.
         if ($stmt = $this->mysqli->prepare("SELECT id, username, password, salt, access
             FROM members
            WHERE email = ?
@@ -739,10 +743,10 @@ class station extends TPS{
             $password = hash('sha512', $password . $salt);
             if ($stmt->num_rows == 1) {
                 // If the user exists we check if the account is locked
-                // from too many login attempts 
+                // from too many login attempts
 
                 if ($this->checkbrute($user_id)) {
-                    // Account is locked 
+                    // Account is locked
                     // Send an email to user saying their account is locked
                     return false;
                 } else {
@@ -756,11 +760,11 @@ class station extends TPS{
                         $user_id = preg_replace("/[^0-9]+/", "", $user_id);
                         $_SESSION['user_id'] = $user_id;
                         // XSS protection as we might print this value
-                        $username = preg_replace("/[^a-zA-Z0-9_\-]+/", 
-                                                                    "", 
+                        $username = preg_replace("/[^a-zA-Z0-9_\-]+/",
+                                                                    "",
                                                                     $username);
                         $_SESSION['username'] = $username;
-                        $_SESSION['login_string'] = hash('sha512', 
+                        $_SESSION['login_string'] = hash('sha512',
                                   $password . $user_browser);
                         $_SESSION['account'] = $username;
                         $_SESSION['userId'] = $user_id;
@@ -796,7 +800,7 @@ class station extends TPS{
                     } else {
                         // Password is not correct
                         // We record this attempt in the database
-                        // 
+                        //
                         // needs prepare then execute without mysqlnd
                         $now = time();
                         $this->mysqli->query("INSERT INTO login_attempts(user_id, time)
@@ -814,12 +818,12 @@ class station extends TPS{
          return false;
         }
     }
-    
+
     private function checkbrute($user_id) {
-        // Get timestamp of current time 
+        // Get timestamp of current time
         $now = time();
 
-        // All login attempts are counted from the past 2 hours. 
+        // All login attempts are counted from the past 2 hours.
         $valid_attempts = ceil($now - (2 * 60 * 60));
 
         if ($stmt = $this->mysqli->prepare("SELECT time 
@@ -828,11 +832,11 @@ class station extends TPS{
                                 AND time > ?")) {
             $stmt->bind_param('ii', $user_id, $valid_attempts);
 
-            // Execute the prepared query. 
+            // Execute the prepared query.
             $stmt->execute();
             $stmt->store_result();
 
-            // If there have been more than 5 failed logins 
+            // If there have been more than 5 failed logins
             if ($stmt->num_rows > 5) {
                 return true;
             } else {
@@ -840,7 +844,7 @@ class station extends TPS{
             }
         }
     }
-    
+
     public function registerUser($username, $email, $password){
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);
         $username = filter_var($username, FILTER_SANITIZE_STRING);
@@ -877,7 +881,7 @@ class station extends TPS{
             $error_msg .= $this->mysqli->error;
         }
 
-        // TODO: 
+        // TODO:
         // We'll also have to account for the situation where the user doesn't have
         // rights to do registration, by checking what type of user is attempting to
         // perform the operation.
@@ -886,10 +890,10 @@ class station extends TPS{
             // Create a random salt
             $random_salt = hash('sha512', uniqid(openssl_random_pseudo_bytes(16), TRUE));
 
-            // Create salted password 
+            // Create salted password
             $password = hash('sha512', $password . $random_salt);
 
-            // Insert the new user into the database 
+            // Insert the new user into the database
             if ($insert_stmt = $mysqli->prepare("INSERT INTO members (username, email, password, salt) VALUES (?, ?, ?, ?)")) {
                 $insert_stmt->bind_param('ssss', $username, $email, $password, $random_salt);
                 // Execute the prepared query.

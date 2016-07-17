@@ -12,7 +12,7 @@ include_once dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."../TPSBIN/db_connec
 <html>
 <body>
       <div class="topbar">
-           Welcome, <?php echo(strtoupper(filter_input(INPUT_SERVER, 'fname'))); ?>
+           Welcome, <?php echo(strtoupper($_SESSION['fname'])); ?>
            </div>
 
       <table border="0" align="center" class="striped">
@@ -70,7 +70,9 @@ include_once dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."../TPSBIN/db_connec
                  </select>
              </td>
              <td>
-                 <input name="date" type="date" size="33%"/>
+                 <input name="date" type="date" value="<?php
+                 echo date("Y-m-d");
+                 ?>" size="33%"/>
              </td>
              <td>
                  <input name="prerecord" type="date" size="33%"/>

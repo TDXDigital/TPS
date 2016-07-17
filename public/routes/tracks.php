@@ -3,7 +3,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015 James Oliver <support@ckxu.com>.
+ * Copyright 2016 J.oliver.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,14 +23,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "lib" . DIRECTORY_SEPARATOR . "tracks.php";
+// Tracks are a newer term for songs, song is not really representative of the media as it
+// might not always be a 'musical' entry
+$tracks = new \TPS\tracks(\TPS\util::get($_SESSION, 'CALLSIGN'));
 
-namespace TPS;
+$app->get('/tracks', function () use ($app){
+    $app->redirect('/tracks/');
+});
 
-/**
- * Description of song
- *
- * @author James Oliver <support@ckxu.com>
- */
-class song extends episode{
-    //put your code here
-}
+$app->group("/tracks", array($authenticate($app,[1,2])),
+        function() use ($app,$authenticate, $notifications){
+    $app->get("/", $authenticate($app, [1,2]), function () use ($app, $tracks){
+        $broadcasts = $notifications->listUserNotifications('*', $_SESSION['access']);
+        $messages = $notifications->listUserNotifications($_SESSION['username'], $_SESSION['access']);
+        $value = array_merge($broadcasts, $messages);
+        standardResult::ok($app, $value, null);
+    });
+});
