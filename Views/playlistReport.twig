@@ -1,0 +1,266 @@
+{% extends 'baseAdmin.twig' %}
+{% block headScripts %}
+    <style>
+        .donut200{
+            height:200px;
+            width: 200px;
+        }
+        .ui-autocomplete-loading {
+            background: white url("{{siteUrl}}/images/GIF/ring24.gif") right center no-repeat;
+        }
+    </style>
+    <link rel="stylesheet" hred="{{siteUrl}}/css/bootstrapAutoCompleteCompatibility.css"/>
+    <link rel="stylesheet" href="{{siteUrl}}/js/chosen.css">
+    <link rel="stylesheet" href="{{siteUrl}}/js/bootstrap/checkbox/css/bootstrap-checkbox.css">
+    <link rel="stylesheet" href="{{siteUrl}}/js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>
+{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+    </li>
+    <li class="active">
+        <i class="fa fa-line-chart"></i>{% if search %}
+        <a href="/station">System</a>
+    </li>
+    <li>
+        <i class="fa fa-search"></i> Playlist
+        {% else %}
+            Playslist
+        {% endif %}
+    </li>
+</ol>
+{% endblock %}
+{% block content %}
+    {% if flash.error %}
+        <div class="row">
+            <div class="alert alert-danger">
+                <strong>Error</strong> {{flash.error}}
+            </div>
+        </div>
+    {% endif %}
+    {% if flash.success %}
+        <div class="row">
+            <div class="alert alert-success">
+                <strong>Success</strong> {{flash.success}}
+            </div>
+        </div>
+    {% endif %}
+    <div class="row" id="error" style="display: none">
+        <div class="alert alert-danger">
+            <strong>Error: </strong><span id="errorText">TEST</span>
+        </div>
+    </div>
+    <form role="form" method="GET">
+        <div class="row">
+            <div class="form-group input-group" style="z-index: 0;">
+                <div class="input-group-addon">Default Date Offset</div>
+<input type="text" required class="form-control datepicker4m text-center" 
+value="{{today|default("now")|date("Y-m-d")}}" name="today"/>
+                <span class="input-group-btn"><button class="btn btn-default" type="submit">
+                        <i class="fa fa-calculator"></i>&nbsp;Update</button></span>
+            </div>
+        </div>
+    </form><!--
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+        <li><a data-toggle="tab" href="#menu1">Menu 1</a></li>
+        <li><a data-toggle="tab" href="#menu2">Menu 2</a></li>
+    </ul>-->
+        <div class="panel-group" id="accordion">
+            {% for genre, gap in gaps %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#{{genre}}">{{gap.genre}}</a>
+                    </h4>
+                </div>
+                <div id="{{genre}}" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <table class='table table-bordered table-hover' >
+                            <thead>
+                                <th>Gap</th>
+                                <th>Formats</th>
+                            </thead>
+                            <tbody>
+                            {% for gapData in gap %}
+                                {% for gapList in gapData.gaps %}
+                                    <tr>
+                                        <td>{{gapList|join(' - ')}}</td>
+                                        <td>{{gapData.formats|join(', ')}}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    <form role="form" method="POST">
+    <table class='table table-bordered table-hover' >
+        <thead>
+            <th>Locale</th>
+            <th>Format</th>
+            <th>Genre</th>
+            <th>Received</th>
+            <th>Label</th>
+            <th>Artist</th>
+            <th>Album</th>
+            <th style="min-width: 150px;">On Playlist</th>
+            <th style="min-width: 150px;">Off Playlist</th>
+            <th title="A short Identifier for an album">Short Code</th>
+            <th>Enabled</th>
+        </thead>
+        <tbody>
+            {% for playlist in playlists %}
+                <tr>
+                    <td><div id="LC_SCI_{{playlist.RefCode}}">
+                            {{playlist.Locale}}
+                    </div></td>
+                    <td><div id="FMT_SCI_{{playlist.RefCode}}">
+                            {{playlist.format}}
+                    </div></td>
+                    <td><div id="GENRE_SCI_{{playlist.RefCode}}">
+                        {{playlist.genre.Title}}
+                        </div>
+                        <div id="GC_SCI_{{playlist.RefCode}}" 
+                             style="display: none">
+                            {{playlist.genre.Genre}}
+                        </div></td>
+                    <!--<td>{{playlist.release_date|date("Y-m-d")}}</td>-->
+                    <td>{{playlist.datein|date("Y-m-d")}}</td>
+                    <td><a href="../../label/{{playlist.labelid}}" target="_pl">
+                            {{playlist.labelName}}</a></td>
+                    <td><a href="../../library/{{playlist.RefCode}}" target="_pl">
+                            {{playlist.artist}}</a></td>
+                    <td><a href="../../library/{{playlist.RefCode}}" target="_pl">
+                            {{playlist.album}}</a></td>
+                    <td><div id="DIV_ONP_SCI_{{playlist.RefCode}}">
+                            <input type="text" required 
+                                   id="ONP_SCI_{{playlist.RefCode}}"
+                               class="form-control datepicker text-center"
+                               name="startDate[]"
+                               onchange="javascript:verifyShortCode(
+                                        'SCI_{{playlist.RefCode}}')"
+                               value="{{playlist.Activate|default("now")|date("Y-m-d")}}"/>
+                        </div>
+                    </td>
+                    <td><div id="DIV_OFP_SCI_{{playlist.RefCode}}">
+                            <input type="text" required 
+                                   id="OFP_SCI_{{playlist.RefCode}}"
+                               class="form-control datepicker text-center" 
+                               name="endDate[]"
+                               onchange="javascript:verifyShortCode(
+                                        'SCI_{{playlist.RefCode}}')"
+                               value="{{playlist.Expire|default("now")|date("Y-m-d")}}"/>
+                        </div>
+                    </td>
+                    <td>
+                        <div id="DIV_SCI_{{playlist.RefCode}}">
+                            <input type="text" min="0" max="4294967295" 
+                               id="SCI_{{playlist.RefCode}}"
+                               name="smallCode[]" required
+                               class="form-control text-center autocomplete autoSelect"
+                               pattern="\d{4,6}" 
+                               {% if playlist.SmallCode %}
+                               value="{{"%04d"|format(playlist.SmallCode)}}"
+                               {% endif %}
+                               onchange="javascript:verifyShortCode(
+                                        'SCI_{{playlist.RefCode}}')"/>
+                        </div></td>
+                    <td><input type="hidden" name="refCode[]" value="{{playlist.RefCode}}"/>
+                        <input type="checkbox" checked name="enabled[]" value="{{playlist.RefCode}}"/></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+<div class="row">
+    <div class="col-lg-6">
+        <span>Reports:</span>
+        <a class="btn btn-default" href="./xlsx" target="_blank">XLSX</a>
+    </div>
+    <div class="col-lg-6">
+        <div class="pull-right">
+            <input type="submit" class="btn btn-success" value="Submit"/>
+        </div>
+    </div>
+</div>
+    </form>
+{% endblock %}
+{% block lastScripts %}
+<script src="{{siteUrl}}/js/chosen.jquery.min.js"></script>
+<script type="text/javascript" src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{{siteUrl}}/js/bootstrap/checkbox/js/bootstrap-checkbox.js "></script>
+<script>
+    $(function() {
+        // Activate chosen elements
+        $( ".datepicker" ).datepicker({
+            numberOfMonths: 3,
+            showButtonPanel: true,
+            dateFormat: "yy-mm-dd"
+        });
+        $( ".datepicker4m" ).datepicker({
+            numberOfMonths: 4,
+            showButtonPanel: true,
+            dateFormat: "yy-mm-dd"
+        });
+        var cache = {};
+        $(".autocomplete").autocomplete({
+            source: function( request, response ) {
+                var ident = $(this.element).prop("id");
+                console.log(ident);
+                var term = request.term;
+                if ( term in cache ) {
+                  response( cache[ term ] );
+                  return;
+                }
+                var url = "../shortcode/available/"+
+                        $("#GC_"+ident).text().trim()+
+                        "?format="+$("#FMT_"+ident).text().trim()+
+                        "&limit=12";
+                console.log(url);
+                $.getJSON( url,
+                request, function( data, status, xhr ) {
+                    console.log(data);
+                    cache[ term ] = data;
+                    response( data );
+                });
+            }
+        });
+        $(".autoSelect").on("click", function () {
+            $(this).select();
+        });
+      });
+    function verifyShortCode(ident){
+        var obj = $("#"+ident);
+        var onDate = $("#ONP_"+ident).datepicker('getDate');
+        var offDate = $("#OFP_"+ident).datepicker('getDate');
+        var error = $("#error");
+        var errorText = $("#errorText");
+        var val = obj.val()
+        console.log("checking "+ident+" for code "+val);
+        $.ajax({
+            url: "../shortcode/valid",
+            data: {
+                "code": val,
+                "startDate": onDate.toJSON().substring(0,10),
+                "endDate": offDate.toJSON().substring(0,10),
+                //"startDate": onDate.getFullYear()+"-"+
+                //        onDate.getMonth()+"-"+onDate.getDay(),
+                //"endDate": offDate.getFullYear()+"-"+
+                //        offDate.getMonth()+"-"+offDate.getDay()
+            },
+        }).error(function (data){
+            $("#DIV_"+ident).addClass("has-error");
+            errorText.html(data.responseText);
+            error.show();
+        }).success(function (data){
+            $("#DIV_"+ident).removeClass();
+            errorText.html("Validation OK");
+            error.hide();
+        })
+    }
+</script>
+{% endblock %}

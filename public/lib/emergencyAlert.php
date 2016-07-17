@@ -38,28 +38,36 @@ class alert{
     public $alertAuthority=array();
     public $expires="";
     public $id="";
-    public $severity="";
+    public $severity=""; //Extreme, Severe, Moderate, Minor, Unknown
     public $severityLevel=Null;
     public $areas=array();
     public $href;
     public $language = array();
-    public $category;
+    public $category; // Geo, Met, Safety, Rescue, Fire, Health, Env, Transport, Infra, CBRNE, Other
+    public $certainty; //Observed, Likely, Possible, Unlikely, Unknown
+    public $eventCode;
     public $type;
     public $status;
-    public $urgency; // Future, Expected, Unknown
-    
+    public $urgency; // Future, Expected, Unknown, Past, Immediate, Unknown
+    protected $exactMatchLocation = False;
+
     public function __construct() {
         $this->expires = new \DateTime();
         $this->updated = new \DateTime();
     }
-    
+
+    public function exactMatchLocation($bool){
+        assert(is_bool($bool), "non boolean value provided");
+        $this->exactMatchLocation = $bool;
+    }
+
     public function image($value=null){
         if($value){
             $this->image = $value;
         }
         return $this->image;
     }
-    
+
     public function alertAuthority($value=null){
         if($value){
             if(is_array($value)){
@@ -70,28 +78,28 @@ class alert{
         }
         return $this->alertAuthority;
     }
-    
+
     public function areas($value=null){
         if($value){
             $this->areas .= $value;
         }
         return $this->areas;
     }
-    
+
     public function expires($value=null){
         if($value){
             $this->expires = $value;
         }
         return $this->expires;
     }
-    
+
     public function name($value=null){
         if($value){
             $this->name = $value;
         }
         return $this->name;
     }
-    
+
     public function title($value=null){
         if($value){
             if(is_array($value)){
@@ -102,7 +110,7 @@ class alert{
         }
         return $this->title;
     }
-    
+
     public function language($value=null){
         if($value){
             if(is_array($value)){
@@ -113,14 +121,14 @@ class alert{
         }
         return $this->language;
     }
-    
+
     public function updated($value=null){
         if($value){
             $this->updated = $value;
         }
         return $this->updated;
     }
-    
+
     public function text($value=null){
         if($value){
             if(is_array($value)){
@@ -131,12 +139,202 @@ class alert{
         }
         return $this->text;
     }
-    
+
     public function id($value=null){
         if($value){
             $this->id = $value;
         }
         return $this->id;
+    }
+
+    protected function setActive(){
+        $this->active = true;
+        if(preg_match("/(?<=\s)(in effect)/", end($this->title))){
+            $this->active = true;
+        }
+        elseif (preg_match("/(?<=\s)(ended)/", end($this->title))) {
+            $this->active = false;
+        }
+        if(strtolower($this->urgency) == "past"){
+            $this->active = false;
+        }
+    }
+}
+
+class atomAlert extends alert{
+
+    protected function setAlertAlertSeverity(){
+        $result = "Warning";
+        if($this->severity){
+            return $this->severity;
+        }
+        $term = end($this->title);
+        if(strpos($term,'Test') !== FALSE){
+            $result = "Test";
+        }
+        elseif(strpos($term,'information')!==FALSE
+            || strpos($term,"advisory")!==FALSE
+            || strpos($term,"special weather")!==FALSE
+            || strpos($term,"bulletin météorologique spécial")!==FALSE){
+            $result = "Information";
+        }
+        elseif(strpos($term, 'watch')!==FALSE){
+            $result = "Watch";
+        }
+        // Otherwise return Warning (Unknown reason to downgrade)
+
+        $this->severity = $result;
+        return $this->severity;
+    }
+
+    protected function parse(&$alert, $locations, $stnTimeZone='UTC'){
+        foreach($alert->children('http://www.georss.org/georss') as $geo){
+            array_push($this->polygon,end($geo));
+        }
+        $idStr = $alert->id;
+        $id = explode("/",$idStr);
+        if(is_array($id) && sizeof($id)){
+            $id = end($id);
+        }
+        else{
+
+        }
+        $this->id = $id;
+        preg_match("/(?<=Expires:\s)([\d:\-T]+)/", #"/(?<=Expires:\s)(.+)(?=\n)/",
+            $alert->summary, $matches);
+        if(sizeof($matches)>0){
+            try {
+                if(sizeof($matches[0])>0){
+                    $expires = new \DateTime($matches[0]);
+                    $now = new \DateTime($stnTimeZone);
+                    if($now > $expires){
+                        # expired, no need to process
+                        return false;
+                        //return true;
+                    }
+                    $this->expires($expires);
+                }
+            } catch (Exception $exc) {
+            }
+        }
+        $updated = new \DateTime($alert->updated);
+        $this->updated($updated);
+        $this->title((string)$alert->title);
+        $this->alertAuthority((string)$alert->author->name);
+        $this->setAlertAlertSeverity();
+        $this->href = (string)$alert->link->attributes()->href;
+
+        foreach ($alert->category as $category){
+            // special Pelmorex feed info
+            foreach($category->attributes() as $valueRaw){
+                $raw = (string)$valueRaw[0];
+                if($raw == ""){
+                    continue;
+                }
+                $value = explode("=", $raw);
+                $key = array_shift($value);
+                if($key == "language"){
+                    $this->language(end($value));
+                }
+                elseif ($key == "category") {
+                    $this->category = end($value);
+                }
+                elseif ($key == "msgType") {
+                    $this->type = end($value);
+                }
+                elseif ($key == "status") {
+                    $this->status = end($value);
+                }
+                elseif ($key == "severity") {
+                    $this->severityLevel = end($value);
+                }
+                elseif ($key == "urgency") {
+                    $this->urgency = end($value);
+                }
+            }
+        }
+
+        preg_match("/(?<=Area:\s)([^\n\<]+)/", #"/(?<=Expires:\s)(.+)(?=\n)/",
+            $alert->summary, $areas);
+        $stationLocations = explode(",", $locations);
+        if(!is_array($locations)){
+            $locations = array($locations);
+        }
+        $alertValidAreas = array_merge($stationLocations, $locations);
+        //$match = array_shift($alertValidAreas);
+        if(sizeof($areas)<1){
+            $areas = $alert->summary;
+            if(!in_array($alertValidAreas, $areas)){
+                // does not include given locations
+                return FALSE;
+            }
+        }
+        else{
+            $areas = explode(',', $areas[0]);
+            $validArea = False;
+            foreach ($alertValidAreas as $location){
+                $location = trim($location);
+                if($location == NULL){
+                    // if no station wide locations are defined a null
+                    // entry will exist, skip it when we get here
+                    continue;
+                }
+                foreach ($areas as $area) {
+                    $area = trim($area);
+                    if(strpos($area, $location)!==false || $location == "*"){
+
+                        if($this->exactMatchLocation && $area != $location){
+                            continue;
+                        }
+                        // does not include given locations
+                        $validArea = TRUE;
+                        break;
+                    }
+                }
+            }
+            if(!$validArea){
+                return False;
+            }
+        }
+        foreach ($areas as &$area){
+            $area = trim($area);
+        }
+        $this->areas = $areas;
+
+        preg_match("/(?<=Description:\s)([^\n\<]+)/", #"/(?<=Expires:\s)(.+)(?=\n)/",
+            $alert->summary, $description);
+        if(sizeof($description)<1){
+            $description = "";
+        }
+        if(!is_string($description)){
+            $this->text(end($description));
+        }
+        else{
+            $this->text($description);
+        }
+        $this->setActive();
+        return True;
+    }
+
+    public static function parseAtomAlerts($source, $locations, $provider, $logo, $exactLocation=False,
+                                           $timeZone='UTC'){
+        //$xml = file_get_contents($source);
+        //$entries = new \SimpleXmlElement($xml);
+        $entries = simplexml_load_file($source);
+        $nameSpaces = $entries->getNameSpaces(true);
+        $entries->registerXPathNamespace('prefix', 'http://www.w3.org/2005/Atom');
+        $results = $entries->xpath("//prefix:entry");
+        $alerts = array();
+        foreach ($results as &$entry) {
+            $alertObj = new \TPS\atomAlert();
+            $alertObj->exactMatchLocation($exactLocation);
+            $alertObj->image($logo);
+            $alertObj->provider = $provider;
+            if($alertObj->parse($entry, $locations, $timeZone)) {
+                array_push($alerts, $alertObj);
+            }
+        }
+        return $alerts;
     }
 }
 
@@ -163,12 +361,12 @@ class emergencyAlert extends station{
     public $location = "*";
     public $format = "json";
     private $exactMatchLocation = False;
-    
+
     public function __construct($station=Null, $locations=Null,
             $format=Null, $sources=Null) {
         parent::__construct($station);
         if($sources != Null && is_array($sources) ){
-            $this->$providers = $sources;
+            $this->providers = $sources;
         }
         $this->format = $format;
         $this->location = explode(",", $locations);
@@ -177,11 +375,11 @@ class emergencyAlert extends station{
         //    $this->location .= explode(',',$values['locations']);
         //}
     }
-    
+
     private function setParams(&$alert,&$previous,$alertDate){
         if(is_string($previous)){
             $previous = $this->alerts[$previous];
-            assert(sizeof($previous)>0, 
+            assert(sizeof($previous)>0,
                     "Could not retrieve previous alert");
         }
         $previous->title($alert->title);
@@ -195,224 +393,17 @@ class emergencyAlert extends station{
         }
         return True;
     }
-    
+
     public function locations($value){
         $this->location = $value;
     }
-    
+
     public function exactMatchLocation($bool){
         assert(is_bool($bool), "non boolean value provided");
         $this->exactMatchLocation = $bool;
     }
-    
-    private function setAlertAlertSeverity(&$alert){
-        $result = "Warning";
-        if($alert->severity){
-            return $alert->severity;
-        }
-        $term = end($alert->title);
-        if(strpos($term,'Test') !== FALSE){
-            $result = "Test";
-        }
-        elseif(strpos($term,'information')!==FALSE 
-                || strpos($term,"advisory")!==FALSE
-                || strpos($term,"special weather")!==FALSE
-                || strpos($term,"bulletin météorologique spécial")!==FALSE){
-            $result = "Information";
-        }
-        elseif(strpos($term, 'watch')!==FALSE){
-            $result = "Watch";
-        }
-        // Otherwise return Warning (Unknown reason to downgrade)
-        
-        $alert->severity = $result;
-        return $alert->severity;
-    }
-    
-    private function setActive(&$alert){
-        if(preg_match("/(?<=\s)(in effect)/", end($alert->title))){
-            $alert->active = true;
-        }
-        elseif (preg_match("/(?<=\s)(ended)/", end($alert->title))) {
-            $alert->active = false;
-        }
-    }
-    
-    private function parseAtomAlert(&$alert, &$alertObj, $locations){
-        foreach($alert->children('http://www.georss.org/georss') as $geo){
-            array_push($alertObj->polygon,end($geo));
-        }
-        $idStr = $alert->id;
-        $id = explode("/",$idStr);
-        if(is_array($id) && sizeof($id)){
-            $id = end($id);
-        }
-        else{
-            
-        }
-        $alertObj->id = $id;
-        preg_match("/(?<=Expires:\s)([\d:\-T]+)/", #"/(?<=Expires:\s)(.+)(?=\n)/", 
-                $alert->summary, $matches);
-        if(sizeof($matches)>0){
-            try {
-                if(sizeof($matches[0])>0){
-                    $expires = new \DateTime($matches[0]);
-                    $now = new\DateTime();
-                    if($now > $expires){
-                        # expired, no need to process
-                        
-                        //return true;
-                    }
-                    $alertObj->expires($expires);
-                }
-            } catch (Exception $exc) {
-            }
-        }
-        $updated = new \DateTime($alert->updated);
-        $alertObj->updated($updated);
-        $alertObj->title((string)$alert->title);
-        $alertObj->alertAuthority((string)$alert->author->name);
-        $this->setAlertAlertSeverity($alertObj);
-        $alertObj->href = (string)$alert->link->attributes()->href;
-        
-        foreach ($alert->category as $category){
-            // special Pelmorex feed info
-            foreach($category->attributes() as $valueRaw){
-                $raw = (string)$valueRaw[0];
-                if($raw == ""){
-                    continue;
-                }
-                $value = explode("=", $raw);
-                $key = array_shift($value);
-                if($key == "language"){
-                    $alertObj->language(end($value));
-                }
-                elseif ($key == "category") {    
-                    $alertObj->category = end($value);
-                }
-                elseif ($key == "msgType") {
-                    $alertObj->type = end($value);
-                }
-                elseif ($key == "status") {
-                    $alertObj->status = end($value);
-                }
-                elseif ($key == "severity") {
-                    $alertObj->severityLevel = end($value);
-                }
-                elseif ($key == "urgency") {
-                    $alertObj->urgency = end($value);
-                }
-            }
-        }
-        
-        preg_match("/(?<=Area:\s)([^\n\<]+)/", #"/(?<=Expires:\s)(.+)(?=\n)/", 
-                $alert->summary, $areas);
-        $stationLocations = explode(",", $locations);
-        $alertValidAreas = array_merge($stationLocations, $this->location);
-        //$match = array_shift($alertValidAreas);
-        if(sizeof($areas)<1){
-            $areas = $alert->summary;
-            if(!in_array($alertValidAreas, $areas)){
-                // does not include given locations
-                return FALSE;
-            }
-        }
-        else{
-            $areas = explode(',', $areas[0]);
-            $validArea = False;
-            foreach ($areas as $area){
-                $area = trim($area);
-                foreach ($alertValidAreas as $location) {
-                    $location = trim($location);
-                    if($location == NULL){
-                        // if no station wide locations are defined a null
-                        // entry will exist, skip it when we get here
-                        continue;
-                    }
-                    if(strpos($area, $location)!==false || $location == "*"){
-                        
-                        if($this->exactMatchLocation && $area != $location){
-                            continue;
-                        }
-                        // does not include given locations
-                        $validArea = TRUE;
-                        break;
-                    }
-                }
-            }
-            if(!$validArea){
-                return True;
-            }
-        }
-        $alertObj->areas = $areas;
-        
-        preg_match("/(?<=Description:\s)([^\n\<]+)/", #"/(?<=Expires:\s)(.+)(?=\n)/", 
-                $alert->summary, $description);
-        if(sizeof($description)<1){
-            $description = "";
-        }
-        if(!is_string($description)){
-            $alertObj->text(end($description));
-        }
-        else{
-            $alertObj->text($description);
-        }
-        
-        $alertDate = new \DateTime($alert->updated);
-        $previousAlerts = array_map(function($x) use ($alertDate){
-            if($x->updated == $alertDate){
-                return $x;
-            }
-        },$this->alerts);
-        if(key_exists($id,$this->alerts) || sizeof($previousAlerts)>0){
-            foreach ($previousAlerts as $previous) {
-                if($previous 
-                        && sizeof($alertObj->areas) == 
-                        sizeof($previous->areas)){
-                    // msgType Alert = new, Update
-                    if($alertObj->type!=NULL 
-                            && strtolower($alertObj->type)!="alert"){
-                        if(in_array($alertObj->language,$previous->language)){
-                            // this update replaces the old alert
-                            if($alertObj->expires<$previous->expires){
-                                unset($alert->alerts[$previous->id]);
-                            }
-                        }
-                        else{
-                            return $this->setParams($alertObj, $previous, $alertDate);
-                        }
-                    }
-                    else{
-                        return $this->setParams($alertObj, $previous, $alertDate);
-                    }
-                }
-            }
-        }
-        $this->setActive($alertObj);
-        if(!sizeof($id)){
-            array_push($this->alerts, $alertObj);
-        }
-        else{
-            $this->alerts[(string)$id] = $alertObj;
-        }
-    }
-    
-    private function parseAtomAlerts($source, $locations, $provider, $logo){
-        //$xml = file_get_contents($source);
-        //$entries = new \SimpleXmlElement($xml);
-        $entries = simplexml_load_file($source);
-        $entries->registerXPathNamespace('prefix', 'http://www.w3.org/2005/Atom');
-        $results = $entries->xpath("//prefix:entry");
-        foreach ($results as $entry) {
-            $alertObj = new \TPS\alert();
-            $alertObj->image($logo);
-            $alertObj->provider = $provider;
-            $this->parseAtomAlert($entry, $alertObj, $locations);
-        }
-        
-    }
-    
-    protected function checkAlert($provider, $data){
+
+    protected function checkAlert($provider, $data, $timeZone='UTC'){
         if(!key_exists("feed",$data) || !key_exists("logo", $data)){
             throw new Exception("Missing key value from alert data");
         }
@@ -425,34 +416,59 @@ class emergencyAlert extends station{
         }
         if($type == "atom"){
             try {
-                $this->parseAtomAlerts($source, $locations, $provider, $logo);
+                $x = atomAlert::parseAtomAlerts($source, $locations, $provider, $logo, False, $this->timezone);
+                $alerts = array();
+                array_map(function($t) use (&$alerts){
+                    if(!array_key_exists($t->id, $alerts)){
+                        $alerts[$t->id] = array();
+                    }
+                    array_push($alerts[$t->id], $t);
+                },$x);
+                $results = array();
+                foreach ($alerts as $alertMatch){
+                    if(sizeof($alertMatch) != 2){
+                        foreach ($alertMatch as $y){
+                            array_push($results, $y);
+                        }
+                        continue;
+                    }
+                    $AMC = $alertMatch[0];
+                    $AMC->title = array_merge($AMC->title, $alertMatch[1]->title);
+                    $AMC->text = array_merge($AMC->text, $alertMatch[1]->text);
+                    $AMC->alertAuthority = array_merge($AMC->alertAuthority, $alertMatch[1]->alertAuthority);
+                    $AMC->language = array_merge($AMC->language, $alertMatch[1]->language);
+                    $AMC->areas = array_merge($AMC->areas, $alertMatch[1]->areas);
+                    array_push($results, $AMC);
+                }
+                usort($results, function($a,$b){return $a->expires > $b->expires;});
+                $this->alerts = $results;
             } catch (Exception $exc) {
                 $exc->getTraceAsString();
             }
-        }        
+        }
     }
 
-    protected function checkAlerts($provider=Null){
+    protected function checkAlerts($provider=Null, $timeZone='UTC'){
         foreach ($this->providers as $key => $value) {
             if ($provider != Null && !in_array($key,$provider)){
                 continue;
             }
             try {
-                $this->checkAlert($key, $value);
+                $this->checkAlert($key, $value, $timeZone);
             } catch (Exception $exc) {
                 $trace = $exc->getTraceAsString();
                 $this->logger->error("Check alerting partner failed", $trace);
             }
         }
     }
-    
+
     protected function formatAlert($provider){
-        
+
     }
 
     protected function formatAlerts(){
     }
-    
+
     protected function printAlert($alert){
         $html = "";
         switch (strtolower($alert->severity)) {
@@ -488,11 +504,11 @@ class emergencyAlert extends station{
         }
         $html .= "<span>Areas: " . implode(", ",$alert->areas). "</span>";
         $html .= "</p>";
-        $html .= "</span>";   
+        $html .= "</span>";
         $html .= "</div>";
         return $html;
     }
-    
+
     protected function printAlerts(){
         $html = "<style>.emergency_logo{
             background-color:white;
@@ -532,7 +548,7 @@ class emergencyAlert extends station{
         }
         print $html;
     }
-    
+
     private function removeOldUpdates(){
         $duplicates = array();
         foreach($this->alerts as $k1=>$a1){
@@ -545,7 +561,7 @@ class emergencyAlert extends station{
                     if($a1->alertAuthority == $a2->alertAuthority
                             && $a1->provider == $a1->provider){
                         if($a1->active == false && $a2->active == true){
-                            // alert ended; 
+                            // alert ended;
                             $duplicates[$a1->id] = false;
                         }
                         $duplicates[$a2->id] = true;
@@ -556,6 +572,11 @@ class emergencyAlert extends station{
         foreach($duplicates as $key=>$value){
             if($value){
                 unset($this->alerts[$key]);
+            }
+        }
+        foreach ($this->alerts as $k1=>$a1) {
+            if (strtolower($a1->urgency) == "past") {
+                unset($this->alerts[$k1]);
             }
         }
     }
@@ -575,8 +596,7 @@ class emergencyAlert extends station{
                     .$this->callsign.", sent to ".$ip);
         }
         foreach ($this->alerts as $key => $value) {
-            $this->log->info($value->provider." alert '$key' provided to "
-                    . $id);
+            $this->log->info($value->provider." alert '$key' provided to ".$ip);
         }
         if($this->format == "json"){
             return json_encode($this->alerts);

@@ -30,6 +30,7 @@
  * @author James
  */
 class TestsBase extends PHPUnit_Extensions_Database_TestCase{
+    private $db;
     public function getConnection() {
         $pdo = new PDO( 
             'sqlite::memory:', 
@@ -38,6 +39,7 @@ class TestsBase extends PHPUnit_Extensions_Database_TestCase{
             array(PDO::ATTR_PERSISTENT => true) 
         ); 
         $GLOBALS['pdo'] = $pdo;
+        $this->db = $pdo;
         return $this->createDefaultDBConnection($pdo);
     }
 

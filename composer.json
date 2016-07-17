@@ -19,7 +19,7 @@
         "slim/views": "^0.1.3",
         "slim/extras": "*",
         "twig/twig": "^1.18",
-        "slim/slim": "^2.6",
+        "slim/slim": "2.*",
         "twbs/bootstrap": "^3.3",
         "smarty/smarty": "^3.0",
         "apigen/apigen": "2.8.0",
@@ -27,7 +27,9 @@
         "components/font-awesome": "^4.0",
         "nette/nette": "~2.1.3",
         "fperucic/treant-js": "*",
-        "onokumus/metismenu": "dev-master"
+        "onokumus/metismenu": "dev-master",
+        "mk-j/php_xlsxwriter": "*",
+        "hellogerard/jobby": "*"
     },
     "require-dev": {
         "phpunit/phpunit-skeleton-generator": "*",
@@ -36,8 +38,8 @@
     },
     "autoload":{
         "psr-0":{
-            "TPS//": "router/",
-            "Controller//": "./"
+            "TPS\\": ["router/", "public/lib/"],
+            "Controller\\": "./"
         }
     },
     "license": "MIT",

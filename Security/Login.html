@@ -3,24 +3,24 @@
 <head>
 <!--<link rel="stylesheet" type="text/css" href="../phpstyle.css" />-->
 <title>DPL Administration</title>
-    <link rel="stylesheet" href="../phpstyle.css" />
+    <link rel="stylesheet" href="../css/phpstyle.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
     <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="vendor/components/font-awesome/4.3.0/css/font-awesome.min.css"/>
-    <script type="text/JavaScript" src="../TPSBIN/JS/sha512.js"></script> 
-    <script type="text/JavaScript" src="../TPSBIN/JS/forms.js"></script> 
+    <script type="text/JavaScript" src="../TPSBIN/JS/sha512.js"></script>
+    <script type="text/JavaScript" src="../TPSBIN/JS/forms.js"></script>
     <script src="../TPSBIN/JS/GLOBAL/Utilities.js"></script>
     <style>
         .Fill{
-         width: 100%;   
+         width: 100%;
          text-align: center;
          margin: 4px 0px 4px 0px;
         }
         .hidden-div{
             display: none;
         }
-        
+
     </style>
 </head>
 <body>
@@ -44,11 +44,11 @@
                 </select>
 		        <input type="submit" id="sub1" value="Login" disabled class="Fill ui-corner-all"/>
             </fieldset>
-		  <br/><br/><br /> 
+		  <br/><br/><br />
 		</form></div>
 	</div>
     <script type="text/javascript">
-        
+
         function check_auth_type(){
             SRV_ID = $("#srvr").find(":selected").val();
             //alert(SRV_ID);
@@ -82,12 +82,12 @@
                             }
                             //alert(value.AUTH[0]);
                         })
-                        
+
                     //}
                 }
             });
         }
-        
+
         function load_servers(){
             $.ajax({
                 dataType: "json",
@@ -104,13 +104,13 @@
             });
             //check_auth_type();
         }
-        
+
         $(document).ready(function(){
             //var dfd = $.Deferred();
             //dfd
             //        .done(load_servers())
             //        .done(check_auth_type());
-            
+
             load_servers();
             window.setTimeout(check_auth_type,500);
         });

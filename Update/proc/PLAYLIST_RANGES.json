@@ -1,0 +1,18 @@
+{
+    "TPS_Errno": "PLRG-001",
+    "type" : "database",
+    "execute" : "SQL",
+    "requires": "DRLB-001",
+    "SQL_QRY" : {
+        "TEST": "SHOW COLUMNS FROM `playlistRanges` WHERE `Field` = 'id';",
+        "RESULT" : {
+            "Field" : [
+                "id"
+            ]
+        },
+        "Negate": 0,
+        "createMode": 1,
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "PLAYLIST_RANGES.sql"
+    }
+}

@@ -57,7 +57,7 @@ function install_db(){
         success: function( data ){
             //$( "#results" ).append( msg );
             //alert(msg);
-            $('.progress-bar').css('width', 33.3+'%').attr('aria-valuenow', 33.3); 
+            $('.progress-bar').css('width', 33.3+'%').attr('aria-valuenow', 25.0); 
             $("#conplete").show();
             $("#completed").append(data.status+": Database Created");
             install_xml();
@@ -92,7 +92,7 @@ function install_xml(){
         success: function( data ){
             //$( "#results" ).append( msg );
             //alert(msg);
-            $('.progress-bar').css('width', 66.6+'%').attr('aria-valuenow', 66.6); 
+            $('.progress-bar').css('width', 66.6+'%').attr('aria-valuenow', 50.0); 
             $("#conplete").show();
             $("#completed").append("<br>"+data.status+": Login Config Created");
             create_admin();
@@ -123,13 +123,44 @@ function create_admin(){
         success: function( data ){
             //$( "#results" ).append( msg );
             //alert(msg);
-            $('.progress-bar').css('width', 100.0+'%').attr('aria-valuenow', 100.00); 
+            $('.progress-bar').css('width', 100.0+'%').attr('aria-valuenow', 75.0); 
             $("#conplete").show();
             $("#completed").append("<br>"+data.status+": Login Config Created");
-            complete();
+            perform_updates();
         },
         error: function(data){
             $("#progress_status").html("Could not create permissions and administrator");
+        }
+    });
+}
+
+function perform_updates(){
+    $.ajax({
+        url:"setup.postinstall.update.php",
+        dataType:"json",
+        async: false,
+        cache: false,
+        statusCode: {
+            404: function() {
+              console.log( "Server Not Found" );
+            },
+            403: function() {
+                console.log("Access Denied");
+            }
+        },
+        beforeSend: function(){
+            $("#progress_status").html("Performing Updates to database");
+        },
+        success: function( data ){
+            //$( "#results" ).append( msg );
+            //alert(msg);
+            $('.progress-bar').css('width', 100.0+'%').attr('aria-valuenow', 100.00); 
+            $("#complete").show();
+            $("#completed").append("<br>"+data.status+": Updates Completed");
+            complete();
+        },
+        error: function(data){
+            $("#progress_status").html("Could not perform updates");
         }
     });
 }

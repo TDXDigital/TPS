@@ -86,10 +86,10 @@ $app->get("/login", function () use ($app) {
         . "and serverId (srvId), See GitHub project for more information.";
     }
     else{
-        $app->render('login.html.twig', 
-           array('error' => $error, 'Username' => $email_value, 
-               'Username_error' => $email_error, 
-               'password_error' => $password_error, 
+        $app->render('login.html.twig',
+           array('error' => $error, 'Username' => $email_value,
+               'Username_error' => $email_error,
+               'password_error' => $password_error,
                'urlRedirect' => $urlRedirect, 'srvId'=>$srvId));
     }
 });
@@ -129,7 +129,7 @@ $app->post("/login", function () use ($app) {
     $databaseID = $app->request()->post('SRVID');
     $access = 0;
     $errors = array();
-    
+
     require_once ("TPSBIN".DIRECTORY_SEPARATOR."functions.php");
     $dbxml = simplexml_load_file("TPSBIN".DIRECTORY_SEPARATOR."XML"
             .DIRECTORY_SEPARATOR."DBSETTINGS.xml");
@@ -137,7 +137,7 @@ $app->post("/login", function () use ($app) {
     $log = new \TPS\logger($username);
     $log->debug("Login attempt received");
     $log->startTimer();
-    
+
     $stations = $log->getStations();
     $defaultStation = key($stations);
     foreach($dbxml->SERVER as $server):
@@ -172,7 +172,7 @@ $app->post("/login", function () use ($app) {
                     "manager"=>["WebAdmins"],
                     "user"=>["WebUsers","Authenticated Users"]
                 );
-                
+
                 //connect and bind
                 try{
                     $ldap = ldap_connect($ldap_host,$ldap_port);
@@ -270,5 +270,22 @@ $app->get("/logout", function () use ($app) {
 });
 
 $app->get("/labels/print", $authenticate($app,[2]), function() use ($app) {
-    require_once 'opl/PrintTest.php';
+    require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'legacy/opl/PrintTest.php';
+});
+
+$app->post("/webhook", function () use ($app){
+    require_once dirname(__FILE__).DIRECTORY_SEPARATOR."../lib/std/githubWebHook.php";
+});
+
+$app->get("/webhook", function () use ($app){
+    require_once dirname(__FILE__).DIRECTORY_SEPARATOR."../lib/std/githubWebHook.php";
+});
+
+$app->get("/requiressl", function () use ($app){
+    $log = new \TPS\logger();
+    $log->info("SSL (HTTPS) Required URL access attempted via HTTP");
+    session_unset();
+    $app->view()->setData('access', null);
+    $app->render('basic.twig',array('statusCode'=>'No HTTPS available to complete request','title'=>'HTTP Error',
+        'message'=>'No HTTPS Available but is required'));
 });

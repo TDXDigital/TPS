@@ -30,7 +30,7 @@ function getBrowser()
          elseif(preg_match('/Netscape/i',$u_agent))
          {
              $ub = "Netscape";
-         } 
+         }
          return $ub;
      }
 
@@ -56,7 +56,7 @@ else{
 <!DOCTYPE HTML>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="/phpstyle.css" />
+<link rel="stylesheet" type="text/css" href="/css/phpstyle.css" />
 <title>Unsupported Browser</title>
 </head>
       <div class="topbar">
@@ -64,7 +64,7 @@ else{
            </div>
         <table border="0" align="center" width="1000">
         <tr><td width="1000" colspan="4">
-           <img src="/images/Ckxu_logo_PNG.png" alt="ckxu login"/>
+                <img src="<?php print($_SESSION['logo']); ?>" alt="logo"/>
         </td></tr>
 	<table border="0" width="1000" style="background-color:white;">
 	<tr><td colspan="100%" width="1000" style="background-color:red; color:white;">
@@ -74,7 +74,7 @@ else{
                   <td width="100%" colspan="3">
 	            <?php
 	              echo "<br/>Sorry but <strong>" . getBrowser();?>
-	              	
+
 	              </strong><br/>Is not supported by this site, please use one of the compatable browsers listed below:
 	              <br/><br/>1) Opera 11 +<br/>2) Mozilla Firefox 11+<br/>3) Google Chrome 18+<br/>4) Internet Explorer 7+<br/>Thank You!<br/></br>
 	              <?php echo "Detected Browser Information: ".$_SERVER['HTTP_USER_AGENT'] . "</br>";

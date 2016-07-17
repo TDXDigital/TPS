@@ -51,7 +51,9 @@ class standardResult{
     static public function error($app, $data=NULL, $key="message", $code=500,
             $isJSON=True){
         $str = static::encode($app, $data, $code, $key, $isJSON);
-        $app->error(new \Exception($str), $code);
+        if(!$isJSON){
+            $app->error(new \Exception($str), $code);
+        }
     }
     
     /**
@@ -71,7 +73,9 @@ class standardResult{
     static public function badRequest($app, $data=NULL, $key="message", 
             $code=400, $isJSON=True){
         $str = static::encode($app, $data, $code, $key, $isJSON);
-        $app->error(new \Exception($str), $code);
+        if(!$isJSON){
+            $app->error(new \Exception($str), $code);
+        }
     }
     
     /**

@@ -9,13 +9,13 @@ if (!$con){
 	username=' . $_SESSION["username"]);
 }
 else if($con){
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /user/login');} 
+	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /user/login');}
 ?>
 
 <!DOCTYPE HTML>
 <html style="height: 100%">
 <head>
-<link rel="stylesheet" type="text/css" href="../altstyle.css" />
+<link rel="stylesheet" type="text/css" href="../css/altstyle.css" />
 <title>Search</title>
 </head>
 
@@ -24,7 +24,7 @@ else if($con){
            USER: <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
 	<div id="header">
-		<a href="../masterpage.php"><img src="../images/Ckxu_logo_PNG.png" alt="CKXU" /></a>
+		<a href="../masterpage.php"><img src="<?php print("../".$_SESSION['logo']); ?>" alt="logo"/></a>
 	</div>
 	<div id="top">
 		<h2>Song Detail</h2>
@@ -62,11 +62,11 @@ else if($con){
 							if(mysql_error()!='0'){
 								echo "<option value='".mysql_error()."' >
 								";
-								
+
 							}
 							while($row = mysql_fetch_array($result)){
 								echo "<option value=\"" . $row['playlistnumber'] . "\">
-								"; 
+								";
 							}
 						?>
 					</datalist>
@@ -90,11 +90,11 @@ else if($con){
 							if(mysql_error()!='0'){
 								echo "<option value='".mysql_error()."' >
 								";
-								
+
 							}
 							while($row = mysql_fetch_array($result)){
 								echo "<option value=\"" . $row['programname'] . "\">
-								"; 
+								";
 							}
 						?>
 					</datalist>
@@ -110,7 +110,7 @@ else if($con){
 				</td>
 			</tr>
 			</table><table><tr><th>Title</th><th>Artist</th><th>Album</th><th>Composer</th><th>Language</th><th>Category</th></tr>
-			
+
 				<tr><td>
 					<input type="text" name="Title" />
 				</td>
@@ -145,7 +145,7 @@ else if($con){
 			</tr>
 		</table>
 	</div>
-	
+
 <?php
 
 }

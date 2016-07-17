@@ -11,7 +11,7 @@ if (!$con){
 }
 else if($con){
 	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /user/login');}
-	$prosql="SELECT * from Episode where date between '" . addslashes($_POST['from']) . "' and '" . addslashes($_POST['to']) . "' group by programname order by programname, date, starttime"; 
+	$prosql="SELECT * from Episode where date between '" . addslashes($_POST['from']) . "' and '" . addslashes($_POST['to']) . "' group by programname order by programname, date, starttime";
     $proresult=mysql_query($prosql,$con);
 
     $prooptions="
@@ -33,9 +33,9 @@ else if($con){
 			 $prooptions .= " style=\"background-color:#DAFFFF; \" ";
 		}
         $prooptions.="><td colspan=\"2\" >". $name ."</td><td><input type=\"checkbox\" name=\"exempt[]\" value=\"". addslashes($name) ."\"></td>";
-        	
+
 		$episodes=mysql_query("select * from episode where programname='" . addslashes($name) . "' and date between '" . addslashes($_POST['from']) . "' and '" . addslashes($_POST['to']) . "' ");
-		
+
 		$SUBCON=0;
 		if(mysql_num_rows($episodes)>1){
 			$prooptions.="<td align=center> </td><td align=center>   </td><td align=center>" . $rowcount . "</td><td>";
@@ -50,7 +50,7 @@ else if($con){
 					$prooptions .= "\" style=\"background-color:#FFFFBB; display:none;\" ";
 				}
 				$prooptions .= "\"><td>";//Col for PL #
-				
+
 		//##################### - Playlist Count - ##########################
 				$SQLPLAY="select count(playlistnumber) from SONG where programname='".addslashes($subrow['programname'])."' and date='".$subrow['date']."' and starttime='".$subrow['starttime']."' and playlistnumber IS NOT NULL";
 				if($subplay = mysql_fetch_array(mysql_query($SQLPLAY)))
@@ -63,7 +63,7 @@ else if($con){
 				}
 				$prooptions .= "</td><td>
 				";
-				
+
 		//##################### - Song Count - ##########################
 				$SQLSONG="select count(songid) from SONG where category NOT LIKE '1%' and category NOT LIKE '4%' and category NOT LIKE '5%' and programname='".addslashes($subrow['programname'])."' and date='".$subrow['date']."' and starttime='".$subrow['starttime']."'";
 				if($subsong = mysql_fetch_array(mysql_query($SQLSONG)))
@@ -76,17 +76,17 @@ else if($con){
 				}
 				$prooptions .= "</td><td>
 				";
-				
-				
+
+
 		//##################### - Exclude - ##########################
 				$prooptions .= "<input type=\"checkbox\" name=\"exclude[]\" value=\"".addslashes($subrow['programname'])."@".addslashes($subrow['date'])."@".addslashes($subrow['starttime'])."\" />";
 				$prooptions .= "</td><td>
 				";
-				
+
 		//##################### - Date - ##########################
 				$prooptions .= $subrow['date'];
 				$prooptions .= "</td><td>
-				";	
+				";
 		//##################### - Time - ##########################
 				$prooptions .= $subrow['starttime'];
 				$prooptions .= "</td><td>
@@ -95,10 +95,10 @@ else if($con){
 				if($subrow['endtime']==''){
 				    $prooptions .= "Not Finalized";
 				}else{
-				    $prooptions .= $subrow['endtime'];   
+				    $prooptions .= $subrow['endtime'];
 				}
 				$prooptions .= "</td><td>
-				";	
+				";
 		//##################### - View - ##########################
 				$prooptions .="<button type=\"button\" onclick=\"javascript:quickview('../oep/quickview.php?args=".addslashes($subrow['programname'])."@".$subrow['date']."@".$subrow['starttime']."@".$subrow['callsign']."')\">View</button>";
 				$prooptions .= "</td></tr>
@@ -109,9 +109,9 @@ else if($con){
 		else{
 		$prooptions.="<td align=center>" . $row['date'] . "</td><td align=center>" . $row['starttime'] . "</td><td align=center>" . $rowcount . "</td><td>";
 		$subrow=mysql_fetch_array($episodes);
-		$prooptions .="<button type=\"button\" onclick=\"javascript:quickview('../oep/quickview.php?args=".addslashes($subrow['programname'])."@".$subrow['date']."@".$subrow['starttime']."@".$subrow['callsign']."')\">View</button>";				
+		$prooptions .="<button type=\"button\" onclick=\"javascript:quickview('../oep/quickview.php?args=".addslashes($subrow['programname'])."@".$subrow['date']."@".$subrow['starttime']."@".$subrow['callsign']."')\">View</button>";
         $prooptions.="</td></tr>
-        ";	
+        ";
 		}
 		++$CONTROL;
     }
@@ -122,7 +122,7 @@ else if($con){
 <!DOCTYPE HTML>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="../altstyle.css" />
+    <link rel="stylesheet" type="text/css" href="../css/altstyle.css" />
     <link rel="stylesheet" type="text/css" href="../js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>
     <script src="../js/jquery/js/jquery-2.0.3.min.js" type="text/javascript"></script>
     <script src="../js/jquery/js/jquery-ui-1.10.0.custom.min.js" type="text/javascript"></script>
@@ -161,7 +161,7 @@ else if($con){
            Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
 	<div id="header">
-		<a href="../masterpage.php"><img src="../images/Ckxu_logo_PNG.png" alt="CKXU" /></a>
+		<a href="../masterpage.php"><img src="<?php print("../".$_SESSION['logo']); ?>" alt="logo"/></a>
 	</div>
 	<div id="top">
 		<h2>Playlist Report</h2>
@@ -175,7 +175,7 @@ else if($con){
                     <th><label for="from">Start</label></th>
                     <th><label for="to">To</label></th>
                     <th><label for="limit">Limit</label></th>
-                    
+
                 </tr>
             </thead>
             <tbody>
@@ -204,7 +204,7 @@ else if($con){
 		<table>
 			<tr>
 				<td>
-					
+
 				<input type="submit" value="Submit"/></form></td><td>
 				<input type="button" value="Reset" onClick="window.location.reload()"></td><td>
 				<input type="button" value="Menu" onClick="window.location.href='../masterpage.php'"/></form>
@@ -213,7 +213,7 @@ else if($con){
 			</tr>
 		</table>
 	</div>
-	
+
 <?php
 
 }

@@ -41,7 +41,7 @@ function check_switch() {
         }
     }
 
-    xmlhttp.open("GET", "../../../oep/EPV3/Switch.php?q=V2", true);
+    xmlhttp.open("GET", "../../../legacy/oep/EPV3/Switch.php?q=V2", true);
     xmlhttp.send();
     setTimeout("check_switch()",5000);
     /*var switch_s = $.ajax({

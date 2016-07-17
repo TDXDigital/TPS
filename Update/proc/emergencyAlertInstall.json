@@ -2,6 +2,7 @@
     "TPS_Errno": "EMER-001",
     "type" : "database",
     "execute" : "SQL",
+    "requires": "EVNT-002",
     "SQL_QRY" : {
         "TEST": "SHOW COLUMNS FROM `emergencyalertsettings` WHERE `Field` = 'id';",
         "RESULT" : {

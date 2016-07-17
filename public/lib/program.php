@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * The MIT License
  *
  * Copyright 2015 James Oliver <support@ckxu.com>.
@@ -25,7 +25,7 @@
  */
 
 namespace TPS;
-/** 
+/**
  * @abstract contains all functions and methods related to reviews
  * @version 1.0
  * @author James Oliver <support@ckxu.com>
@@ -51,24 +51,24 @@ class program extends station{
     protected $displayOrder = false;
     protected $reviewable = null;
     protected $lastReview = null;
-    
+
     private $data = array();
     /**
-     * 
+     *
      * @global type $mysqli
      * @version 1.0
      */
     public function __construct(station &$station, $Id = NULL) {
         $this->station = $station;
         /**
-         * this does duplicate the parent but It is likely more desirable 
+         * this does duplicate the parent but It is likely more desirable
          * than a detached child object
          */
         parent::__construct($this->station->callsign);
         $this->programID = $Id;
         $this->update();
     }
-    
+
     public function updateParent(){
         if(parent::updateParent()){
             return $this->update();
@@ -83,7 +83,7 @@ class program extends station{
             return False;
         }
     }
-    
+
     public function update(){
         if(!$this->programID){
             return False;
@@ -112,7 +112,7 @@ class program extends station{
             return False;
         }
     }
-    
+
     /**
      * @abstract values associated with the program, not stored in Database
      * only in memory. will be destroyed on object destruction, not passed to
@@ -123,7 +123,7 @@ class program extends station{
     public function __set($name, $value) {
         $this->data[$name] = $value;
     }
-    
+
     public function __get($name){
         if(array_key_exists($name, $this->data)){
             return $this->data[$name];
@@ -136,17 +136,17 @@ class program extends station{
             E_USER_NOTICE);
         return null;
     }
-    
+
     public function __isset($name){
         return isset($this->data[$name]);
     }
-    
+
     public function __unset($name)
     {
         echo "Unsetting '$name'\n";
         unset($this->data[$name]);
     }
-    
+
     public function getValues(){
         return array(
             "callsign" => $this->callsign,
@@ -171,13 +171,13 @@ class program extends station{
 
     public static function withCallsign($callsign, $id){
         $tmpstn = new station($callsign);
-        $instance = new self($tmpstn,$name);
+        $instance = new self($tmpstn, $id);
         return $instance;
     }
-    
+
     public static function getId($callsign = Null, $name = Null){
-        $callsign = $callsign?:$this->callsign;
-        $name = $name?:$this->name;
+        $callsign = $callsign?: $this->callsign;
+        $name = $name?: $this->name;
         $result = null;
         $tmpstn = new station($callsign);
         $con = $tmpstn->mysqli->prepare(
@@ -193,7 +193,7 @@ class program extends station{
         $con->fetch();
         return $result;
     }
-    
+
     public static function getName($callsign = Null, $id = Null){
         $callsign = $callsign?:$this->callsign;
         $id = $id?:$this->id;
@@ -208,12 +208,12 @@ class program extends station{
         $con->execute();
         return $result;
     }
-    
+
     public static function withId(station &$station, $id){
         $instance = new self($station,$id);
         return $instance;
     }
-    
+
     public function getEpisodes(){
         /**
          * gets all episode objects for this program
@@ -229,7 +229,7 @@ class program extends station{
         }
         else{return false;}
     }
-    
+
     public function getEpisodeIds(){
         /**
          * gets and array with all episode ids for this program
@@ -248,7 +248,7 @@ class program extends station{
         }
         else{return false;}
     }
-    
+
     public function episodeCount(){
         /**
          * gets and array with all episode ids for this program
@@ -258,12 +258,12 @@ class program extends station{
         }
         else{return false;}
     }
-    
+
     public function getProgram($station = null, $Id){
         $station = $station?:$this;
         return TPS\program::withID($station,$Id);
     }
-    
+
     public function getProgramId(){
         /**
          * gets the ID associated with a program

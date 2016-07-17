@@ -19,7 +19,7 @@ else{
         require_once('public/index.php');
     }
     else{
-        require_once('legacy_controller.php');
+        require_once('legacy/controller.php');
     }
 }
 

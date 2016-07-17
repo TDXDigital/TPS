@@ -202,6 +202,10 @@ class genre extends TPS{
                 . " WHERE LOWER(station) = LOWER(:callsign) "
                 . "and genreId = :id order by "
                 . "genreid asc");
+        if(!$stmt){
+            $error = $this->db->errorInfo();
+            throw new \Exception($error[2]);
+        }
         $stmt->bindParam(":callsign", $this->callsign, \PDO::PARAM_STR);
         $stmt->bindParam(":id", $id , \PDO::PARAM_INT);
         $stmt->execute();
@@ -238,6 +242,26 @@ class genre extends TPS{
             );
         }
         $stmt = null; #close statement
+        return $result;
+    }
+    
+    public function delete($ids){
+        if(!is_array($ids)){
+            $ids = array($ids);
+        }
+        $ident = NULL;
+        $stmt = $this->db->prepare("DELETE FROM genre WHERE genre.genreid=:id"
+                . " and genre.Station=:station and"
+                . " NOT EXISTS (SELECT program.genre FROM program"
+                . " WHERE program.callsign=:station and program.genre=:id)");
+        $stmt->bindParam(":id", $ident);
+        $stmt->bindParam(":station", $this->callsign);
+        $result = [];
+        foreach($ids as $ident){
+            if($stmt->execute()){
+                $result[$ident] = $stmt->rowCount();
+            }
+        }
         return $result;
     }
 }

@@ -25,7 +25,7 @@ else if($con){
         else{
             $SQL_Ver .= "playlistnumber=playlist) as total, soundex(artist) as sndx FROM song WHERE playlistnumber=playlist group by soundex(album) order by count desc limit 1))";
         }
-        
+
     }
     else{*/
         $SQL_Ver=", soundex(album) ";
@@ -35,14 +35,14 @@ else if($con){
 	if(isset($_POST['exempt'])){
 		$EXEM = $_POST['exempt'];
 		for($iex=0 ; $iex < sizeof($EXEM); ++$iex){
-			$SQL2 .= "and programname!='" . htmlspecialchars(addslashes($EXEM[$iex])) . "' "; 
+			$SQL2 .= "and programname!='" . htmlspecialchars(addslashes($EXEM[$iex])) . "' ";
 		}
 	}
-	
+
 	//INSERT EXCLUDE HERE
 	//$SQL3 = "group by playlistnumber order by count(playlistnumber) desc, playlistnumber asc";
     $SQL3 = "group by playlistnumber order by count(playlistnumber) desc, playlistnumber asc";
-	$SQLM = $SQL0 . $SQL_Ver . $SQL1 . $SQL2 . $SQL3; 
+	$SQLM = $SQL0 . $SQL_Ver . $SQL1 . $SQL2 . $SQL3;
     //echo $SQLM;
 	$arr = mysql_query($SQLM) or die(mysql_error());
 	$Resu = "";
@@ -59,7 +59,7 @@ else if($con){
 			/*$Resu .= "<tr><td align=center>" . $chnum . "</td><td align=center>". $row['playlistnumber'] . "</td><td align=center>" . $row['count(playlistnumber)'] . "</td>
 			<td align=center >" . $row['artist'] . "</td><td align=center>" . $row['album'] . "</td></tr>";*/
             /*
-            SELECT playlistnumber, count(*) as count, (SELECT count(*) from song where song.date between '2013-11-01' and '2013-12-01' and playlistnumber='333') as total, soundex(artist) as sndx 
+            SELECT playlistnumber, count(*) as count, (SELECT count(*) from song where song.date between '2013-11-01' and '2013-12-01' and playlistnumber='333') as total, soundex(artist) as sndx
             FROM song WHERE playlistnumber='333' and song.date between '2013-11-01' and '2013-12-01' group by soundex(album) order by count desc limit 1;
             */
             if($_POST['verification']=="soundex"){
@@ -86,7 +86,7 @@ else if($con){
 <!DOCTYPE HTML>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../altstyle.css" />
+<link rel="stylesheet" type="text/css" href="../css/altstyle.css" />
     <link rel="stylesheet" type="text/css" href="../stn/Genres/Genres.css"/>
     <!--<link rel="stylesheet" type="text/css" href="../js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>-->
     <!--<style>
@@ -95,7 +95,7 @@ else if($con){
         }
     </style>-->
 <title>Charts</title>
-    
+
     <!-- GOOGLE API TABLE-->
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
     <script type="text/javascript">
@@ -110,13 +110,13 @@ else if($con){
             echo $TableVals;
         ?>
       ]);
-    
+
       // Create and draw the visualization.
       visualization = new google.visualization.Table(document.getElementById('table'));
       visualization.draw(data, {showRowNumber: false, allowHtml:true, alternatingRowStyle:true, padding:0});
         //visualization.alternatingRowStyle(true);
     }
-    
+
 
     google.setOnLoadCallback(drawVisualization);
     </script>
@@ -126,7 +126,7 @@ else if($con){
            Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
 	<div id="header">
-		<a href="../masterpage.php"><img src="../images/Ckxu_logo_PNG.png" alt="CKXU" /></a>
+        <img src="<?php print("../".$_SESSION['logo']); ?>" alt="logo"/></a>
 	</div>
 	<div id="top">
 		<h2>Playlist Report</h2>
@@ -161,7 +161,7 @@ else if($con){
             </tfoot>
 		</table>
 	</div>
-	
+
 <?php
 
 }

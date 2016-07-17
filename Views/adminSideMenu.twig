@@ -18,7 +18,7 @@
                     <a href="/episode/new"><i class='fa fa-cube'></i> New Episode</a>
                 </li>
                 <li>
-                    <a href="/oep/p1update.php"><i class='fa fa-edit'></i> Edit Episode</a>
+                    <a href="/legacy/oep/p1update.php"><i class='fa fa-edit'></i> Edit Episode</a>
                 </li>
                 {% if permissions > 1 %}
                     <!--<li>
@@ -41,10 +41,10 @@
             <a href="javascript:;" data-toggle="collapse" data-target="#program"><i class="fa fa-fw fa-cogs"></i> Programs <i class="fa fa-fw fa-caret-down"></i></a>
             <ul id="program" class="{{secondLevelClass}}">
                 <li>
-                    <a href="/program/p1insert.php"><i class='fa fa-cog'></i> New Program</a>
+                    <a href="/legacy/program/p1insert.php"><i class='fa fa-cog'></i> New Program</a>
                 </li>
                 <li>
-                    <a href="/program/p1advupdate.php"><i class='fa fa-sliders'></i> Edit Program</a>
+                    <a href="/legacy/program/p1advupdate.php"><i class='fa fa-sliders'></i> Edit Program</a>
                 </li>
             </ul>
         </li>
@@ -52,10 +52,10 @@
             <a href="javascript:;" data-toggle="collapse" data-target="#hosts"><i class="fa fa-fw fa-group"></i> Hosts <i class="fa fa-fw fa-caret-down"></i></a>
             <ul id="hosts" class="{{secondLevelClass}}">
                 <li>
-                    <a href="/dj/p1newdj.php"><i class='fa fa-user-plus'></i> New Host</a>
+                    <a href="/legacy/dj/p1newdj.php"><i class='fa fa-user-plus'></i> New Host</a>
                 </li>
                 <li>
-                    <a href="/dj/p1updatedj.php"><i class='fa fa-user'></i> Edit Host</a>
+                    <a href="/legacy/dj/p1updatedj.php"><i class='fa fa-user'></i> Edit Host</a>
                 </li>
             </ul>
         </li>
@@ -63,10 +63,10 @@
             <a href="javascript:;" data-toggle="collapse" data-target="#traffic"><i class="fa fa-fw fa-usd"></i> Traffic <i class="fa fa-fw fa-caret-down"></i></a>
             <ul id="traffic" class="{{secondLevelClass}}">
                 <li>
-                    <a href="/Advertisements/p1advins.php"><i class='fa fa-plus'></i> New Contract</a>
+                    <a href="/legacy/Advertisements/p1advins.php"><i class='fa fa-plus'></i> New Contract</a>
                 </li>
                 <li>
-                    <a href="/Advertisements/p1update.php"><i class='fa fa-book'></i> Edit Contract</a>
+                    <a href="/legacy/Advertisements/p1update.php"><i class='fa fa-book'></i> Edit Contract</a>
                 </li>
                 <!--<li>
                     <a href="/Advertisements/?q=clin"><i class='fa fa-plus'></i> New Client</a>
@@ -90,18 +90,39 @@
                 <li>
                     <a href="/library/new"><i class='fa fa-music'></i> Receiving</a>
                 </li>
-                {% if permissions > 1 or "libraryPlaylist" in permissions %}
+                {% if permissions > 1 or "manageLabels" in permissions %}
                 <li>
                     <a href="/label/"><i class='fa fa-globe'></i> Record Labels</a>
                 </li>
                 <li>
-                    <a href="/playlist/generate/"><i class='fa fa-calculator'></i> Playlist Gen.</a>
+                    <a href="/library/inventory/"><i class='fa fa-bar-chart-o'></i> Inventory</a>
                 </li>
                 <li>
-                    <a href="/playlist/"><i class='fa fa-line-chart'></i> Playlist</a>
+                    <a href="/labels/print?type=5160&start=1&outline=false" disabled><i class='fa fa-print'></i> Print Labels</a>
+                </li>
+                {% endif %}
+            </ul>
+        </li>
+        {% endif %}
+        {% if permissions > 0 or "playlist" in permissions %}
+        <li>
+            <a href="javascript:;" data-toggle="collapse" data-target="#playlist"><i class="fa fa-fw fa-list-alt"></i> Playlist <i class="fa fa-fw fa-caret-down"></i></a>
+            <ul id="playlist" class="{{secondLevelClass}}">
+                <li>
+                    <a href="/playlist/"><i class='fa fa-search'></i> Search</a>
+                </li>
+                {% if permissions > 1 or "managePlaylist" in permissions %}
+                <li>
+                    <a href="/playlist/generate/"><i class='fa fa-calculator'></i> Generate / Add</a>
+                </li>
+                <li>
+                    <a href="/playlist/report/"><i class='fa fa-line-chart'></i> Report</a>
                 </li>
                 <li>
                     <a href="/Reports/PlaylistRep.php"><i class='fa fa-bar-chart-o'></i> Charts</a>
+                </li>
+                <li>
+                    <a href="/playlist/labels/"><i class='fa fa-print'></i> Print Labels</a>
                 </li>
                 {% endif %}
             </ul>
@@ -136,16 +157,16 @@
                     <a href="/station/"><i class='fa fa-bolt'></i> Station Settings</a>
                 </li>
                 <li>
-                    <a href="/station/genre/{{callsign}}"><i class='fa fa-th-list'></i> Genres</a>
+                    <a href="/station/category/{{callsign}}"><i class='fa fa-th-list'></i> Program Categories</a>
                 </li>
                 <li>
-                    <a href="/stn/Audit"><i class='fa fa-flag-o'></i> Reporting</a>
+                    <a href="/legacy/stn/Audit"><i class='fa fa-flag-o'></i> Reporting</a>
                 </li>
                 <li>
                     <a href="/system/log"><i class='fa fa-lock'></i> System Logs</a>
                 </li>
                 <li>
-                    <a href="/oep/EPV3/Audit.php"><i class='fa fa-flag-checkered'></i> Audit</a>
+                    <a href="/legacy/oep/EPV3/Audit.php"><i class='fa fa-flag-checkered'></i> Audit</a>
                 </li>
                 <li>
                     <a href="/Reports/Stats.php?w=12"><i class='fa fa-pie-chart'></i> Statistics</a>
@@ -162,7 +183,7 @@
                     <a href="/updates"><i class='fa fa-download'></i> Update</a>
                 </li>
                 <li>
-                    <a href="/legacy_controller.php" target="_legacy"><i class="fa fa-angle-down"></i> Legacy interface</a>
+                    <a href="/legacy/controller.php" target="_legacy"><i class="fa fa-angle-down"></i> Legacy interface</a>
                 </li>
             </ul>
         </li>

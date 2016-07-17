@@ -20,7 +20,7 @@
 /metaupdate/Now_Playing.txt
 /TPSBIN/lame
 /nbproject/private/
-/TPSBIN/XML/DBSETTINGS.xml
+/TPSBIN/XML/DBSETTINGS*.xml
 composer.lock
 Thumbs.db
 error_log
@@ -36,3 +36,4 @@ php_errors.log
 /slimConfig.php
 /.idea/
 /mysqlDumpToTests.bat
+/public/lib/std/githubConfig.php

@@ -41,6 +41,196 @@ class playlist extends TPS{
                 $settingsPath);
     }
     
+    private function getRangeGap($start, $list){
+        sort($list);
+        $terminus = max($list);
+        foreach ($list as $val){
+            if($val < $start){
+                continue;
+            }
+            if(!in_array($start, $list)){
+                $start+=1;
+                continue;
+            }
+            break;
+        }
+        $max = $start-1;
+        foreach ($list as $iter=>$value) {
+            if($value < $start){
+                continue;
+            }
+            if($max+1==$value){
+                $max = $value;
+                continue;
+            }
+            break;
+        }
+        return $max;
+    }
+    
+    public function getRangeGaps($list, $start=FALSE){
+        if($start===FALSE){
+            $start = min($list);
+        }
+        $ranges = array();
+        while ($start < max($list)) {
+            $max = $this->getRangeGap($start, $list);
+            array_push($ranges, [$start, $max]);
+            $start = $max+2; #plus one will not work as we know 
+            # the +1 value is missing
+        }
+        return $ranges;
+    }
+    
+    public function getRangeGapsForGenres($station, $today=FALSE,
+            $genres=FALSE){
+        if(!is_array($genres) && !($genres===FALSE)){
+            $genres = [$genres];
+        }
+        $today = $today?:date("Y-m-d");
+        $genresList = $this->getGenreDividedValidShortCodes($station, 
+                $today, "0 days");
+        $gaps = array();
+        foreach ($genresList as $key => $value) {
+            if(!($genres===FALSE) && !in_array($key, $genres)){
+                continue;
+            }
+            $var = array();
+            foreach ($value as $data) {
+                if(!$data['shortCodes']){
+                    continue;
+                }
+                $res = $this->getRangeGaps($data['shortCodes']);
+                $min = min($data['shortCodes']);
+                array_push($var, array(
+                        "formats"=>$data['formats'],
+                        "gaps"=>$res
+                    )
+                );
+            }
+            $gaps[$key] = $var;
+        }
+        return $gaps;
+    }
+    
+    public function getRangesFormats($id){
+        #@todo: expand to accept array
+        $stmt = $this->db->prepare("SELECT format, fid FROM playlistRangesFormat "
+                . "WHERE id=:id");
+        $stmt->bindParam(":id", $id);
+        $result = array();
+        if(!$stmt->execute()){
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                array_push($result[$id], $row['format']);
+            }
+        }
+        return $result;
+    }
+    
+    public function getGenreShortCodeRanges($station, $useDb=False){
+        if($useDb){
+            $stmt = $this->db->prepare("SELECT * FROM playlistRanges WHERE callsign"
+                . "=:callsign");
+            $stmt->bindParam(":callsign", $station);
+            $result = array();
+            if(!$stmt->execute()){
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $data = $this->getRangesFormats($row['id']);
+                    $row['formats'] = $data[$row['id']];
+                    $result[$row['id']] = $row;
+                }
+            }
+            return $result;
+        }
+        $ranges = array(
+            "RP" => array(
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other'],
+                    "range"=>[1,599]
+                ),
+                array(
+                    "format"=>['7in', '10in', '12in'],
+                    "range"=>[600,699]
+                ),
+                array(
+                    "format"=>['Cass'],
+                    "range"=>[700,799]
+                ),
+                array(
+                    "format"=>['Digital'],
+                    "range"=>[800,999]
+                )
+            ),
+            "FR" => array(
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[1000,1999]
+                )
+            ),
+            "HM" => array(
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[2000,2999]
+                )
+            ),
+            "EL" => array(
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[3000,3999]                
+                )
+            ),
+            "HH" => array(
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[4000,4999]
+                )
+            ),
+            "WD" => array(
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[5000,5999]
+                )
+            ),
+            "JC" => array(
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[6000,6999]
+                )
+            ),
+            "EX" => array(
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[7000,7999]
+                )
+            ),
+            "OT" => array(
+                array(
+                    "format"=>['CD', 'Cart', 'MD', 'Other', 'Digital',
+                        '7in', '10in', '12in', 'Cass'],
+                    "range"=>[8000,8999]
+                )
+            )
+        );
+        return $ranges;
+    }
+    
+    public function getGenreShortCodeRange($code, $station){
+        $ranges = $this->getGenreShortCodeRanges($station);
+        if($code){
+            return $ranges[$code];
+        }
+        else{
+            return $ranges;
+        }
+    }
+    
     public function setExpiry($playlistIds, $date){
        if(!is_array($playlistIds)){
             $playlistIds = array($playlistIds);
@@ -114,11 +304,16 @@ class playlist extends TPS{
         if(!is_array($refCodes)){
             $params = array($refCodes);
         }
+        else{
+            $params = $refCodes;
+        }
         $param = NULL;
         $stmt = $this->db->prepare(
                 "SELECT * FROM playlist"
-            . " WHERE RefCode=:param and Activate <= :startDate and "
-            . " Expire >= :endDate");
+            . " WHERE RefCode=:param and (Activate <= :startDate and "
+            . " Expire >= :endDate) or "
+            . " :startDate between Activate and Expire or :endDate between"
+            . " Activate and Expire");
         $stmt->bindParam(":param", $param, \PDO::PARAM_STR);
         $stmt->bindParam(":startDate", $startDate);
         $stmt->bindParam(":endDate", $endDate);
@@ -133,6 +328,133 @@ class playlist extends TPS{
         return $result;
     }
     
+    public function getCurrentByShortCode($shortCodes, $startDate, $endDate){
+        if(!is_array($shortCodes)){
+            $params = array($shortCodes);
+        }
+        else{
+            $params = $shortCodes;
+        }
+        $param = NULL;
+        $stmt = $this->db->prepare(
+                "SELECT * FROM playlist"
+            . " WHERE SmallCode=:param and (Activate between :startDate and "
+            . " :endDate or Expire between :startDate and :endDate) or "
+            . " :startDate between Activate and Expire or :endDate between"
+            . " Activate and Expire");
+        $stmt->bindParam(":param", $param, \PDO::PARAM_STR);
+        $stmt->bindParam(":startDate", $startDate);
+        $stmt->bindParam(":endDate", $endDate);
+        $result = array();
+        foreach($params as $param){
+            if ($stmt->execute()) {
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $result[$row['PlaylistId']] = $row;
+                }
+            }
+        }
+        return $result;
+    }
+    
+    public function getPlaylist($startDate, $endDate){
+        $stmt = $this->db->prepare(
+                "SELECT * FROM playlist"
+                . " LEFT JOIN library ON playlist.RefCode=library.RefCode WHERE"
+                . " (Activate between :startDate and "
+                . " :endDate or Expire between :startDate and :endDate) "
+                . "or :startDate between Activate and Expire or :endDate "
+                . "between Activate and Expire "
+                . "order by playlist.SmallCode ASC");
+        $stmt->bindParam(":startDate", $startDate);
+        $stmt->bindParam(":endDate", $endDate);
+        $result = array();
+        if ($stmt->execute()) {
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                $result[$row['PlaylistId']] = $row;
+            }
+        }
+        return $result;
+    }
+    
+    public function getUsedShortCodes($startDate, $endDate){
+        $stmt = $this->db->prepare(
+                "SELECT SmallCode FROM playlist"
+                . " WHERE (:startDate >= Activate AND :startDate <= Expire) OR "
+                . "(:endDate <= Expire AND :endDate >= Activate) OR "
+                . "(:startDate <= Activate AND :endDate >= Expire)");
+        $stmt->bindParam(":startDate", $startDate);
+        $stmt->bindParam(":endDate", $endDate);
+        $result = array();
+        if ($stmt->execute()) {
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                $val = (int)$row['SmallCode'];
+                $result[$val] = $val;
+            }
+        }
+        return $result;
+    }
+    
+    public function validShortCodes($startDate, $endDate, $startNum, $endNum){
+        $used = $this->getUsedShortCodes($startDate, $endDate);
+        $range = range($startNum, $endNum); 
+        $result = array_diff($range, $used);
+        return array_values($result);
+    }
+    
+    public function validateShortCode($startDate, $endDate, $code){
+        $used = $this->getUsedShortCodes($startDate, $endDate);
+        return !(key_exists((int)$code, $used));
+    }
+    
+    public function getGenreDividedValidShortCodes($station, $defaultOffsetDate, 
+            $defaultOffset=True, $genres=False, $format=False){
+        /**
+         * @param mixed $defaultOffet True to use offet proveded by genre, 
+         * string otherwise
+         */
+        if(!is_array($genres) && $genres != FALSE){
+            $genres = [$genres];
+        }
+        $playlist = new \TPS\playlist();
+        $library = new \TPS\library($station);
+        $ranges = $playlist->getGenreShortCodeRanges($station);
+        $validRanges = array();
+        foreach ($ranges as $genre => $ranges) {
+            if($genres){
+                if(!in_array($genre, $genres)){
+                    continue;
+                }
+            }
+            $validRanges[$genre] = [];
+            foreach ($ranges as $range) {
+                if($defaultOffset===TRUE){
+                    $code = $library->getLibraryCodeValueByGenre($genre);
+                    $defaultOffsetStr = "$defaultOffsetDate +".
+                            $code['PlaylistDuration']['value'] .
+                            " " . $code['PlaylistDuration']['unit'];
+                }
+                else{
+                    $defaultOffsetStr = "$defaultOffsetDate +$defaultOffset";
+                }
+                $codes = $this->validShortCodes(
+                        $defaultOffsetDate, date("Y-m-d", strtotime($defaultOffsetStr)),
+                        $range['range'][0], $range['range'][1]);
+                if(!$codes){
+                    continue;
+                }
+                if($format===FALSE || in_array($format, $range['format'])){
+                    array_push($validRanges[$genre], array(
+                            "formats"=>$range['format'],
+                            "shortCodes"=>$codes
+                        )
+                    );
+                }
+            }
+        }
+        return $validRanges;
+    }
+
+
     public function getAllByRefCode($refCodes){
         if(!is_array($refCodes)){
             $params = array($refCodes);
@@ -141,6 +463,26 @@ class playlist extends TPS{
         $stmt = $this->db->prepare(
                 "SELECT * FROM playlist"
             . " WHERE RefCode=:param");
+        $stmt->bindParam(":param", $param, \PDO::PARAM_STR);
+        $result = array();
+        foreach($params as $param){
+            if ($stmt->execute()) {
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $result[$row['PlaylistId']] = $row;
+                }
+            }
+        }
+        return $result;
+    }
+    
+    public function getAllByShortCode($shortCodes){
+        if(!is_array($shortCodes)){
+            $params = array($shortCodes);
+        }
+        $param = NULL;
+        $stmt = $this->db->prepare(
+                "SELECT * FROM playlist"
+            . " WHERE SmallCode=:param");
         $stmt->bindParam(":param", $param, \PDO::PARAM_STR);
         $result = array();
         foreach($params as $param){

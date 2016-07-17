@@ -15,7 +15,7 @@ else if($con){
 <!DOCTYPE HTML>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../altstyle.css" />
+<link rel="stylesheet" type="text/css" href="../css/altstyle.css" />
 <title>DPL Administration</title>
 </head>
 <body>
@@ -23,7 +23,7 @@ else if($con){
            Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
 	<div id="header">
-		<a href="/masterpage.php"><img src="../images/Ckxu_logo_PNG.png" alt="CKXU" /></a>
+		<a href="/masterpage.php"><img src="<?php print("../".$_SESSION['logo']); ?>" alt="logo"/></a>
 	</div>
 	<div id="top">
 		<h2>Playlist Report</h2>

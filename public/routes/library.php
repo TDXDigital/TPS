@@ -1,11 +1,22 @@
 <?php
 // Library
 $app->group('/library', $authenticate, function () use ($app,$authenticate){
+    $app->get('/inventory', function () use ($app) {
+        $app->redirect('./inventory/');
+    });
+    $app->group('/inventory', $authenticate, function () use ($app) {
+        // inventory management
+        $app->get('/', function () use ($app) {
+            $app->render('notSupported.twig',array(
+                'title'=>'Library Inventory Mangement'));
+        });
+    });
     $app->get('/new', $authenticate($app,array(1,2)), function () use ($app){
         $library = new \TPS\library();
         $params = array(
             "govCats"=>$library->getGovernmentCodes(),
             "genres"=>$library->getLibraryGenres(),
+            "labels"=>\TPS\label::nameSearch("%",False),
             "format"=>$library->getMediaFormats(),
             "scheduleBlock"=>$library->getScheduleBlocks(),
             "title"=>"Receiving",
@@ -235,6 +246,9 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         #var_dump($_SESSION);
         $app->redirect('./new');
     });
+    $app->get('/search', $authenticate, function () use ($app){
+        $app->redirect('./search/');
+    });
     $app->group('/search', $authenticate($app, array(1,2)), function () use ($app, $authenticate){
         $app->get('/', $authenticate, function () use ($app){
             $format = $app->request->get("format");
@@ -296,7 +310,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $action = $app->request->put('action');
         $value = $app->request->put('value');
         $attribute = $app->request->put('attribute');
-        $bulkActions = array("status", "attribute", "playlistStatus");
+        $bulkActions = array("status", "attribute", "playlistStatus", "proper");
         $result = [];
         if(in_array($action, $bulkActions)){
             switch ($action){
@@ -310,9 +324,46 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 case "attribute":
                     $result = $library->attribute($bulkIds, $attribute, $value);
                     break;
+                case "proper":
+                    if(in_array(strtolower($attribute),
+                            array("proper", "upper", "lower", "cap_first"))){
+                        $albums = array();
+                        foreach ($bulkIds as $key => $val) {
+                            $albums[$val] = $library->getAlbumByRefcode(
+                                    $val)[0];
+                        }
+                        if(strtolower($value) == "properartist"){
+                            foreach ($albums as $key => $val2) {
+                                $library->attribute(
+                                        $key, ucwords($val2['artist']), 
+                                        "artist");
+                            }
+                        }
+                        elseif(strtolower($value) == "properalbum"){
+                            foreach ($albums as $key => $val2) {
+                                $library->attribute(
+                                        $key, ucwords($val2['album']), 
+                                        "album");
+                            }
+                        }
+                        elseif(strtolower($value) == "propernotes"){
+                            foreach ($albums as $key => $val2) {
+                                $library->attribute(
+                                        $key, ucwords($val2['note']), 
+                                        "note");
+                            }
+                        }
+                        else{
+                            throw new Exception("Invalid value provided");
+                        }
+                        break;
+                    }
+                    throw new Exception(
+                            "Invalid attribute provided for proper");
                 case "playlistStatus":
                     if(in_array(strtolower($value),
-                                array("complete", "pending", "false"))){
+                                array("complete", "pending", "false")
+                            )){
                         $result = $library->playlistStatus($bulkIds, 
                                                            strtoupper($value));
                         break;
@@ -352,13 +403,16 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         }
         $app->redirect($app->request->getReferrer());
     });
+    $app->get('/batch', $authenticate, function () use ($app){
+        $app->redirect('./batch/');
+    });
     $app->group('/batch', function () use ($authenticate, $app){
         $app->get('/options', $authenticate($app, array(1,2)), function () use ($app){
             $options = array(
                 // Option => Completes Transaction (No More Options)
                 "print" => "Print",
                 "status" => "Status", 
-                //"normalize" => "Normalize / Clean",
+                "proper" => "Normalize / Clean",
                 "attribute" => "Attribute",
                 "playlistStatus" => "Playlist Status"
             );
@@ -378,6 +432,53 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     )
                 );
                 print json_encode($options);
+            });
+            $app->get('/proper', $authenticate($app, [1,2]), function () use ($app){
+                $options = array(
+                    "inputType"=>"attribute",
+                    "values"=>array(
+                        "properAlbum" => array(
+                                "value"=>"Album",
+                                "input"=>"select"
+                            ),
+                        "properArtist"=>array(
+                                "value"=>"Artist",
+                                "input"=>"select"
+                            ),
+                        "properNotes"=>array(
+                            "value"=>"Notes",
+                            "input"=>"select"
+                        )
+                    )
+                );
+                standardResult::ok($app, $options, NULL);
+            });
+            $app->get('/properArtist', $authenticate($app, [1,2]), function () use ($app){
+                $optons=array(
+                    "PROPER"=>"Capitalize Words",
+                    #"LOWER"=>"lower case",
+                    #"UPPER"=>"UPPER CASE"#,
+                    #"CAP_FIRST"=>"Capitalize first"
+                );
+                standardResult::ok($app, $optons, NULL);
+            });
+            $app->get('/properAlbum', $authenticate($app, [1,2]), function () use ($app){
+                $optons=array(
+                    "PROPER"=>"Capitalize Words"#,
+                    #"LOWER"=>"lower case",
+                    #"UPPER"=>"UPPER CASE",
+                    #"CAP_FIRST"=>"Capitalize first"
+                );
+                standardResult::ok($app, $optons, NULL);
+            });
+            $app->get('/properNotes', $authenticate($app, [1,2]), function () use ($app){
+                $optons=array(
+                    "PROPER"=>"Capitalize Words"#,
+                    #"LOWER"=>"lower case",
+                    #"UPPER"=>"UPPER CASE",
+                    #"CAP_FIRST"=>"Capitalize first"
+                );
+                standardResult::ok($app, $optons, NULL);
             });
             $app->get('/playlistStatus', $authenticate($app, [1,2]), function () use ($app){
                 $options = array(
@@ -449,6 +550,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             "album"=>$album,
             "govCats"=>$library->getGovernmentCodes(),
             "genres"=>$library->getLibraryGenres(),
+            "labels"=>\TPS\label::nameSearch("%",False),
             "format"=>$library->getMediaFormats(),
             "scheduleBlock"=>$library->getScheduleBlocks(),
             "title"=>"Receiving",

@@ -1,19 +1,14 @@
 <?php
+date_default_timezone_set("UTC");
     session_start();
-
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
-if (!$con){
-	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
-
-	username=' . $_SESSION["username"]);
+if($_SESSION["access"] < 2){
+	die([401, "Unauthorized"]);
 }
-else if($con){
+//$con = new mysqli($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
 ?>
-
 <!DOCTYPE HTML>
 <head>
-<link rel="stylesheet" type="text/css" href="../altstyle.css" />
+<link rel="stylesheet" type="text/css" href="../css/altstyle.css" />
 <title>Missing Log Report</title>
 </head>
 <html>
@@ -25,14 +20,13 @@ else if($con){
 		<img src="../<?php echo $_SESSION['logo'];?>" alt="Logo" />
 	</div>
 	<div id="top">
-		<h2>Missing Logs ['Alpha']</h2>
+		<h2>Missing Logs</h2>
 	</div>
 	<div id="content">
 		<table>
 			<tr>
 				<th>Date From</th>
 				<th>Date To</th>
-				<!--<th>Report Limit</th>-->
 			</tr>
 			<form action="MissingLogRep2.php" method="POST">
 			<tr>
@@ -61,13 +55,5 @@ else if($con){
 			</tr>
 		</table>
 	</div>
-	
-<?php
-
-}
-else{
-	echo 'ERROR!';
-}
-?>
 </body>
 </html>

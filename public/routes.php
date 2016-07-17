@@ -1,34 +1,28 @@
 <?php
+require_once dirname(__FILE__).DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."std".DIRECTORY_SEPARATOR."util.php";
 if(isset($_SESSION["DBHOST"])){
     require_once 'TPSBIN'.DIRECTORY_SEPARATOR.'functions.php';
     require_once 'TPSBIN'.DIRECTORY_SEPARATOR.'db_connect.php';
     require_once 'lib_api'.DIRECTORY_SEPARATOR.'LibraryAPI.php';
-    $app->hook('slim.before.router', function() use ($app) { 
-        $messages = array(
-                /*array(
-                    'image'=>array(
-                        'url'=>"https://placehold.it/50x50",
-                        'alt'=>"Generic Placeholder",
-                    ),
-                    'user'=>array(
-                        'name'=>'test user',
-                    ),
-                    'time'=>date('now'),
-                    'content'=>'this is a test message',
-                ),
-                array(
-                    'image'=>array(
-                        'url'=>"https://placehold.it/50x50",
-                        'alt'=>"Generic Placeholder",
-                    ),
-                    'user'=>array(
-                        'name'=>'test user',
-                    ),
-                    'time'=>date('now'),
-                    'content'=>'this is another test message',
-                )*/
-            );
-        $app->view()->setData('messages',$messages);
+    require_once dirname(__FILE__).DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."notifications.php";
+    $app->hook('slim.before.dispatch', function() use ($app) {
+        try {
+            $notifications = new \TPS\notification(\TPS\util::get($_SESSION, 'CALLSIGN'));
+            $broadcasts = $notifications->listUserNotifications();
+            $messages = \TPS\notification::convertToMessageFormat($broadcasts);
+            $app->view()->setData('messages', $messages);
+        } catch (Exception $e) {
+            $route = $app->router()->getCurrentRoute()->getPattern();
+            if($route!="/updates") {
+                $app->flash("error", "Critical Exception Occured: ".$e->getMessage()."<br>Updates Likely Required");
+                $app->redirect('/updates');
+            }
+            $app->view()->setData('messages', \TPS\notification::convertToMessageFormat([
+            array(
+                "message"=>"Critical: ".$e->getMessage()
+            )
+            ]));
+        }
     });
 }
 require_once 'routes'.DIRECTORY_SEPARATOR.'system.php';

@@ -1,33 +1,28 @@
 <?php
+date_default_timezone_set("UTC");
     session_start();
+require_once dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."TPSBIN/functions.php";
+require_once dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."TPSBIN/db_connect.php";
+$limit = filter_input(INPUT_POST, "limit")?:1000;
+$from = filter_input(INPUT_POST, "from")?:strptime("-1 week");
+$to = filter_input(INPUT_POST, "to")?:strtotime("today");
 
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
-if (!$con){
-	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
-
-	username=' . $_SESSION["username"]);
-}
-else if($con){
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /login.php');} 
-    //$prosql="SELECT Program.* FROM Program LEFT JOIN Episode ON Program.programname = Episode.programname WHERE Episode.programname IS NULL and Episode.date between '".$_POST['from']."' and '".$_POST['to']."' and program.active='1' ";
-    $prosql="SELECT Program.* From Program where active='1' and not exists (select Episode.programname from Episode where date between '".addslashes($_POST['from'])."' and '".addslashes($_POST['to'])."' and Episode.programname=Program.programname) order by Program.programname";
-    if(!$proresult=mysql_query($prosql,$con)){
-    	$ERRORM=mysql_error();
-		//echo mysql_error();
+    $prosql="SELECT `program`.* From `program` where active='1' and not exists (select episode.programname from episode
+ where date between '".addslashes($from)."' and '".addslashes($to)."' and 
+ episode.programname=program.programname) order by program.programname";
+    if(!$proresult=$mysqli->query($prosql)){
+    	$ERRORM=$mysqli->error();
     }
 	else{
-		//$prooptions="<span>".mysql_num_rows($proresult)."</span>";
-	    //$prooptions.="<form action=\"/Reports/MissingLogRep3.php\" method=\"POST\">
-	    //";
 	    $prooptions="";
 		$rownum=0;
-	    while($data=mysql_fetch_array($proresult)){
+	    while($data=mysqli_fetch_array($proresult)){
 	    	$prooptions.="<tr";
 			if($rownum%2){
 				$prooptions.=" style=\"background-color:yellow;\" ";
 			}
-	    	$prooptions.="><td>".$data['programname']."</td><td>".$data['length']."</td><td>N/A</td><td>".$data['active']."</td><td></td></tr>";
+	    	$prooptions.="><td>".$data['programname']."</td><td>".$data['length'].
+				"</td><td>N/A</td><td>".$data['active']."</td><td></td></tr>";
 	    	++$rownum;
 	    }
 	}
@@ -35,7 +30,7 @@ else if($con){
 
 <!DOCTYPE HTML>
 <head>
-<link rel="stylesheet" type="text/css" href="../altstyle.css" />
+<link rel="stylesheet" type="text/css" href="../css/altstyle.css" />
 <title>Missing Log Report</title>
 </head>
 <html>
@@ -47,21 +42,21 @@ else if($con){
 		for(var i = 0; i <xyz.length;i++){
 			xyz[i].style.display="table-row";
 		}
-	} 
-	
+	}
+
 	function quickview(url){
 		//use @ to differentiate
 		newwindow=window.open(url,'name','height=800,width=800');
 		if (window.focus) {newwindow.focus()}
-		return false;		
+		return false;
 	}
 	</script>
-	
+
 	<div class="topbar">
            Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
     </div>
 	<div id="header">
-		<img src="../<?php echo $_SESSION['logo'];?>" alt="CKXU" />
+		<img src="../<?php echo $_SESSION['logo'];?>" alt="logo" />
 	</div>
 	<div id="top">
 		<h2>Missing Logs ['Alpha']</h2>
@@ -80,7 +75,7 @@ else if($con){
 				<!--<th width="30%">Logs</th>-->
 				<!--<th width="20%">Details</th>-->
 			</tr>
-			<?php 
+			<?php
 			if(!isset($ERRORM)){
 				echo $prooptions;
 			}
@@ -93,24 +88,15 @@ else if($con){
 		<table>
 			<tr>
 				<td>
-					<input type="text" hidden="true" name="from" value="<?php echo $_POST['from'] ?>" />
-					<input type="text" hidden="true" name="to" value="<?php echo $_POST['to'] ?>" />
-					<input type="text" hidden="true" name="limit" value="<?php echo $_POST['limit'] ?>" />
-				<!--<input type="submit" value="Search"/></form></td><td>-->
+					<input type="text" hidden="true" name="from" value="<?php echo $from ?>" />
+					<input type="text" hidden="true" name="to" value="<?php echo $to ?>" />
+					<input type="text" hidden="true" name="limit" value="<?php echo $limit ?>" />
 				<input type="button" value="Reset" onClick="window.location.reload()"></td><td>
-				<form method="POST" action="../masterpage.php"><input type="submit" value="Menu"/></form>
+				<form method="POST" action="../"><input type="submit" value="Menu"/></form>
 				</td>
 				<td width="100%" align="right"><img src="../images/mysqls.png" alt="MySQL Powered"/></td>
 			</tr>
 		</table>
 	</div>
-	
-<?php
-
-}
-else{
-	echo 'ERROR!';
-}
-?>
 </body>
 </html>
