@@ -1,5 +1,5 @@
 <?php
-
+    date_default_timezone_set("UTC");
     $cerl = error_reporting();
     //error_reporting(0);
     if(!isset($_SESSION)){
@@ -14,7 +14,7 @@
             header('location: Setup/');
         }
         else{
-            require("logout.php");
+            require("../logout.php");
         }
     }
     else{
@@ -30,9 +30,9 @@
     }
 
     start:
-    include_once __DIR__ . DIRECTORY_SEPARATOR . "TPSBIN/functions.php";
+    include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "TPSBIN".DIRECTORY_SEPARATOR."functions.php";
     #absolute_include("CONFIG.php", $_SERVER['PHP_SELF']);
-    include_once "CONFIG.php";
+    include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR .  "CONFIG.php";
     error_reporting($cerl);
     if (!isset($_SESSION)) {
         sec_session_start();

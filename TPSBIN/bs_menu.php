@@ -1,10 +1,10 @@
-<?php 
+<?php
 /*
     BootStrap menu creation
 */
 
     error_reporting(E_ALL);
-    
+
     // THIS FILE SHOULD BE INCLUDED WITHIN A PAGET THAT HAS ALREADY RUN sec_session_start!
     if(!isset($_SESSION)){
         // PRINT OUT LOGIN
@@ -18,22 +18,22 @@
     $UPDATE = FALSE;
     $base = ".";#$_SESSION['BASE_REF']?:"/";
     if(isset($_SESSION['m_logo'])){
-        $logo = $_SESSION['m_logo'];
+        $logo = "../".$_SESSION['m_logo'];
     }
     else if(isset($_SESSION['logo'])){
-        $logo = $_SESSION['logo'];
+        $logo = "../".$_SESSION['logo'];
     }
     else{
-        $logo = "images/logo.jpg";
+        $logo = "../images/logo.jpg";
     }
     $dbname= $_SESSION['DBNAME']; // NEEDS COMPANY HEAD TO ALLOW SELECTING MULTIPLE CALLSIGNS (This is not right)
     $access=$_SESSION['access'];
     $opened_db=FALSE;
-    
+
     if(!$mysqli){
         $opened_db=TRUE;
-        require_once "functions.php";
-        require_once "db_connect.php";
+        require_once dirname(__FILE__).DIRECTORY_SEPARATOR."functions.php";
+        require_once dirname(__FILE__).DIRECTORY_SEPARATOR."db_connect.php";
     }
     // CONNECT TO DB
 
@@ -78,27 +78,27 @@
                 die("BR:".$mysqli->error);
             }
         //$stmt->bind_result($Station_View,$Station_Edit,$Member_View)
-        
+
         // fetch result
         if(!$stmt->fetch()){
             http_response_code(500);
             print "Please check that permissions are assigned <a href=''></a>";
             die("F:".$stmt->error);
         }
-        
+
         // assign into var?
 
 
         //$perm_arr=$stmt->get_result(); //required mysqlnd
-        
+
         //$permissions=$perm_arr->fetch_array();
-        
+
         //
         //$stmt->bind_result($permissions[]);// not optimal
         //$perm_arr = array();
         //$stmt->bind_result($perm_arr);
         //$stmt->fetch();
-        
+
         $stmt->close();
         //error_log($permissions[0]);
     }
@@ -110,7 +110,7 @@
                     print ("Update required");
                     $page_check = filter_input(INPUT_GET,'q');
                     if($page_check!='update'){
-                        
+
                     }
                     $SETUP=FALSE;
                     goto SETVAR_SETUP;
@@ -176,7 +176,7 @@
             <ul class="nav navbar-nav navbar-right">
             <!-- User access to Dashboard is required. can not remove permission-->
             <li><a <?php echo "href=\"".$base."\"" ?> >Dashboard</a></li>
-            <?php   
+            <?php
                 // determine permission for menu
                 $station_permission=max($permissions['Station_Settings_View'],$permissions['Station_Settings_Edit']);
                 $members_permission=max($permissions['Member_View'],$permissions['Member_Edit'],$permissions['Member_Create']);
@@ -287,8 +287,8 @@
                 }
 
             ?>
-              
-              
+
+
             <!--<li><a href="#">Profile</a></li>-->
             <!--<li><a href="#">Help</a></li>-->
             <li><a href="<?php echo $base; ?>/logout.php">Logout</a></li>

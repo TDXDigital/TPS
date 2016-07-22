@@ -1,46 +1,7 @@
 <?php
-    include_once "TPSBIN/functions.php";
-    include_once 'CONFIG.php';
+    include_once "../TPSBIN/functions.php";
+    include_once '../CONFIG.php';
       sec_session_start();
-
-function getBrowser()
-     {
-         $u_agent = $_SERVER['HTTP_USER_AGENT'];
-		 $broswer = get_browser(null, true);
-         $ub = '';
-         if(preg_match('/MSIE/i',$u_agent))
-         {
-             $ub = "Internet Explorer";
-         }
-         else if(preg_match('/Firefox/i',$u_agent))
-         {
-             $ub = "Mozilla Firefox";
-         }
-         else if(preg_match('/Safari/i',$u_agent))
-         {
-             $ub = "Apple Safari";
-         }
-         else if(preg_match('/Chrome/i',$u_agent))
-         {
-             $ub = "Google Chrome";
-         }
-         else if(preg_match('/Flock/i',$u_agent))
-          {
-             $ub = "Flock";
-         }
-         else if(preg_match('/Opera/i',$u_agent))
-         {
-             $ub = "Opera";
-         }
-         else if(preg_match('/Netscape/i',$u_agent))
-         {
-             $ub = "Netscape";
-         }
-		 else{
-		 	$ub = "Undefined";
-		 }
-         return $ub;
-     }
 
 $con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']) or die("<span>ERROR COULD NOT CONNECT TO DATABASE:".
 $_SESSION['DBHOST']."</span>");
@@ -93,38 +54,6 @@ header('location: djhome.php');
         <!--<tr><td colspan="4" style="background-color:pink; font-size:12px;">
 	MySQL Database Management must be done at the hosting location or via the MySQL Workbench
 	</td></tr>-->
-	<?php
-             //echo $_SERVER['HTTP_USER_AGENT'] . "\n\n";
-             $br = strtolower($_SERVER['HTTP_USER_AGENT']); // what browser they use.
-            //echo $br;
-
-            if(ereg("opera", $br)) {
-            echo "<!-- This browser has been verified to contain FULL SUPPORT for this page -->";
-            	$ACCnew = FALSE;
-				$ACCold = TRUE;
-            }
-			else if (ereg("chrome", $br)) {
-				$ACCnew = TRUE;
-				$ACCold = FALSE;
-			}
-			else if (getbrowser() == "Mozilla Firefox"){
-				$ACCnew = TRUE;
-				$ACCold = FALSE;
-			}
-			else if (ereg("Apple Safari", $br)){
-				$ACCnew = TRUE;
-				$ACCold = FALSE;
-			}
-			else if (getbrowser() == "Internet Explorer"){
-				$ACCnew = TRUE;
-				$ACCold = FALSE;
-			}
-            else {
-            	echo"<script>alert('Warning: Unsupported Browser');</script>";
-              //header('Location: /browserUnsupported.php');
-              //  header("location: alteredhomepage.php");
-            }
-        ?>
 	<table border="0" width="1000" style="background-color:white;">
 	<tr><td colspan="4" width="1000">
         <h2>Program Logs</h2>
@@ -152,11 +81,7 @@ header('location: djhome.php');
         <tr height="50" valign="middle">
                   <td width="450">
 	            <!--<a href="oep/p1insertep.php">New Program Log</a>-->
-	            <button onclick="window.location.href='../legacy/oep/EPV3/logs.php'" <?php
-	            	if($ACCnew != TRUE){
-	            		 echo " disabled ";
-	            	}
-	            ?> value="New Program Log">Digital Program Logs</button>
+	            <button onclick="window.location.href='../legacy/oep/EPV3/logs.php'" disabled value="New Program Log">Digital Program Logs</button>
 	     </td></tr>
         <tr><td colspan="4">
         <hr /><h2>DJs / Hosts</h2>
@@ -217,7 +142,6 @@ header('location: djhome.php');
              </tr>
         <tr>
             <td><button onclick="window.location.href='station/genres/Genre.php'" type="button">Genres</button></td>
-            <td>Library</td>
 
         </tr>
         <tr><td colspan="4">
@@ -226,11 +150,11 @@ header('location: djhome.php');
              <tr height="50" valign="middle">
                     <!--<td width="200"><a href="/PlayRep.php">Playlist Report</a></td>
                     <td width="200"><a href="/Top15Rep.php">Top 15 Report</a></td> -->
-                 <td style="color: #4cff00"><button onclick="window.location.href='Reports/V3/Reports.php'">Reports (V3)</button></td>
+                 <td style="color: #4cff00"><button onclick="window.location.href='../Reports/V3/Reports.php'">Reports (V3)</button></td>
                     <td><button onclick='window.location.href="../legacy/oep/EPV3/Audit.php"' value="Audit">Audit</button></td>
-                    <td><button onclick='window.location.href="Reports/PlaylistRep.php"' value="Audit">Charts</button></td>
-                    <td><button onclick='window.location.href="Reports/MissingLogRep.php"' value="Audit">Missing Log</button></td>
-                    <td><button onclick='window.location.href="Reports/p1SongSearch.php"' value="Audit">Song Search</button></td>
+                    <td><button onclick='window.location.href="../Reports/PlaylistRep.php"' value="Audit">Charts</button></td>
+                    <td><button onclick='window.location.href="../Reports/MissingLogRep.php"' value="Audit">Missing Log</button></td>
+                    <td><button onclick='window.location.href="../Reports/p1SongSearch.php"' value="Audit">Song Search</button></td>
              </tr>
              <tr>
              	<th colspan="4">

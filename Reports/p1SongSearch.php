@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set("UTC");
     session_start();
 
 $con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
@@ -21,7 +22,7 @@ else if($con){
 
 <body style="height: 100%">
 	<div class="topbar">
-           USER: <?php echo(strtoupper($_SESSION['usr'])); ?>
+           USER: <?php echo(strtoupper($_SESSION['fname'])); ?>
     </div>
 	<div id="header">
 		<a href="../masterpage.php"><img src="<?php print("../".$_SESSION['logo']); ?>" alt="logo"/></a>
