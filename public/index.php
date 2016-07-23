@@ -13,7 +13,7 @@
  * @author James Oliver <support@ckxu.com>
  */
 class standardResult{
-    
+
     /**
      * return an expected format for the standardRequest
      * @param type $app
@@ -36,12 +36,12 @@ class standardResult{
 
     /**
      * print error response 500 (if not prevented by 404)
-     * 
+     *
      * @author James Oliver <support@ckxu.com>
      * @version 1.0
      * @since 2016-02-15
      * @license https://opensource.org/licenses/MIT MIT
-     * 
+     *
      * @param object $app Slim Application
      * @param string $data message for user / response
      * @param string $key key of message, uses message as default
@@ -55,37 +55,37 @@ class standardResult{
             $app->error(new \Exception($str), $code);
         }
     }
-    
+
     /**
      * print error 400
-     * 
+     *
      * @author James Oliver <support@ckxu.com>
      * @version 1.0
      * @since 2016-02-15
      * @license https://opensource.org/licenses/MIT MIT
-     * 
+     *
      * @param object $app Slim Application
      * @param string $data message for user / response
      * @param string $key key of message, uses message as default
      * @param int $code httpResponseCode value
      * @param bool $isJSON Boolean to disable setting content type
      */
-    static public function badRequest($app, $data=NULL, $key="message", 
+    static public function badRequest($app, $data=NULL, $key="message",
             $code=400, $isJSON=True){
         $str = static::encode($app, $data, $code, $key, $isJSON);
         if(!$isJSON){
             $app->error(new \Exception($str), $code);
         }
     }
-    
+
     /**
      * response 202
-     * 
+     *
      * @author James Oliver <support@ckxu.com>
      * @version 1.0
      * @since 2016-02-15
      * @license https://opensource.org/licenses/MIT MIT
-     * 
+     *
      * @param object $app Slim Application
      * @param string $data message for user / response
      * @param string $key key of message, uses message as default
@@ -96,15 +96,15 @@ class standardResult{
             $isJSON=True){
         print static::encode($app, $data, $code, $key, $isJSON);
     }
-    
+
     /**
      * response 201
-     * 
+     *
      * @author James Oliver <support@ckxu.com>
      * @version 1.0
      * @since 2016-02-15
      * @license https://opensource.org/licenses/MIT MIT
-     * 
+     *
      * @param object $app Slim Application
      * @param string $data message for user / response
      * @param string $key key of message, uses message as default
@@ -115,15 +115,15 @@ class standardResult{
             $isJSON=True){
         print static::encode($app, $data, $code, $key, $isJSON);
     }
-    
+
     /**
      * response 200
-     * 
+     *
      * @author James Oliver <support@ckxu.com>
      * @version 1.0
      * @since 2016-02-15
      * @license https://opensource.org/licenses/MIT MIT
-     * 
+     *
      * @param object $app Slim Application
      * @param string $data message for user / response
      * @param string $key key of message, uses message as default
@@ -143,11 +143,14 @@ $twig_path = $basepath."lib".DIRECTORY_SEPARATOR."Twig".DIRECTORY_SEPARATOR
         ."Autoloader.php";
 $slim_path = $basepath."lib".DIRECTORY_SEPARATOR."Slim".DIRECTORY_SEPARATOR
         ."Slim.php";
+if(!file_exists($autoload_path)){
+    die("Please install pre-requirements, run 'composer install --no-dev' ");
+}
 $views_path = $basepath."Views";
 $temp_path = false;
 $sessionExpiry = "30minutes";
 $sessionName = "TPSSlimSession";
-$sessionSecret = 
+$sessionSecret =
         "Q7^nY{Zd'UO]Z`=L8X&`fV)Fn(LwH(vFwAm-y[z,YJD*vJj'WVYNC!+R3\cnF3I";
 
 if(!file_exists("TPSBIN".DIRECTORY_SEPARATOR."XML".
@@ -223,7 +226,7 @@ $requiresHttps = function () use ($app,$debug) {
      }
 };
 
-$app->hook('slim.before.dispatch', function() use ($app) { 
+$app->hook('slim.before.dispatch', function() use ($app) {
    $user = null;
    #$callsign = filter_input(INPUT_SESSION, "CALLSIGN")?:NULL;
    try{
