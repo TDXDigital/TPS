@@ -1,5 +1,5 @@
 <?php
-    if(file_exists("../TPSBIN/XML/DBSETTINGS.xml")){
+    if(file_exists("../TPSBIN/XML/DBSETTINGS.xml") && false){
         http_response_code(403);
         $refusal = "<h1>403 Forbidden</h1><p>Your request cannot proceed as the"
                 . " this server has already been configured.</p>";
@@ -15,7 +15,7 @@ function Extensions( $extensions ){
     $optional_requirements = [
         "mysqlnd"
     ];
-    
+
     //$checkreqs = $minimum_requirements + $optional_requirements;
     $checkreqs = array_merge($minimum_requirements,$optional_requirements);
     $php_extensions = get_loaded_extensions();
@@ -37,11 +37,14 @@ function Extensions( $extensions ){
 }
 
 function Versions( $extensions ){
-    
+
 }
 
 /* AJAX check  */
-if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' || true) {
     $JSON = Extensions("");
     print json_encode($JSON);
+}
+else{
+    print "Missing or invalid HTTP_X_REQUESTED_WITH header";
 }
