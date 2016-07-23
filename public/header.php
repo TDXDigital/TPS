@@ -14,7 +14,7 @@ require_once 'lib' . DIRECTORY_SEPARATOR . "logger.php";
 //load twig
 if(file_exists($autoload_path)){
     require_once($autoload_path);
-}    
+}
 elseif(file_exists($twig_path)&&file_exists($slim_path)){
     require_once $twig_path;
     require_once $slim_path;
@@ -24,7 +24,7 @@ elseif(file_exists($twig_path)&&file_exists($slim_path)){
 else{
     header($_SERVER['SERVER_PROTOCOL'] . '500 Internal Server Error', true, 500);
     error_log("Error 500: Slim not found in TPS");
-    die('500 Internal Server Error');
+    die('500 Internal Server Error, run composer install --no-dev or composer update');
 }
 
 

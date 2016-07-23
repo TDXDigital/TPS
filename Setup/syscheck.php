@@ -1,5 +1,5 @@
 <?php
-    if(file_exists("../TPSBIN/XML/DBSETTINGS.xml") && false){
+    if(file_exists("../TPSBIN/XML/DBSETTINGS.xml")){
         http_response_code(403);
         $refusal = "<h1>403 Forbidden</h1><p>Your request cannot proceed as the"
                 . " this server has already been configured.</p>";

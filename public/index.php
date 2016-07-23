@@ -143,9 +143,6 @@ $twig_path = $basepath."lib".DIRECTORY_SEPARATOR."Twig".DIRECTORY_SEPARATOR
         ."Autoloader.php";
 $slim_path = $basepath."lib".DIRECTORY_SEPARATOR."Slim".DIRECTORY_SEPARATOR
         ."Slim.php";
-if(!file_exists($autoload_path)){
-    die("Please install pre-requirements, run 'composer install --no-dev' ");
-}
 $views_path = $basepath."Views";
 $temp_path = false;
 $sessionExpiry = "30minutes";
