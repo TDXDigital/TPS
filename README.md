@@ -51,6 +51,8 @@ The user will use a web browser or other supported application to connect to the
 * PDO
 * composer
 
+__Special Note: Varnish is an amazing and fast resource, But it can cause problems with your TPS Broadcast installation if Cookies are ignored. if you cannot login even though you are confident you have entered the proper credentials, make sure to either: disable varnish on the TPS Broadcast URI or include the PHPSESSID and your specific sessionID (varies by site, usually like TPSDemoSession) in the exclusions for varnish__ 
+
 ## 1.2 Tutorial
 This is a general tutorial on how to setup a server, this will be a high level overview of how to configure a production server but environments may vary. For example demo.ckxu.com uses an NGINX gateway service to multiple compute nodes on the backend with a distributed filesystem and varnish cache. yet ckxu.uleth.ca utilizes a simpler but more high powered VPS. providing walkthroughs for each one would be extermely extensive so we will assume you have a fully working and basically configured server (can load apache default page).  
 
