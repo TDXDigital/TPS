@@ -1,27 +1,17 @@
 <?php
     session_start();
-date_default_timezone_set($_SESSION['TimeZone']);
-
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
-/*if (!$con){
-	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';
-
-	username=' . $_SESSION["username"]);
-}
-else if($con){
-	if(!mysql_select_db("CKXU")){header('Location: /login.php');}*/
+date_default_timezone_set($_SESSION['TimeZone']?:"UTC");
 ?>
 
 <!DOCTYPE HTML>
 <head>
 <link rel="stylesheet" type="text/css" href="../../css/altstyle.css" />
-<title>Commercial Management</title>
+<title>Traffic Management</title>
 </head>
 <html>
 <body>
 	<div class="topbar">
-           Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
+           Welcome, <?php echo(strtoupper($_SESSION['fname'])); ?>
     </div>
 	<div id="header">
 		<a href="/"><img src="<?php print("../../".$_SESSION['logo']); ?>" alt="logo"/></a>
@@ -116,13 +106,5 @@ else if($con){
 			find any shows that have "show" in the name or "%ever" for shows that end in "ever"</span>
 
 	</div>
-
-<?php
-/*
-}
-else{
-	echo 'ERROR!';
-}*/
-?>
 </body>
 </html>

@@ -1,19 +1,22 @@
 <?php
     session_start();
-date_default_timezone_set($_SESSION['TimeZone']);
+date_default_timezone_set($_SESSION['TimeZone']?:"UTC");
+
+require_once dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."TPSBIN".DIRECTORY_SEPARATOR."functions.php";
+require_once dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."TPSBIN".DIRECTORY_SEPARATOR."db_connect.php";
 ?>
 <!DOCTYPE HTML>
 <head>
 <link rel="stylesheet" type="text/css" href="../../css/altstyle.css" />
-<title>Commercial Management</title>
+<title>Traffic Management</title>
 </head>
 <html>
 <body>
 	<div class="topbar">
-           Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
+           Welcome, <?php echo(strtoupper($_SESSION['fname'])); ?>
     </div>
 	<div id="header">
-		<a href="../../masterpage.php"><img src="<?php print("../../".$_SESSION['logo']); ?>" alt="logo"/></a>
+		<a href="../../"><img src="<?php print("../../".$_SESSION['logo']); ?>" alt="logo"/></a>
 	</div>
 	<div id="top">
 		<h2>Edit Commercial / Promo</h2>
@@ -48,110 +51,71 @@ date_default_timezone_set($_SESSION['TimeZone']);
 			</tr>
 
 <?php
-
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
-if (!$con){
-	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
-
-	username=' . $_SESSION["username"]);
-}
-else if($con){
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../masterpage.php?error=ndbs');}
-	$SQLA = "Select adverts.* from adverts where adverts.AdName LIKE '%" . addslashes($_POST['name']) . "%' ";
+	$SQLA = "Select adverts.* from adverts where adverts.AdName LIKE '%" . $mysqli->real_escape_string(
+		filter_input(INPUT_POST, 'name')) . "%' ";
 	// build query
 	if(isset($_POST['category'])){
-		$SQLA .= "and adverts.Category LIKE '%" . addslashes($_POST['category']) . "%' ";
+		$SQLA .= "and adverts.Category LIKE '%" . $mysqli->real_escape_string(filter_input(INPUT_POST, 'category'))."%' ";
 	}
 	if(isset($_POST['Active'])){
-		$SQLA .= "and adverts.Active LIKE '%" . addslashes($_POST['Active']) . "%' ";
+		$SQLA .= "and adverts.Active LIKE '%" . $mysqli->real_escape_string(filter_input(INPUT_POST, 'Active'))."%' ";
 	}
 	if(isset($_POST['adnum'])){
-		$SQLA .= "and adverts.AdId LIKE '%" . addslashes($_POST['adnum']) . "%' ";
+		$SQLA .= "and adverts.AdId LIKE '%" . $mysqli->real_escape_string(filter_input(INPUT_POST, 'adnum'))."%' ";
 	}
 	if(isset($_POST['Friend'])){
-		$SQLA .= "and adverts.Friend LIKE '%" . addslashes($_POST['Friend']) . "%' ";
+		$SQLA .= "and adverts.Friend LIKE '%" . $mysqli->real_escape_string(filter_input(INPUT_POST, 'Friend'))."%' ";
 	}
 	$SQLA .= " order by  Category desc, AdId";
 
-	$result = mysql_query($SQLA) or die(mysql_error());
-             if(mysql_num_rows($result)=="0"){
-               echo '<tr><td colspan="100%" style="background-color:yellow;">';
-               echo 'No Results Found';
-               echo '</tr></td>';
-			   echo $SQLA;
-             }
-             else{
-
+	$result = $mysqli->query($SQLA) or die($mysqli->error);
+    if((string)$result->num_rows=="0"){
+        echo '<tr><td colspan="100%" style="background-color:yellow;">';
+        echo 'No Results Found';
+        echo '</tr></td>';
+        echo $SQLA;
+    }
+    else{
 		//------------------------- START LOOP OF adverts ---------------------------------
 		echo "<form name=\"row\" action=\"p3update.php\" method=\"POST\">";
 		$count = 0;
-		if(mysql_num_rows($result)==1){
-			$row = mysql_fetch_array($result);
+		if($result->num_rows==1){
+			$row = $result->fetch_row();
 				header("location: p3update.php?resource=" . $row['AdId'] );
 		}
 		else{
-			while($row=mysql_fetch_array($result)) {
-	        	$labelr="<label for=\"line".$count."\">".$row['AdName']."</label>";
-				/*echo "<form name=\"row\" action=\"/program/p3advupdate.php\" method=\"POST\"><tr>
-						<td>";*/
-				echo "<tr";
-				if($count%2){
-					echo " style=\"background-color:#DAFFFF;\" ";
-				}
-				echo">
-						<td>";
-						echo "<input type=\"radio\" name=\"postval\" required=\"true\" id=\"line".$count."\" value=\"".$row['AdId']."\" /></td><td>";
-						++$count;
+			while($row=$result->fetch_array(MYSQLI_ASSOC)) {
+                $labelr = "<label for=\"line" . $count . "\">" . $row['AdName'] . "</label>";
+                echo "<tr";
+                if ($count % 2) {
+                    echo " style=\"background-color:#DAFFFF;\" ";
+                }
+                echo ">
+                <td>";
+                echo "<input type=\"radio\" name=\"postval\" required=\"true\" id=\"line" . $count . "\" value=\"" . $row['AdId'] . "\" /></td><td>";
+                ++$count;
 
-						$labelr.= "</td>
-						<td>" . $row['AdId']. "</td>
-						<td>" . $row['Length']. "</td>
-						<td>" . $row['Language'] ."</td>
-						<td>".  $row['Category'] . "</td>
-						<td><input type=\"checkbox\" onclick=\"javascript: return false;\" ";
-
-						if($row['Active']!=0){
-							$labelr .= "checked";
-						}
-
-						$labelr .= " />";
-						//";
-						//echo "<input name=\"syndicate\" value=\"" . $row['syndicatesource'] . "\" hidden />";
-						/*$SQDJ = "select Alias from PERFORMS where programname=\"" . addslashes($row['programname']) . "\" and callsign=\"" . addslashes($row['callsign']) . "\"";
-						if(!($perfres = mysql_query($SQDJ))){
-							echo mysql_error();
-						}
-						else{
-							$alias=mysql_fetch_array($perfres);
-							$labelr .= $alias['Alias'];
-							while($alias=mysql_fetch_array($perfres)){
-								$labelr .= ", " . $alias['Alias'];
-							}
-						}*/
-
-						$labelr .= "</td>
-						<td><input type=\"checkbox\" onclick=\"javascript: return false;\" ";
-
-						if($row['Friend']!=0){
-							$labelr .= "checked";
-						}
-
-						$labelr .= " />";
-
-						$labelr .= "</td></tr>";
-
-
-						echo $labelr;
-
-					   }
-				}
-		}
-
-}
-else{
-	echo 'ERROR!';
-}
+                $labelr .= "</td>
+                <td>" . $row['AdId'] . "</td>
+                <td>" . $row['Length'] . "</td>
+                <td>" . $row['Language'] . "</td>
+                <td>" . $row['Category'] . "</td>
+                <td><input type=\"checkbox\" onclick=\"javascript: return false;\" ";
+                if ($row['Active'] != 0) {
+                    $labelr .= "checked";
+                }
+                $labelr .= " />";
+                $labelr .= "</td>
+                <td><input type=\"checkbox\" onclick=\"javascript: return false;\" ";
+                if ($row['Friend'] != 0) {
+                    $labelr .= "checked";
+                }
+                $labelr .= " />";
+                $labelr .= "</td></tr>";
+                echo $labelr;
+            }
+        }
+    }
 ?>
 </table>
 

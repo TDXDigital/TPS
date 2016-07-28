@@ -276,11 +276,13 @@
                                     $playcount = $playcount_arr->fetch_array(MYSQLI_ASSOC);
                                     $UPAD = "UPDATE adverts SET Playcount='".$playcount['result']."' where AdId='".
                                         addslashes($_POST['AdNum'])."' or XREF='".addslashes($_POST['AdNum'])."'";
-                    $result_Flag = $mysql->query("select Playcount from adverts where AdId='" .
-                        addslashes($_POST['AdNum']) . "' and Category='51'");
+                    $result_Flag = $mysqli->query("select Playcount from adverts where AdId='" .
+                        addslashes($_POST['AdNum']) . "' and Category='51' and '".$mysqli->real_escape_string($ep_date).
+                        "' between StartDate and EndDate");
                     $FlCheck = $result_Flag->fetch_array(MYSQLI_ASSOC);
                     $Sel51Flag = $minplaysql51 = "select MIN(Playcount) from adverts where Category='51' and ".
-                        "Active='1' and Friend='1' ";
+                        "Active='1' and Friend='1' and '".$mysqli->real_escape_string($ep_date) .
+                        "' between StartDate and EndDate";
                     $Min51Flag = $mysqli->query($Sel51Flag);
                     $flagLevel = $Min51Flag->fetch_array(MYSQLI_ASSOC);
                     if($FlCheck['Playcount']>$flagLevel['MIN(Playcount)']){
@@ -994,10 +996,12 @@ if(false){
 					else{
 						//$selcom51 is origin
 						$minplaysql51 = "select MIN(Playcount) from adverts where Category='51' ".
-                            "and Active='1' and Friend='1' ";
+                            "and Active='1' and Friend='1' and '".$mysqli->real_escape_string($ep_date).
+                            "' between StartDate and EndDate";
                         $advertResult = $mysqli->query($minplaysql51);
 						if(!$minplay51Array = $advertResult->fetch_array(MYSQLI_ASSOC)){
-							$selcom51 = "select * from adverts where Category='51'";
+							$selcom51 = "select * from adverts where Category='51' and '".
+                                $mysqli->real_escape_string($ep_date)."' between StartDate and EndDate";
 						}
 						else{
 							$minplay51 = $minplay51Array['MIN(Playcount)'];
@@ -1006,8 +1010,7 @@ if(false){
                             "and Active='1' and Playcount='".$minplay51."' ";
 						}
 						$selspon = "select MIN(Playcount) from adverts where Category!='51' and '" .
-                            addslashes($_POST['user_date']) . "' is between EndDate and StartDate ";
-
+                            addslashes($_POST['user_date']) . "' between EndDate and StartDate ";
 						if($comsav = $mysqli->query($selcom51)){
 							$ADOPT = "";
 							while($avadi = $comsav->fetch_array(MYSQLI_ASSOC)){

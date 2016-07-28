@@ -1,23 +1,9 @@
 <?php
     session_start();
-date_default_timezone_set($_SESSION['TimeZone']);
+date_default_timezone_set($_SESSION['TimeZone']?:"UTC");
 
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
-if (!$con){
-	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
-
-	username=' . $_SESSION["username"]);
-}
-else if($con){
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../login.php');}
-	/*$GENRE = "SELECT * from GENRE order by genreid asc";
-	$GENRES = mysql_query($GENRE,$con);
-	$genop = "<OPTION VALUE=\"%\">Select Genre</option>";
-	while ($genrerow=mysql_fetch_array($GENRES)) {
-        $GENid=$genrerow["genreid"];
-        $genop.="<OPTION VALUE=\"" . $GENid . "\">". $GENid ."</option>";
-    }*/
+require_once dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."TPSBIN".DIRECTORY_SEPARATOR."functions.php";
+require_once dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."TPSBIN".DIRECTORY_SEPARATOR."db_connect.php";
     $catop =  "<option value=\"53\">53, Sponsored Promotion</option>
 	           <OPTION value=\"52\">52, Sponsor Indentification</OPTION>
 	           <OPTION VALUE=\"51\" selected=\"true\">51, Commercial</OPTION>
@@ -38,9 +24,9 @@ else if($con){
 			$INSad2 .= "'".addslashes($_POST['name'])."'";
 			$advertiser = $_POST['name'];
 		}
-		if(isset($_POST['category'])){
+		if(isset($_POST['Category'])){
 			if($append==TRUE){
-				$INSad1 .= ",Category";
+				$INSad1 .= ", Category";
 				$INSad2 .= ",'" . addslashes($_POST['category'])."'";
 			}
 			else{
@@ -51,24 +37,24 @@ else if($con){
 		}
 		if(isset($_POST['length'])){
 			if($append==TRUE){
-				$INSad1 .= ",length";
+				$INSad1 .= ",Length";
 				$INSad2 .= ",'" . addslashes($_POST['length'])."'";
 			}
 			else{
 				$append = TRUE;
-				$INSad1 .= "length";
+				$INSad1 .= "Length";
 				$INSad2 .= "'".addslashes($_POST['length'])."'";
 			}
 			$length = $_POST['length'];
 		}
 		if(isset($_POST['language'])){
 			if($append==TRUE){
-				$INSad1 .= ",language";
+				$INSad1 .= ", Language";
 				$INSad2 .= ",'" . addslashes($_POST['language'])."'";
 			}
 			else{
 				$append = TRUE;
-				$INSad1 .= "language";
+				$INSad1 .= "Language";
 				$INSad2 .= "'".addslashes($_POST['language'])."'";
 			}
 			$language = $_POST['language'];
@@ -99,7 +85,7 @@ else if($con){
 		}
 		if(isset($_POST['active'])){
 			if($append==TRUE){
-				$INSad1 .= ",Active";
+				$INSad1 .= ", Active";
 				$INSad2 .= ",'0'";
 			}
 			else{
@@ -121,9 +107,9 @@ else if($con){
 			}
 			$active = false;
 		}
-		if(isset($_POST['friend'])){
+		if(isset($_POST['Friend'])){
 			if($append==TRUE){
-				$INSad1 .= ",Friend";
+				$INSad1 .= ", Friend";
 				$INSad2 .= ",'1'";
 			}
 			else{
@@ -135,30 +121,34 @@ else if($con){
 		}
 		else{
 			if($append==TRUE){
-				$INSad1 .= ",Friend";
+				$INSad1 .= ", Friend";
 				$INSad2 .= ",'0'";
 			}
 			else{
 				$append = TRUE;
-				$INSad1 .= "Friend";
+				$INSad1 .= " Friend";
 				$INSad2 .= "'0'";
 			}
 			$friend = false;
 		}
-		$PLMIN = mysql_fetch_array(mysql_query("select MIN(Playcount) from adverts where Category='" . addslashes($_POST['category']) . "'"));
+		$result = $mysqli->query("select MIN(Playcount) from adverts where Category='".$mysqli->real_escape_string(
+		    filter_input(INPUT_POST, 'category'))."'");
+        $PLMIN = $result->fetch_array(MYSQLI_ASSOC);
+		#$PLMIN = mysql_fetch_array(mysql_query("select MIN(Playcount) from adverts where Category='" . addslashes($_POST['category']) . "'"));
 		$INSad = $INSad1 . $INSad2 . ")";
-		if(!mysql_query($INSad)){
-			echo mysql_error();
+		if(!$inResult = $mysqli->query($INSad)){
+			echo $mysqli->error;
 			echo "<br/>";
 			echo $INSad;
-			$ADIDNUM=mysql_insert_id($con);
+			$mysqli->insert_id;
 		}
 		else{
-			$ADIDNUM=mysql_insert_id($con);
-			if(!mysql_query("update adverts set Playcount=Playcount-".$PLMIN['MIN(Playcount)']." where Category='" . addslashes($_POST['category']) . "'")){
-				echo mysql_error();
+			$ADIDNUM=$mysqli->insert_id;
+			if(!$mysqli->query("update adverts set Playcount=Playcount-".$PLMIN['MIN(Playcount)']." where Category='" .
+                    $mysqli->real_escape_string(filter_input(INPUT_POST,"category")) . "'")){
+				echo $mysqli->errno;
 				echo "<br/>";
-				echo mysql_error();
+				echo $mysqli->error;
 			}
 		}
 	}
@@ -172,7 +162,7 @@ else if($con){
 <html>
 <body>
 	<div class="topbar">
-           Welcome, <?php echo(strtoupper($_SESSION['usr'])); ?>
+           Welcome, <?php echo(strtoupper($_SESSION['fname'])); ?>
     </div>
 	<div id="header">
 		<a href="/"><img src="<?php print("../../".$_SESSION['logo']); ?>" alt="logo"/></a>
@@ -295,14 +285,5 @@ else if($con){
 		<span>Clicking the Title of the entry box will assist with a definition of the field as well if it is required and any defaults</span>
 
 	</div>
-
-<?php
-    //$con->close();
-    //mysqli_close($con);
-}
-else{
-	echo 'ERROR!';
-}
-?>
 </body>
 </html>

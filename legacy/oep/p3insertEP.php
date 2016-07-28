@@ -109,7 +109,7 @@ else{
         </td></tr>
 
 
-        
+
         <tr> <!-- This is the second Row Of Data -->
 
         <!-- horizontal line -->
@@ -228,14 +228,14 @@ else{
             echo "<form name=\"exit\" action=\"p1insertEP.php\" method=\"POST\">";
             echo "<input type=\"submit\" value=\"New Log\">";
             echo "</form></td>";
-            echo "<td><form name=\"exit\" action=\"VERLogout.php\" method=\"POST\">";
+            echo "<td><form name=\"exit\" action=\"/logout\" method=\"POST\">";
             echo "<input type=\"submit\" value=\"Logout\">";
             echo "</form>";
 
           }
           else
           {
-            echo "<form name=\"exit\" action=\"../masterpage.php\" method=\"POST\">";
+            echo "<form name=\"exit\" action=\"../../\" method=\"POST\">";
             echo "<input type=\"submit\" value=\"Exit\">";
             echo "</form><td></td>";
           }
@@ -262,13 +262,13 @@ else{
         </td>
 
         <td colspan="1">
-        <?php 
+        <?php
               echo $PROGRAMARRAY['totalspokentime'];
         ?>
         </td>
         <td colspan="1">
-        <?php 
-              echo $PROGRAMARRAY['endtime']; 
+        <?php
+              echo $PROGRAMARRAY['endtime'];
         ?>
         </td>
         <td colspan="1">

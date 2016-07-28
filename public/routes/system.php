@@ -266,6 +266,7 @@ $app->get("/logout", function () use ($app) {
     $log->info("User Logout");
     session_unset();
     $app->view()->setData('access', null);
+    session_destroy();
     $app->render('basic.twig',array('statusCode'=>'Logout','title'=>'Logout', 'message'=>'You have been logged out'));
 });
 
