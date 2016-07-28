@@ -133,7 +133,7 @@
             $inep = "insert into episode ("
                     . "callsign, programname, date, starttime, "
                     . "prerecorddate, description, IP_Created) values "
-                    . "( '$CALLSHOW', '".mysql_escape_string($pgm_name)."',"
+                    . "( '$CALLSHOW', '".$mysqli->real_escape_string($pgm_name)."',"
                     . " '$pgm_date', '$pgm_time', $pr_string "
                     . ", '$DESCRIPTION',"
                     . "'".$_SERVER['REMOTE_ADDR']."' )";
