@@ -266,8 +266,7 @@
                             if(!$SPup = $mysqli->query($SPupSQL)){
                                     array_push($error, $mysqli->errno . "</td><td>" . $mysqli->error);
                             }
-                            //echo mysql_num_rows($SPup);
-                            if(mysql_num_rows($SPup)==0){
+                            if($SPup->num_rows==0){
                                     $playcountsql = "SELECT Playcount+1 as result from adverts where AdId='".
                                         addslashes($_POST['AdNum'])."'";
                                     if(!$playcount_arr = $mysqli->query($playcountsql)){
