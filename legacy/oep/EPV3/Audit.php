@@ -2,17 +2,16 @@
 <html style="height: 100%;" lang="en">
 	<head>
 		<!--<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
-        <script src="../../js/jquery/js/jquery-2.1.1.min.js"></script>
-		<script src="../../js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
-		<script src="../../js/globalize-master/lib/globalize.js"></script>
-		<script src="../../js/modernizr.js"></script>
-		<script type="text/javascript" src="../../js/jquery-blockui.js"></script>
-		<script type="text/javascript" src="../../js/jquery-jMenu.js"></script>
+        <script src="../../../js/jquery/js/jquery-2.1.1.min.js"></script>
+		<script src="../../../js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
+		<script src="../../../js/modernizr.js"></script>
+		<script type="text/javascript" src="../../../js/jquery-blockui.js"></script>
+		<script type="text/javascript" src="../../../js/jquery-jMenu.js"></script>
 		<!-- CSS -->
-		<link rel="stylesheet" type="text/css" href="../../phpstyle.css" />
-		<link rel="stylesheet" type="text/css" href="../../js/css/jMenu.jquery.css" media="screen" />
+		<link rel="stylesheet" type="text/css" href="../../../css/phpstyle.css" />
+		<link rel="stylesheet" type="text/css" href="../../../js/css/jMenu.jquery.css" media="screen" />
 		<!--<link rel="stylesheet" type="text/css" href="../../js/jquery/css/smoothness/jquery-ui-1.10.0.custom.css" />-->
-        <link rel="stylesheet" type="text/css" href="../../js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../../js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.css" />
 		<title>Program Audit Configuration</title>
 		<meta http-equiv="Content-Type" content="text/html;" charset="UTF-8">
 		<script>
@@ -49,8 +48,11 @@
 	</head>
 	<body style="height: inherit;">
 		<div id="content" style="margin: auto; width: 1280px; height: inherit; background-color: white;">
-			<form action="../../reportInterpreter.php" method="post" target="_blank" accept-charset="utf-8">
-			<div id="logo" style="margin-bottom: 25px;"><img style="display: inline;" src="../../images/Ckxu_logo_PNG.png" height="50px" alt="logo"/><h1 style="display: inline; text-align: center; width: 100%">
+			<form action="../../../reportInterpreter.php" method="post" target="_blank" accept-charset="utf-8">
+			<div id="logo" style="margin-bottom: 25px;"><img style="display: inline;" src="../../../<?php
+                session_start();
+                echo $_SESSION['logo'];
+				?>" height="50px" alt="logo"/><h1 style="display: inline; text-align: center; width: 100%">
 				Audit Options</h1><br/><hr></div>
 			<div id="options" style="float: left;">
 				<h2>Date Range</h2>
@@ -96,7 +98,7 @@
 						<h3>Format</h3>
 						<input type="radio" id="fmthtm" name="fmt" checked="checked"/><label for="fmthtm">HTML</label>
 						<input type="radio" id="fmtpdf" name="fmt" disabled /><label for="fmtpdf">PDF</label>
-                        <input type="radio" id="fmtxls" name="fmt" disabled /><label for="fmtpdf">XLSX</label>
+                        <input type="radio" id="fmtxls" name="fmt"/><label for="fmtxls">XLSX</label>
 					</div>
 					<div id="prt_opts" style="float: left; margin-left: 20px">
 						<h3>Audit Type</h3>
@@ -116,10 +118,10 @@
 			</div>
 		</div>
 		<div id="foot" style="width: 100%; position: fixed; bottom: 0px; background-color: black; margin-left: 0; padding-left: 0; height: 40px; text-align: center">
-				<input id="exit" value="Cancel" type="button" onclick="window.location.href='../../../masterpage.php'"/>
-				<input id="sub1" value="Submit" type="Submit"/> 
+				<input id="exit" value="Cancel" type="button" onclick="window.location.href='../../../'"/>
+				<input id="sub1" value="Submit" type="Submit"/>
 			</div>
 		</form>
-		
+
 	</body>
 </html>

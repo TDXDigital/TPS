@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set("UTC");
 
 /*
  * The MIT License
@@ -29,4 +30,4 @@
  *
  * @author James Oliver <support@ckxu.com>
  */
-require "oep".DIRECTORY_SEPARATOR."EPV3".DIRECTORY_SEPARATOR."Reports.php";
+require "legacy".DIRECTORY_SEPARATOR."oep".DIRECTORY_SEPARATOR."EPV3".DIRECTORY_SEPARATOR."Reports.php";

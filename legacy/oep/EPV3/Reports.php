@@ -1,7 +1,7 @@
 <?php
 namespace TPS;
-session_start(); 
-include('oep/EPV3/PHP/php-barcode.php');
+session_start();
+include(dirname(__FILE__).DIRECTORY_SEPARATOR.'PHP/php-barcode.php');
 //require_once("../../TPSBIN/db_connect.php");
 require_once("public/lib/libs.php");
 
@@ -9,7 +9,7 @@ class Report extends TPS{
     public function __construct() {
         parent::__construct(TRUE);
     }
-    
+
     public function runReport(){
         $callsign = filter_input(INPUT_POST, "callsign")?:Null;
 
@@ -66,15 +66,15 @@ class Report extends TPS{
         }
 
 
-                function to12hour($hour1){ 
-                        // 24-hour time to 12-hour time 
+                function to12hour($hour1){
+                        // 24-hour time to 12-hour time
                         return DATE("g:i A", STRTOTIME($hour1));
                 }
                 function to24hour($hour2){
-                        // 12-hour time to 24-hour time 
+                        // 12-hour time to 24-hour time
                         return DATE("H:i", STRTOTIME($hour2));
                 }
-        
+
         $episodes = array();
         $stmt = $this->mysqli->prepare("SELECT EpNum,programname FROM episode "
                 . "WHERE date between ? and ? AND programname LIKE ? "
@@ -118,7 +118,7 @@ class Report extends TPS{
                     . "WHERE episode.callsign = ? AND performs.programname = ? "
                     . "AND performs.Alias = dj.Alias AND "
                     . "(performs.STdate is null or performs.STdate < ?) and "
-                    . "(performs.STdate is null or performs.ENdate > ?) "
+                    . "(performs.STdate is null or performs.ENdate is null or performs.ENdate > ?) "
                     . "group by dj.djname asc");
             $programData = $program->getValues();
             $episodeData = $episode->getEpisode();
@@ -134,11 +134,11 @@ class Report extends TPS{
             }
             // Print Format
             print "<table width=\"100%\" border=\"0\" style='font-size: inherit;'>";
-            print "<tr><td colspan=\"2\" ><img src=\"../../images/Ckxu_logo_PNG.png"
+            print "<tr><td colspan=\"2\" ><img src=\"../../".$_SESSION['logo']
             . "\" width=\"150px\"></td><td colspan=\"3\">";
             if($barcode){
                 print "<img style='float:right' "
-                . "src='Playlist/barcode/barcode.php?bcd="
+                . "src='legacy/opl/barcode/barcode.php?bcd="
                 . join('', array(str_pad($episodeNumber, 11,
                         "0", STR_PAD_LEFT)))."'/>";
             }
@@ -146,7 +146,7 @@ class Report extends TPS{
                 print "Episode Number: ".$episodeID;
             }
             print "</td></tr><tr><td width=\"27%\" >"
-            . $stationData['frequency'] . " " . $stationData['website'] 
+            . $stationData['frequency'] . " " . $stationData['website']
             . "</td><td  colspan=\"2\" width=\"37%\" >"
             . $stationData['address'] . "</td><td  width=\"15%\" >";
             print "Booth Request Ph: <br />" . $stationData['phone']['main']
@@ -168,7 +168,7 @@ class Report extends TPS{
                         }
             else{
                 echo $episodeData['endTime']?:"<i>".
-                        date("H:i:s", 
+                        date("H:i:s",
                         strtotime($episodeData['time']." + "
                             .$programData['length']." minutes"))
                         ."</i>";
@@ -180,7 +180,7 @@ class Report extends TPS{
             if(!is_null($episodeData['recordDate']))
                  {
                    if($episodeData['recordDate'] != ""){
-                       $PR = "Pre-Record Date:" . 
+                       $PR = "Pre-Record Date:" .
                                $episodeData['recordDate'];
                    }
                    else{
@@ -196,7 +196,7 @@ class Report extends TPS{
             if(!is_null($programData['syndicateSource']))
             {
               if($programData['syndicateSource'] != ""){
-                echo "Syndication Origin:" . 
+                echo "Syndication Origin:" .
                         $programData['syndicatesource'];
               }
               else{
@@ -216,15 +216,17 @@ class Report extends TPS{
             if($Stime){
                   echo "<th width=\"5%\">Time</th>";
             }
-            echo "<th width=\"20%\">Artist</th><th width=\"20%\">Title</th><th width=\"20%\">Release Title</th><th>Composer</th><th width=\"2%\">CC</th><th width=\"2%\">Hit</th><th width=\"2%\">Ins</th><th width=\"4%\">Language</th></tr>";
-            
+            echo "<th width=\"20%\">Artist</th><th width=\"20%\">Title</th><th width=\"20%\">Release Title</th>
+<th>Composer</th><th width=\"2%\">CC</th><th width=\"2%\">Hit</th><th width=\"2%\">Ins</th><th>Type</th>
+<th width=\"4%\">Language</th></tr>";
+
             // NO SONG OBJECT YET
             $stmt = $episode->mysqli->prepare(
                 "SELECT `song`.`songid`, `song`.`time`, `song`.`album`, "
                 . "`song`.`artist`, `song`.`title`, `song`.`cancon`, "
                 . "playlistnumber, category, instrumental, hit, Spoken, "
                 . "composer, note, AdViolationFlag, `song`.`Timestamp`, "
-                . "`language`.`languageid` FROM song "
+                . "`language`.`languageid`, `type` FROM song "
                 . "left join `language` on `language`.`songid`=song.songid "
                 . "WHERE FIND_IN_SET(category,?)>0 AND song.callsign=? "
                 . "and song.programname=? and song.`date`=? and song.starttime=?"
@@ -234,7 +236,7 @@ class Report extends TPS{
             }
             $reportType = filter_input(INPUT_POST, 'type')?:"MUO";
             $categories = "";
-            
+
             // MUsicOnly, SPOken, COMmercial, ADMinistrative
             switch (strtoupper($reportType)) {
                 case "MUO":
@@ -263,9 +265,9 @@ class Report extends TPS{
                     $episodeData['time']);
             $stmt->bind_result($songId,$songTime,$album,$artist,$songTitle,
                     $canCon, $playlist, $category, $instrumental, $hit, $spoken,
-                    $composer, $note, $adViolationFlag, $timestamp, $language);
+                    $composer, $note, $adViolationFlag, $timestamp, $language, $type);
             $stmt->execute();
-            
+
             while($stmt->fetch()){
                 if($stmt->num_rows<1 && $stmt->field_count < 1){
                     print "<tr><td colspan=\"100%\" "
@@ -275,9 +277,11 @@ class Report extends TPS{
                 }
                 else{
                     if($category == '51'){
-                        echo "<tr><td style=\"background-color:#ffff99;\">";
+                        echo "<tr><td style=\"background-color:#ffff99;\">$category</td>";
                     }
-                    print "<tr><td>$category</td>";
+                    else {
+                        print "<tr><td>$category</td>";
+                    }
                     if($ple){
                         echo "<td style='text-align: center;'>";
                         echo $playlist?:"&nbsp;";
@@ -300,15 +304,17 @@ class Report extends TPS{
                     echo $hit?"X":"&nbsp";
                     echo "</td><td style='text-align: center;'>";
                     echo $instrumental?"X":"&nbsp";
+                    echo "</td><td style='text-align: center;'>";
+                    echo $type;
                     echo "</td><td>";
                     echo $language?:"N/A";
                     echo "</td></tr>";
                 }
-                
+
             }
             echo "</table></br>Times reported in the '".$stationData['timezone'].
                     "' timezone";
-            echo '<p style="page-break-before: always;"> </p>';     
+            echo '<p style="page-break-before: always;"> </p>';
         }
         echo "<table width=\"100%\" style=\"background-color:black; color:white\"><tr><td width=\"10%\" rowspan=\"2\"></td><td><h3>End Report</h3><br /></td></tr>";
         echo "<tr><td>   LEGEND</td><td> CC= Canadian Content, Ins = Instrumental, CAT = Category</td></tr></table>";
