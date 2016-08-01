@@ -1,6 +1,6 @@
 {% extends 'baseAdmin.twig' %}
 {% block headScripts %}
-    <link href="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.css" 
+    <link href="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.css"
           rel="stylesheet" type="text/css"/>
     <link href="{{siteUrl}}/js/chosen.min.css" rel="stylesheet" type="text/css"/>
 {% endblock %}
@@ -30,10 +30,10 @@
             <div class="col-sm-2">
                 <div class="form-group">
                     <label for="station">Station</label>
-                    <select id="station" name="callsign" class="form-control">
+                    <select id="station" name="callsign" class="form-control" onchange="changeStation(this.value)">
                         {% for stnCallsign, stnBrand in stations %}
                         <option {% if callsign == stnCallsign %}
-                            selected 
+                            selected
                             {% endif %} value="{{stnCallsign|escape}}">{{stnBrand}}</option>
                         {% endfor %}
                     </select>
@@ -71,24 +71,24 @@
             </div><div class="row">
             <div class="col-sm-2">
                 <label for="datePicker">Record Date</label>
-                <input type='text' class="form-control" id='datePickerRecord' 
-                       name="recordDate" 
+                <input type='text' class="form-control" id='datePickerRecord'
+                       name="recordDate"
                        value="{{recordDate}}"
                        required
                        pattern="([1-9][\d]{3})-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])"/>
             </div>
             <div class="col-sm-2">
                 <label for="datePicker">Broadcast Date</label>
-                <input type='text' class="form-control" id='datePickerAir' 
-                       name="airDate" 
+                <input type='text' class="form-control" id='datePickerAir'
+                       name="airDate"
                        value="{{airDate|default("now"|date('Y-m-d', firstStation.timezone))}}"
                        required
                        pattern="([1-9][\d]{3})-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])"/>
             </div>
             <div class="col-sm-2">
                 <label for="datePicker">Broadcast Time</label>
-                <input type='time' class="form-control" id='timePicker' 
-                       name="airTime" 
+                <input type='time' class="form-control" id='timePicker'
+                       name="airTime"
                        required
                        value="{{airTime|default("+1 hour"|date('H:00', firstStation.timezone))}}"/>
             </div>
@@ -96,7 +96,7 @@
         <div class="row">
             <div class="col-sm-11">
                 <label for="description">Description</label>
-                <input type='text' class="form-control" id='description' 
+                <input type='text' class="form-control" id='description'
                        name="description" value="{{description}}"/>
             </div>
             <div class="col-sm-1">
@@ -105,7 +105,7 @@
                         <input type="hidden" name="_METHOD" value="PUT"/>
                     {% endif %}
                     <button id="submit" type="submit"
-                            disabled 
+                            disabled
                             class="btn btn-success pull-down">Submit</button>
                 <!--<button type="reset" class="btn btn-warning">Reset</button>-->
                 </div>
@@ -125,7 +125,7 @@
         };
         var today = new Date();
         var todayString = today.yyyymmdd();
-        
+
         function changedType(){
             var type = $("#type option:selected").val();
             switch(type){
@@ -161,12 +161,12 @@
                     $("#datePickerAir").val(todayString);
             }
         }
-        
+
         $(document).ready(function(){
             $.datepicker.setDefaults({dateFormat: "yy-mm-dd"});
             $("#datePickerAir").datepicker();
             $("#datePickerRecord").datepicker();
-            
+
             $('.pull-down').each(function() {
                 $(this).css('margin-top', $(this).parent().height()-$(this).height())
             });
@@ -183,7 +183,7 @@
                         }
                     });
             changedType();
-            changedProgram();
+            //changedProgram();
         });
     </script>
 {% endblock %}

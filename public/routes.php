@@ -1,11 +1,14 @@
 <?php
 require_once dirname(__FILE__).DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."std".DIRECTORY_SEPARATOR."util.php";
+require_once dirname(__FILE__).DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."tps.php";
 if(isset($_SESSION["DBHOST"])){
     require_once 'TPSBIN'.DIRECTORY_SEPARATOR.'functions.php';
     require_once 'TPSBIN'.DIRECTORY_SEPARATOR.'db_connect.php';
     require_once 'lib_api'.DIRECTORY_SEPARATOR.'LibraryAPI.php';
     require_once dirname(__FILE__).DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."notifications.php";
-    $app->hook('slim.before.dispatch', function() use ($app) {
+    $tps = new \TPS\TPS();
+    $allStations = $tps->getStations();
+    $app->hook('slim.before.dispatch', function() use ($app, $allStations) {
         try {
             $notifications = new \TPS\notification(\TPS\util::get($_SESSION, 'CALLSIGN'));
             $broadcasts = $notifications->listUserNotifications();
@@ -22,6 +25,12 @@ if(isset($_SESSION["DBHOST"])){
                 "message"=>"Critical: ".$e->getMessage()
             )
             ]));
+        }
+        try{
+            $app->view()->setData('environmentCurrentStation', $_SESSION['CALLSIGN']);
+            $app->view()->setData('environmentAllStations', $allStations);
+        } catch (\Exception $e){
+
         }
     });
 }

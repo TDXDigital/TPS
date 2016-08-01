@@ -17,9 +17,9 @@
           rel="stylesheet">
     <!-- Custom CSS -->
     <link href="/css/sb-admin.css" rel="stylesheet">
-    
+
     <!-- Treant CSS -->
-    <link href="{{siteUrl}}/vendor/fperucic/treant-js/Treant.css" 
+    <link href="{{siteUrl}}/vendor/fperucic/treant-js/Treant.css"
           rel="stylesheet" type="text/css"/>
 
     <!-- Morris Charts CSS -->
@@ -77,7 +77,7 @@
                                     <div class="media-body">
                                         <h5 class="media-heading"><strong>{{user.name}}</strong>
                                         </h5>
-                                        
+
                                             <p class="small text-muted"><i class="fa fa-clock-o"></i> {{"now"|date('Y-m-d H:m')}} UTC</p>
                                             <p>{{message.content}}</p>
                                     </div>
@@ -124,6 +124,30 @@
                     </ul>
                 </li>
                 {% endblock notifications %}
+                <!-- Notifications -->
+                {% block stations %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i id="stationSelectorIcon" class="fa fa-bars"></i> <b class="caret"></b></a>
+                        <ul class="dropdown-menu alert-dropdown">
+                            {% for callsign, station in environmentAllStations %}
+                                <li>
+                                    <a href="javascript: changeStation('{{ callsign }}')">
+                                        {% if callsign == environmentCurrentStation %}
+                                            <span class="label label-success"><i class="fa fa-check-circle"></i></span>
+                                        {% else %}
+                                            <span class="label label-default"><i class="fa fa-circle"></i></span>
+                                        {% endif %}
+                                        {{ station }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                            <li class="divider"></li>
+                            <li>
+                                <a href="/station/">Manage</a>
+                            </li>
+                        </ul>
+                    </li>
+                {% endblock stations %}
                 <!-- User Menu -->
                 {% block userMenu %}
                 <li class="dropdown">
@@ -182,7 +206,7 @@
                 </div>
                 {% endblock heading%}
                 <!-- /.row -->
-                
+
                 {% block content %}
                 {% endblock content %}
                 <!-- /.row -->
@@ -206,11 +230,11 @@
                           {% else %}
                               {% set controlNext = "" %}
                           {% endif %}
-                          <li class="{{controlPrevious}}"><a 
+                          <li class="{{controlPrevious}}"><a
                                 {% if controlPrevious == "" %}
                                     href="?p={{page-1}}"
                                 {% else %}
-                                    href="#" 
+                                    href="#"
                                 {% endif %}
                                 aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
                           {% for i in range(startPage, endPage) %}
@@ -226,11 +250,11 @@
                                       {% endif %}
                                   </span></a></li>
                           {% endfor %}
-                          <li class="{{controlNext}}"><a 
+                          <li class="{{controlNext}}"><a
                                 {% if controlNext == "" %}
                                     href="?p={{page+1}}"
                                 {% else %}
-                                    href="#" 
+                                    href="#"
                                 {% endif %}
                                 aria-label="Previous"><span aria-hidden="true">&raquo;</span></a></li>
                         </ul>
@@ -246,7 +270,7 @@
 
     </div>
     <!-- /#wrapper -->
-    
+
     <style>
         .modal-backdrop {
             z-index: -1;
@@ -258,16 +282,16 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="/js/bootstrap.min.js"></script>
-    
+
     <!-- template specific JavaScript -->
     {% block lastScripts %}
     {% endblock %}
-    
+
     <script>
     $(function () {
         setNavigation();
     });
-    
+
     function setActiveIfHref(uri){
         var located = false;
         $(".nav a").each(function () {
@@ -285,6 +309,28 @@
             }
         });
         return located;
+    }
+
+    function changeStation(station){
+        x = $("#stationSelectorIcon");
+        $.ajax({
+            url: '/environment/station',
+            type: 'PUT',
+            data: { callsign: station},
+            beforeSend: function(){
+                x.switchClass("fa-bars", "fa-circle-o-notch");
+                x.addClass("fa-spin");
+                x.css("color", "orange");
+
+            },
+            success: function (result) {
+                location.reload();
+            },
+            error: function (result) {
+                x.switchClass("fa-circle-o-notch", "exclamation");
+                x.removeClass("fa-spin");
+            }
+        });
     }
 
     function setNavigation() {
@@ -307,7 +353,7 @@
         }
     }
     </script>
-    
+
     <!-- Morris Charts JavaScript -->
     <!-- javascript -->
     <script src="{{siteUrl}}/js/plugins/morris/raphael.min.js"></script>
@@ -316,7 +362,7 @@
     <script src="{{siteUrl}}/js/plugins/morris/morris-data.js"></script>
     {% block MorrisScript %}
     {% endblock %}
-    
+
 </body>
 
 </html>

@@ -55,7 +55,7 @@ $app->group('/episode', $authenticate($app,[1,2]),
             'area'=>'Episode',
             'title'=>'New'
             );
-        $callsign = $app->request->get('callsign');
+        $callsign = $app->request->get('callsign')?:$_SESSION['CALLSIGN'];
         $format = $app->request->get('format');
         $station = new \TPS\station();
         $params['stations'] = $station->getStations();

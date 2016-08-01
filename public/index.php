@@ -76,6 +76,9 @@ class standardResult{
         if(!$isJSON){
             $app->error(new \Exception($str), $code);
         }
+        else{
+            return $str;
+        }
     }
 
     /**

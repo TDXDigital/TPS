@@ -41,7 +41,11 @@ else if($con){*/
         while ($row=mysqli_fetch_array($callresult,MYSQLI_ASSOC)) {
             $name=$row["stationname"];
             $callsign=$row["callsign"];
-            $calloptions.="<OPTION VALUE=\"$callsign\">".$name."</option>";
+            $calloptions.="<OPTION VALUE=\"$callsign\"";
+            if($_SESSION['CALLSIGN'] == $callsign){
+                $calloptions .= " selected ";
+            }
+            $calloptions.=">".$name."</option>";
         }
 
         $djsql="SELECT * from `dj` order by djname";

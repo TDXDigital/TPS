@@ -22,7 +22,7 @@ $app->error(function (\Exception $e) use ($app){
         "statusCode" => 500,
         "title" => "Error 500",
         "message" => "Internal Server Error",
-        "details" => ["&nbsp","<sub>Tech Blabber for the nosy type: </sub>",
+        "details" => ["&nbsp","<sub>Guru Info: </sub>",
             "<sub>".$e->getMessage()."</sub>"],
     );
     $app->render("error.html.twig",$params);

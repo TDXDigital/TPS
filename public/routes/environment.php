@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * The MIT License
  *
  * Copyright 2016 J.oliver.
@@ -24,9 +24,9 @@
  * THE SOFTWARE.
  */
 
-$app->group("/environment", array($authenticate($app,[1,2])), 
+$app->group("/environment", array($authenticate($app,[1,2])),
         function() use ($app,$authenticate){
-    
+
     $app->get("/station", $authenticate($app, [1,2]), function () use ($app){
         standardResult::ok($app, $_SESSION['CALLSIGN'], "callsign");
     });
@@ -36,12 +36,12 @@ $app->group("/environment", array($authenticate($app,[1,2])),
         $tps = new \TPS\TPS();
         $stations = $tps->getStations();
         if(!$callsign){
-            standardResult::badRequest($app,"Callsign was not provided");
-            return false;
+            $result = standardResult::badRequest($app,"Callsign was not provided", null, 400, true);
+            $app->halt(400, $result);
         }
         if(!array_key_exists($callsign, $stations)){
-            standardResult::badRequest($app, "Callsign is not valid");
-            return false;
+            $x = standardResult::badRequest($app, "Callsign is not valid");
+            $app->halt(400, $x);
         }
         $_SESSION["CALLSIGN"] = $callsign;
         standardResult::accepted($app, $callsign, "callsign");
