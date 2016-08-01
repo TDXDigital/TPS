@@ -1,0 +1,410 @@
+{% extends 'baseAdmin.twig' %}
+{% block headScripts %}
+    <link rel="stylesheet" href="{{siteUrl}}/js/chosen.css">
+    <link rel="stylesheet" href="{{siteUrl}}/js/bootstrap/checkbox/css/bootstrap-checkbox.css">
+    <link rel="stylesheet" href="{{siteUrl}}/js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>
+{% endblock %}
+{% block title %}{{title|default('Station')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+    </li>
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/station/">Stations</a>
+    </li>
+    <li class="active">
+        <i class="fa fa-bolt"></i>
+        {{station.name|default('New')}}
+    </li>
+</ol>
+{% if success is not null %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="alert alert-success" role="alert">{{success}}</div>
+        </div>
+    </div>
+    {% endif %}
+    <!--<span>SUCCESS: {{success}}, ERROR: {{error}}, ID: {{PRINTID}}| {% for id in PRINTID %}{{id}},{% endfor %}</span>-->
+{% endblock %}
+{% block content %}
+<form role="form" method="post"> <!-- action="/Playlist/playlist.induct.php" -->
+    <div class="row">
+        <div class="col-lg-6">
+            <fieldset>
+                <div id="name-group" class="form-group input-group">
+                    <label class="input-group-addon" for="username">username<span style="color:red">*</span></label>
+                    <input name="brand" id="username" type="text" required
+                           {% if user.name is not null %} value="{{user.name}}" {% endif %}
+                           placeholder="required common name/brand"
+                           class="form-control" autofocus="autofocus">
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div id="frequency_group" class="form-group input-group">
+                            <label class="input-group-addon" for="frequency_field">Frequency<span style="color:red">*</span></label>
+                            <input name="frequency" id="frequency_field" type="text" required
+                                   {% if station.frequency is not null %} value="{{station.frequency}}" {% endif %}
+                                   placeholder="eg. 94.1 FM" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div id="designation_group" class="form-group input-group">
+                            <label class="input-group-addon" for="designation_field">Designation</label>
+                            <input name="designation" id="designation_field" type="text"
+                                   {% if station.designation is not null %} value="{{station.designation}}" {% endif %}
+                                   placeholder="eg. 202 A1" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div id="web_group" class="form-group input-group">
+                            <label for="website_field" class="input-group-addon">Website</label>
+                            <input name="website" id="website_field" type="url"
+                                   {% if station.website is not null %} value="{{station.website}}" {% endif %}
+                                   placeholder="http://www.google.ca" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div id="web_group" class="form-group input-group">
+                            <label for="perHourTraffic_field" class="input-group-addon" title="Traffic per Hour">Traffic/Hr</label>
+                            <input name="perHourTraffic" id="perHourTraffic_field" type="number" min="0"
+                                   value="{{station.perHourTraffic|default(1)}}" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div id="web_group" class="form-group input-group">
+                            <label for="perHourPSAs_field" class="input-group-addon" title="PSA per Hour">PSA/Hr</label>
+                            <input name="perHourPSAs" id="perHourPSAs_field" type="number" min="0"
+                                   value="{{station.perHourPSAs|default(1)}}" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div id="frequency_group" class="form-group input-group">
+                            <label class="input-group-addon" for="callsign_field">Call sign<span style="color:red">*</span></label>
+                            <input name="callsign" id="callsign_field" type="text" required
+                                   {% if station.callsign is not null %} readonly value="{{station.callsign}}" {% endif %}
+                                   placeholder="eg. CAAA-FM" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div id="ind_group" class="form-group input-group">
+                            <label for="timezone" class="input-group-addon">TimeZone</label>
+                            <select id="timezone" class="form-control" name="timezone">
+                                {% for key,value in timezones %}
+                                    <option value='{{value}}'
+                                            {% if station.timezone|default('UTC') == value %} selected {% endif %}
+                                            > {{value|default('Unknown TimeZone')}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div id="sort_group" class="form-group input-group">
+                        <label for="defaultSort" class="input-group-addon">Default List Order&nbsp;</label>
+                        <select id="defaultSort" class="form-control" name="defaultSort" style="min-width: 150px;">
+                            {% set sortOrder=sortOrder?:{"asc":"Ascending","desc":"Descending"} %}
+                            {% for key,value in sortOrder %}
+                                <option value='{{key}}'
+                                        {% if station.defaultSort|lower == key|lower %} selected {% endif %}
+                                        >{{value|default('Unknown Genre')}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div id="gen_group" class="form-group input-group">
+                        <label for="displayCounters" class="input-group-addon">Programming Counters</label>
+                        <select id="displayCounters" class="form-control" name="displayCounters" style="min-width: 150px;">
+                            {% set displayCounters=displayCounters?:{"1":"Visible","0":"Hidden"} %}
+                            {% for key,value in displayCounters %}
+                                <option value='{{key}}'
+                                        {% if station.displayCounters == key %} selected {% endif %}
+                                        >{{value|default('Unknown Option')}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div><div class="row">
+                <div class="col-lg-6">
+                    <div id="gen_group" class="form-group input-group">
+                        <label for="groupPlaylistProgramming" class="input-group-addon">Group Playlist for Programs</label>
+                        <select id="groupPlaylistProgramming" class="form-control"
+                                name="groupPlaylistProgramming">
+                            {% set groupPlaylistProgramming=groupPlaylistProgramming?:{"0":"No","1":"Yes"} %}
+                            {% for key,value in groupPlaylistProgramming %}
+                                <option value='{{key}}'
+                                        {% if station.groupPlaylistProgramming == key %} selected {% endif %}
+                                        >{{value|default('Unknown Option')}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div id="gen_group" class="form-group input-group">
+                        <label for="groupPlaylistReporting" class="input-group-addon">Group Playlist for Reporting</label>
+                        <select id="groupPlaylistReporting" class="form-control"
+                                name="groupPlaylistReporting">
+                            {% set groupPlaylistReporting=groupPlaylistReporting?:{"0":"No","1":"Yes"} %}
+                            {% for key,value in groupPlaylistReporting %}
+                                <option value='{{key}}'
+                                        {% if station.groupPlaylistReporting == key %} selected {% endif %}
+                                        >{{value|default('Unknown Option')}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div><div class="row">
+                <div class="col-lg-3">
+                    <div id="designation_group" class="form-group input-group">
+                        <label class="input-group-addon" for="passColor_field"
+                               title="Pass/OK">
+                            <i class="fa fa-check" style="color:{{station.colorPass|default("#A0D468")}}"></i>
+                        </label>
+                        <input name="passColor" id="passColor_field" type="text"
+                               value="{{station.colorPass|default("#A0D468")}}"
+                               placeholder="Hex Color Codes" pattern="\#[0-9A-Fa-f]+"
+                               class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div id="designation_group" class="form-group input-group">
+                        <label class="input-group-addon" for="noteColor_field"
+                               title="Note/Info">
+                            <i class="fa fa-info" style="color:{{station.colorNote|default("#4FC1E9")}}"></i>
+                            </label>
+                        <input name="noteColor" id="noteColor_field" type="text"
+                               value="{{station.colorNote|default("#4FC1E9")}}"
+                               placeholder="Hex Color Codes" pattern="\#[0-9A-Fa-f]+"
+                               class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div id="designation_group" class="form-group input-group">
+                        <label class="input-group-addon" for="warningColor_field"
+                               title="Warning">
+                            <i class="fa fa-exclamation" style="color:{{station.colorWarning|default("#FFCE54")}}"></i>
+                            </label>
+                        <input name="warningColor" id="warningColor_field" type="text"
+                               value="{{station.colorWarning|default("#FFCE54")}}"
+                               placeholder="Hex Color Codes" pattern="\#([0-9A-Fa-f])+"
+                               {% if station.colorWarning is null %}
+                                   readonly
+                                {% endif %}
+                               class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div id="designation_group" class="form-group input-group">
+                        <label class="input-group-addon" for="failColor_field"
+                               title="Error">
+                            <i class="fa fa-close" style="color:{{station.colorFail|default("#FC6E51")}}"></i>
+                            </label>
+                        <input name="failColor" id="failColor_field" type="text"
+                               value="{{station.colorFail|default("#FC6E51")}}"
+                               placeholder="Hex Color Codes" pattern="\#[0-9A-Fa-f]+"
+                               class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div id="phoneMain_group" class="form-group input-group">
+                        <label class="input-group-addon" for="phoneMain_field"
+                               title="Main,Central, or Request Phone Number">
+                            <i class="fa fa-phone"></i> Main</label>
+                        <input name="phoneMain" id="phoneMain_field" type="text"
+                               value="{{station.phone.main}}"
+                               placeholder="(123) 456-7890" pattern="[0-9\-\(\)s]+"
+                               class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div id="phoneMgr_group" class="form-group input-group">
+                        <label class="input-group-addon" for="phoneManager_field"
+                               title="Manager Phone">
+                            <i class="fa fa-phone" style="color:#00AA88"></i> GM</label>
+                        <input name="phoneManager" id="phoneManager_field" type="text"
+                               value="{{station.phone.manager}}"
+                               placeholder="(123) 456-7890" pattern="[0-9\-\(\)s]+"
+                               class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div id="phoneDir_group" class="form-group input-group">
+                        <label class="input-group-addon" for="phoneDir_field"
+                               title="Director Phone">
+                            <i class="fa fa-phone" style="color:#CD1818"></i> MD/PD</label>
+                        <input name="phoneDirector" id="phoneDir_field" type="text"
+                               value="{{station.phone.director}}"
+                               placeholder="(123) 456-7890" pattern="[0-9\-\(\)s]+"
+                               class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div id="gen_group" class="form-group input-group">
+                        <label for="RequireArtist" class="input-group-addon">Require Artist</label>
+                        <select id="RequireArtist" class="form-control"
+                                name="forceArtist">
+                            {% set forceArtist=forceArtist?:{"0":"No","1":"Yes"} %}
+                            {% for key,value in forceArtist %}
+                                <option value='{{key}}'
+                                        {% if station.forceArtist == key %} selected {% endif %}
+                                        >{{value|default('Unknown Option')}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div id="gen_group" class="form-group input-group">
+                        <label for="RequireAlbum" class="input-group-addon">Require Album</label>
+                        <select id="RequireAlbum" class="form-control"
+                                name="forceAlbum">
+                            {% set forceAlbum=forceAlbum?:{"0":"No","1":"Yes"} %}
+                            {% for key,value in forceAlbum %}
+                                <option value='{{key}}'
+                                        {% if station.forceAlbum == key %} selected {% endif %}
+                                        >{{value|default('Unknown Option')}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div id="gen_group" class="form-group input-group">
+                        <label for="RequireComposer" class="input-group-addon">Req. Composer</label>
+                        <select id="RequireComposer" class="form-control"
+                                name="forceComposer">
+                            {% set forceComposer=forceComposer?:{"0":"No","1":"Yes"} %}
+                            {% for key,value in forceComposer %}
+                                <option value='{{key}}'
+                                        {% if station.forceComposer == key %} selected {% endif %}
+                                        >{{value|default('Unknown Option')}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+<div class="row">
+    <div class="col-lg-6">
+    </div>
+    <div class="col-lg-6">
+        <div class="pull-right">
+            {% if station.callsign is not null %}
+                <input type="hidden" name="_METHOD" value="PUT"/>
+            {% endif %}
+            <input class="btn btn-primary" type="submit" >
+            <input id="print_btn" class="btn btn-success"
+            {% if PRINTID is null %}
+                disabled="disabled"
+            {% endif %}
+                type="button" value="Upload IC CSV">
+            <input id="print_btn" class="btn btn-danger"
+                   onclick="ClearPrintQueue();"
+            {% if PRINTID is null %}
+                disabled="disabled"
+            {% endif %}
+                type="button" value="Disable">
+        </div>
+    </div>
+</div>
+            <br>
+</form>
+<datalist id="artists"></datalist>
+
+<style>
+  .ui-autocomplete-loading {
+    background: white url("../images/GIF/ajax-loader3.gif") right center no-repeat;
+  }
+</style>
+{% endblock %}
+{% block lastScripts %}
+<script src="{{siteUrl}}/js/chosen.jquery.min.js"></script>
+<script type="text/javascript" src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{{siteUrl}}/js/bootstrap/checkbox/js/bootstrap-checkbox.js "></script>
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        //edit('000005803637');
+
+
+        document.querySelector('form').onkeypress = checkEnter;
+        $.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
+        $( "#indate" ).datepicker({
+            changeMonth: true,
+            changeYear: true
+        });
+        $( "#reldate" ).datepicker({
+            changeMonth: true,
+            changeYear: true
+        });
+        //update_labels()
+        //$("#art_field").keyup(catch_enter());
+        $('input[type="checkbox"].style1').checkbox({
+            buttonStyleChecked: 'btn-success',
+            checkedClass: 'icon-check',
+            uncheckedClass: 'icon-check-empty'
+        });
+        $('input[type="checkbox"].style2').checkbox({
+            buttonStyle: 'btn-base',
+            buttonStyleChecked: 'btn-success',
+            checkedClass: 'icon-check',
+            uncheckedClass: 'icon-check-empty'
+        });
+        $('input[type="checkbox"].style3').checkbox({
+            buttonStyle: 'btn-danger',
+                buttonStyleChecked: 'btn-success',
+            checkedClass: 'icon-check',
+            uncheckedClass: 'icon-check-empty'
+        });
+    });
+
+    function initMap() {
+        var LatLng = {lat: -25.363, lng: 131.044}
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 4,
+          center: LatLng
+        });
+
+        var marker = new google.maps.Marker({
+          position: LatLng,
+          map: map,
+          title: 'Hello World!'
+        });
+    }
+    function catch_enter (event){
+        if(event.keyCode === 13){
+            get_albums();
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    function checkEnter(e){
+        e = e || event;
+        var txtArea = /textarea/i.test((e.target || e.srcElement).tagName);
+        return txtArea || (e.keyCode || e.which || e.charCode || 0) !== 13;
+    }
+
+</script>
+<script>
+    // Activate chosen elements
+    $(".chosen-select").chosen();
+</script><!--
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?signed_in=true&callback=initMap">
+</script>-->
+{% endblock %}

@@ -1,4 +1,5 @@
 <?php
+    date_default_timezone_set("UTC");
     session_start();
     $con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
     $ERR[] = NULL;
@@ -28,16 +29,16 @@
     <head>
         <meta charset="utf-8" />
         <title> Audits</title>
-        <link href="../../altstyle.css" rel="stylesheet"/>
+        <link href="../../../css/altstyle.css" rel="stylesheet"/>
         <link href="Audit.css" rel="stylesheet"/>
-        <link href="../../js/jquery/css/ui-darkness/jquery-ui-1.10.0.custom.min.css" rel="stylesheet"/>
-        <script src="../../js/jquery/js/jquery-2.0.3.min.js"></script>
-        <script src="../../js/jquery/js/jquery-ui-1.10.0.custom.min.js"></script>
+        <link href="../../../js/jquery/css/ui-darkness/jquery-ui-1.10.0.custom.min.css" rel="stylesheet"/>
+        <script src="../../../js/jquery/js/jquery-2.0.3.min.js"></script>
+        <script src="../../../js/jquery/js/jquery-ui-1.10.0.custom.min.js"></script>
         <script src="Audit.js"></script>
     </head>
     <body>
         <div class="topcontent">
-            <img src="../../<?php echo $_SESSION['logo']?>" alt="logo"/>
+            <img src="../../../<?php echo $_SESSION['logo']?>" alt="logo"/>
             <br/>
             <!--<div><h2>Genre Modification</h2></div>-->
         </div>
@@ -47,12 +48,14 @@
                     <!-- Do this through AJAX???-->
                     <div id="Create">
                 <h2>Audits and Traffic Enforcement</h2>
+                <h2 style="color: red">
+                    Warning: Edit not complete, can only create! edit requires manaual database changes</h2>
                 <h3>Edit / Create</h3>
                     <fieldset>
                         <div class="left">
                             <label for="name">Description</label>
                             <br/><input type="text" placeholder="Description (Optional)" id="name" name="description" />
-                            <input type="hidden" value="<?php echo $UID?>" name="AuditID"/>
+                            <input type="hidden" name="AuditID"/>
                         </div>
                         <div class="left">
                             <label for="prompt">Notify</label>
@@ -78,7 +81,11 @@
                                         $STN = "SELECT callsign AS csn, stationname AS name FROM `station`";
                                         if($result = mysqli_query($con,$STN)){
                                             while($SN = $result->fetch_object()){
-                                                echo "<option value='".$SN->csn."'>".$SN->name."</option>";
+                                                echo "<option value='".$SN->csn."'";
+                                                if($SN->csn == $_SESSION['CALLSIGN']){
+                                                    echo " selected ";
+                                                }
+                                                echo ">".$SN->name."</option>";
                                             }
                                         }
                                         else{
@@ -111,8 +118,8 @@
                 </div>
                 </div>
                 </form>
-                
-<?php 
+
+<?php
                     if(isset($_GET['e'])){
                         echo "<div id=\"error\" class=\"ui-state-error ui-corner-all\">";
                         echo "Error: ".$_GET['e'];
@@ -139,12 +146,12 @@
                         </thead>
                         <tbody>
                             <?php
-                                
+
                                 if($ERR[0]!=NULL){
                                    echo array_pop($ERR);
                                 }
                                 else{
-                                   
+
                                    $QUERY = "SELECT * FROM socan order by Enabled, StationID, end, start";
                                    //echo $QUERY;
                                    if($res = mysqli_query($con,$QUERY)){
@@ -169,7 +176,7 @@
                                    else{
                                        echo "error: ".mysqli_error($con);
                                    }
-                                   
+
                                 }
                                 /*for($i=0;$i<10;$i++){
                                     echo "<tr><td>$i</td><td>ERROR</td><td>DB NOT AVAILABLE</td><td>".$_SESSION['DBHOST']."</td><td>Check Login</td><td>Check server status</td>
@@ -184,7 +191,7 @@
                     <div class="left;">
                         <input type="submit" value="Save Changes" />
                         <input type="reset"/>
-                        <input type="button" value="Cancel" onclick="window.location.href='../../masterpage.php'"/>
+                        <input type="button" value="Cancel" onclick="window.location.href='../../../'"/>
                     </div>
                     </form>
                  </div>

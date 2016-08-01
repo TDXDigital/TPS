@@ -196,7 +196,7 @@
                     }
                 }
                 if($station_permission>0){
-                    print("<li><a href=\"$base/station/settings.php?old\">Station Settings</a></li>");
+                    print("<li><a href=\"$base/station/\">Station Settings</a></li>");
                 }
 
                 // HOST / PROGRAM
@@ -208,7 +208,7 @@
                             print("<li class=\"dropdown-header\">Programs</li>
                 <li><a href=\"$base/program/p1insert.php\">New Program</a></li>
                 <li><a href=\"$base/program/p1advupdate.php\">Edit Program</a></li>
-                <li><a href=\"$base/station/genres/Genre.php\">Genres</a></li>
+                <li><a href=\"$base/stn/genres/Genre.php\">Genres</a></li>
                   <li class=\"divider\"></li>");
                         }
                         if($members_permission>0){
@@ -264,7 +264,7 @@
               <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Reports and Management<b class=\"caret\"></b></a>
               <ul class=\"dropdown-menu\">
                 <li class=\"dropdown-header\">Programming</li>
-                <li><a href=\"$base/station/Audit/\">Audit Maintenance</a></li>
+                <li><a href=\"$base/stn/Audit/\">Audit Maintenance</a></li>
                 <li><a href=\"$base/oep/EPV3/Audit.php\">Perform Audit</a></li>
                 <li><a href=\"$base/Reports/Stats.php?w=12\">Programming Statistics</a></li>
                 <li class=\"divider\"></li>

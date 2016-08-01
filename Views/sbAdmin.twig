@@ -318,7 +318,9 @@
             type: 'PUT',
             data: { callsign: station},
             beforeSend: function(){
-                x.switchClass("fa-bars", "fa-circle-o-notch");
+                //x.switchClass("fa-bars", "fa-circle-o-notch");
+                x.removeClass("fa-bars");
+                x.addClass("fa-circle-o-notch");
                 x.addClass("fa-spin");
                 x.css("color", "orange");
 
