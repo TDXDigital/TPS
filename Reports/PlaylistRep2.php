@@ -100,7 +100,7 @@ else if($con){
 				$prooptions .= "</td><td>
 				";
 		//##################### - View - ##########################
-				$prooptions .="<button type=\"button\" onclick=\"javascript:quickview('../oep/quickview.php?args=".addslashes($subrow['programname'])."@".$subrow['date']."@".$subrow['starttime']."@".$subrow['callsign']."')\">View</button>";
+				$prooptions .="<button type=\"button\" onclick=\"javascript:quickview('../legacy/oep/quickview.php?args=".addslashes($subrow['programname'])."@".$subrow['date']."@".$subrow['starttime']."@".$subrow['callsign']."')\">View</button>";
 				$prooptions .= "</td></tr>
 				";
 				++$SUBCON;
