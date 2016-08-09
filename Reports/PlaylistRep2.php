@@ -109,7 +109,7 @@ else if($con){
 		else{
 		$prooptions.="<td align=center>" . $row['date'] . "</td><td align=center>" . $row['starttime'] . "</td><td align=center>" . $rowcount . "</td><td>";
 		$subrow=mysql_fetch_array($episodes);
-		$prooptions .="<button type=\"button\" onclick=\"javascript:quickview('../legavy/oep/quickview.php?args=".addslashes($subrow['programname'])."@".$subrow['date']."@".$subrow['starttime']."@".$subrow['callsign']."')\">View</button>";
+		$prooptions .="<button type=\"button\" onclick=\"javascript:quickview('../legacy/oep/quickview.php?args=".addslashes($subrow['programname'])."@".$subrow['date']."@".$subrow['starttime']."@".$subrow['callsign']."')\">View</button>";
         $prooptions.="</td></tr>
         ";
 		}
