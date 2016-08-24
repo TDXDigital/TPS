@@ -313,8 +313,8 @@ if(($pagenum + 2) < $last){
 			echo "><td>". $row['playlistnumber'] . "</td><td>" . $row['time'] . "</td><td>" . $row['title'] . "</td><td>";
 			echo $row['artist'] . "</td><td>" . $row['album'] . "</td><td>".$row['cancon']."</td><td>".$row['hit']."</td><td>".$row['instrumental']."</td><td>";
                         echo $row['programname'] . "</td><td>";
-			echo "<button type=\"button\" onclick=\"javascript:quickview('../oep/quickview.php?args=".urlencode($row['programname'])."@".$row['date']."@".$row['starttime']."@".$row['callsign']."')\">View</button>
-			<button type=\"button\" href=\"../oep/EPV2/p3update.php?program=".urlencode($row['programname'])."&user_time=".$row['starttime']."&user_date=".$row['date']."&callsign=".$row['callsign']."\" onclick=\"javascript:window.open('../oep/EPV2/p3update.php?program=".urlencode($row['programname'])."&user_time=".$row['starttime']."&user_date=".$row['date']."&callsign=".$row['callsign']."','popUpWindow','height=800,width=1350,left=10,top=10,,scrollbars=yes,menubar=no'); return false;\">Modify</button>
+			echo "<button type=\"button\" onclick=\"javascript:quickview('../legacy/oep/quickview.php?args=".urlencode($row['programname'])."@".$row['date']."@".$row['starttime']."@".$row['callsign']."')\">View</button>
+			<button type=\"button\" href=\"../legacy/oep/EPV2/p3update.php?program=".urlencode($row['programname'])."&user_time=".$row['starttime']."&user_date=".$row['date']."&callsign=".$row['callsign']."\" onclick=\"javascript:window.open('../legacy/oep/EPV2/p3update.php?program=".urlencode($row['programname'])."&user_time=".$row['starttime']."&user_date=".$row['date']."&callsign=".$row['callsign']."','popUpWindow','height=800,width=1350,left=10,top=10,,scrollbars=yes,menubar=no'); return false;\">Modify</button>
 			</td></tr>";
 		}
 		echo "</table>";
