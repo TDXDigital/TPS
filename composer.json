@@ -13,6 +13,18 @@
             "reference": "master"
           }
         }
+      },
+      "papaparse": {
+        "type": "package",
+        "package": {
+          "name": "mholt/papaparse",
+          "version": "4.1.0",
+          "source": {
+            "url": "https://github.com/mholt/PapaParse",
+            "type": "git",
+            "reference": "master"
+          }
+        }
       }
     },
     "require": {
@@ -29,7 +41,8 @@
         "fperucic/treant-js": "*",
         "onokumus/metismenu": "dev-master",
         "mk-j/php_xlsxwriter": "*",
-        "hellogerard/jobby": "*"
+        "hellogerard/jobby": "*",
+        "mholt/papaparse": "^4.0.0"
     },
     "require-dev": {
         "phpunit/phpunit-skeleton-generator": "*",

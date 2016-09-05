@@ -1,12 +1,13 @@
 <?php
+date_default_timezone_set("UTC");
     session_start();
-    
-    require '../TPSBIN/functions.php';
-    require '../TPSBIN/db_connect.php';
+
+    require dirname(__FILE__).DIRECTORY_SEPARATOR.'../../TPSBIN/functions.php';
+    require dirname(__FILE__).DIRECTORY_SEPARATOR.'../../TPSBIN/db_connect.php';
 ?>
 <!DOCTYPE HTML>
 <head>
-<link rel="stylesheet" type="text/css" href="../../css/altstyle.css" />
+<link rel="stylesheet" type="text/css" href="../../../css/altstyle.css" />
 <title>TPS Administration</title>
 </head>
 <html>
@@ -15,7 +16,7 @@
            Welcome, <?php echo(strtoupper($_SESSION['fname'])); ?>
     </div>
 	<div id="header">
-		<a href="../../masterpage.php"><img src="<?php print "../".$_SESSION['logo']; ?>" alt="Logo" /></a>
+		<a href="/"><img src="<?php print "../../".$_SESSION['logo']; ?>" alt="Logo" /></a>
 	</div>
 	<div id="top">
 		<h2>Edit Program Advanced Search</h2>
@@ -24,7 +25,7 @@
 		<table border="0" class="tablecss">
 			<tr>
 				<th width="10px">
-					
+
 				</th>
 				<th width="290px">
 					Program Name
@@ -50,14 +51,14 @@
 			</tr>
 
 <?php
-    $GENRE = "SELECT * from GENRE order by genreid asc";
+    $GENRE = "SELECT * from genre order by genreid asc";
     $GENRES = $mysqli->query($GENRE);
     $genop = "<OPTION VALUE=\"%\">Select Genre</option>";
     while ($genrerow=$GENRES->fetch_array(MYSQLI_ASSOC)) {
-    $GENid=$genrerow["genreid"];
-    $genop.="<OPTION VALUE=\"" . $GENid . "\">". $GENid ."</option>";
+		$GENid=$genrerow["genreid"];
+		$genop.="<OPTION VALUE=\"" . $GENid . "\">". $GENid ."</option>";
     }
-    $djsql="SELECT * from DJ order by djname";
+    $djsql="SELECT * from dj order by djname";
     $djresult=$mysqli->query($djsql);
 
     $djoptions="<option value=\"%\">Any Host</option><option value=\"0\">None</option>";//<OPTION VALUE=0>Choose</option>";
@@ -67,7 +68,7 @@
         $djoptions.="<OPTION VALUE=\"" . $Alias . "\">" . $name . "</option>";
     }
     $pgm_name = filter_input(INPUT_POST,'name',FILTER_SANITIZE_STRING);
-    $SQLA = "Select PROGRAM.* from PROGRAM where program.programname LIKE '%$pgm_name%' ";
+    $SQLA = "Select program.* from program where program.programname LIKE '%$pgm_name%' ";
     // build query
     if(isset($_POST['callsign'])){
             $SQLA .= "and program.callsign LIKE '%" . addslashes($_POST['callsign']) . "%' ";
@@ -112,14 +113,14 @@
         }
         else{
             while($row=$result->fetch_array(MYSQL_ASSOC)) {
-                $labelr="<label for=\"line".$count."\">".$row['programname']."</label>";      	
+                $labelr="<label for=\"line".$count."\">".$row['programname']."</label>";
                 echo "<tr";
                 if($count%2){
                         echo " style=\"background-color:#DAFFFF;\" ";
                 }
                 echo">
                 <td>";
-                echo "<input type=\"radio\" name=\"postval\" required=\"true\" id=\"line".$count."\" value=\"".$row['programname']."@&".$row['callsign']."\" /></td><td>";	
+                echo "<input type=\"radio\" name=\"postval\" required=\"true\" id=\"line".$count."\" value=\"".$row['programname']."@&".$row['callsign']."\" /></td><td>";
                 ++$count;
 
                 $labelr.= "</td>
@@ -128,12 +129,12 @@
                 <td>" . $row['syndicatesource'] ."</td>
                 <td>";
                 //echo "<input name=\"syndicate\" value=\"" . $row['syndicatesource'] . "\" hidden />";
-                $SQDJ = "select Alias from PERFORMS where programname=\"" . addslashes($row['programname']) . "\" and callsign=\"" . addslashes($row['callsign']) . "\"";
+                $SQDJ = "select Alias from performs where programname=\"" . addslashes($row['programname']) . "\" and callsign=\"" . addslashes($row['callsign']) . "\"";
                 if(!($perfres = $mysqli->query($SQDJ))){
                         echo $mysqli->error;
                 }
                 else{
-                    $alias=$perfres->fetch_array(MYSQLI_ASSOC);				
+                    $alias=$perfres->fetch_array(MYSQLI_ASSOC);
                     $labelr .= $alias['Alias'];
                     while($alias=$perfres->fetch_array(MYSQLI_ASSOC)){
                             $labelr .= ", " . $alias['Alias'];
@@ -153,7 +154,7 @@
     }
 ?>
 </table>
-		
+
 		</div>
     <div style="height: 90px;">&nbsp;</div>
 	<div id="foot"  style="bottom: 0; position: fixed; height: 50px; width: 100% ">
