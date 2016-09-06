@@ -46,7 +46,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $locale = filter_input(INPUT_POST, "locale")? :"international";
         $release_date = filter_input(INPUT_POST,'rel_date')?:NULL;
         $note = filter_input(INPUT_POST, "notes")?:NULL;
-        
+
         $replacePatterns = array(
             ["$2, $1","/^\\s*?((?i)the)(?<=(?i)the)\\s+([[:print:]]{3,})/"],
             ["$2, $1","/^\\s*?((?i)a)(?<=(?i)a)\\s+([[:print:]]{3,})/"]
@@ -59,7 +59,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 break;
             }
         }
-        
+
         $library = new \TPS\library();
         $result = $library->searchLibraryWithAlbum($artist, $album, True);
         if(sizeof($result)>0 && $result[0]['datein']==$datein){
@@ -84,7 +84,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $playlist=2;
         }
         $labelNum = NULL;
-        
+
         //find id
         $labels = \TPS\label::nameSearch($label);
         if(sizeof($labels)>0){
@@ -111,17 +111,17 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     $subLabel->setAlias($labelNum);
                 }
             }
-            
+
         }
-        
+
         //insert real;
-        
+
         //insert alias if needed, reference real
-        
+
         $label = new \TPS\label($labelNum);
         //if does not exist create label
-        
-        
+
+
         //echo "creating album...";
         if($genre=="null"){
             $genre=NULL;
@@ -183,7 +183,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 $governmentCategory,
                 $schedule
                 )){
-            $stmt3->close();    
+            $stmt3->close();
             $app->flash('error',$mysqli->error);
             $app->redirect('./new');
             #header("location: ../library/?q=new&e=".$mysqli->errno."&s=3_b&m=".$mysqli->error);
@@ -286,10 +286,10 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $page = (int)$app->request->get("p")?:1;
             $limit = (int)$app->request->get("l")?:25;
             $library = new \TPS\library();
-            $time_start = microtime(true); 
+            $time_start = microtime(true);
             $result = $library->SearchLibrary($term,False,$page,$limit);
             $pages = ceil($library->countSearchLibrary($term)/$limit);
-            $time_end = microtime(true); 
+            $time_end = microtime(true);
             $library->log->info("Search basic retrieval took ".
                     ($time_end - $time_start). "s");
             $params = array(
@@ -335,21 +335,21 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                         if(strtolower($value) == "properartist"){
                             foreach ($albums as $key => $val2) {
                                 $library->attribute(
-                                        $key, ucwords($val2['artist']), 
+                                        $key, ucwords($val2['artist']),
                                         "artist");
                             }
                         }
                         elseif(strtolower($value) == "properalbum"){
                             foreach ($albums as $key => $val2) {
                                 $library->attribute(
-                                        $key, ucwords($val2['album']), 
+                                        $key, ucwords($val2['album']),
                                         "album");
                             }
                         }
                         elseif(strtolower($value) == "propernotes"){
                             foreach ($albums as $key => $val2) {
                                 $library->attribute(
-                                        $key, ucwords($val2['note']), 
+                                        $key, ucwords($val2['note']),
                                         "note");
                             }
                         }
@@ -364,7 +364,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     if(in_array(strtolower($value),
                                 array("complete", "pending", "false")
                             )){
-                        $result = $library->playlistStatus($bulkIds, 
+                        $result = $library->playlistStatus($bulkIds,
                                                            strtoupper($value));
                         break;
                     }
@@ -393,7 +393,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     return $n;
                 }
             });
-            $app->flash("error", 
+            $app->flash("error",
                     "Could not set the Playlist Status for: "
                     . implode(", ",$fails));
         }
@@ -407,11 +407,34 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $app->redirect('./batch/');
     });
     $app->group('/batch', function () use ($authenticate, $app){
+        $library = new \TPS\library();
+        $app->get('/', $authenticate($app, array(2)), function () use ($app, $library){
+            $json = $app->request()->get('format')?: "html";
+            $ajax = $app->request()->isAjax();
+            $genres = $library->getLibraryGenres();
+            $params=array(
+                'area'=>'Library',
+                'title'=>'Bulk Import'
+            );
+            if(!strtolower($json) == "json" || $ajax){
+                standardResult::ok($app, "", NULL);
+            }
+            else{
+                $app->render('libraryBulk.twig', $params);
+            }
+        });
+        $app->post('/', $authenticate($app, array(2)), function () use ($app, $library){
+
+        });
+        $app->put('/', $authenticate($app, array(2)), function () use ($app, $library){
+
+        });
+
         $app->get('/options', $authenticate($app, array(1,2)), function () use ($app){
             $options = array(
                 // Option => Completes Transaction (No More Options)
                 "print" => "Print",
-                "status" => "Status", 
+                "status" => "Status",
                 "proper" => "Normalize / Clean",
                 "attribute" => "Attribute",
                 "playlistStatus" => "Playlist Status"
@@ -545,7 +568,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $album['label']=$library->getLabelbyId($album['labelid'])[0];
         $album['websites']=$library->getWebsitesByRefCode($RefCode);
         $album['playlist'] = $library->playlist->getAllByRefCode($RefCode);
-        
+
         $params = array(
             "album"=>$album,
             "govCats"=>$library->getGovernmentCodes(),
@@ -700,7 +723,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     $schedule,
                     $RefCode
                     )){
-                $stmt3->close();    
+                $stmt3->close();
                 $app->flash('error',$mysqli->error);
                 $app->redirect('./');
                 #header("location: ../library/?q=new&e=".$mysqli->errno."&s=3_b&m=".$mysqli->error);

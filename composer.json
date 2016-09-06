@@ -25,6 +25,18 @@
             "reference": "master"
           }
         }
+      },
+      "fuzzyset": {
+        "type": "package",
+        "package": {
+          "name": "glench/fuzzyset.js",
+          "version": "1.0.0",
+          "source": {
+            "url": "https://github.com/Glench/fuzzyset.js",
+            "type": "git",
+            "reference": "master"
+          }
+        }
       }
     },
     "require": {
@@ -42,7 +54,8 @@
         "onokumus/metismenu": "dev-master",
         "mk-j/php_xlsxwriter": "*",
         "hellogerard/jobby": "*",
-        "mholt/papaparse": "^4.0.0"
+        "mholt/papaparse": "^4.0.0",
+        "glench/fuzzyset.js": "*"
     },
     "require-dev": {
         "phpunit/phpunit-skeleton-generator": "*",
@@ -51,7 +64,7 @@
     },
     "autoload":{
         "psr-0":{
-            "TPS\\": ["router/", "public/lib/"],
+            "TPS\\": ["public/lib/"],
             "Controller\\": "./"
         }
     },
