@@ -24,14 +24,14 @@ require_once dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."TPSBIN".DI
 			$INSad2 .= "'".addslashes($_POST['name'])."'";
 			$advertiser = $_POST['name'];
 		}
-		if(isset($_POST['Category'])){
+		if(isset($_POST['category'])){
 			if($append==TRUE){
 				$INSad1 .= ", Category";
 				$INSad2 .= ",'" . addslashes($_POST['category'])."'";
 			}
 			else{
 				$append = TRUE;
-				$INSad1 .= "Category";
+				$INSad1 .= "category";
 				$INSad2 .= "'".addslashes($_POST['category'])."'";
 			}
 		}
