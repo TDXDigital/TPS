@@ -1,6 +1,6 @@
 <?php
 namespace TPS;
-/* 
+/*
  * The MIT License
  *
  * Copyright 2015 James Oliver <support@ckxu.com>.
@@ -32,7 +32,7 @@ namespace TPS;
 require_once 'station.php';
 
 class library extends station{
-    
+
     public $playlist = null;
 
     public function __construct($callsign=null){
@@ -40,9 +40,9 @@ class library extends station{
         $this->playlist = new \TPS\playlist();
     }
     #protected $RefCode;
-    
+
     /**
-     * 
+     *
      * @global mysqli $mysqli
      * @param type $RefCode Reference Code for Album
      * @return array Array of websites, False on Error
@@ -71,7 +71,7 @@ class library extends station{
         }
         return $websites;
     }
-    
+
     /**
      * @abstract returns static associative array of genres
      * @todo implement database storage
@@ -92,10 +92,10 @@ class library extends station{
             );
         return $genres;
     }
-    
-    
+
+
     /**
-     * @abstract Library codes are prepended to a barcode and used 
+     * @abstract Library codes are prepended to a barcode and used
      * for indexing and management within a physical library.
      * @todo store in DB
      * @return array
@@ -229,7 +229,7 @@ class library extends station{
         );
         return $codes;
     }
-    
+
     public function getLibraryCodeByGenre($Genre) {
         $list = $this->listLibraryCodes();
         $comVal='Genre';
@@ -240,7 +240,7 @@ class library extends station{
         }
         return False;
     }
-    
+
     public function getLibraryCodeValueByGenre($Genre) {
         $list = $this->listLibraryCodes();
         $comVal='Genre';
@@ -251,12 +251,12 @@ class library extends station{
         }
         return False;
     }
-    
+
     public function getLibraryCodeByRefCode($RefCode) {
         $album = $this->getAlbumByRefcode($RefCode, TRUE)[0];
         return $this->getLibraryCodeByGenre($album['genre']);
     }
-    
+
     public function createBarcode($refcode){
         if ($stmt = $mysqli->prepare(
                     "UPDATE library SET Barcode=? WHERE RefCode=?")){
@@ -269,7 +269,7 @@ class library extends station{
                       "Could not create barcode ".$this->mysqli->error);
         }
     }
-    
+
     public function getBarcodeByRefCode($RefCode){
         $attr = $this->getAlbumByRefcode($RefCode, True);
         if(is_null($attr['barcode'])){
@@ -280,7 +280,7 @@ class library extends station{
         }
         return $barcode;
     }
-    
+
     /**
      * @abstract gets static associative array of covernment codes
      * @todo store in DB
@@ -313,9 +313,9 @@ class library extends station{
             );
         return $govCat;
     }
-    
+
     /**
-     * 
+     *
      * @abstract return Media Fromats for library
      * @todo store in db
      * @return array
@@ -335,7 +335,24 @@ class library extends station{
             );
         return $formats;
     }
-    
+
+    /**
+     *
+     * @abstract return artist locale for library
+     * @todo store in db
+     * @return array
+     * @version 0.1
+     */
+    public function getLocales(){
+        $formats = array(
+            "International" => "International",
+            "Country" => "Country",
+            "Province" => "Province",
+            "Local" => "Local"
+        );
+        return $formats;
+    }
+
     /**
      * @abstract provide schedule information is associative array
      * @todo implement database storage
@@ -349,9 +366,9 @@ class library extends station{
         );
         return $blocks;
     }
-    
+
     /**
-     * 
+     *
      * @abstract return label information based on id
      * @global mysqli $mysqli
      * @param int $labelid label identification number
@@ -384,7 +401,7 @@ class library extends station{
         }
         return $result;
     }
-    
+
     /**
      * set status of refcode(s)
      * @param array $refcodes
@@ -405,7 +422,7 @@ class library extends station{
         }
         return true;
     }
-    
+
     /**
      * enable library entries by refcode
      * @param type $refcodes
@@ -414,7 +431,7 @@ class library extends station{
     public function enable($refcodes){
         return $this->setStatus($refcodes, 1);
     }
-    
+
     /**
      * disable library entries by refcodes
      * @param type $refcodes
@@ -423,7 +440,7 @@ class library extends station{
     public function disable($refcodes){
         return $this->setStatus($refcodes, 0);
     }
-    
+
     /**
      * Change an Attribute
      * @param type $refcodes
@@ -451,19 +468,19 @@ class library extends station{
         }
         return true;
     }
-    
+
     public function pendingPlaylist(){
         return $this->playlistFetch('PENDING');
     }
-    
+
     public function completePlaylist(){
         return $this->playlistFetch('COMPLETE');
     }
-    
+
     public function rejectedPlaylist(){
         return $this->playlistFetch('FALSE');
     }
-    
+
     private function playlistFetch($flag){
         $stmt = $this->db->prepare(
                 "SELECT * FROM library"
@@ -478,7 +495,7 @@ class library extends station{
         }
         return $result;
     }
-    
+
     public function playlistStatus($refcodes, $value){
         if(!is_array($refcodes)){
             $refcodes = array($refcodes);
@@ -500,9 +517,9 @@ class library extends station{
         }
         return $status;
     }
-    
+
     /**
-     * 
+     *
      * @abstract get album information from library by RefCode
      * @global \TPS\mysqli $mysqli
      * @param string $refcode
@@ -554,7 +571,7 @@ class library extends station{
         }
         return $result;
     }
-    
+
     /**
      * More general search of the library that matches on any
      * of the following columns: artist, album, note, Locale, or Genre
@@ -610,7 +627,7 @@ class library extends station{
         }
         return $result;
     }
-    
+
     public function countSearchLibrary($term="",$exact=False){
         //$this->mysqli;
         $tps = new \TPS\TPS();
@@ -638,9 +655,9 @@ class library extends station{
         }
         return $result;
     }
-    
+
     /**
-     * @abstract Get all key library information based on 
+     * @abstract Get all key library information based on
      * given input and return in json format
      * all values that match the paramaters
      * Was GetLibraryFull()
@@ -648,7 +665,7 @@ class library extends station{
      * @param type $artist
      * @param type $album
      * @return boolean|array
-     */    
+     */
     function searchLibraryWithAlbum($artist, $album=NULL,$exact=FALSE){
         $this->mysqli;
         $result = array();
@@ -701,7 +718,7 @@ class library extends station{
         }
         return $result;
     }
-    
+
     /**
      * @abstract provide basic list of all albums
      * @global \TPS\mysqli $mysqli
@@ -721,12 +738,12 @@ class library extends station{
         }
         return $result;
     }
-    
+
     /**
      * Takes a RefCode and returns an array with all library information included
      * @global \TPS\mysqli $mysqli
      * @param type $term
-     * @return array|boolean 
+     * @return array|boolean
      * @todo Optomize
      */
     public function GetFullAlbum($term){

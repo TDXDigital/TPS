@@ -512,7 +512,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                         "FALSE"=>"Rejected"
                     )
                 );
-                print json_encode($options);
+                //print json_encode($options);
+                standardResult::ok($app, $options, NULL);
             });
             $app->get('/attribute', $authenticate($app, [1,2]), function () use ($app){
                 $options = array(
@@ -836,5 +837,31 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             #var_dump($_SESSION);
             $app->redirect("./$RefCode");
         }
+    });
+    $app->group('/parameters', function () use ($app, $authenticate){
+        /*
+         * "govCats"=>$library->getGovernmentCodes(),
+         * "genres"=>$library->getLibraryGenres(),
+         * "labels"=>\TPS\label::nameSearch("%",False),
+         * "format"=>$library->getMediaFormats(),
+         * "scheduleBlock"=>$library->getScheduleBlocks(),
+         */
+        $library = new \TPS\library();
+        $app->get("/governmentcodes", $authenticate($app, array(1,2)), function () use ($app, $library){
+            standardResult::ok($app, $library->getGovernmentCodes(), null);
+        });
+        $app->get("/categories", $authenticate($app, array(1,2)), function () use ($app, $library){
+            standardResult::ok($app, $library->getLibraryGenres(), null);
+        });
+        $app->get("/formats", $authenticate($app, array(1,2)), function () use ($app, $library){
+            standardResult::ok($app, $library->getMediaFormats(), null);
+        });
+        $app->get("/scheduleblocks", $authenticate($app, array(1,2)), function () use ($app, $library){
+            standardResult::ok($app, $library->getScheduleBlocks(), null);
+        });
+
+        $app->get("/regions", $authenticate($app, array(1,2)), function () use ($app, $library){
+            standardResult::ok($app, $library->getLocales(), null);
+        });
     });
 });

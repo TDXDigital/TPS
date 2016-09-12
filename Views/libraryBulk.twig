@@ -8,6 +8,20 @@
         .ui-autocomplete-loading {
             background: white url("{{siteUrl}}/images/GIF/ring24.gif") right center no-repeat;
         }
+
+        /*
+        Sepcial fix for chosen scrolling left... https://github.com/harvesthq/chosen/issues/1410
+        */
+        .chosen-container .chosen-drop {
+            left:0;
+            opacity:0;
+            height:0;
+            overflow: hidden;
+        }
+        .chosen-container.chosen-with-drop .chosen-drop {
+            opacity:1;
+            height:auto;
+        }
     </style>
     <link rel="stylesheet" hred="{{siteUrl}}/css/bootstrapAutoCompleteCompatibility.css"/>
     <link rel="stylesheet" href="{{siteUrl}}/js/chosen.css">
@@ -67,14 +81,14 @@
                 <div class="row">
                     <div class="col-lg-10">
                         <div class="progress">
-                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                            <div class="progress-bar progress-bar-striped active" id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
                                 <span class="sr-only"></span>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-2">
                         <div class="pull-right">
-                            <input type="submit" class="btn btn-default" value="Process" id="process"/>
+                            <input type="button" class="btn btn-default" value="Process" id="process"/>
                         </div>
                     </div>
                 </div>
@@ -82,24 +96,9 @@
         </div>
     </form>
     <form role="form" method="POST">
-    <table class='table table-bordered table-hover' >
+    <table class='table table-bordered table-hover' style="background-color: ghostwhite">
         <thead id="head">
-            <th>Artist</th>
-            <th>Album</th>
-            <th>Genre</th>
-            <th>Region</th>
-            <th>Label</th>
-            <th>Date In</th>
-            <th>Release Date</th>
-            <th>Notes</th>
-            <th>VA</th>
-            <th>Category</th>
-            <th>Schedule</th>
-            <th>Format</th>
-            <th>Keep</th>
-            <th>Print</th>
-            <th>Playlist</th>
-            <th>Save</th>
+
         </thead>
         <tbody id="list">
         </tbody>
@@ -121,24 +120,98 @@
 <script src="{{siteUrl}}/vendor/glench/fuzzyset.js/lib/fuzzyset.js"></script>
 <script type="text/javascript" src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
 <script type="text/javascript" src="{{siteUrl}}/js/bootstrap/checkbox/js/bootstrap-checkbox.js "></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js"></script>
+    <div id="dialog-confirm" title="Confirm Overwrite">
+        <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;">
+        </span>All changes will be removed and reprocessed, this is irreversible. Are you sure?</p>
+    </div>
 <script>
+    var values = {
+        labels: null,
+        genres: null,
+        categorys: null,
+        schedules: null,
+        formats: null,
+        locales: null
+    };
+    var labels = function(){return values['labels'];};
+    var genres = function(){return values['genres'];};
+    var categorys = function(){return values['categorys'];}; //yes this is spelt wrong but it maintains the convention
+    var schedules = function(){return values['schedules'];};
+    var formats = function(){return values['formats'];};
+    var locales = function(){return values['locales'];};
+    // levenstein sets
+    var labelsSet = FuzzySet();
+    var genresSet = FuzzySet();
+    var categorysSet = FuzzySet();
+    var categorysKeySet = FuzzySet();
+    var schedulesSet = FuzzySet();
+    var formatsSet = FuzzySet();
+    var localesSet = FuzzySet();
+
+    var calls = {
+        pending: 0,
+        complete: 0
+    };
+
     var expected = {
         "artist": "Artist",
         "album": "Album",
         "genre": "Genre",
         "locale": "Region",
         "label": "Label",
-        "indate": "Date In",
-        "reldate": "Release Date",
-        "notes": "Notes",
-        "VA": "Various Artists",
         "category": "Category",
         "schedule": "Schedule",
         "format": "Format",
         "accept": "Keep",
         "print": "Print",
-        "playlist": "Playlist"
+        "playlist": "Playlist",
+        "indate": "Date In",
+        "reldate": "Release Date",
+        "notes": "Notes",
+        "VA": "Various Artists"
     };
+
+    function buildHeader(){
+        header = $("#head");
+        $.each(expected, function(hk, hv){
+            header.append("<th>"+hv+"</th>");
+        });
+    }
+
+    function updateProgress(){
+        var valeur = 0;
+        try {
+            valeur = (calls.complete/calls.pending)*100
+        }
+        catch (err){
+            valeur = 0;
+        }
+        $('.progress-bar').css('width', valeur+'%').attr('aria-valuenow', valeur);
+        if(valeur >= 100){
+            $('.progress-bar').removeClass('active');
+        }
+        else{
+            if(!$('.progress-bar').hasClass('active')){
+                $('.progress-bar').addClass('active');
+            }
+        }
+    }
+
+    function all(array, condition){
+        for(var i = 0; i < array.length; i++){
+            if(!condition(array[i])){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function isValidDate(dateString) {
+        var regEx = /^\d{4}-\d{2}-\d{2}$/;
+        return String(dateString).match(regEx) != null;
+    }
+
     function stepFn(results, parser){
         stepped++;
         if (results)
@@ -151,6 +224,8 @@
                 var strings = ['artist', 'album', 'label', 'notes'];
                 var dates = ['indate', 'reldate'];
                 var bools = ['accept', 'print', 'playlist', 'VA'];
+                var select = {"genre": genres(), "locale": locales(), "label": labels(), "format": formats(),
+                    "schedule": schedules(), "category": categorys()};
                 //var label = '<select name="label" id="label" required="required" class="form-control chosen-select-add">';
                 //label += '<option>Self Released</option>';
                 //twig inserted
@@ -169,7 +244,7 @@
                         vax = vals[translated];
                     }
                     var str = "<td><input value='"+vax+"' readonly>";
-                    if(translated && translated.trim() != "" && translated != "N/A"){
+                    if(translated && translated.trim() != "" && translated != "N/A" && !(key in select)){
                         if(bools.indexOf(key) > -1)
                         {
                             str += "<input type='checkbox' name='"+key+"'";
@@ -179,7 +254,29 @@
                             str += "/>";
                         }
                         else if(dates.indexOf(key) > -1){
-                            str += "<input value='"+vals[translated]+"' type='date' name='"+key+"'";
+                            var dateString = vals[translated];
+                            var d = new Date();
+                            var month = d.getMonth();
+                            var day = d.getDate();
+                            try {
+                                var dateObj = Date.parse(vals[translated]);
+                                if(dateObj != undefined){
+                                    var dateString = dateObj.toString("yyyy-MM-dd");
+                                }
+                            }
+                            catch (err){
+                                dateString = d.getFullYear() + '-' +
+                                        (month<10 ? '0' : '') + month + '-' +
+                                        (day<10 ? '0' : '') + day;
+                                console.log(err);
+                            }
+                            if(!isValidDate(dateString)){
+                                console.log("invalid date "+dateString+" will use today as default");
+                                dateString = d.getFullYear() + '-' +
+                                        (month<10 ? '0' : '') + month + '-' +
+                                        (day<10 ? '0' : '') + day;
+                            }
+                            str += "<input value='"+dateString+"' type='date' name='"+key+"'";
                             if(dates.indexOf(key) < 3){
                                 str += " required ";
                             }
@@ -189,6 +286,35 @@
                             str += "<input value='" + vals[translated] + "' id='v_" + key + "_" + rowCount + "' name='" + key + "'>";
                         }
                         hasData = true;
+                    }
+                    else if(key in select){
+                        var param = vals[translated];
+                        if(!param === undefined){
+
+                        }
+                        options = select[key];
+                        str += "<select name='"+key+"' class='chosen-select'>";
+                        ptr = this[key+"sSet"];
+                        mStr = "";
+                        if(!(param === undefined || param === null)){
+                            mStr = String(param);
+                        }
+                        matched = null;
+                        if(ptr && !(param === undefined)){
+                            matched = ptr.get(mStr);
+                        }
+                        if(!matched && this[key+"sKeySet"]){
+                            ptr = this[key+"sKeySet"];
+                            matched = ptr.get(mStr);
+                        }
+                        $.each(options, function(kx, vx){
+                            str += "<option value='"+kx+"'";
+                            if(matched && (matched[0][1] == vx || matched[0][1] == kx)){
+                                str += " selected ";
+                            }
+                            str +=">"+vx+"</option>";
+                        });
+                        str += "</select>";
                     }
                     else{
                         if(strings.indexOf(key) > -1)
@@ -235,6 +361,7 @@
                 firstError = firstError || results.errors[0];
             }
         }
+        $(".chosen-select").chosen({disable_search_threshold: 10});
     }
 
     function mapHeaders(results, parser) {
@@ -290,6 +417,28 @@
         // icky hack
         setTimeout(enableButton, 100);
         $("#matchArea").show();
+        enableStep()
+    }
+
+    function completeLoad(data, param){
+        values[param] = data;
+        ptr = this[param+"Set"];
+        kptr = this[param+"Set"];
+        $.each(data, function(key, value){
+            ptr.add(value);
+            if(!(kptr === undefined)){
+                kptr.add(key);
+            }
+        });
+        //alert(data);
+        console.log("set "+param);
+
+        // http://stackoverflow.com/a/23391100
+        if(all([labels, genres, categorys, schedules, formats, locales], function(e){return (e()!=null);})){
+            enableStep();
+        }
+        calls.complete += 1;
+        updateProgress();
     }
 
     function errorFn(err, file){
@@ -312,6 +461,89 @@
         return typeof window.performance !== 'undefined'
                 ? window.performance.now()
                 : 0;
+    }
+
+    function getData(url, param, callbackFunction){
+        return $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+            success: function(data){
+                callbackFunction(data, param)
+            },
+            beforeSend: function(){
+                calls.pending+=1;
+            }
+        });
+    }
+
+    function getGenres(){
+        return getData('./options/genre', "genres", completeLoad);
+    }
+
+    function getLabels(){
+        return getData('../../label/', 'labels', completeLoad);
+    }
+
+    function getCategories(){ //Is actually government categories
+        return getData('../parameters/governmentcodes', 'categorys', completeLoad);
+    }
+
+    function getFormats(){
+        return getData('../parameters/formats', 'formats', completeLoad);
+    }
+
+    function getSchedules(){
+        return getData('../parameters/scheduleblocks', 'schedules', completeLoad);
+    }
+
+    function getRegions(){
+        return getData('../parameters/regions', 'locales', completeLoad);
+    }
+
+    function printStats(data){
+        console.log(data);
+    };
+
+    function processRows(){
+        stepped = 0;
+        rowCount = 0;
+        errorCount = 0;
+        firstError = undefined;
+
+        var config = standardConfig(0, stepFn);
+        var input = $('#input').val();
+
+        // Allow only one parse at a time
+        $(this).prop('disabled', true);
+        console.log("--------------------------------------------------");
+
+        if (!$('#input')[0].files.length)
+        {
+            alert("Please choose at least one file to parse.");
+            return enableStep();
+        }
+
+        $('#input').parse({
+            config: config,
+            before: function(file, inputElem)
+            {
+                start = now();
+                console.log("Parsing file...", file);
+            },
+            error: function(err, file)
+            {
+                console.log("ERROR:", err, file);
+                firstError = firstError || err;
+                errorCount++;
+            },
+            complete: function()
+            {
+                end = now();
+                printStats("Done with all files");
+            }
+        });
+        //enableStep();
     }
 
     function standardConfig(preview, step) {
@@ -345,6 +577,7 @@
             inGroup.append("<div class='input-group-addon'>"+expected[key]+"</div>");
             inGroup.append("<select class='form-control' id='ma_"+key+"_sel'></select>");
         }
+        buildHeader();
         $('#loadHeaders').click(function()
         {
             if ($(this).prop('disabled') == "true")
@@ -392,44 +625,28 @@
         {
             if ($(this).prop('disabled') == "true")
                 return;
-
-            stepped = 0;
-            rowCount = 0;
-            errorCount = 0;
-            firstError = undefined;
-
-            var config = standardConfig(0, stepFn);
-            var input = $('#input').val();
-
-            // Allow only one parse at a time
-            $(this).prop('disabled', true);
-            console.log("--------------------------------------------------");
-
-            if (!$('#input')[0].files.length)
-            {
-                alert("Please choose at least one file to parse.");
-                return enableStep();
+            if($("#list").html().trim() != ""){
+                $( "#dialog-confirm" ).dialog({
+                    resizable: false,
+                    height: "auto",
+                    width: 400,
+                    modal: true,
+                    buttons: {
+                        "confirm": function() {
+                            $( this ).dialog( "close" );
+                            processRows();
+                        },
+                        Cancel: function() {
+                            $( this ).dialog( "close" );
+                            return;
+                        }
+                    }
+                });
             }
-
-            $('#input').parse({
-                config: config,
-                before: function(file, inputElem)
-                {
-                    start = now();
-                    console.log("Parsing file...", file);
-                },
-                error: function(err, file)
-                {
-                    console.log("ERROR:", err, file);
-                    firstError = firstError || err;
-                    errorCount++;
-                },
-                complete: function()
-                {
-                    end = now();
-                    printStats("Done with all files");
-                }
-            });
+            else
+            {
+                processRows();
+            }
         });
         // Activate chosen elements
         $( ".datepicker" ).datepicker({
@@ -468,6 +685,15 @@
         $(".autoSelect").on("click", function () {
             $(this).select();
         });
+        $("#process").prop('disabled', true);
+        console.log("triggering ajax loads");
+        getGenres();
+        getLabels();
+        getCategories();
+        getSchedules();
+        getFormats();
+        getRegions();
+        console.log("all ajax calls triggered");
       });
     function verifyShortCode(ident){
         var obj = $("#"+ident);

@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * The MIT License
  *
  * Copyright 2015 J.oliver.
@@ -38,7 +38,8 @@ $app->group('/label', $authenticate, function () use ($app,$authenticate){
         );
         $isXHR = $app->request->isAjax();
         if($isXHR || $format=="json"){
-            print json_encode($params);
+            header('Content-Type: application/json');
+            print json_encode($labels);
         }
         else{
             $app->render("labels.twig",$params);
@@ -100,7 +101,7 @@ $app->group('/label', $authenticate, function () use ($app,$authenticate){
             $app->redirect("../$id");
         });
     });
-    $app->get('/:id',$authenticate($app,2), 
+    $app->get('/:id',$authenticate($app,2),
             function ($id) use ($app,$authenticate){
         $format = $app->request->get('format');
         $label = new \TPS\label($id);
@@ -116,10 +117,8 @@ $app->group('/label', $authenticate, function () use ($app,$authenticate){
             $params['alias'] = $alias->fetch();
         }
         $isXHR = $app->request->isAjax();
-        if($isXHR){
-            print json_encode($params);
-        }
-        elseif(!is_null($format) && $format=="json"){
+        if($isXHR || (!is_null($format) && $format=="json")){
+            header('Content-Type: application/json');
             print json_encode($params);
         }
         else{
@@ -160,7 +159,7 @@ $app->group('/label', $authenticate, function () use ($app,$authenticate){
         $app->response->setStatus(405);
         print "405 Method Not Allowed";
     });
-    $app->get('/:id/tree',$authenticate($app,2), 
+    $app->get('/:id/tree',$authenticate($app,2),
             function ($id) use ($app,$authenticate){
         $format = $app->request->get('format');
         $label = new \TPS\label($id);
