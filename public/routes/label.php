@@ -29,7 +29,8 @@ $app->group('/label', $authenticate, function () use ($app,$authenticate){
     $app->get('/', $authenticate($app,2), function() use ($app, $authenticate){
         $format = $app->request->get('format');
         $search = $app->request->get('search')?:null;
-        $labels = \TPS\label::nameSearch("%$search%",$search?True:False);
+        $includeAlias = $app->request->get('full')?True:False || $search?True:False;
+        $labels = \TPS\label::nameSearch("%$search%",$includeAlias);
         $params = array(
             "area" => "Record Labels",
             "title" => "Management",

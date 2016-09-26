@@ -212,6 +212,43 @@
         return String(dateString).match(regEx) != null;
     }
 
+    function stepSelect(key, vals, translated){
+        var select = {"genre": genres(), "locale": locales(), "label": labels(), "format": formats(),
+            "schedule": schedules(), "category": categorys()};
+        var param = vals[translated];
+        if(!param === undefined){
+
+        }
+        options = select[translated];
+        str += "<select name='"+key+"' class='chosen-select'>";
+        ptr = this[key+"sSet"];
+        mStr = "";
+        if(!(param === undefined || param === null)){
+            mStr = String(param);
+        }
+        matched = null;
+        if(ptr && !(param === undefined)){
+            matched = ptr.get(mStr);
+        }
+        if(!matched && this[key+"sKeySet"]){
+            ptr = this[key+"sKeySet"];
+            matched = ptr.get(mStr);
+        }
+        $.each(options, function(kx, vx){
+            str += "<option value='"+kx+"'";
+            if(matched && (matched[0][1] == vx || matched[0][1] == kx)){
+                str += " selected ";
+            }
+            str +=">"+vx+"</option>";
+        });
+        str += "</select>";
+    }
+
+    function stepSelectUpdate(key){
+        var td = $('#'+key);
+        td.html(stepSelect());
+    }
+
     function stepFn(results, parser){
         stepped++;
         if (results)
@@ -243,11 +280,11 @@
                     if(translated != ""){
                         vax = vals[translated];
                     }
-                    var str = "<td><input value='"+vax+"' readonly>";
+                    var str = "<td id='td_"+translated+"_"+stepped+"'><input value='"+vax+"' readonly>";
                     if(translated && translated.trim() != "" && translated != "N/A" && !(key in select)){
                         if(bools.indexOf(key) > -1)
                         {
-                            str += "<input type='checkbox' name='"+key+"'";
+                            str += "<input type='checkbox' name='"+key+"[]'";
                             if(!['no', 'false', '0', ''].indexOf(vals[translated]) < 0){
                                 str += " checked ";
                             }
@@ -276,24 +313,25 @@
                                         (month<10 ? '0' : '') + month + '-' +
                                         (day<10 ? '0' : '') + day;
                             }
-                            str += "<input value='"+dateString+"' type='date' name='"+key+"'";
+                            str += "<input value='"+dateString+"' type='date' name='"+key+"'[]";
                             if(dates.indexOf(key) < 3){
                                 str += " required ";
                             }
                             str += "/>";
                         }
                         else {
-                            str += "<input value='" + vals[translated] + "' id='v_" + key + "_" + rowCount + "' name='" + key + "'>";
+                            str += "<input value='" + vals[translated] + "' id='v_" + key + "_" + rowCount + "' name='" + key + "'[]>";
                         }
                         hasData = true;
                     }
                     else if(key in select){
+                        str += "<input type='hidden' value='"+translated+"'>";
                         var param = vals[translated];
                         if(!param === undefined){
 
                         }
                         options = select[key];
-                        str += "<select name='"+key+"' class='chosen-select'>";
+                        str += "<select name='"+key+"[]' class='chosen-select'>";
                         ptr = this[key+"sSet"];
                         mStr = "";
                         if(!(param === undefined || param === null)){
@@ -308,7 +346,7 @@
                             matched = ptr.get(mStr);
                         }
                         $.each(options, function(kx, vx){
-                            str += "<option value='"+kx+"'";
+                            str += "<option value='"+kx+"'[]";
                             if(matched && (matched[0][1] == vx || matched[0][1] == kx)){
                                 str += " selected ";
                             }
@@ -319,7 +357,7 @@
                     else{
                         if(strings.indexOf(key) > -1)
                         {
-                            str += "<input value='' type='text' name='"+key+"'";
+                            str += "<input value='' type='text' name='"+key+"'[]";
                             if(strings.indexOf(key) < 3){
                                 str += " required ";
                             }
@@ -332,7 +370,7 @@
                             var output = d.getFullYear() + '-' +
                                     (month<10 ? '0' : '') + month + '-' +
                                     (day<10 ? '0' : '') + day;
-                            str += "<input value='"+output+"' type='date' name='"+key+"'";
+                            str += "<input value='"+output+"' type='date' name='"+key+"'[]";
                             if(dates.indexOf(key) < 3){
                                 str += " required ";
                             }
@@ -340,14 +378,14 @@
                         }
                         else if(bools.indexOf(key) > -1)
                         {
-                            str += "<input type='checkbox' name='"+key+"'";
+                            str += "<input type='checkbox' name='"+key+"'[]";
                             if(bools.indexOf(key) < 1){
                                 str += " checked ";
                             }
                             str += "/>";
                         }
                         else{
-                            str += "<input value='' type='text' name='"+key+"'/>";
+                            str += "<input value='' type='text' name='"+key+"[]'/>";
                         }
                     }
                     str += "</td>";
@@ -361,7 +399,7 @@
                 firstError = firstError || results.errors[0];
             }
         }
-        $(".chosen-select").chosen({disable_search_threshold: 10});
+        $(".chosen-select").chosen();
     }
 
     function mapHeaders(results, parser) {
@@ -463,7 +501,8 @@
                 : 0;
     }
 
-    function getData(url, param, callbackFunction){
+    function getData(url, param, callbackFunction, data){
+        data = data || null;
         return $.ajax({
             url: url,
             type: "GET",
@@ -473,7 +512,8 @@
             },
             beforeSend: function(){
                 calls.pending+=1;
-            }
+            },
+            data: data
         });
     }
 
@@ -482,7 +522,7 @@
     }
 
     function getLabels(){
-        return getData('../../label/', 'labels', completeLoad);
+        return getData('../../label/', 'labels', completeLoad, {'full':true});
     }
 
     function getCategories(){ //Is actually government categories
