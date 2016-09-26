@@ -87,6 +87,13 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 
         //find id
         $labels = \TPS\label::nameSearch($label);
+        if(is_numeric($label)){
+            $label = new \TPS\label($label);
+            $labels = array($label->fetch());
+            if(sizeof($labels)){
+                $labelNum = $label;
+            }
+        }
         if(sizeof($labels)>0){
             foreach ($labels as $key => $value) {
                 if(is_array($value) && key_exists("alias", $value)){
@@ -97,7 +104,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 }
             }
         }
-        else{
+        if(is_null($labelNum)){
             $labelNum = \TPS\label::createLabel($label, 1);
             $labelRewrite = array(
                 "/(.+)(?=(?i)\srecord.{0,5})/",
@@ -244,7 +251,12 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $app->flash('Success',"Album Recieved");
         $station->log->info("Album $album by $artist created");
         #var_dump($_SESSION);
-        $app->redirect('./new');
+        if(!$app->request->isAjax() || $format == "json"){
+            standardResult::created($app, $id_last);
+        }
+        else{
+            $app->redirect('./new');
+        }
     });
     $app->get('/search', $authenticate, function () use ($app){
         $app->redirect('./search/');

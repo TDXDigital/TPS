@@ -258,7 +258,7 @@ class library extends station{
     }
 
     public function createBarcode($refcode){
-        if ($stmt = $mysqli->prepare(
+        if ($stmt = $this->mysqli->prepare(
                     "UPDATE library SET Barcode=? WHERE RefCode=?")){
             $stmt->bind_param("ii",$Barcode,$RefCode);
             $stmt->execute();
