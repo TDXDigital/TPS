@@ -287,7 +287,7 @@ function stepFn(results, parser){
                 }
                 options = select[key];
                 str += "<select name='"+key+"' class='chosen-select'>";
-                ptr = this[key+"sSet"];
+                ptr = eval(key+"sSet");
                 mStr = "";
                 if(!(param === undefined || param === null)){
                     mStr = String(param);
@@ -297,7 +297,7 @@ function stepFn(results, parser){
                     matched = ptr.get(mStr);
                 }
                 if(!matched && this[key+"sKeySet"]){
-                    ptr = this[key+"sKeySet"];
+                    ptr = eval(key+"sKeySet");
                     matched = ptr.get(mStr);
                 }
                 $.each(options, function(kx, vx){
@@ -561,3 +561,4 @@ function standardConfig(preview, step) {
     };
 
 }
+

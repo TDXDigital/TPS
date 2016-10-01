@@ -226,6 +226,7 @@
                     modal: true,
                     buttons: {
                         "confirm": function() {
+                            $("#list").html("");
                             $( this ).dialog( "close" );
                             processRows();
                         },
