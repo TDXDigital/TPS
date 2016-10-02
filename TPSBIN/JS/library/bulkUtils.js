@@ -29,6 +29,8 @@ var calls = {
     complete: 0
 };
 
+steppedTotal = 0;
+
 var expected = {
     "artist": "Artist",
     "album": "Album",
@@ -53,6 +55,20 @@ function buildHeader(){
     $.each(expected, function(hk, hv){
         header.append("<th>"+hv+"</th>");
     });
+}
+
+function saveAllRows(){
+    var i = 0;
+    while (i <= stepped){
+        try{
+            saveRow(i);
+            console.log("done "+i);
+        }
+        catch(err){
+            console.log(err);
+        }
+        i++;
+    }
 }
 
 function saveRow(key){
@@ -205,6 +221,9 @@ function stepSelectUpdate(key){
     var td = $('#'+key);
     td.html(stepSelect());
 }
+function stepFnCountTotal(results, parser) {
+    steppedTotal++;
+}
 
 function stepFn(results, parser){
     stepped++;
@@ -232,15 +251,18 @@ function stepFn(results, parser){
             var vax = "";
             if(translated != ""){
                 vax = vals[translated];
+                if(vax != undefined){
+                    vax = vax.replace("\"", "\\\"");
+                }
             }
             var str = "<td id='td_"+key+"_"+stepped+"'>" +
-                "<input value='"+vax+"' readonly/>" +
+                "<input value=\""+vax+"\" readonly/>" +
                 "<input type='hidden' value='false' id='changed_"+key+"'/>";
             if(translated && translated.trim() != "" && translated != "N/A" && !(key in select)){
                 if(bools.indexOf(key) > -1)
                 {
                     str += "<input type='checkbox' name='"+key+"[]'";
-                    if(!['no', 'false', '0', ''].indexOf(vals[translated]) < 0){
+                    if(!['no', 'false', '0', ''].indexOf(vals[translated].trim()) < 0){
                         str += " checked ";
                     }
                     str += "/>";
@@ -275,7 +297,7 @@ function stepFn(results, parser){
                     str += "/>";
                 }
                 else {
-                    str += "<input value='" + vals[translated] + "' id='v_" + key + "_" + rowCount + "' name='" + key + "[]'>";
+                    str += "<input value=\"" + vax + "\" id='v_" + key + "_" + rowCount + "' name='" + key + "[]'>";
                 }
                 hasData = true;
             }
@@ -503,13 +525,23 @@ function printStats(data){
     console.log(data);
 };
 
-function processRows(){
+function processRows(max_input_vars){
     stepped = 0;
     rowCount = 0;
     errorCount = 0;
     firstError = undefined;
-
-    var config = standardConfig(0, stepFn);
+    var mivSteps = max_input_vars / Object.keys(expected).length;
+    var config = standardConfig(mivSteps, stepFn);
+    var countConfig = standardConfig(0, stepFnCountTotal);
+    countConfig['worker'] = false;
+    console.log("Pre-Processing...");
+    $('#input').parse({
+        config: countConfig
+    });
+    if(steppedTotal>mivSteps){
+        alert("WARNING: This CSV has more rows that can be processed by this server, either increase the " +
+              "max_input_vars in PHP or process a new CSV with the remaining rows after " + mivSteps);
+    }
     var input = $('#input').val();
 
     // Allow only one parse at a time
@@ -548,7 +580,7 @@ function standardConfig(preview, step) {
     return config = {
         delimiter: $('#delimiter').val(),
         header: true,
-        dynamicTyping: true,
+        dynamicTyping: false,
         skipEmptyLines: true,
         preview: preview,
         step: step,

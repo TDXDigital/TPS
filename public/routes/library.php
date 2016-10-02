@@ -120,44 +120,24 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             }
 
         }
-
-        //insert real;
-
-        //insert alias if needed, reference real
-
         $label = new \TPS\label($labelNum);
-        //if does not exist create label
-
-
-        //echo "creating album...";
         if($genre=="null"){
             $genre=NULL;
         }
         if(is_null($labelNum)||$labelNum=="null"){
-            #header("location: ../library/?q=new&e=9999&s=3");
             $app->flash('error','label is required but was not proveded or was invalid. could not recieve album');
             $app->redirect('./new');
         }
-
-        /*if($playlist==FALSE){
-            $playlist=NULL;
-            // check if entry exists in playlist table
-
-            // if so, report error
-
-            // else lleave set to FALSE
-            //$playlist=1;
-        }
-        else{*/
-        // check if entriy exists in 'playlist' table
-
-        // if rejected, it cannot go to playlist by definition.
-        // set to FALSE in that case (1)
         if(!$accepted){
             $playlist=2;
         }
-
-
+        $result = $library->createAlbum($artist, $album, $format, $genre, $labelNum, $locale, $CanCon, $playlist,
+            $governmentCategory, $schedule,$note, $accepted, $variousartists, $datein, $release_date, $print);
+        if(is_string($result)){
+            $app->flash('error',$mysqli->error);
+            $app->redirect('./new');
+        }
+        /*
         if(!$stmt3 = $mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,
             format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
             governmentCategory,scheduleCode)
@@ -247,12 +227,13 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 $_SESSION['PRINTID'][]=$id_last;
             }
         }
+        */
         #header("location: /library/?q=new&m=$artist'$s%20new%20album%20entered ($id_last)");
         $app->flash('Success',"Album Recieved");
         $station->log->info("Album $album by $artist created");
         #var_dump($_SESSION);
-        if(!$app->request->isAjax() || $format == "json"){
-            standardResult::created($app, $id_last);
+        if($app->request->isAjax() || $format == "json"){
+            standardResult::created($app, $result);
         }
         else{
             $app->redirect('./new');
@@ -421,12 +402,14 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
     $app->group('/batch', function () use ($authenticate, $app){
         $library = new \TPS\library();
         $app->get('/', $authenticate($app, array(2)), function () use ($app, $library){
+            $max_input_vars = ini_get('max_input_vars');
             $json = $app->request()->get('format')?: "html";
             $ajax = $app->request()->isAjax();
             $genres = $library->getLibraryGenres();
             $params=array(
                 'area'=>'Library',
-                'title'=>'Bulk Import'
+                'title'=>'Bulk Import',
+                'max_input_vars'=> $max_input_vars
             );
             if(!strtolower($json) == "json" || $ajax){
                 standardResult::ok($app, "", NULL);

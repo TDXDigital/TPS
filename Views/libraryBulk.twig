@@ -95,11 +95,11 @@
             </div>
         </div>
     </form>
-    <form role="form" method="POST">
     <table class='table table-bordered table-hover' style="background-color: ghostwhite">
         <thead id="head">
 
         </thead>
+        <form role="form" name='inputForm' method="POST">
         <tbody id="list">
         </tbody>
     </table>
@@ -108,7 +108,7 @@
     </div>
     <div class="col-lg-6">
         <div class="pull-right">
-            <input type="submit" class="btn btn-success" value="Submit"/>
+            <input type="submit" class="btn btn-success" value="Submit" form="inputForm" onclick="saveAllRows()"/>
         </div>
     </div>
 </div>
@@ -127,6 +127,7 @@
         </span>All changes will be removed and reprocessed, this is irreversible. Are you sure?</p>
     </div>
 <script>
+    var max_input_vars = {{ max_input_vars }};
     $(function() {
         console.log(expected.length);
         for(var key in expected){
@@ -228,7 +229,7 @@
                         "confirm": function() {
                             $("#list").html("");
                             $( this ).dialog( "close" );
-                            processRows();
+                            processRows(max_input_vars);
                         },
                         Cancel: function() {
                             $( this ).dialog( "close" );
@@ -239,7 +240,7 @@
             }
             else
             {
-                processRows();
+                processRows(max_input_vars);
             }
         });
         // Activate chosen elements

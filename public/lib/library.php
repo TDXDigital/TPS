@@ -29,6 +29,8 @@ namespace TPS;
  * @abstract library interface
  * @version 1.0
  */
+use PhpParser\Builder\Trait_;
+
 require_once 'station.php';
 
 class library extends station{
@@ -809,5 +811,100 @@ class library extends station{
         }
         $params['websites']=$websites?:NULL;
         return $params;
+    }
+
+    public function createAlbum($artist, $album, $format, $genre, $labelNum, $locale, $CanCon, $playlist,
+                                $governmentCategory, $schedule, $note="", $accepted=1, $variousartists=False,
+                                $datein=null, $release_date=null, $print=1){
+        if(is_null($datein)){
+            $datein = date("Y-m-d");
+        }
+        if(!$stmt3 = $this->mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,
+            format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
+            governmentCategory,scheduleCode)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
+            $stmt3->close();
+            header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
+        }
+        if(!is_null($release_date)){
+            $year = date('Y',strtotime($release_date));
+        }
+        else{
+            $year = NULL;
+        }
+        if(!$stmt3->bind_param(
+            "sssissiisisssiss",
+            $datein,
+            $artist,
+            $album,
+            $variousartists,
+            $format,
+            $genre,
+            $accepted,
+            $labelNum,
+            $locale,
+            $CanCon,
+            $release_date,
+            $year,
+            $note,
+            $playlist,
+            $governmentCategory,
+            $schedule
+        )){
+            $stmt3->close();
+            return $this->mysqli->error;
+        }
+
+        if(!$stmt3->execute()){
+            error_log("SQL-STMT Error (SEG-3):[".$this->mysqli->errno."] ".$this->mysqli->error);
+            $error = [$this->mysqli->errno,$this->mysqli->error];
+            $stmt3->close();
+            return $this->mysqli->error;
+        }
+        else{
+            $url = "";
+            $service = "";
+            $id_last = $stmt3->insert_id;
+            $stmt3->close();
+            if($stmt4=$this->mysqli->prepare("INSERT INTO band_websites (ID,URL,Service) VALUES (?,?,?)")){
+                $stmt4->bind_param("iss",$id_last,$url,$service);
+                $services=[
+                    "twitter"=>filter_input(INPUT_POST, 'twitter',FILTER_SANITIZE_URL),
+                    "facebook"=>filter_input(INPUT_POST, 'facebook',FILTER_SANITIZE_URL),
+                    "bandcamp"=>filter_input(INPUT_POST, 'bandcamp',FILTER_SANITIZE_URL),
+                    "soundcloud"=>filter_input(INPUT_POST, 'soundcloud',FILTER_SANITIZE_URL),
+                    "website"=>filter_input(INPUT_POST, 'website',FILTER_SANITIZE_URL)
+                ];
+                if(strpos($services["bandcamp"], "soundcloud.com")&&(is_null($services['soundcloud'])||$service['soundcloud']==''))
+                {
+                    // if soundcloud is in the bandcamp URL, reassign it to soundcloud
+                    $services["soundcloud"] = $services["bandcamp"];
+                    $services["bandcamp"] = NULL;
+                }
+                foreach($services as $key=>$value){
+                    $url=$value;
+                    $service=$key;
+                    if($value!=""&&!is_null($value)){
+                        if(!$stmt4->execute()){
+                            error_log($this->mysqli->error);
+                        }
+                    }
+                }
+            }
+            else{
+                error_log($this->mysqli->error);
+            }
+
+            if(strtolower(substr($artist,-1))!='s'){
+                $s = "s";
+            }
+            else{
+                $s="";
+            }
+            if($print==1){
+                $_SESSION['PRINTID'][]=$id_last;
+            }
+        }
+        return $id_last;
     }
 }
