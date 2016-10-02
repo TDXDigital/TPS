@@ -97,7 +97,9 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         if(sizeof($labels)>0){
             foreach ($labels as $key => $value) {
                 if(is_array($value) && key_exists("alias", $value)){
-                    $labelNum = $value["alias"];
+                    if(!is_null($value["alias"])){
+                        $labelNum = $value["alias"];
+                    }
                 }
                 else{
                     $labelNum = $key;
