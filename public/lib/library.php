@@ -585,9 +585,10 @@ class library extends station{
      * @global \TPS\mysqli $mysqli
      * @param string $term
      * @param boolean $exact
+     * @param string $sort columns name to sort result by
      * @return boolean|array
      */
-    public function searchLibrary($term,$exact=False,$page=1,$limit=1000){
+    public function searchLibrary($term,$exact=False,$page=1,$limit=1000, $sort='RefCode', $reverse=false){
         //$this->mysqli;
         $tps = new \TPS\TPS();
         $tps->sanitizePagination($page, $limit);
@@ -595,13 +596,36 @@ class library extends station{
         if(!$exact){
             $term="%{$term}%";
         }
+        $cols = $tps->listDatabaseColumns('library');
+        if(!in_array($sort, $cols, true)){
+            $sortIndex = array_find($sort, $cols);
+            if(!$sortIndex){
+                throw new \Exception("requested column does not exist in specified table");
+            }
+            else{
+                $oldSort = (string)$sort;
+                $sort = $cols[$sortIndex];
+                $this->log->warn("table column `$oldSort` requested but wrong case found, will use `$sort`",
+                    200, 'library search');
+            }
+        }
+        $direction = $reverse?"DESC":"";
+        $saniCol = "";
+        try{
+            $saniCol = $this->mysqli->real_escape_string($sort);
+        }
+        catch (\Exception $e){
+            # PDO
+            $saniCol = $this->db->quote($sort);
+        }
         if($stmt = $this->mysqli->prepare("SELECT datein,dateout,RefCode,artist,album,"
                 . "`format`,variousartists,`condition`,genre,`status`,labelid,"
                 . "Locale,CanCon,updated,release_date,note,playlist_flag,year "
                 . "FROM library where "
                 . "artist like ? or album like ? or note like ? or"
-                . " Locale like ? or genre like ? limit ?,?")){
-            $stmt->bind_param('sssssii',$term,$term,$term,$term,$term,$page,$limit);
+                . " Locale like ? or genre like ? ORDER BY `library`.`$saniCol`, `library`.`RefCode` "
+                . "$direction limit ?,?")){
+            $stmt->bind_param('sssssii', $term, $term, $term, $term, $term, $page, $limit);
             $stmt->execute();
             $stmt->bind_result($datein,$dateout,$RefCode_q,
                     $artist_q,$album_q,$format,$variousartists,

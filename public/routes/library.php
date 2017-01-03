@@ -249,9 +249,11 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $format = $app->request->get("format");
             $page = (int)$app->request->get("p")?:1;
             $limit = (int)$app->request->get("l")?:25;
+            $reverse = (bool)$app->request->get('reverseSort')?True:False;
+            $sortCol = $app->request->get('column')?:"RefCode";
             $library = new \TPS\library();
             $library->log->startTimer();
-            $result = $library->searchLibrary("",False,$page,$limit);
+            $result = $library->searchLibrary("", False, $page, $limit, $sortCol, $reverse);
             $pages = ceil($library->countSearchLibrary()/$limit);
             $library->log->info("Search basic retrieval took ".
                     $library->log->timerDuration(). "s");
@@ -262,13 +264,15 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 "page"=>$page,
                 "pages"=>$pages,
                 "limit"=>$limit,
+                "sortReversed"=>$reverse?1:0,
+                "sortColumn"=>$sortCol
             );
             $isXHR = $app->request->isAjax();
             if($isXHR || $format=="json"){
                 print json_encode($params);
             }
             else{
-                $app->render('searchLibrary.twig',$params);
+                $app->render('searchLibrary.twig', $params);
             }
         });
         $app->post('/', $authenticate, function () use ($app){
@@ -280,9 +284,11 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $format = $app->request->get("format");
             $page = (int)$app->request->get("p")?:1;
             $limit = (int)$app->request->get("l")?:25;
+            $reverse = (bool)$app->request->get('reverseSort')?True:False;
+            $sortCol = $app->request->get('column')?:"RefCode";
             $library = new \TPS\library();
             $time_start = microtime(true);
-            $result = $library->SearchLibrary($term,False,$page,$limit);
+            $result = $library->SearchLibrary($term,False,$page,$limit, $sortCol, $reverse);
             $pages = ceil($library->countSearchLibrary($term)/$limit);
             $time_end = microtime(true);
             $library->log->info("Search basic retrieval took ".
@@ -294,8 +300,10 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 "page"=>$page,
                 "pages"=>$pages,
                 "limit"=>$limit,
+                "sortReversed"=>$reverse?1:0,
+                "sortColumn"=>$sortCol
             );
-            $app->render('searchLibrary.twig',$params);
+            $app->render('searchLibrary.twig', $params);
         });
     });
     $app->put('/batch', $authenticate($app, array(2)), function () use ($app){

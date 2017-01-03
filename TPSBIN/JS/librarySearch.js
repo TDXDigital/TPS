@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2016 J.oliver.
@@ -52,9 +52,9 @@ function batchChange(element, url){
         return true;
     }
     console.log(val);
-    
+
     var batch = $.ajax({
-        url:"../batch/options/"+val, 
+        url:"../batch/options/"+val,
         dataType: "json"
     })
     .done(function(data){
@@ -93,7 +93,7 @@ function batchChange(element, url){
                     .attr("class", value.input)
                     .text(value.value));
             });
-            
+
         }
         changeAttrOptions("#beval option:selected", "#beattr");
         //$("#batchExtension").html("THIS IS A TEST");
@@ -103,7 +103,23 @@ function batchChange(element, url){
             console.log( data );
         }
     });
-    
+
+}
+
+function changeSort(key, currentCol, sortDirection){
+    var urlParams = new URLSearchParams(window.location.search);
+    if(key == currentCol){
+        if(sortDirection == 1){
+            urlParams.set('reverseSort', 0);
+        }
+        else{
+            urlParams.set('reverseSort', 1);
+        }
+    }
+    else{
+        urlParams.set('column', key);
+    }
+    window.location.href = "?" + urlParams.toString()
 }
 
 function changeAttrOptions(divId, targetObj){
@@ -142,7 +158,7 @@ function changeAttrOptions(divId, targetObj){
         });
     }
 }
- 
+
 $(function () {
     getBatchOptions();
     $(document).on("change", "#batchSelect", function() {

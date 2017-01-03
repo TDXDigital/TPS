@@ -2,7 +2,7 @@
 
 {% block headScripts %}
     <style type="text/css">
-        td label { 
+        td label {
            display: block;
            text-align: center;
         }
@@ -45,7 +45,7 @@
     <form role="form" method="POST" action="/library/search/">
         <div class="row">
             <div class="form-group input-group">
-                <input type="text" class="form-control" name="q" 
+                <input type="text" class="form-control" name="q"
                        {% if search %}
                            value="{{search}}"
                        {% endif %}>
@@ -62,14 +62,24 @@
                 <label><input type="checkbox" onClick="toggle(this)"> All</label>
             </th>
             {% endif %}
-            <th><i class="fa fa-barcode "></i></th>
-            <th><i class="fa fa-thumbs-o-up"></i></th>
-            <th>Date In</th>
-            <th>Artist</th>
-            <th>Album</th>
-            <th>Genre</th>
-            <th>Year</th>
-            <th>Notes</th>
+            {% set titles = {
+                'RefCode': '<i class="fa fa-barcode "></i>', 'status': '<i class="fa fa-thumbs-o-up"></i>',
+                "datein": "Date In", "artist": "Artist", "album": "Album", "genre": "Genre", "year": "Year",
+                "notes": "Notes"
+            } %}
+            {% for key, val in titles %}
+                <th><a href="javascript:void(0)" onclick="changeSort(
+                        '{{ key }}', '{{ sortColumn }}', '{{ sortReversed }}')"
+                    >{{ val|raw }}{% if sortColumn == key %}
+                            <i class="fa
+                            {% if sortReversed == 1 %}
+                                fa-sort-desc
+                            {% else %}
+                                fa-sort-asc
+                            {% endif %}
+                            " aria-hidden="true"></i>
+                        {% endif %}</a></th>
+            {% endfor %}
         </thead>
         <tbody>
             {% for album in albums %}

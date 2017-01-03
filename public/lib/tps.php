@@ -1,6 +1,6 @@
 <?php
 namespace TPS;
-/* 
+/*
  * The MIT License
  *
  * Copyright 2015 James Oliver <support@ckxu.com>.
@@ -35,11 +35,13 @@ class TPS{
     private $requirePDO;
     private $settingsPath;
     private $settingsTarget;
+    private $databaseName;
+    private $databaseHost;
 
     /**
      * Return an array with connection information for a specified server
      * @access private
-     * @param string $target target serverId 
+     * @param string $target target serverId
      * @param string $xmlpath path to DBSETTINGS.XML
      * @return boolean
      */
@@ -67,7 +69,7 @@ class TPS{
         if(is_null($target)){
             // Get the default (first) server
             foreach ($dbxml->SERVER as $server){
-                if(strtolower($server->ACTIVE) == "true" 
+                if(strtolower($server->ACTIVE) == "true"
                         || $server->ACTIVE == '1'){
                     $target = (string)$server->ID;
                     break;
@@ -104,7 +106,7 @@ class TPS{
         }
         return $database;
     }
-    
+
     /**
      * used to determine database query limits based on provided pageination
      * page number and maxResult.
@@ -132,7 +134,7 @@ class TPS{
         $pagination = $floor;
         $maxResult = $ceil;
     }
-    
+
     /**
      * Check that param $date is formatted correctly to conform with ISO8601
      * date should not be datetime, just date.
@@ -144,7 +146,32 @@ class TPS{
         $d = \DateTime::createFromFormat('Y-m-d', $date);
         return $d && $d->format('Y-m-d') == $date;
     }
-    
+
+    /**
+     * @param string $tablename the table to return information about
+     */
+    public function listDatabaseColumns($tablename){
+        $result = array();
+        if($stmt = $this->mysqli->prepare("SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE "
+                . "`TABLE_SCHEMA` = ? AND `TABLE_NAME` = ?")){
+            $stmt->bind_param('ss', $this->databaseName, $tablename);
+            $stmt->execute();
+            $colName = "";
+            $stmt->bind_result($colName);
+            while($stmt->fetch()){
+                array_push($result, $colName);
+            }
+            $stmt->close();
+        }
+        else{
+            //$result=["error"=>$mysqli->error];
+            error_log($this->mysqli->error);
+            throw new \Exception("failed to retrieve database tables");
+        }
+        return $result;
+
+    }
+
     /**
      * Setup database connections if needed
      * @global type $mysqli
@@ -188,19 +215,21 @@ class TPS{
                         $this->db = NULL;
                     }
                     $this->mysqli = new \mysqli(
-                        $database['DBHOST'], 
-                        $database['USER'], 
-                        $database['PASSWORD'], 
-                        $database['DATABASE']
+                        $databaseHost,
+                        $database['USER'],
+                        $database['PASSWORD'],
+                        $databaseName
                         );
                 }
-                if($this->mysqli instanceof \mysqli && 
+                if($this->mysqli instanceof \mysqli &&
                         !$this->mysqli->connect_error){
                     $GLOBALS['mysqli'] = $mysqli?:$this->mysqli;
                 }
                 if(!$this->db->errorCode()){
                     $GLOBALS['pdo'] = $pdo?:$this->db;
                 }
+                $this->databaseName = $databaseName;
+                $this->databaseHost = $databaseHost;
             }
             else{
                 $this->mysqli = $mysqli?:NULL;
@@ -211,23 +240,25 @@ class TPS{
             if($this->requirePDO){
                 $mysqli = $pdo;
             }
+            $this->databaseName = DATABASE;
+            $this->databaseHost = HOST;
             $this->mysqli = $mysqli?:$pdo;
             $this->db = $pdo;
         }
         if($dev && !$pdo){
-            $pdo = new \PDO( 
-                'sqlite::memory:', 
-                null, 
-                null, 
-                array(\PDO::ATTR_PERSISTENT => true) 
-            ); 
+            $pdo = new \PDO(
+                'sqlite::memory:',
+                null,
+                null,
+                array(\PDO::ATTR_PERSISTENT => true)
+            );
             $this->db = $pdo;
             $this->mysqli = $mysqli?:$pdo;
         }
     }
 
     /**
-     * 
+     *
      * @param bool $enableDbReporting enables reporting to database, otherwise
      * report to php error_log
      * @param bool $requirePDO Force system to use PDO (Functions witch require
@@ -237,7 +268,7 @@ class TPS{
      */
     public function __construct($enableDbReporting=FALSE, $requirePDO=FALSE,
             $settingsTarget=NULL, $settingsPath=NULL) {
-        if(is_null($settingsTarget) && 
+        if(is_null($settingsTarget) &&
                 (isset($_REQUEST["SRVID"]) || isset($_SESSION["SRVPOST"]))){
             try{
                 // Try and get the SERVERID if it is not provided
@@ -267,15 +298,15 @@ class TPS{
             }
         }
     }
-    
+
     /**
      * The database connections cannot be serialized, therefore we need to
      * strip them from the serializers input. removes mysqli and db[PDO]
-     * 
+     *
      * @return null
      */
     public function __sleep() {
-        return array_diff(array_keys(get_object_vars($this)), 
+        return array_diff(array_keys(get_object_vars($this)),
                 array('db', 'mysqli'));
     }
 
@@ -297,7 +328,7 @@ class TPS{
          */
         return $this->update();
     }
-    
+
     /**
      * perform required update to settings
      * @return boolean
@@ -305,7 +336,7 @@ class TPS{
     private function update(){
         return TRUE;
     }
-    
+
     /**
      * Get a list of stations and return each station within an associative
      * array, array key is Callsign of Station
@@ -332,6 +363,6 @@ class TPS{
         else{
             return false;
         }
-        
+
     }
 }
