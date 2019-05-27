@@ -34,7 +34,8 @@
     "require-dev": {
         "phpunit/phpunit-skeleton-generator": "*",
         "phpunit/phpunit": "*",
-        "codacy/coverage": "dev-master"
+        "codacy/coverage": "dev-master",
+        "phpunit/dbunit": "2.0.3"
     },
     "autoload":{
         "psr-0":{
