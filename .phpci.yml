@@ -5,6 +5,16 @@ build_settings:
         - "Tests"
 
 setup:
+    \Rephlux\PHPCI\Plugin\ExternalEnvironment:
+        master:
+            env: "/var/www/phpci/.env/application.env"
+    mysql:
+        host: "localhost"
+        user: "root"
+        pass: ${db_pass}
+        - "DROP DATABASE IF EXISTS test;"
+        - "CREATE DATABASE test;"
+        - "GRANT ALL PRIVILEGES ON test.* TO test@'localhost' IDENTIFIED BY 'test';"
     composer:
         action: "install"
 
@@ -18,3 +28,10 @@ test:
         standard: "PSR2"
     php_cpd:
         allow_failures: true
+
+complete:
+    mysql:
+        host: "localhost"
+        user: "root"
+        pass: ${db_pass}
+        - "DROP DATABASE IF EXISTS test;"
