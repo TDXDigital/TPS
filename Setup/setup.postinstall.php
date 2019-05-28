@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 error_reporting(0);
-if(!extension_loaded('mysqli')||!extension_loaded('mysql')){
+if(!extension_loaded('mysqli')||!extension_loaded('PDO_MySQL')){
     die(http_response_code(500));
 }
 
