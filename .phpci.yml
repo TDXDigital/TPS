@@ -6,30 +6,30 @@ build_settings:
     \Rephlux\PHPCI\Plugin\ExternalEnvironment:
         master:
             env: "/var/www/phpci/.env/application.env"
-    mysql:
-        host: "localhost"
-        user: "root"
-        pass: ${db_pass}
+#    mysql:
+#        host: "localhost"
+#        user: "root"
+#        pass: ${db_pass}
 
 setup:
-    mysql:
-        - "DROP DATABASE IF EXISTS test;"
-        - "CREATE DATABASE test;"
-        - "GRANT ALL PRIVILEGES ON test.* TO test@'localhost' IDENTIFIED BY 'test';"
+#    mysql:
+#        - "DROP DATABASE IF EXISTS test;"
+#        - "CREATE DATABASE test;"
+#        - "GRANT ALL PRIVILEGES ON test.* TO test@'localhost' IDENTIFIED BY 'test';"
     composer:
         action: "install"
 
-#test:
+test:
 #    php_unit:
 #        directory:
 #            - "Tests/"
-#    php_mess_detector:
-#        allow_failures: true
+    php_mess_detector:
+        allow_failures: true
 #    php_code_sniffer:
 #        standard: "PSR2"
 #    php_cpd:
 #        allow_failures: true
 
-complete:
-    mysql:
-        - "DROP DATABASE IF EXISTS test;"
+#complete:
+#    mysql:
+#        - "DROP DATABASE IF EXISTS test;"
