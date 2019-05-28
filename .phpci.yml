@@ -32,7 +32,4 @@ setup:
 
 complete:
     mysql:
-        host: "localhost"
-        user: "root"
-        pass: ${db_pass}
         - "DROP DATABASE IF EXISTS test;"
