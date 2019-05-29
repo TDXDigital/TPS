@@ -26,8 +26,7 @@ else{
     error_log("Error 500: Slim not found in TPS");
     die('500 Internal Server Error, run composer install --no-dev or composer update');
 }
-
-
+    
 // Load and set params
 /*
 $loader = new Twig_Loader_Filesystem($SystemViews_path);
@@ -39,7 +38,7 @@ $twig = new Twig_Environment($loader, array(
 $escaper = new Twig_Extension_Escaper('html');
 $twig->addExtension($escaper);
 */
-
+echo 'error from public/header/php';
 $app = new \Slim\Slim(array(
     'debug' => $debug,
     'view' => new \Slim\Views\Twig(),

@@ -146,6 +146,12 @@ $twig_path = $basepath."lib".DIRECTORY_SEPARATOR."Twig".DIRECTORY_SEPARATOR
         ."Autoloader.php";
 $slim_path = $basepath."lib".DIRECTORY_SEPARATOR."Slim".DIRECTORY_SEPARATOR
         ."Slim.php";
+
+// $twig_path = $basepath."vendor".DIRECTORY_SEPARATOR."twig".DIRECTORY_SEPARATOR."twig".DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR.
+//         "Twig".DIRECTORY_SEPARATOR."Autoloader.php";
+// $slim_path = $basepath."vendor".DIRECTORY_SEPARATOR."slim".DIRECTORY_SEPARATOR."slim".DIRECTORY_SEPARATOR."Slim".DIRECTORY_SEPARATOR
+//         ."Slim.php";
+
 $views_path = $basepath."Views";
 $temp_path = false;
 $sessionExpiry = "30minutes";
