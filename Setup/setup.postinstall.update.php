@@ -52,3 +52,5 @@ foreach ($files as $file) {
     array_splice( $original, 3, 0, $inserted ); // splice in at position 3
     // $original is now a b c x d e
 }
+
+print json_encode(["status"=>"Complete"]);

@@ -55,7 +55,8 @@
         "mk-j/php_xlsxwriter": "*",
         "hellogerard/jobby": "*",
         "mholt/papaparse": "^4.0.0",
-        "glench/fuzzyset.js": "*"
+        "glench/fuzzyset.js": "*",
+        "texy/texy": "^3.0"
     },
     "require-dev": {
         "phpunit/phpunit-skeleton-generator": "*",

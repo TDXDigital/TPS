@@ -1,4 +1,5 @@
 <?php
+
 namespace TPS;
 /*
  * The MIT License
@@ -240,8 +241,11 @@ class TPS{
             if($this->requirePDO){
                 $mysqli = $pdo;
             }
-            $this->databaseName = DATABASE;
-            $this->databaseHost = HOST;
+            $this->databaseName = 'TPS';
+            $this->databaseHost = 'localhost';
+            // $this->databaseName = DATABASE;
+            // $this->databaseHost = HOST;
+
             $this->mysqli = $mysqli?:$pdo;
             $this->db = $pdo;
         }
