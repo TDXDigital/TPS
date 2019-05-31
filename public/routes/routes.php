@@ -51,7 +51,7 @@ require_once 'program.php';
 require_once 'episode.php';
 require_once 'label.php';
 require_once 'playlist.php';
-
+require_once 'submission.php';
 #load api last;
 require_once 'api.php';
 
