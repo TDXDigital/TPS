@@ -181,7 +181,7 @@
                 </div>
                 {% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
                     <div class="col-lg-3">
-                        <input type="checkbox" data-label-prepend="Keep"
+                        <input id="keepCheckbox" type="checkbox" data-label-prepend="Keep" onclick="toggleKeep()"
                                {% if album.status == 1 or album.status is null %} checked="checked" {% endif %}
                                class="style3" name="accept" value="1"/>
                     </div>
@@ -491,6 +491,11 @@
 <script type="text/javascript" src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
 <script type="text/javascript" src="{{siteUrl}}/js/bootstrap/checkbox/js/bootstrap-checkbox.js "></script>
 <script type="text/javascript">
+    function toggleKeep() {
+	keeping = $("#keepCheckbox").next().attr('class').split(" ").slice(-1)[0] == 'active';
+	$("#notes").prop('required', keeping);
+    }
+
     function PrintModal(printer){
         $("#printModal").modal({
             show: 'true'
