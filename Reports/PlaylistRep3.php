@@ -2,15 +2,15 @@
 date_default_timezone_set('UTC');
     session_start();
 
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
+$con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
+	die('Error connecting to SQL Server, could not connect due to: ' . mysqli_error() . ';  
 
 	username=' . $_SESSION["username"]);
 }
 else if($con){
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /user/login');}
+	if(!mysqli_select_db($con, $_SESSION['DBNAME'])){header('Location: /user/login');}
 	if($_POST['verification']=="soundex"){
         $SQL0 = "select count(playlistnumber), cancon, playlistnumber as playlist, (SELECT artist from song where playlistnumber=playlist and date between '" . addslashes($_POST['from']) . "' and '" . addslashes($_POST['to']) . "' group by soundex(album) order by count(soundex(album)) desc limit 1) as artist,(SELECT album from song where playlistnumber=playlist and date between '" . addslashes($_POST['from']) . "' and '" . addslashes($_POST['to']) . "'  group by soundex(album) order by count(soundex(album)) desc limit 1) as album ";
     }
@@ -44,10 +44,10 @@ else if($con){
     $SQL3 = "group by playlistnumber order by count(playlistnumber) desc, playlistnumber asc";
 	$SQLM = $SQL0 . $SQL_Ver . $SQL1 . $SQL2 . $SQL3;
     //echo $SQLM;
-	$arr = mysql_query($SQLM) or die(mysql_error());
+	$arr = mysqli_query($con, $SQLM) or die(mysqli_error());
 	$Resu = "";
 	$chnum = 1;
-	while ($row = mysql_fetch_array($arr)) {
+	while ($row = mysqli_fetch_array($arr)) {
 		if($row['count(playlistnumber)']!=0){
             // CSS now handles alternate row color
 			/*if($chnum%2){
@@ -69,8 +69,8 @@ else if($con){
                 else{
                     $SNDX_SQL = "SELECT playlistnumber, count(*) as count, (SELECT count(*) from song where playlistnumber='".$row['playlist']."' $SQL2) as total, soundex(artist) as sndx FROM song WHERE playlistnumber='".addslashes($row['playlist'])."' $SQL2 group by soundex(album) order by count desc limit 1 ";
                 }
-                $soundex = mysql_query($SNDX_SQL) or die(mysql_error());
-                $sound = mysql_fetch_array($soundex);
+                $soundex = mysqli_query($con, $SNDX_SQL) or die(mysqli_error());
+                $sound = mysqli_fetch_array($soundex);
                 $VERR = round(((floatval($sound['count'])/floatval($sound['total']))*100),2);
             }
             else{

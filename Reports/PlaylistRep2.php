@@ -2,7 +2,7 @@
 date_default_timezone_set('UTC');
     session_start();
 
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
+$con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
@@ -10,14 +10,14 @@ if (!$con){
 	username=' . $_SESSION["username"]);
 }
 else if($con){
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /user/login');}
+	if(!mysqli_select_db($con, $_SESSION['DBNAME'])){header('Location: /user/login');}
 	$prosql="SELECT * from Episode where date between '" . addslashes($_POST['from']) . "' and '" . addslashes($_POST['to']) . "' group by programname order by programname, date, starttime";
-    $proresult=mysql_query($prosql,$con);
+    $proresult=mysqli_query($con, $prosql);
 
     $prooptions="
     ";//<OPTION VALUE=0>Choose</option>";
     $CONTROL=0;
-    while ($row=mysql_fetch_array($proresult)) {
+    while ($row=mysqli_fetch_array($proresult)) {
         $name=$row["programname"];
 		//$entries = mysql_query("Select count(songid) from song where programname='" . addslashes($name) . "' and date='" . $row['date'] . "' and starttime='" . $row['starttime'] . "' group by programname") or die(mysql_error());
 		$entries = mysql_query("Select count(programname) from episode where programname='". addslashes($name) . "' and date between '" . addslashes($_POST['from']) . "' and '" . addslashes($_POST['to']) . "' ");
