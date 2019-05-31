@@ -5,7 +5,7 @@ date_default_timezone_set('UTC');
 $con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
+	die('Error connecting to SQL Server, could not connect due to: ' . mysqli_error($con) . ';  
 
 	username=' . $_SESSION["username"]);
 }

@@ -5,7 +5,7 @@ date_default_timezone_set('UTC');
 $con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
+	die('Error connecting to SQL Server, could not connect due to: ' . mysqli_error($con) . ';  
 
 	username=' . $_SESSION["username"]);
 }
@@ -19,7 +19,7 @@ else if($con){
     $CONTROL=0;
     while ($row=mysqli_fetch_array($proresult)) {
         $name=$row["programname"];
-		//$entries = mysql_query("Select count(songid) from song where programname='" . addslashes($name) . "' and date='" . $row['date'] . "' and starttime='" . $row['starttime'] . "' group by programname") or die(mysql_error());
+		//$entries = mysql_query("Select count(songid) from song where programname='" . addslashes($name) . "' and date='" . $row['date'] . "' and starttime='" . $row['starttime'] . "' group by programname") or die(mysqli_error($con));
 		$entries = mysql_query("Select count(programname) from episode where programname='". addslashes($name) . "' and date between '" . addslashes($_POST['from']) . "' and '" . addslashes($_POST['to']) . "' ");
 		if(mysql_num_rows($entries)!=0){
 			$rowprecount = mysql_fetch_array($entries);
@@ -59,7 +59,7 @@ else if($con){
 				}
 				else
 				{
-					$prooptions .= mysql_error();
+					$prooptions .= mysqli_error($con);
 				}
 				$prooptions .= "</td><td>
 				";
@@ -72,7 +72,7 @@ else if($con){
 				}
 				else
 				{
-					$prooptions .= mysql_error();
+					$prooptions .= mysqli_error($con);
 				}
 				$prooptions .= "</td><td>
 				";

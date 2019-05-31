@@ -5,7 +5,7 @@ date_default_timezone_set('UTC');
 $con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysqli_error() . ';  
+	die('Error connecting to SQL Server, could not connect due to: ' . mysqli_error($con) . ';  
 
 	username=' . $_SESSION["username"]);
 }
@@ -44,7 +44,7 @@ else if($con){
     $SQL3 = "group by playlistnumber order by count(playlistnumber) desc, playlistnumber asc";
 	$SQLM = $SQL0 . $SQL_Ver . $SQL1 . $SQL2 . $SQL3;
     //echo $SQLM;
-	$arr = mysqli_query($con, $SQLM) or die(mysqli_error());
+	$arr = mysqli_query($con, $SQLM) or die(mysqli_error($con));
 	$Resu = "";
 	$chnum = 1;
 	while ($row = mysqli_fetch_array($arr)) {
@@ -69,7 +69,7 @@ else if($con){
                 else{
                     $SNDX_SQL = "SELECT playlistnumber, count(*) as count, (SELECT count(*) from song where playlistnumber='".$row['playlist']."' $SQL2) as total, soundex(artist) as sndx FROM song WHERE playlistnumber='".addslashes($row['playlist'])."' $SQL2 group by soundex(album) order by count desc limit 1 ";
                 }
-                $soundex = mysqli_query($con, $SNDX_SQL) or die(mysqli_error());
+                $soundex = mysqli_query($con, $SNDX_SQL) or die(mysqli_error($con));
                 $sound = mysqli_fetch_array($soundex);
                 $VERR = round(((floatval($sound['count'])/floatval($sound['total']))*100),2);
             }
