@@ -56,7 +56,7 @@
         "hellogerard/jobby": "*",
         "mholt/papaparse": "^4.0.0",
         "glench/fuzzyset.js": "*",
-        "texy/texy": "^3.0"
+        "texy/texy": "^2.9"
     },
     "require-dev": {
         "phpunit/phpunit-skeleton-generator": "*",
