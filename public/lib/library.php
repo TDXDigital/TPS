@@ -326,10 +326,13 @@ class library extends station{
     public function getMediaFormats(){
         $formats = array(
                 "CD" => "Compact Disc",
+		"2CD" => "2CD",
+		"Oversized CD" => "Oversized CD",
                 "Digital"=>"Digital",
                 "12in" => "12\"",
                 "10in" => "10\"",
                 "7in" => "7\"",
+		"Other Vinyl" => "Other Vinyl",
                 "Cass" => "Cassette",
                 "Cart"=>"Fidelipac (cart)",
                 "MD" => "Mini Disc",

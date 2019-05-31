@@ -181,13 +181,13 @@
                 </div>
                 {% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
                     <div class="col-lg-3">
-                        <input type="checkbox" data-label-prepend="Keep"
+                        <input id="keepCheckbox" type="checkbox" data-label-prepend="Keep" onclick="toggleKeep()"
                                {% if album.status == 1 or album.status is null %} checked="checked" {% endif %}
                                class="style3" name="accept" value="1"/>
                     </div>
                     {% if album.status is null %}
                     <div class="col-lg-3">
-                        <input type="checkbox" data-label-prepend="Print" class="style3" name="print" checked="checked" value="1" />
+                        <input id="printCheckbox" type="checkbox" data-label-prepend="Print" class="style3" name="print" checked="checked" value="1" />
                     </div>
                     <div class="col-lg-3">
                         <input type="checkbox" data-label-prepend="PL" class="style3" name="playlist" checked="checked" value="0" />
@@ -491,6 +491,16 @@
 <script type="text/javascript" src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
 <script type="text/javascript" src="{{siteUrl}}/js/bootstrap/checkbox/js/bootstrap-checkbox.js "></script>
 <script type="text/javascript">
+    function toggleKeep() {
+	keeping = $("#keepCheckbox").next().attr('class').split(" ").includes('active');
+	printing = $('#printCheckbox').next().attr('class').split(" ").includes('active');
+	// Make notes required if not keeping
+	$('#notes').prop('required', keeping);
+	if (keeping == printing)
+		// Recommend to print library label if keeping
+		$('#printCheckbox').next().find('button').click();
+    }
+
     function PrintModal(printer){
         $("#printModal").modal({
             show: 'true'
