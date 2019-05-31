@@ -187,7 +187,7 @@
                     </div>
                     {% if album.status is null %}
                     <div class="col-lg-3">
-                        <input type="checkbox" data-label-prepend="Print" class="style3" name="print" checked="checked" value="1" />
+                        <input id="printCheckbox" type="checkbox" data-label-prepend="Print" class="style3" name="print" checked="checked" value="1" />
                     </div>
                     <div class="col-lg-3">
                         <input type="checkbox" data-label-prepend="PL" class="style3" name="playlist" checked="checked" value="0" />
@@ -492,8 +492,13 @@
 <script type="text/javascript" src="{{siteUrl}}/js/bootstrap/checkbox/js/bootstrap-checkbox.js "></script>
 <script type="text/javascript">
     function toggleKeep() {
-	keeping = $("#keepCheckbox").next().attr('class').split(" ").slice(-1)[0] == 'active';
-	$("#notes").prop('required', keeping);
+	keeping = $("#keepCheckbox").next().attr('class').split(" ").includes('active');
+	printing = $('#printCheckbox').next().attr('class').split(" ").includes('active');
+	// Make notes required if not keeping
+	$('#notes').prop('required', keeping);
+	if (keeping == printing)
+		// Recommend to print library label if keeping
+		$('#printCheckbox').next().find('button').click();
     }
 
     function PrintModal(printer){
