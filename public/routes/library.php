@@ -248,7 +248,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $app->get('/', $authenticate, function () use ($app){
             $format = $app->request->get("format");
             $page = (int)$app->request->get("p")?:1;
-            $limit = (int)$app->request->get("l")?:25;
+            $limit = (int)$app->request->get("l")?:1000;
             $reverse = (bool)$app->request->get('reverseSort')?True:False;
             $sortCol = $app->request->get('column')?:"RefCode";
             $library = new \TPS\library();
