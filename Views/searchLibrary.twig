@@ -55,7 +55,7 @@
     </form>
     <form role="form" method="POST" action="/library/batch">
     <input type="hidden" name="_METHOD" value="PUT"/>
-    <table class='table table-bordered table-hover' >
+    <table class='table table-bordered table-hover display' id='data_table'>
         <thead>
             {% if permissions > 1 or BulkEdit in permssions %}
             <th>
