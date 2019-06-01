@@ -157,13 +157,13 @@
                 <div class="col-lg-6">
                     <div id="ind_group" class="form-group input-group">
                         <label for="indate" class="input-group-addon">Date In</label>
-                        <input id="indate" type="text" class="form-control" {% if album.datein is not null %} value="{{album.datein|date("Y-m-d")}}" {% else %} value="{{"now"|date("Y-m-d")}}" {% endif %}name="indate" />
+                        <input id="indate" type="text" onchange="dateChanged()" class="form-control" {% if album.datein is not null %} value="{{album.datein|date("Y-m-d")}}" {% else %} value="{{"now"|date("Y-m-d")}}" {% endif %}name="indate" />
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div id="ind_group" class="form-group input-group">
                         <label for="reldate" class="input-group-addon">Release Date</label>
-                        <input id="reldate" type="text" class="form-control" {% if album.release_date is not null %} value="{{album.release_date|date("Y-m-d")}}" {% else %} value="{{"now"|date("Y-m-d")}}" {% endif %} name="rel_date" />
+                        <input id="reldate" type="text" onchange="dateChanged()" class="form-control" {% if album.release_date is not null %} value="{{album.release_date|date("Y-m-d")}}" {% else %} value="{{"now"|date("Y-m-d")}}" {% endif %} name="rel_date" />
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -190,7 +190,7 @@
                         <input id="printCheckbox" type="checkbox" data-label-prepend="Print" class="style3" name="print" checked="checked" value="1" />
                     </div>
                     <div class="col-lg-3">
-                        <input type="checkbox" data-label-prepend="PL" class="style3" name="playlist" checked="checked" value="0" />
+                        <input id='playlistCheckbox' type="checkbox" data-label-prepend="PL" class="style3" name="playlist" checked="checked" value="0" />
                     </div>
                     {% else %}
                     <div class="col-lg-3">
@@ -499,6 +499,27 @@
 	if (keeping == printing)
 		// Recommend to print library label if keeping
 		$('#printCheckbox').next().find('button').click();
+    }
+
+    function dateChanged() {
+	// Everytime the release date or in date is changed, recommend if the album should
+	// be added to the playlist or library archive. If the release date is within 6 months
+	// of the received date, add to playlist. Otherwise, add to the library.
+	rel_date_arr = $('#reldate').val().split('-');
+	in_date_arr = $('#indate').val().split('-');
+
+	rel_date = new Date(rel_date_arr[0], rel_date_arr[1]-1, rel_date_arr[2]);
+	in_date = new Date(in_date_arr[0], in_date_arr[1]-1, in_date_arr[2]);
+
+	millisecs_per_day = 86400000;
+	days_per_month = 30.4167;
+
+	millisecs_dif = in_date - rel_date;
+	months_old = millisecs_dif / millisecs_per_day / days_per_month;
+
+	curr_playlist_val = $('#playlistCheckbox').next().attr('class').split(" ").includes('active');
+	if (months_old <= 6 != curr_playlist_val)
+		$('#playlistCheckbox').next().find('button').click();
     }
 
     function PrintModal(printer){
