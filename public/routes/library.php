@@ -36,6 +36,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $datein = filter_input(INPUT_POST, "indate")?:NULL;
         $label = filter_input(INPUT_POST, "label")?:NULL;
         $format = filter_input(INPUT_POST, "format")?:NULL;
+	$rating = filter_input(INPUT_POST, "rating")?:NULL;
         $governmentCategory = filter_input(INPUT_POST, "category")?:NULL;
         $schedule = filter_input(INPUT_POST, "schedule")?:2;
         $playlist = filter_input(INPUT_POST, "playlist")?:1;
@@ -133,8 +134,14 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         if(!$accepted){
             $playlist=2;
         }
+	if($rating == "None") {
+	    $rating = NULL;
+	} else {
+	    $rating = (int)$rating;
+	}
         $result = $library->createAlbum($artist, $album, $format, $genre, $labelNum, $locale, $CanCon, $playlist,
-            $governmentCategory, $schedule,$note, $accepted, $variousartists, $datein, $release_date, $print);
+            $governmentCategory, $schedule,$note, $accepted, $variousartists, $datein, $release_date, $print,
+	    $rating);
         if(is_string($result)){
             $app->flash('error',$mysqli->error);
             $app->redirect('./new');

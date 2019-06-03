@@ -842,14 +842,14 @@ class library extends station{
 
     public function createAlbum($artist, $album, $format, $genre, $labelNum, $locale, $CanCon, $playlist,
                                 $governmentCategory, $schedule, $note="", $accepted=1, $variousartists=False,
-                                $datein=null, $release_date=null, $print=1){
+                                $datein=null, $release_date=null, $print=1, $rating=null){
         if(is_null($datein)){
             $datein = date("Y-m-d");
         }
         if(!$stmt3 = $this->mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,
             format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
-            governmentCategory,scheduleCode)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
+            governmentCategory,scheduleCode, rating)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
             $stmt3->close();
             header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
         }
@@ -860,7 +860,7 @@ class library extends station{
             $year = NULL;
         }
         if(!$stmt3->bind_param(
-            "sssissiisisssiss",
+            "sssissiisisssissi",
             $datein,
             $artist,
             $album,
@@ -876,7 +876,8 @@ class library extends station{
             $note,
             $playlist,
             $governmentCategory,
-            $schedule
+            $schedule,
+	    $rating
         )){
             $stmt3->close();
             return $this->mysqli->error;
