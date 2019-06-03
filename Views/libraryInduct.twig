@@ -169,7 +169,7 @@
 		<div class="col-lg-6">
 		    <div id="rating" class="form-group input-group">
 			<label for="label" class="input-group-addon">Rating</label>
-			<select class="form-control" name="rating">
+			<select id="dirRating" class="form-control" name="rating" onchange="updateRating()">
 			    <option value='None'>None</option>
 			    {% for i in range(1, 5) %}
 				<option value='{{i}}'
@@ -193,6 +193,9 @@
                            data-label-prepend="VA" class="style3" name="VA" value="1" />
                 </div>
                 {% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
+		    <div class="col-lg-3">
+			<input id="recommendCheckbox" type="checkbox" data-label-prepend="REC" class="style3" name="recommend" value="1" />
+		    </div>
                     <div class="col-lg-3">
                         <input id="keepCheckbox" type="checkbox" data-label-prepend="Keep" onclick="toggleKeep()"
                                {% if album.status == 1 or album.status is null %} checked="checked" {% endif %}
@@ -533,6 +536,14 @@
 	curr_playlist_val = $('#playlistCheckbox').next().attr('class').split(" ").includes('active');
 	if (months_old <= 6 != curr_playlist_val)
 		$('#playlistCheckbox').next().find('button').click();
+    }
+
+    function updateRating() {
+	rating = $('#dirRating').val();
+	recommend = rating == '4' || rating == '5';
+	recommended = $('#recommendCheckbox').next().attr('class').split(" ").includes('active');
+	if (recommend != recommended)
+	    $('#recommendCheckbox').next().find('button').click();
     }
 
     function PrintModal(printer){
