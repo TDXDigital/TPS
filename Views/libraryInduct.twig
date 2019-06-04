@@ -130,18 +130,19 @@
                     </div>
                 </div>
                 {% endif %}
-                <div class="col-lg-6">
-                    <select name="label" id="label"
-                            required="required"
-                            class="form-control chosen-select-add">
-                        <option>Self Released</option>
-                        {% for label in labels if label!="Self Released"%}
-                            <option value="{{label}}"
-                            {% if album.label.name == label %} selected {% endif %}
-                            >{{label}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+		<div class="col-lg-6">
+		    <div id="rating" class="form-group input-group">
+			<label for="label" class="input-group-addon">Rating</label>
+			<select id="dirRating" class="form-control" name="rating" onchange="updateRating()">
+			    <option value='None'>None</option>
+			    {% for i in range(1, 5) %}
+				<option value='{{i}}'
+				    {% if i == album.rating %} selected {% endif %}
+				    >{{i}}</option>
+			    {% endfor %}
+			</select>
+		    </div>
+		</div>
                 <div class="col-lg-6">
                     <div id="format" class="form-group input-group">
                         <label for="label" class="input-group-addon">Format</label>
@@ -166,17 +167,36 @@
                         <input id="reldate" type="text" onchange="dateChanged()" class="form-control" {% if album.release_date is not null %} value="{{album.release_date|date("Y-m-d")}}" {% else %} value="{{"now"|date("Y-m-d")}}" {% endif %} name="rel_date" />
                     </div>
                 </div>
-		<div class="col-lg-6">
-		    <div id="rating" class="form-group input-group">
-			<label for="label" class="input-group-addon">Rating</label>
-			<select id="dirRating" class="form-control" name="rating" onchange="updateRating()">
-			    <option value='None'>None</option>
-			    {% for i in range(1, 5) %}
-				<option value='{{i}}'
-				    {% if i == album.rating %} selected {% endif %}
-				    >{{i}}</option>
-			    {% endfor %}
-			</select>
+                <div class="col-md-12">
+                    <select name="label" id="label"
+                            required="required"
+                            class="form-control chosen-select-add"
+			    onchange="if (this.selectedIndex) appendRecordLabel();">
+                        <option>-- Add a Record Label --</option>
+                        {% for label in labels %}
+                            <option value="{{label}}"
+                            {% if album.label.name == label %} selected {% endif %}
+                            >{{label}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+		<div class="col-md-12 list-container">
+		    <div class="list-shell">
+			<div class="list-header">Record Labels</div>
+			<div id="record_labels_body"></div>
+		    </div>
+		</div>
+                <div class="col-md-12">
+                    <select name="tag" id="tag_selector"
+                            class="form-control chosen-select-add"
+			    onchange="if (this.selectedIndex) appendTag();">
+                        <option>-- Add a Tag --</option>
+                    </select>
+                </div>
+		<div class="col-md-12 list-container">
+		    <div class="list-shell">
+			<div class="list-header">Tags</div>
+			<div id="tags_body"></div>
 		    </div>
 		</div>
                 <div class="col-md-12">
@@ -507,6 +527,14 @@
 <script type="text/javascript" src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
 <script type="text/javascript" src="{{siteUrl}}/js/bootstrap/checkbox/js/bootstrap-checkbox.js "></script>
 <script type="text/javascript">
+    function appendTag() {
+	console.log("appendTag() not implemented yet");
+    }
+
+    function appendRecordLabel() {
+	console.log("appendRecordLabel() not implemented yet");
+    }
+
     function toggleKeep() {
 	keeping = $("#keepCheckbox").next().attr('class').split(" ").includes('active');
 	printing = $('#printCheckbox').next().attr('class').split(" ").includes('active');
@@ -663,6 +691,10 @@
                 e.preventDefault();
             }
         });
+
+	$('#tags').keypress(function() {
+	    console.log("Change");
+	});
 
         document.querySelector('form').onkeypress = checkEnter;
         $.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
