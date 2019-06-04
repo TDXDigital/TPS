@@ -174,22 +174,35 @@ $(function () {
 
 // Load and render the data table
 $(document).ready(function() {
-    $('#data_table').DataTable({
+    var table = $('#data_table').DataTable({
         "processing": true,
         "serverSide": true,
+        "select": true,
         "ajax": "/library/display",
-
+        "columns": [
+            {
+                "class":          "details-control",
+                "orderable":      true,
+                "data":           "refCode",
+                "defaultContent": "",
+                
+            },
+            // { "data": "check" },
+            { "data": "refCode" },
+            { "data": "status" },
+            { "data": "datein" },
+            { "data": "artist" },
+            { "data": "album" },
+            { "data": "genre" },
+            { "data": "year" }
+        ],
         "columnDefs": [
             {
-                // The `data` parameter refers to the data for the cell (defined by the
-                // `data` option, which defaults to the column being worked with, in
-                // this case `data: 0`.
-                "render": function ( data, type, row ) {
-                    return '<td>'+
-                            '<label><input type="checkbox" name="bulkEditId[]" value="'+data+'"> '+data+'</label>' +
-                            '</td>';
-                },
-                "targets": 0
+              "render": function (data, type, row) {
+                         return '<i class="fa fa-plus-square" aria-hidden="true" style="color:green">&nbsp&nbsp</i> &ensp;' + data;
+                     },
+                     //width:"15px",
+                     "targets": 0
             },
             {
                 "render": function ( data, type, row ) {
@@ -210,6 +223,60 @@ $(document).ready(function() {
         ]
     });
 
-
-
+    detailControl(table);
+    $('#data_table tbody').on( 'click', 'tr', function () {
+        $(this).toggleClass('selected');
+    } );
 } );
+
+function detailControl(table)
+{
+    // Array to track the ids of the details displayed rows
+    var detailRows = [];
+ 
+    $('#data_table tbody').on( 'click', 'tr td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var tdi = tr.find("i.fa")
+        var row = table.row(tr);
+ 
+        if ( row.child.isShown() ) {
+            row.child.hide();
+                 tr.removeClass('shown');
+                 tdi.first().removeClass('fa-minus-square');
+                 tdi.first().addClass('fa-plus-square');
+                 tdi.first().attr('style', 'color:green;');
+        }
+        else {
+            // Open this row
+                 row.child(format(row.data())).show();
+                 tr.addClass('shown');
+                 tdi.first().removeClass('fa-plus-square');
+                 tdi.first().addClass('fa-minus-square');
+                 tdi.first().attr('style', 'color:red;');
+        }
+    } );
+    table.on("user-select", function (e, dt, type, cell, originalEvent) {
+        if ($(cell.node()).hasClass("details-control")) {
+            e.preventDefault();
+        }   
+    });
+}
+
+function format(d){
+        
+         // `d` is the original data object for the row
+         return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+             '<tr>' +
+                 '<td>Full name:</td>' +
+                 '<td> asdsda</td>' +
+             '</tr>' +
+             '<tr>' +
+                 '<td>Extension number:</td>' +
+                 '<td> asd</td>' +
+             '</tr>' +
+             '<tr>' +
+                 '<td>Extra info:</td>' +
+                 '<td>And any further details here (images etc)...</td>' +
+             '</tr>' +
+         '</table>';  
+    }

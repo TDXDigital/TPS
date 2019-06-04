@@ -42,27 +42,13 @@
             </div>
         </div>
     {% endif %}
-    <form role="form" method="POST" action="/library/search/">
-        <div class="row">
-            <div class="form-group input-group">
-                <input type="text" class="form-control" name="q"
-                       {% if search %}
-                           value="{{search}}"
-                       {% endif %}>
-                <span class="input-group-btn"><button class="btn btn-default" type="button"><i class="fa fa-search"></i></button></span>
-            </div>
-        </div>
-    </form>
+    
     <form role="form" method="POST" action="/library/batch">
     <input type="hidden" name="_METHOD" value="PUT"/>
     <table class='table table-bordered table-hover display' id='data_table'>
         <thead>
             <tr>
-                {% if permissions > 1 or BulkEdit in permssions %}
-                <th>
-                    <label><input type="checkbox" onClick="toggle(this)"> All</label>
-                </th>
-                {% endif %}
+                <th></th>
                 <th><i class="fa fa-barcode "></i></th>
                 <th><i class="fa fa-thumbs-o-up"></i></th>
                 <th>Date In</th>
@@ -74,11 +60,7 @@
         </thead>
         <tfoot>
             <tr>
-                {% if permissions > 1 or BulkEdit in permssions %}
-                <th>
-                    <label><input type="checkbox" onClick="toggle(this)"> All</label>
-                </th>
-                {% endif %}
+                <th></th>
                 <th><i class="fa fa-barcode "></i></th>
                 <th><i class="fa fa-thumbs-o-up"></i></th>
                 <th>Date In</th>

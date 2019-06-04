@@ -673,14 +673,13 @@ class library extends station{
         // indexes
         $columns = array(
             array( 'db' => 'refCode', 'dt' => 'DT_RowId' ),
-            array( 'db' => 'refCode', 'dt' => 0 ),
-            array( 'db' => 'refCode', 'dt' => 1 ),
-            array( 'db' => 'status', 'dt' => 2 ),
-            array( 'db' => 'datein', 'dt' => 3 ),
-            array( 'db' => 'artist',  'dt' => 4 ),
-            array( 'db' => 'album',   'dt' => 5 ),
-            array( 'db' => 'genre',   'dt' => 6 ),
-            array( 'db' => 'year', 'dt' => 7)
+            array( 'db' => 'refCode', 'dt' => 'refCode' ),
+            array( 'db' => 'status', 'dt' => 'status' ),
+            array( 'db' => 'datein', 'dt' => 'datein' ),
+            array( 'db' => 'artist',  'dt' => 'artist' ),
+            array( 'db' => 'album',   'dt' => 'album' ),
+            array( 'db' => 'genre',   'dt' => 'genre' ),
+            array( 'db' => 'year', 'dt' => 'year')
         );
 
         return json_encode(
