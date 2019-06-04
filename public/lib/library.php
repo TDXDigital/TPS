@@ -30,7 +30,8 @@ namespace TPS;
  * @version 1.0
  */
 use PhpParser\Builder\Trait_;
-
+//use SSP;
+require_once 'ssp.class.php';
 require_once 'station.php';
 
 class library extends station{
@@ -592,6 +593,7 @@ class library extends station{
      * @return boolean|array
      */
     public function searchLibrary($term,$exact=False,$page=1,$limit=1000, $sort='RefCode', $reverse=false){
+
         //$this->mysqli;
         $tps = new \TPS\TPS();
         $tps->sanitizePagination($page, $limit);
@@ -655,8 +657,36 @@ class library extends station{
             return FALSE;
         }
         return $result;
+        
     }
+    public function displayTable()
+    {
+        // DB table to use
+        $table = 'library';
+         
+        // Table's primary key
+        $primaryKey = 'RefCode';
+         
+        // Array of database columns which should be read and sent back to DataTables.
+        // The `db` parameter represents the column name in the database, while the `dt`
+        // parameter represents the DataTables column identifier. In this case simple
+        // indexes
+        $columns = array(
+            array( 'db' => 'refCode', 'dt' => 'DT_RowId' ),
+            array( 'db' => 'refCode', 'dt' => 0 ),
+            array( 'db' => 'refCode', 'dt' => 1 ),
+            array( 'db' => 'status', 'dt' => 2 ),
+            array( 'db' => 'datein', 'dt' => 3 ),
+            array( 'db' => 'artist',  'dt' => 4 ),
+            array( 'db' => 'album',   'dt' => 5 ),
+            array( 'db' => 'genre',   'dt' => 6 ),
+            array( 'db' => 'year', 'dt' => 7)
+        );
 
+        return json_encode(
+            \SSP::simple( $_GET, $this->db, $table, $primaryKey, $columns ) 
+        );
+    }
     public function countSearchLibrary($term="",$exact=False){
         //$this->mysqli;
         $tps = new \TPS\TPS();

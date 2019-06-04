@@ -169,3 +169,47 @@ $(function () {
         changeAttrOptions("#beval option:selected", "#beattr");
     });
 });
+
+
+
+// Load and render the data table
+$(document).ready(function() {
+    $('#data_table').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": "/library/display",
+
+        "columnDefs": [
+            {
+                // The `data` parameter refers to the data for the cell (defined by the
+                // `data` option, which defaults to the column being worked with, in
+                // this case `data: 0`.
+                "render": function ( data, type, row ) {
+                    return '<td>'+
+                            '<label><input type="checkbox" name="bulkEditId[]" value="'+data+'"> '+data+'</label>' +
+                            '</td>';
+                },
+                "targets": 0
+            },
+            {
+                "render": function ( data, type, row ) {
+                    return '<button type="button" onclick="location.href=\'/library/'+data+'\';" class="btn btn-default btn-xs">' +
+                        'Edit ' + '<i class="fa fa-edit" aria-hidden="true"></i></button>';
+                },
+                "targets": 1
+            },
+            {
+                "render": function ( data, type, row ) {
+                    if(data == 1 )
+                        return '<i class="fa fa-check-circle-o" style="color: #008000"> Accept</i>';
+                    else
+                        return '<i class="fa fa-times-circle-o" style="color: #800000"> Reject</i>';
+                },
+                "targets": 2
+            },
+        ]
+    });
+
+
+
+} );

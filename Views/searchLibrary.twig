@@ -57,6 +57,42 @@
     <input type="hidden" name="_METHOD" value="PUT"/>
     <table class='table table-bordered table-hover display' id='data_table'>
         <thead>
+            <tr>
+                {% if permissions > 1 or BulkEdit in permssions %}
+                <th>
+                    <label><input type="checkbox" onClick="toggle(this)"> All</label>
+                </th>
+                {% endif %}
+                <th><i class="fa fa-barcode "></i></th>
+                <th><i class="fa fa-thumbs-o-up"></i></th>
+                <th>Date In</th>
+                <th>Artist</th>
+                <th>Album</th>
+                <th>Genre</th>
+                <th>Year</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                {% if permissions > 1 or BulkEdit in permssions %}
+                <th>
+                    <label><input type="checkbox" onClick="toggle(this)"> All</label>
+                </th>
+                {% endif %}
+                <th><i class="fa fa-barcode "></i></th>
+                <th><i class="fa fa-thumbs-o-up"></i></th>
+                <th>Date In</th>
+                <th>Artist</th>
+                <th>Album</th>
+                <th>Genre</th>
+                <th>Year</th>
+            </tr>
+        </tfoot>
+
+
+
+
+       {# <thead>
             {% if permissions > 1 or BulkEdit in permssions %}
             <th>
                 <label><input type="checkbox" onClick="toggle(this)"> All</label>
@@ -99,9 +135,9 @@
                         <i class="fa fa-edit" aria-hidden="true"></i></button>
                     </td>
                     <td>{% if album.status == 1 %}
-                        <i class="fa fa-check-circle-o" style="color: #008000"></i>
+                            <i class="fa fa-check-circle-o" style="color: #008000"> Accept</i>
                         {% else %}
-                            <i class="fa fa-times-circle-o" style="color: #800000"></i>
+                            <i class="fa fa-times-circle-o" style="color: #800000"> Pass</i>
                         {% endif %}</td>
                     <td>{{album.datein}}</td>
                     <td>{{album.artist}}</td>
@@ -114,7 +150,7 @@
                             {{album.note}}
                     {% endif %}</td>
                 </tr>
-            {% endfor %}
+            {% endfor %} #}
         </tbody>
     </table>
     {% if permissions > 1 or BulkEdit in permssions %}
