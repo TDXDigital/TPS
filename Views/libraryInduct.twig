@@ -172,8 +172,7 @@
                         <label for="label" class="input-group-addon">Record Labels</label>
                         <select name="label" id="label"
                                 required="required" multiple
-                                class="form-control chosen-select-add"
-			        onchange="if (this.selectedIndex) appendRecordLabel();">                       
+                                class="form-control chosen-select-add">
                             {% for label in labels %}
                                 <option value="{{label}}"
                                 {% if album.label.name == label %} selected {% endif %}
@@ -186,8 +185,7 @@
                     <div class="form-group input-group">
                         <label for="label" class="input-group-addon">Tags</label>
                         <select name="tag" id="tag_selector" multiple
-                                class="form-control chosen-select-add"
-			        onchange="if (this.selectedIndex) appendTag();">
+                                class="form-control chosen-select-add">
                         </select>
 		    </div>
                 </div>
