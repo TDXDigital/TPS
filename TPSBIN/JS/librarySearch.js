@@ -199,7 +199,8 @@ $(document).ready(function() {
         "columnDefs": [
             {
               "render": function (data, type, row) {
-                         return '<i class="fa fa-plus-square" aria-hidden="true" style="color:green">&nbsp&nbsp</i> &ensp;' + data;
+                         return '<i class="fa fa-plus-square" aria-hidden="true" style="color:green">&nbsp&nbsp</i> &ensp;' + data +
+                         '<input type="checkbox" name="bulkEditId[]" style="visibility:hidden" value="'+data+'">';
                      },
                      //width:"15px",
                      "targets": 0
@@ -226,7 +227,15 @@ $(document).ready(function() {
     detailControl(table);
     $('#data_table tbody').on( 'click', 'tr', function () {
         $(this).toggleClass('selected');
+        $(':checkbox', this).prop('checked', function(index, attr){
+            return attr ==true? false : true;
+        });
     } );
+    // $('#data_table tr').click(function(event) {
+    //     if (event.target.type !== 'checkbox') {
+    //       $(':checkbox', this).trigger('click');
+    //     }
+    // });
 } );
 
 function detailControl(table)
@@ -264,19 +273,57 @@ function detailControl(table)
 
 function format(d){
         
+        d.CanCon = d.CanCon == 0 ? 'No' : 'Yes';
+        d.status = d.status == 0 ? 'Reject' : d.status == 1 ? 'Accept' : 'N/A'
          // `d` is the original data object for the row
          return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
              '<tr>' +
-                 '<td>Full name:</td>' +
-                 '<td> asdsda</td>' +
+                 '<td>Artist:</td>' +
+                 '<td>'+ d.artist +'</td>' +
              '</tr>' +
              '<tr>' +
-                 '<td>Extension number:</td>' +
-                 '<td> asd</td>' +
+                 '<td>Album:</td>' +
+                 '<td> '+ d.album +'</td>' +
              '</tr>' +
              '<tr>' +
-                 '<td>Extra info:</td>' +
-                 '<td>And any further details here (images etc)...</td>' +
+                 '<td>Genre:</td>' +
+                 '<td>'+ d.genre_detail +'</td>' +
+             '</tr>' +
+             '<tr>' +
+                 '<td>Year:</td>' +
+                 '<td>' + d.year +'</td>' +
+             '</tr>' +
+             '<tr>' +
+                 '<td>Date In:</td>' +
+                 '<td>'+ d.datein +'</td>' +
+             '</tr>' +
+             '<tr>' +
+                 '<td>Format:</td>' +
+                 '<td>' + d.format +'</td>' +
+             '</tr>' +
+             '<tr>' +
+                 '<td>Status:</td>' +
+                 '<td>'+ d.status +'</td>' +
+             '</tr>' +
+             '<tr>' +
+                 '<td>Locale:</td>' +
+                 '<td>'+ d.locale +'</td>' +
+             '</tr>' +
+             '<tr>' +
+                 '<td>Cancon:</td>' +
+                 '<td>' + d.CanCon +'</td>' +
+             '</tr>' +
+             '<tr>' +
+                 '<td>note:</td>' +
+                 '<td>'+d.note +'</td>' +
+             '</tr>' +
+             '<tr>' +
+                 '<td>rating:</td>' +
+                 '<td>'+d.rating +'</td>' +
+             '</tr>' +
+             '<tr>' +
+                 '<td>playlist_flag:</td>' +
+                 '<td>'+d.playlist_flag +'</td>' +
              '</tr>' +
          '</table>';  
     }

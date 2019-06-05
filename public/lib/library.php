@@ -679,12 +679,25 @@ class library extends station{
             array( 'db' => 'artist',  'dt' => 'artist' ),
             array( 'db' => 'album',   'dt' => 'album' ),
             array( 'db' => 'genre',   'dt' => 'genre' ),
-            array( 'db' => 'year', 'dt' => 'year')
+            array( 'db' => 'genre',   'dt' => 'genre_detail' ),
+            array( 'db' => 'year', 'dt' => 'year'),
+            array( 'db' => 'format',   'dt' => 'format' ),
+            array( 'db' => 'condition',   'dt' => 'condition' ),
+            array( 'db' => 'status',   'dt' => 'status' ),
+            array( 'db' => 'locale',   'dt' => 'locale' ),
+            array( 'db' => 'CanCon',   'dt' => 'CanCon' ),
+            array( 'db' => 'note',   'dt' => 'note' ),
+            array( 'db' => 'rating',   'dt' => 'rating' ),
+            array( 'db' => 'playlist_flag',   'dt' => 'playlist_flag' ),
         );
 
-        return json_encode(
-            \SSP::simple( $_GET, $this->db, $table, $primaryKey, $columns ) 
-        );
+        $lib_data = \SSP::simple( $_GET, $this->db, $table, $primaryKey, $columns );
+        $genreList = self::getLibraryGenres();
+        foreach($lib_data['data'] as $i => $item)
+        {
+            $lib_data['data'][$i]['genre_detail'] = $genreList[$lib_data['data'][$i]['genre']];
+        }
+        return json_encode($lib_data);
     }
     public function countSearchLibrary($term="",$exact=False){
         //$this->mysqli;

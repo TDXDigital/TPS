@@ -583,7 +583,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             );
             $app->response->setStatus(400);
             $app->render("error.html.twig",$params);
-            $app->halt();
+            $app->halt(500, "not valid");
         }
         $album['label']=$library->getLabelbyId($album['labelid'])[0];
         $album['websites']=$library->getWebsitesByRefCode($RefCode);
