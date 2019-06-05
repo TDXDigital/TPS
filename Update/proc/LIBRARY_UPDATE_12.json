@@ -1,0 +1,19 @@
+{
+    "TPS_Errno" : "DRLB-002",
+    "type" : "database",
+    "execute" : "SQL",
+    "requires" : "DRLB-001",
+    "description" : "Adds intermediary table for albums and record labels",
+    "SQL_QRY" : {
+	"TEST" : "SHOW COLUMNS FROM `library_recordlabel` WHERE `Field` = 'library_RefCode'",
+	"RESULT" : {
+	    "Field" : [
+		"library_RefCode"
+	    ]
+	},
+	"Negate" : 0,
+	"createMode" : 1,
+	"UPDATE_TYPE" : "FILE",
+	"UPDATE" : "LIBRARY_UPDATE_12.sql"
+    }
+}
