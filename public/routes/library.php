@@ -34,7 +34,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $album = filter_input(INPUT_POST,"album");
         $genre = filter_input(INPUT_POST,"genre")?:NULL;
         $datein = filter_input(INPUT_POST, "indate")?:NULL;
-        $label = filter_input(INPUT_POST, "label")?:NULL;
+        $label = filter_input(INPUT_POST, "label", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)[0]?:NULL;
         $format = filter_input(INPUT_POST, "format")?:NULL;
 	$rating = filter_input(INPUT_POST, "rating")?:NULL;
         $governmentCategory = filter_input(INPUT_POST, "category")?:NULL;
@@ -583,7 +583,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             );
             $app->response->setStatus(400);
             $app->render("error.html.twig",$params);
-            $app->halt();
+            $app->halt(500, "not valid");
         }
         $album['label']=$library->getLabelbyId($album['labelid'])[0];
         $album['websites']=$library->getWebsitesByRefCode($RefCode);
