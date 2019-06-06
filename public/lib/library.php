@@ -882,7 +882,7 @@ class library extends station{
         return $params;
     }
 
-    public function createAlbum($artist, $album, $format, $genre, $labelNum, $locale, $CanCon, $playlist,
+    public function createAlbum($artist, $album, $format, $genre, $labelNums, $locale, $CanCon, $playlist,
                                 $governmentCategory, $schedule, $note="", $accepted=1, $variousartists=False,
                                 $datein=null, $release_date=null, $print=1, $rating=null, $tags=null){
         if(is_null($datein)){
@@ -910,7 +910,7 @@ class library extends station{
             $format,
             $genre,
             $accepted,
-            $labelNum,
+            $labelNums[0],
             $locale,
             $CanCon,
             $release_date,
@@ -965,6 +965,15 @@ class library extends station{
                 error_log($this->mysqli->error);
             }
 	    
+	    if(!is_null($labelNums)) {
+		// Insert album and record label combos into library_recordlabel intermediary table
+		$values = "";
+		foreach($labelNums as $labelNum)
+		    $values = $values . "(" . $id_last  .  ", " . $labelNum  . "), ";
+		$values = substr($values, 0, strlen($values)-2); // Remove trailing comma
+		$sql = $this->mysqli->query("INSERT INTO library_recordlabel (library_RefCode, recordlabel_LabelNumber) VALUES " . $values);
+	    }
+
 	    if(!is_null($tags)) {
 		// Check which album-assigned tags are already in the database
 		$sql=$this->mysqli->query("SELECT * FROM tags WHERE name IN ('" . implode("', '", $tags) . "')");

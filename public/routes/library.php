@@ -34,7 +34,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $album = filter_input(INPUT_POST,"album");
         $genre = filter_input(INPUT_POST,"genre")?:NULL;
         $datein = filter_input(INPUT_POST, "indate")?:NULL;
-        $label = filter_input(INPUT_POST, "label", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)[0]?:NULL;
+        $rec_labels = filter_input(INPUT_POST, "label", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
         $format = filter_input(INPUT_POST, "format")?:NULL;
 	$rating = filter_input(INPUT_POST, "rating")?:NULL;
         $governmentCategory = filter_input(INPUT_POST, "category")?:NULL;
@@ -85,52 +85,54 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $print=0;
             $playlist=2;
         }
-        $labelNum = NULL;
 
-        //find id
-        $labels = \TPS\label::nameSearch($label);
-        if(is_numeric($label)){
-            $label = new \TPS\label($label);
-            $labels = array($label->fetch());
-            if(sizeof($labels)){
-                $labelNum = $label;
+        $labelNums = array_fill(0, sizeof($rec_labels), NULL);
+	foreach($rec_labels as $i=>&$label) {
+            //find id
+            $labels = \TPS\label::nameSearch($label);
+            if(is_numeric($label)){
+                $label = new \TPS\label($label);
+                $labels = array($label->fetch());
+                if(sizeof($labels)){
+                    $labelNums[$i] = $label;
+                }
             }
-        }
-        if(sizeof($labels)>0){
-            foreach ($labels as $key => $value) {
-                if(is_array($value) && key_exists("alias", $value)){
-                    if(!is_null($value["alias"])){
-                        $labelNum = $value["alias"];
+            if(sizeof($labels)>0){
+                foreach ($labels as $key => $value) {
+                    if(is_array($value) && key_exists("alias", $value)){
+                        if(!is_null($value["alias"])){
+                            $labelNums[$i] = $value["alias"];
+                        }
+                    }
+                    else{
+                        $labelNums[$i] = $key;
                     }
                 }
-                else{
-                    $labelNum = $key;
-                }
             }
-        }
-        if(is_null($labelNum)){
-            $labelNum = \TPS\label::createLabel($label, 1);
-            $labelRewrite = array(
-                "/(.+)(?=(?i)\srecord.{0,5})/",
-            );
-            foreach ($labelRewrite as $regex) {
-                $value = false;
-                $value = preg_match($regex, $label, $matches);
-                if($value==1){
-                    $id = \TPS\label::createLabel($matches[0],1);
-                    $subLabel = new \TPS\label($id);
-                    $subLabel->setAlias($labelNum);
+            if(is_null($labelNums[$i])){
+                $labelNums[$i] = \TPS\label::createLabel($label, 1);
+                $labelRewrite = array(
+                    "/(.+)(?=(?i)\srecord.{0,5})/",
+                );
+                foreach ($labelRewrite as $regex) {
+                    $value = false;
+                    $value = preg_match($regex, $label, $matches);
+                    if($value==1){
+                        $id = \TPS\label::createLabel($matches[0],1);
+                        $subLabel = new \TPS\label($id);
+                        $subLabel->setAlias($labelNums[$i]);
+                    }
                 }
-            }
 
-        }
-        $label = new \TPS\label($labelNum);
+            }
+            if(is_null($labelNums[$i])||$labelNums[$i]=="null"){
+                $app->flash('error','label is required but was not proveded or was invalid. could not recieve album');
+                $app->redirect('./new');
+            }
+	}
+
         if($genre=="null"){
             $genre=NULL;
-        }
-        if(is_null($labelNum)||$labelNum=="null"){
-            $app->flash('error','label is required but was not proveded or was invalid. could not recieve album');
-            $app->redirect('./new');
         }
         if(!$accepted){
             $playlist=2;
@@ -140,7 +142,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 	} else {
 	    $rating = (int)$rating;
 	}
-        $result = $library->createAlbum($artist, $album, $format, $genre, $labelNum, $locale, $CanCon, $playlist,
+
+        $result = $library->createAlbum($artist, $album, $format, $genre, $labelNums, $locale, $CanCon, $playlist,
             $governmentCategory, $schedule,$note, $accepted, $variousartists, $datein, $release_date, $print,
 	    $rating, $tags);
 
