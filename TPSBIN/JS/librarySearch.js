@@ -178,7 +178,14 @@ $(document).ready(function() {
         "processing": true,
         "serverSide": true,
         "select": true,
-        "ajax": "/library/display",
+        "ajax": {
+            "url": "/library/display", 
+            // "type": "POST",
+            "data": function(d) {
+                    d.foo = "foo";
+                    // d.status = 0;
+                }
+        },
         "columns": [
             {
                 "class":          "details-control",
@@ -224,19 +231,37 @@ $(document).ready(function() {
         ]
     });
 
+    enableColumnSearch(table);
     detailControl(table);
-    $('#data_table tbody').on( 'click', 'tr', function () {
-        $(this).toggleClass('selected');
-        $(':checkbox', this).prop('checked', function(index, attr){
-            return attr ==true? false : true;
-        });
-    } );
-    // $('#data_table tr').click(function(event) {
-    //     if (event.target.type !== 'checkbox') {
-    //       $(':checkbox', this).trigger('click');
-    //     }
-    // });
+    rowSelection();
+    
 } );
+
+
+function rowSelection()
+{
+    $('#data_table tbody').on( 'click', 'td', function () {
+            // Make the table row is clickable if the td is not details-control
+           if(!$(this).hasClass('details-control'))
+           {
+                $(this).closest('tr').toggleClass('selected');
+                $(':checkbox', $(this).closest('tr')).prop('checked', function(index, attr){
+                    return attr ==true? false : true;
+                });
+           }
+            
+    } );
+}
+function enableColumnSearch(table)
+{
+    $('#min, #max').keyup( function() {
+        table.draw();
+    } );
+
+}
+
+
+
 
 function detailControl(table)
 {
@@ -274,7 +299,7 @@ function detailControl(table)
 function format(d){
         
         d.CanCon = d.CanCon == 0 ? 'No' : 'Yes';
-        d.status = d.status == 0 ? 'Reject' : d.status == 1 ? 'Accept' : 'N/A'
+        d.status = d.status == 0 ? 'Reject' : d.status == 1 ? 'Accept' : 'N/A';
          // `d` is the original data object for the row
          return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
              '<tr>' +
