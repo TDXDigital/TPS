@@ -46,6 +46,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $label_size = filter_input(INPUT_POST, "Label_Size")? : 1;
         $locale = filter_input(INPUT_POST, "locale")? :"international";
         $release_date = filter_input(INPUT_POST,'rel_date')?:NULL;
+        $tags = filter_input(INPUT_POST, "tag", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
         $note = filter_input(INPUT_POST, "notes")?:NULL;
 
         $replacePatterns = array(
@@ -141,7 +142,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 	}
         $result = $library->createAlbum($artist, $album, $format, $genre, $labelNum, $locale, $CanCon, $playlist,
             $governmentCategory, $schedule,$note, $accepted, $variousartists, $datein, $release_date, $print,
-	    $rating);
+	    $rating, $tags);
+
         if(is_string($result)){
             $app->flash('error',$mysqli->error);
             $app->redirect('./new');
