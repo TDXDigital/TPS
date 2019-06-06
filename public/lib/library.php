@@ -884,7 +884,7 @@ class library extends station{
 
     public function createAlbum($artist, $album, $format, $genre, $labelNum, $locale, $CanCon, $playlist,
                                 $governmentCategory, $schedule, $note="", $accepted=1, $variousartists=False,
-                                $datein=null, $release_date=null, $print=1, $rating=null){
+                                $datein=null, $release_date=null, $print=1, $rating=null, $tags=null){
         if(is_null($datein)){
             $datein = date("Y-m-d");
         }
@@ -964,6 +964,38 @@ class library extends station{
             else{
                 error_log($this->mysqli->error);
             }
+	    
+	    if(!is_null($tags)) {
+		// Check which album-assigned tags are already in the database
+		$sql=$this->mysqli->query("SELECT * FROM tags WHERE name IN ('" . implode("', '", $tags) . "')");
+		$results = [];
+		while($result_temp = $sql->fetch_array(MYSQLI_ASSOC))
+		    array_push($results, $result_temp);
+		$tag_ids = array_fill(0, sizeof($tags), NULL); // Parallel array of db id for each tag
+		foreach($results as $result)
+		    $tag_ids[array_search($result['name'], $tags)] = $result['id'];
+
+		// Insert all the tags into tags table that aren't inserted yet
+		$tags_to_add = [];
+		foreach($tag_ids as $index => $id)
+		    if(is_null($id))
+			array_push($tags_to_add, $tags[$index]);
+		$sql = $this->mysqli->query("INSERT INTO tags (name) VALUES ('" . implode("'), ('", $tags_to_add) . "')");
+
+		// Gather all tag id's for this album
+		$sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
+		$last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
+		foreach($tag_ids as $i=>$id)
+		    if(is_null($id))
+			$tag_ids[$i] = $last_insert_id++;
+
+		// Insert tag/album combos into intermediary table
+		$values = "";
+		foreach($tag_ids as $id)
+		    $values = $values . "(" . $id_last  .  ", " . $id  . "), ";
+		$values = substr($values, 0, strlen($values)-2); // Remove trailing comma
+		$sql = $this->mysqli->query("INSERT INTO library_tags (library_RefCode, tag_id) VALUES " . $values);
+	    }
 
             if(strtolower(substr($artist,-1))!='s'){
                 $s = "s";
