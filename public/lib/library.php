@@ -701,18 +701,33 @@ class library extends station{
         return $result;
         
     }
-    public function displayTable()
+    public function displayTable($filter_status, $filter_date)
     {
-        // DB table to use
+        $where = '';
+        switch($filter_status)
+        {   
+            case 'all': $where = " true"; break;
+            case 'pass': $where = " status = 1"; break;
+            case 'reject': $where = " status = 0"; break;
+            case 'na': $where = " status = null"; break;
+        }
+        switch($filter_date)
+        {   
+            case 'all': $where .= " AND true"; break;
+            case 'new_recive': $where .= " AND TIMESTAMPDIFF(MONTH, dateIn, now()) < 6"; break;
+            case 'new_release': $where .= " AND TIMESTAMPDIFF(MONTH, release_date, now()) < 6"; break;
+            case 'old_recive': $where .= " AND TIMESTAMPDIFF(MONTH, dateIn, now()) >= 6"; break;
+            case 'old_release': $where .= " AND TIMESTAMPDIFF(MONTH, release_date, now()) >= 6"; break;
+        }
         $table = 'library';
          
         // Table's primary key
-        $primaryKey = 'RefCode';
-         
+        $primaryKey = 'RefCode';         
         // Array of database columns which should be read and sent back to DataTables.
         // The `db` parameter represents the column name in the database, while the `dt`
         // parameter represents the DataTables column identifier. In this case simple
         // indexes
+        
         $columns = array(
             array( 'db' => 'refCode', 'dt' => 'DT_RowId' ),
             array( 'db' => 'refCode', 'dt' => 'refCode' ),
@@ -731,9 +746,12 @@ class library extends station{
             array( 'db' => 'note',   'dt' => 'note' ),
             array( 'db' => 'rating',   'dt' => 'rating' ),
             array( 'db' => 'playlist_flag',   'dt' => 'playlist_flag' ),
+            array( 'db' => 'release_date',   'dt' => 'release_date' ),
         );
 
-        $lib_data = \SSP::simple( $_GET, $this->db, $table, $primaryKey, $columns );
+        $lib_data = \SSP::complex($_GET, $this->db, $table, $primaryKey, $columns, null, $where);
+
+        //
         $genreList = self::getLibraryGenres();
         foreach($lib_data['data'] as $i => $item)
         {

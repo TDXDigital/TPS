@@ -180,11 +180,10 @@ $(document).ready(function() {
         "select": true,
         "ajax": {
             "url": "/library/display", 
-            // "type": "POST",
             "data": function(d) {
-                    d.foo = "foo";
-                    // d.status = 0;
-                }
+                    d.filter_status = $('#filter_status').val();
+                    d.filter_date = $('#filter_date').val();
+                 }
         },
         "columns": [
             {
@@ -192,7 +191,6 @@ $(document).ready(function() {
                 "orderable":      true,
                 "data":           "refCode",
                 "defaultContent": "",
-                
             },
             // { "data": "check" },
             { "data": "refCode" },
@@ -201,15 +199,14 @@ $(document).ready(function() {
             { "data": "artist" },
             { "data": "album" },
             { "data": "genre" },
-            { "data": "year" }
+            { "data": "year" },
         ],
         "columnDefs": [
             {
               "render": function (data, type, row) {
                          return '<i class="fa fa-plus-square" aria-hidden="true" style="color:green">&nbsp&nbsp</i> &ensp;' + data +
                          '<input type="checkbox" name="bulkEditId[]" style="visibility:hidden" value="'+data+'">';
-                     },
-                     //width:"15px",
+                },
                      "targets": 0
             },
             {
@@ -254,10 +251,9 @@ function rowSelection()
 }
 function enableColumnSearch(table)
 {
-    $('#min, #max').keyup( function() {
+    $('#filter_status, #filter_date').on('change', function() {
         table.draw();
-    } );
-
+    });
 }
 
 
@@ -305,50 +301,42 @@ function format(d){
              '<tr>' +
                  '<td>Artist:</td>' +
                  '<td>'+ d.artist +'</td>' +
-             '</tr>' +
-             '<tr>' +
                  '<td>Album:</td>' +
                  '<td> '+ d.album +'</td>' +
              '</tr>' +
              '<tr>' +
                  '<td>Genre:</td>' +
                  '<td>'+ d.genre_detail +'</td>' +
-             '</tr>' +
-             '<tr>' +
                  '<td>Year:</td>' +
                  '<td>' + d.year +'</td>' +
              '</tr>' +
              '<tr>' +
                  '<td>Date In:</td>' +
                  '<td>'+ d.datein +'</td>' +
+                 '<td>Realeased Date:</td>' +
+                 '<td>'+ d.release_date +'</td>' +
              '</tr>' +
              '<tr>' +
                  '<td>Format:</td>' +
                  '<td>' + d.format +'</td>' +
-             '</tr>' +
-             '<tr>' +
                  '<td>Status:</td>' +
                  '<td>'+ d.status +'</td>' +
              '</tr>' +
              '<tr>' +
                  '<td>Locale:</td>' +
                  '<td>'+ d.locale +'</td>' +
-             '</tr>' +
-             '<tr>' +
                  '<td>Cancon:</td>' +
                  '<td>' + d.CanCon +'</td>' +
              '</tr>' +
              '<tr>' +
-                 '<td>note:</td>' +
-                 '<td>'+d.note +'</td>' +
-             '</tr>' +
-             '<tr>' +
                  '<td>rating:</td>' +
                  '<td>'+d.rating +'</td>' +
-             '</tr>' +
-             '<tr>' +
                  '<td>playlist_flag:</td>' +
                  '<td>'+d.playlist_flag +'</td>' +
+             '</tr>' +
+             '<tr>' +
+                 '<td>note:</td>' +
+                 '<td colspan="3">'+d.note +'</td>' +
              '</tr>' +
          '</table>';  
     }

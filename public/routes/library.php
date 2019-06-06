@@ -165,8 +165,9 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
     });
     $app->get('/display', $authenticate, function () use ($app){
          $library = new \TPS\library();
-         echo $app->request->get("foo");
-         echo $library -> displayTable();
+        $filter_status = $app->request->get("filter_status");
+        $filter_date = $app->request->get("filter_date");
+        echo $library -> displayTable($filter_status, $filter_date);
     });
     $app->get('/search', $authenticate, function () use ($app){
         $app->redirect('./search/');
