@@ -16,6 +16,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $params = array(
             "govCats"=>$library->getGovernmentCodes(),
             "genres"=>$library->getLibraryGenres(),
+	    "tags"=>$library->getTags(),
             "labels"=>\TPS\label::nameSearch("%",False),
             "format"=>$library->getMediaFormats(),
             "scheduleBlock"=>$library->getScheduleBlocks(),
@@ -595,11 +596,13 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $album['label']=$library->getLabelbyId($album['labelid'])[0];
         $album['websites']=$library->getWebsitesByRefCode($RefCode);
         $album['playlist'] = $library->playlist->getAllByRefCode($RefCode);
+	$album['tags'] = $library->getTagsByRefCode($RefCode);
 
         $params = array(
             "album"=>$album,
             "govCats"=>$library->getGovernmentCodes(),
             "genres"=>$library->getLibraryGenres(),
+	    "tags"=>$library->getTags(),
             "labels"=>\TPS\label::nameSearch("%",False),
             "format"=>$library->getMediaFormats(),
             "scheduleBlock"=>$library->getScheduleBlocks(),

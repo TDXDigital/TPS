@@ -409,6 +409,32 @@ class library extends station{
     }
 
     /**
+     * @abstract return all the tags ever used on albums
+     * @global mysqli $mysqli
+     * @return array
+     */
+    public function getTags() {
+	$sql = $this->mysqli->query("SELECT name FROM tags ORDER BY name");
+	$tags = [];
+	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
+	    array_push($tags, $row['name']);
+	return $tags;
+    }
+
+    /**
+     * @abstract return all tags for a specific album
+     * @global mysqli $mysqli
+     * @return array
+     */
+    public function getTagsByRefCode($refcode) {
+	$sql = $this->mysqli->query("SELECT name FROM tags WHERE id IN (SELECT tag_id FROM library_tags WHERE library_RefCode=" . $refcode . ") ORDER BY name");
+	$tags = [];
+	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
+	    array_push($tags, $row['name']);
+	return $tags;
+    }
+
+    /**
      * set status of refcode(s)
      * @param array $refcodes
      * @param int $status

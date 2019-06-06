@@ -186,6 +186,11 @@
                         <label for="label" class="input-group-addon">Tags</label>
                         <select name="tag[]" id="tag_selector" multiple
                                 class="form-control chosen-select-add">
+			{% for tag in tags %}
+			    <option value="{{tag}}"
+			    {% if tag in album.tags %} selected {% endif %}
+			    >{{tag}}</option>
+			{% endfor %}
                         </select>
 		    </div>
                 </div>
