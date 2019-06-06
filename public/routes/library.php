@@ -250,6 +250,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
     });
     $app->get('/display', $authenticate, function () use ($app){
          $library = new \TPS\library();
+         echo $app->request->get("foo");
          echo $library -> displayTable();
     });
     $app->get('/search', $authenticate, function () use ($app){
@@ -333,13 +334,13 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             switch ($action){
                 case "status":
                     if($value==TRUE){
-                        $result = $library->enable($bulkIds);
+                        $result[] = $library->enable($bulkIds);
                         break;
                     }
-                    $result = $library->disable($bulkIds);
+                    $result[] = $library->disable($bulkIds);
                     break;
                 case "attribute":
-                    $result = $library->attribute($bulkIds, $attribute, $value);
+                    $result[] = $library->attribute($bulkIds, $attribute, $value);
                     break;
                 case "proper":
                     if(in_array(strtolower($attribute),
@@ -381,7 +382,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     if(in_array(strtolower($value),
                                 array("complete", "pending", "false")
                             )){
-                        $result = $library->playlistStatus($bulkIds,
+                        $result[] = $library->playlistStatus($bulkIds,
                                                            strtoupper($value));
                         break;
                     }
@@ -401,6 +402,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 }
             }
         }
+
         if(in_array(TRUE, $result)){
             $app->flash('success',"Batch Update Performed");
         }

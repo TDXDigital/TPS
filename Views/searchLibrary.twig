@@ -43,6 +43,17 @@
         </div>
     {% endif %}
     
+    <table border="0" cellspacing="5" cellpadding="5">
+        <tbody><tr>
+            <td>Minimum age:</td>
+            <td><input type="text" id="min" name="min"></td>
+        </tr>
+        <tr>
+            <td>Maximum age:</td>
+            <td><input type="text" id="max" name="max"></td>
+        </tr>
+    </tbody>
+    
     <form role="form" method="POST" action="/library/batch">
     <input type="hidden" name="_METHOD" value="PUT"/>
     <table class='table table-bordered table-hover display' id='data_table'>
