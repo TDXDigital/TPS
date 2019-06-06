@@ -667,10 +667,23 @@
                 if (e.which == 13 && chosen.find('li.no-results').length > 0)
                 {
                     var option = $("<option>").val(this.value).text(this.value);
-		    select = $('#' + this.parentElement.parentElement.parentElement.previousSibling.id);
-
-                    // add the new option
-                    select.append(option);
+		    var id = this.parentElement.parentElement.parentElement.previousSibling.id;
+		    select = $('#' + id);
+		    var t = option[0].innerText.toLowerCase();
+		    if (id == 'label' && (
+			t == 'sr' || 
+			t == 'self released' ||
+			t == 's/r' ||
+			t == 'independent'
+			)) {
+			// Auto-correct to Self-Released
+			var currSelect = select.chosen().val();
+			var newSelect = currSelect.concat("Self-Released");
+			select.chosen().val(newSelect);
+		    } else {
+                        // add the new option
+                        select.append(option);
+		    }
                     // automatically select it
                     select.find(option).prop('selected', true);
                     // trigger the update
