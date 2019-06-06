@@ -175,7 +175,7 @@
                                 class="form-control chosen-select-add">
                             {% for label in labels %}
                                 <option value="{{label}}"
-                                {% if album.label.name == label %} selected {% endif %}
+                                {% if label in album.labels %} selected {% endif %}
                                 >{{label}}</option>
                             {% endfor %}
                         </select>
