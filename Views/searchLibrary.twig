@@ -42,17 +42,25 @@
             </div>
         </div>
     {% endif %}
-    
-    <table border="0" cellspacing="5" cellpadding="5">
-        <tbody><tr>
-            <td>Minimum age:</td>
-            <td><input type="text" id="min" name="min"></td>
-        </tr>
-        <tr>
-            <td>Maximum age:</td>
-            <td><input type="text" id="max" name="max"></td>
-        </tr>
-    </tbody>
+    <div class="form-group row">
+        <div class="col-xs-2">
+          <select class="form-control" id="filter_status">
+            <option value="all">Filter-Status: All</option>
+            <option value="pass">Pass</option>
+            <option value="reject">Reject</option>
+            <option value="na">N/A</option>
+          </select>
+        </div>
+        <div class="col-xs-2">
+          <select class="form-control" id="filter_date">
+            <option value="all">Filter-Date: All</option>
+            <option value="new_recive">New Recived(6 Months)</option>
+            <option value="new_release">New Released(6 Months)</option>
+            <option value="old_recive">Old Recived</option>
+            <option value="old_release">Old Released</option>
+          </select>
+        </div>
+    </div>
     
     <form role="form" method="POST" action="/library/batch">
     <input type="hidden" name="_METHOD" value="PUT"/>
