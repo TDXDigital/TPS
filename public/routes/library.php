@@ -594,6 +594,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $app->halt(500, "not valid");
         }
         $album['label']=$library->getLabelbyId($album['labelid'])[0];
+	$album['labels'] = $library->getLabelsByRefCode($RefCode);
         $album['websites']=$library->getWebsitesByRefCode($RefCode);
         $album['playlist'] = $library->playlist->getAllByRefCode($RefCode);
 	$album['tags'] = $library->getTagsByRefCode($RefCode);

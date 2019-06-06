@@ -76,6 +76,22 @@ class library extends station{
     }
 
     /**
+     * @abstract returns record labels for a given album
+     * @global mysqli $mysqli
+     * @param type $RefCode Reference Code for Album
+     * @return array of record label names
+     */
+    public function getLabelsByRefCode($RefCode) {
+	$sql = $this->mysqli->query("SELECT Name FROM recordlabel WHERE LabelNumber IN " .
+				    "(SELECT recordlabel_LabelNumber FROM library_recordlabel WHERE library_RefCode=" . $RefCode . ") " .
+				    "ORDER BY Name");
+	$labels = [];
+	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
+	    array_push($labels, $row['Name']);
+	return $labels;
+    }
+
+    /**
      * @abstract returns static associative array of genres
      * @todo implement database storage
      * @return array
