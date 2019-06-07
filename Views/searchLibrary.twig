@@ -43,22 +43,9 @@
         </div>
     {% endif %}
     <div class="form-group row">
+        
         <div class="col-xs-2">
-          <select class="form-control" id="filter_status">
-            <option value="all">Filter-Status: All</option>
-            <option value="accept">Accept</option>
-            <option value="reject">Reject</option>
-            <option value="na">N/A</option>
-          </select>
-        </div>
-        <div class="col-xs-2">
-          <select class="form-control" id="filter_date">
-            <option value="all">Filter-Date: All</option>
-            <option value="new_recive">New Received (6 Months)</option>
-            <option value="new_release">New Released (6 Months)</option>
-            <option value="old_recive">Old Received</option>
-            <option value="old_release">Old Released</option>
-          </select>
+          
         </div>
     </div>
     
@@ -66,6 +53,33 @@
     <input type="hidden" name="_METHOD" value="PUT"/>
     <table class='table table-bordered table-hover display' id='data_table'>
         <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th>
+                    
+                      <select class="form-control" id="filter_status">
+                        <option value="all">All</option>
+                        <option value="accept">Accept</option>
+                        <option value="reject">Reject</option>
+                        <option value="na">N/A</option>
+                      </select>
+                    
+                </th>
+                <th>
+                      <select class="form-control" id="filter_date">
+                        <option value="all">All</option>
+                        <option value="new_recive">New Received</option>
+                        <option value="new_release">New Released</option>
+                        <option value="old_recive">Old Received</option>
+                        <option value="old_release">Old Released</option>
+                      </select>
+                </th>
+                <th>some</th>
+                <th>more</th>
+                <th>filters</th>
+                <th></th>
+            </tr>
             <tr>
                 <th></th>
                 <th><i class="fa fa-barcode "></i></th>
