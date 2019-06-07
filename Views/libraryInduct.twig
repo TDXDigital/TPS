@@ -12,6 +12,12 @@
 {% endblock %}
 {% block title %}{{title|default('Library Receiving')}}{% endblock %}
 {% block breadcrumb %}
+
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-arrow-left"></i>  <a class="back" href="#">Back</a>
+    </li>
+</ol>
 <ol class="breadcrumb">
     <li>
         <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
@@ -112,6 +118,7 @@
                     </div>
                 </div>
                 {% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
+                {#
                 <div class="col-lg-6">
                     <div id="gen_group" class="form-group input-group">
                         <label for="schedule" class="input-group-addon">Schedule</label>
@@ -129,6 +136,7 @@
                         <br>
                     </div>
                 </div>
+                #}
                 {% endif %}
 		<div class="col-lg-6">
 		    <div id="rating" class="form-group input-group">
@@ -809,5 +817,13 @@
 <script>
     // Activate chosen elements
     $(".chosen-select").chosen();
+
+    //back link
+    $(document).ready(function(){
+    $('a.back').click(function(){
+        parent.history.back();
+        return false;
+    });
+});
 </script>
 {% endblock %}

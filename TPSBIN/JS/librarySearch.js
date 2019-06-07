@@ -198,7 +198,7 @@ $(document).ready(function() {
             { "data": "datein" },
             { "data": "artist" },
             { "data": "album" },
-            { "data": "genre" },
+            { "data": "genre_detail" },
             { "data": "year" },
         ],
         "columnDefs": [

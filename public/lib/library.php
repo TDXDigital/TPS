@@ -707,7 +707,7 @@ class library extends station{
         switch($filter_status)
         {   
             case 'all': $where = " true"; break;
-            case 'pass': $where = " status = 1"; break;
+            case 'accept': $where = " status = 1"; break;
             case 'reject': $where = " status = 0"; break;
             case 'na': $where = " status = null"; break;
         }
