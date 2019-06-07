@@ -239,7 +239,7 @@ function rowSelection()
 {
     $('#data_table tbody').on( 'click', 'td', function () {
             // Make the table row is clickable if the td is not details-control
-           if(!$(this).hasClass('details-control'))
+           if(!$(this).hasClass('details-control') && $(this).closest('tr').attr('id'))
            {
                 $(this).closest('tr').toggleClass('selected');
                 $(':checkbox', $(this).closest('tr')).prop('checked', function(index, attr){
@@ -278,7 +278,7 @@ function detailControl(table)
         }
         else {
             // Open this row
-                 row.child(format(row.data())).show();
+                 var rowi = row.child(format(row.data())).show();
                  tr.addClass('shown');
                  tdi.first().removeClass('fa-plus-square');
                  tdi.first().addClass('fa-minus-square');
@@ -297,7 +297,7 @@ function format(d){
         d.CanCon = d.CanCon == 0 ? 'No' : 'Yes';
         d.status = d.status == 0 ? 'Reject' : d.status == 1 ? 'Accept' : 'N/A';
          // `d` is the original data object for the row
-         return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+         return '<table cellpadding="5" class="detail_table" cellspacing="0" border="0" style="padding-left:50px;">' +
              '<tr>' +
                  '<td>Artist:</td>' +
                  '<td>'+ d.artist +'</td>' +
