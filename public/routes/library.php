@@ -132,9 +132,15 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             }
 	}
 
+	$genre_num = NULL;
         if($genre=="null"){
             $genre=NULL;
-        }
+        } else {
+	    $genre_text = $library->getLibraryGenres()[$genre];
+	    preg_match("/[0-9]+/", $genre_text, $matches);
+	    $genre_num = $matches[0];
+	}
+
         if(!$accepted){
             $playlist=2;
         }
@@ -144,7 +150,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 	    $rating = (int)$rating;
 	}
 
-        $result = $library->createAlbum($artist, $album, $format, $genre, $labelNums, $locale, $CanCon, $playlist,
+        $result = $library->createAlbum($artist, $album, $format, $genre, $genre_num, $labelNums, $locale, $CanCon, $playlist,
             $governmentCategory, $schedule,$note, $accepted, $variousartists, $datein, $release_date, $print,
 	    $rating, $tags);
 

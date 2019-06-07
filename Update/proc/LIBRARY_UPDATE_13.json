@@ -1,0 +1,17 @@
+{
+    "TPS_Errno": "DBUD-013",
+    "type" : "database",
+    "execute" : "SQL",
+    "requires" : "DBUD-008",
+    "description" : "Adds the library code column for albums - the RefCode preceeded by the genre number",
+    "SQL_QRY" : {
+        "TEST": "SHOW COLUMNS FROM `library` WHERE `Field` = 'library_code';",
+        "RESULT" : {
+            "Field" : [
+                "library_code"
+            ]
+        },
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "LIBRARY_UPDATE_13.sql"
+    }
+}

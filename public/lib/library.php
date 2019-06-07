@@ -942,7 +942,7 @@ class library extends station{
         return $params;
     }
 
-    public function createAlbum($artist, $album, $format, $genre, $labelNums, $locale, $CanCon, $playlist,
+    public function createAlbum($artist, $album, $format, $genre, $genre_num, $labelNums, $locale, $CanCon, $playlist,
                                 $governmentCategory, $schedule, $note="", $accepted=1, $variousartists=False,
                                 $datein=null, $release_date=null, $print=1, $rating=null, $tags=null){
         if(is_null($datein)){
@@ -1024,14 +1024,20 @@ class library extends station{
             else{
                 error_log($this->mysqli->error);
             }
-	    
+
+	    if(!is_null($genre_num)) {
+		// Insert library code with leading genre number
+		$library_code = "{$genre_num}-{$id_last}";
+		$this->mysqli->query("UPDATE library SET library_code='{$library_code}' WHERE RefCode={$id_last}");
+	    }
+
 	    if(!is_null($labelNums)) {
 		// Insert album and record label combos into library_recordlabel intermediary table
 		$values = "";
 		foreach($labelNums as $labelNum)
 		    $values = $values . "(" . $id_last  .  ", " . $labelNum  . "), ";
 		$values = substr($values, 0, strlen($values)-2); // Remove trailing comma
-		$sql = $this->mysqli->query("INSERT INTO library_recordlabel (library_RefCode, recordlabel_LabelNumber) VALUES " . $values);
+		$this->mysqli->query("INSERT INTO library_recordlabel (library_RefCode, recordlabel_LabelNumber) VALUES " . $values);
 	    }
 
 	    if(!is_null($tags)) {
@@ -1049,7 +1055,7 @@ class library extends station{
 		foreach($tag_ids as $index => $id)
 		    if(is_null($id))
 			array_push($tags_to_add, $tags[$index]);
-		$sql = $this->mysqli->query("INSERT INTO tags (name) VALUES ('" . implode("'), ('", $tags_to_add) . "')");
+		$this->mysqli->query("INSERT INTO tags (name) VALUES ('" . implode("'), ('", $tags_to_add) . "')");
 
 		// Gather all tag id's for this album
 		$sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
@@ -1063,7 +1069,7 @@ class library extends station{
 		foreach($tag_ids as $id)
 		    $values = $values . "(" . $id_last  .  ", " . $id  . "), ";
 		$values = substr($values, 0, strlen($values)-2); // Remove trailing comma
-		$sql = $this->mysqli->query("INSERT INTO library_tags (library_RefCode, tag_id) VALUES " . $values);
+		$this->mysqli->query("INSERT INTO library_tags (library_RefCode, tag_id) VALUES " . $values);
 	    }
 
             if(strtolower(substr($artist,-1))!='s'){
