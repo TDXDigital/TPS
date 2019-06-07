@@ -75,7 +75,7 @@
                     <div id="gen_group" class="form-group input-group">
                         <label for="genre" class="input-group-addon">Genre&nbsp;</label>
                         <select id="genre" class="form-control" name="genre" data-placeholder="Album Genre" style="min-width: 150px;">
-                            <!--<option value="null">Genre</option>-->
+                            <option value="null">None</option>
                             {% for key,value in genres %}
                                 <option value='{{key}}'
                                         {% if album.genre == key %} selected {% endif %}
