@@ -177,6 +177,14 @@
                 </div>
                 <div class="col-md-12">
                     <div class="form-group input-group">
+                        <label for="label" class="input-group-addon">Hometown</label>
+                        <select name="hometown[]" id="hometown" multiple
+                                class="form-control chosen-select-add">
+                        </select>
+		    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group input-group">
                         <label for="label" class="input-group-addon">Record Labels</label>
                         <select name="label[]" id="label"
                                 required="required" multiple
@@ -652,8 +660,8 @@
 
         // cache the select element as we'll be using it a few times
         //select = $(".chosen-select-add");
-	select = [$('#label'), $('#tag_selector')];
-	select_str = ['record label', 'tag']
+	select = [$('#label'), $('#tag_selector'), $('#hometown')];
+	select_str = ['record label', 'tag', 'hometown']
 
 	for (i = 0; i < select.length; i++) {
             // init the chosen plugin
@@ -675,10 +683,23 @@
                 if (e.which == 13 && chosen.find('li.no-results').length > 0)
                 {
                     var option = $("<option>").val(this.value).text(this.value);
-		    select = $('#' + this.parentElement.parentElement.parentElement.previousSibling.id);
-
-                    // add the new option
-                    select.append(option);
+		    var id = this.parentElement.parentElement.parentElement.previousSibling.id;
+		    select = $('#' + id);
+		    var t = option[0].innerText.toLowerCase();
+		    if (id == 'label' && (
+			t == 'sr' || 
+			t == 'self released' ||
+			t == 's/r' ||
+			t == 'independent'
+			)) {
+			// Auto-correct to Self-Released
+			var currSelect = select.chosen().val();
+			var newSelect = currSelect.concat("Self-Released");
+			select.chosen().val(newSelect);
+		    } else {
+                        // add the new option
+                        select.append(option);
+		    }
                     // automatically select it
                     select.find(option).prop('selected', true);
                     // trigger the update
