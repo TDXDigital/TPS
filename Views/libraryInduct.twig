@@ -238,7 +238,7 @@
                     </div>
                     <div class="col-lg-3">
                         <input id='canconCheckbox' type="checkbox" data-label-prepend="Cancon" class="style3" 
-			       name="cancon" checked="checked" value="0" onclick="toggleCancon()" />
+			       name="cancon" value="0" onclick="toggleCancon()" />
                     </div>
                     <div class="col-lg-3">
                         <input id='playlistCheckbox' type="checkbox" data-label-prepend="PL" class="style3" name="playlist" checked="checked" value="0"/>
@@ -575,13 +575,25 @@
 	} 
     }
 
+    function updateRegion() {
+	canconButtonOff = !$("#canconCheckbox").next().attr('class').split(" ").includes('active');
+	if (canconButtonOff || $('#hometown').chosen().val() == null)
+		$('#canconCheckbox').next().find('button').click();
+	else {
+		region = getRegion($('#hometown').chosen().val());
+		if (region == 'International')
+			region = 'Country';
+		$('#locale').val(region);
+	}
+    }
+
     function toggleCancon() {
 	buttonOn = !$("#canconCheckbox").next().attr('class').split(" ").includes('active');
 	region = getRegion($('#hometown').chosen().val());
-	if (buttonOn && region == "International") {
+	if (buttonOn && region == "International")
 		region = "Country";
-		$('#locale').val(region); 
-	}
+	$('#locale').val(region); 
+
     }
 
     function toggleVA() {
@@ -752,12 +764,19 @@
                         // add the new option
                         select.append(option);
 		    }
+
                     // automatically select it
                     select.find(option).prop('selected', true);
                     // trigger the update
                     select.trigger("chosen:updated");
+
+		    if (id == 'hometown')
+			updateRegion();
                 }
             });
+	
+	// Update the Region field when a user deselects a hometown
+	$('#hometown').chosen().change(function() {updateRegion();});
 
         $('#form').on('submit', function(e) {
             if(!$("#label").valid()) {
