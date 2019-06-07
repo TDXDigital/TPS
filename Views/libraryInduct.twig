@@ -56,7 +56,7 @@
                     <label class="input-group-addon" for="alb_field">Album<span style="color:red">*</span></label>
                     <input name="album" id="alb_field" type="text" required
                            {% if album.album is not null %} value="{{album.album}}" {% endif %}
-                           placeholder="Start typing album name to retrieve list" autocomplete="on" class="form-control TPSAutoSearch">
+                           placeholder="Start typing album name to retrieve list" autocomplete="on" class="form-control TPSAutoSearch" onkeyup="catch_enter(event);">
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="button" onclick="get_albums();return true;"><i class="fa fa-search"></i></button>
                     </span>
@@ -788,6 +788,18 @@
             type: "GET"
         }).done(function(html_returned){
             $("#table_display").html(html_returned);
+
+	    // If the artist & album match one in the library, reject it.
+	    var rows = $('#table_display').find('tr');
+	    for (var i = 1; i < rows.length; i++) {
+		if (rows[i].children[2].innerHTML.toLowerCase() == $('#art_field').val().toLowerCase() &&
+		    rows[i].children[3].innerHTML.toLowerCase() == $('#alb_field').val().toLowerCase()) {
+		    $('#notes').val('Duplicate copy');
+		    if ($("#keepCheckbox").next().attr('class').split(" ").includes('active'))
+		        $('#keepCheckbox').next().find('button').click();
+		    break;
+		}
+	    } 
         });
     }
 
