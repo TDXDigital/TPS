@@ -221,7 +221,7 @@
                 <div class="col-lg-3">
                     <input type="checkbox" id="va_checkbox"
                            {% if album.variousartists == 1 %} checked="checked" {% endif %}
-                           data-label-prepend="VA" class="style3" name="VA" value="1" />
+                           data-label-prepend="VA" class="style3" name="VA" value="1" onclick="toggleVA()"/>
                 </div>
                 {% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
 		    <div class="col-lg-3">
@@ -538,6 +538,12 @@
 <script type="text/javascript" src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
 <script type="text/javascript" src="{{siteUrl}}/js/bootstrap/checkbox/js/bootstrap-checkbox.js "></script>
 <script type="text/javascript">
+    function toggleVA() {
+	variousArtists = !$("#va_checkbox").next().attr('class').split(" ").includes('active');
+	if (variousArtists)
+		$('#art_field').val("Various Artists");
+    }
+
     function toggleKeep() {
 	keeping = $("#keepCheckbox").next().attr('class').split(" ").includes('active');
 	printing = $('#printCheckbox').next().attr('class').split(" ").includes('active');
@@ -746,9 +752,9 @@
             checkedClass: 'icon-check',
             uncheckedClass: 'icon-check-empty'
         });
-        $('.TPSAutoSearch').focusout(function() {
-            get_albums();
-        });
+        //$('.TPSAutoSearch').focusout(function() {
+        //    get_albums();
+        //});
     });
     function self_titled(){
         $("#alb_field").val($("#art_field").val());
