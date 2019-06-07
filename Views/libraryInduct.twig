@@ -237,7 +237,11 @@
                         <input id="printCheckbox" type="checkbox" data-label-prepend="Print" class="style3" name="print" checked="checked" value="1" />
                     </div>
                     <div class="col-lg-3">
-                        <input id='playlistCheckbox' type="checkbox" data-label-prepend="PL" class="style3" name="playlist" checked="checked" value="0" />
+                        <input id='canconCheckbox' type="checkbox" data-label-prepend="Cancon" class="style3" 
+			       name="cancon" checked="checked" value="0" onclick="toggleCancon()" />
+                    </div>
+                    <div class="col-lg-3">
+                        <input id='playlistCheckbox' type="checkbox" data-label-prepend="PL" class="style3" name="playlist" checked="checked" value="0"/>
                     </div>
                     {% else %}
                     <div class="col-lg-3">
@@ -538,6 +542,48 @@
 <script type="text/javascript" src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
 <script type="text/javascript" src="{{siteUrl}}/js/bootstrap/checkbox/js/bootstrap-checkbox.js "></script>
 <script type="text/javascript">
+    function getRegion(hometowns) {
+	regionNum = 3;
+	if (hometowns != null) {
+		regionNum = Math.min(...hometowns.map(function(location) {
+			if (location == 'Lethbridge, AB')
+				return 0;  // Local
+			prov = location.slice(-4);
+			if (prov == ', AB')
+				return 1;  // Provincial
+			if (prov == ', BC' ||
+			    prov == ', SK' ||
+			    prov == ', MB' ||
+			    prov == ', ON' ||
+			    prov == ', QC' ||
+			    prov == ', NB' ||
+			    prov == ', PE' ||
+			    prov == ', NS' ||
+			    prov == ', NL' ||
+			    prov == ', YK' ||
+			    prov == ', NT' ||
+			    prov == ', IQ')
+				return 2;  // National
+			return 3;          // International
+		}));
+	}
+	switch(regionNum) {
+	  case 0: return "Local";
+	  case 1: return "Province";
+	  case 2: return "Country";
+	  case 3: return "International";
+	} 
+    }
+
+    function toggleCancon() {
+	buttonOn = !$("#canconCheckbox").next().attr('class').split(" ").includes('active');
+	region = getRegion($('#hometown').chosen().val());
+	if (buttonOn && region == "International") {
+		region = "Country";
+		$('#locale').val(region); 
+	}
+    }
+
     function toggleVA() {
 	variousArtists = !$("#va_checkbox").next().attr('class').split(" ").includes('active');
 	if (variousArtists)
