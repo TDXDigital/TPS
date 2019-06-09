@@ -181,8 +181,14 @@ $(document).ready(function() {
         "ajax": {
             "url": "/library/display", 
             "data": function(d) {
-                    d.filter_status = $('#filter_status').val();
-                    d.filter_date = $('#filter_date').val();
+                    
+                    d.filter = {
+                        status: $('#filter_status').val(), 
+                        date: $('#filter_date').val(),
+                        genre: $('#filter_genre').val(),
+                        locale: $('#filter_location').val(),
+                        format: $('#filter_format').val()
+                        }
                  }
         },
         "columns": [
@@ -251,7 +257,7 @@ function rowSelection()
 }
 function enableColumnSearch(table)
 {
-    $('#filter_status, #filter_date').on('change', function() {
+    $('.table_filter').on('change', function() {
         table.draw();
     });
 }

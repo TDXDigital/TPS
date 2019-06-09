@@ -171,9 +171,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
     });
     $app->get('/display', $authenticate, function () use ($app){
          $library = new \TPS\library();
-        $filter_status = $app->request->get("filter_status");
-        $filter_date = $app->request->get("filter_date");
-        echo $library -> displayTable($filter_status, $filter_date);
+        $filter = $app->request->get("filter");
+        echo $library -> displayTable($filter);
     });
     $app->get('/search', $authenticate, function () use ($app){
         $app->redirect('./search/');
@@ -191,6 +190,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $pages = ceil($library->countSearchLibrary()/$limit);
             $library->log->info("Search basic retrieval took ".
                     $library->log->timerDuration(). "s");
+            $genres = $library->getLibraryGenres();
+            $formats = $library->getMediaFormats();
             $params = array(
                 "area"=>"Library",
                 "albums"=>$result,
@@ -199,7 +200,9 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 "pages"=>$pages,
                 "limit"=>$limit,
                 "sortReversed"=>$reverse?1:0,
-                "sortColumn"=>$sortCol
+                "sortColumn"=>$sortCol,
+                "format"=>$formats,
+                "genres"=>$genres
             );
             $isXHR = $app->request->isAjax();
             if($isXHR || $format=="json"){

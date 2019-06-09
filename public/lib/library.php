@@ -634,7 +634,7 @@ class library extends station{
      * @param string $sort columns name to sort result by
      * @return boolean|array
      */
-    public function searchLibrary($term,$exact=False,$page=1,$limit=1000, $sort='RefCode', $reverse=false){
+    public function searchLibrary($term,$exact=False,$page=1,$limit=25, $sort='RefCode', $reverse=false){
 
         //$this->mysqli;
         $tps = new \TPS\TPS();
@@ -701,17 +701,16 @@ class library extends station{
         return $result;
         
     }
-    public function displayTable($filter_status, $filter_date)
+    public function getTableFilter($filter)
     {
-        $where = '';
-        switch($filter_status)
+         switch($filter["status"])
         {   
             case 'all': $where = " true"; break;
             case 'accept': $where = " status = 1"; break;
             case 'reject': $where = " status = 0"; break;
             case 'na': $where = " status = null"; break;
         }
-        switch($filter_date)
+        switch($filter["date"])
         {   
             case 'all': $where .= " AND true"; break;
             case 'new_recive': $where .= " AND TIMESTAMPDIFF(MONTH, dateIn, now()) < 6"; break;
@@ -719,6 +718,28 @@ class library extends station{
             case 'old_recive': $where .= " AND TIMESTAMPDIFF(MONTH, dateIn, now()) >= 6"; break;
             case 'old_release': $where .= " AND TIMESTAMPDIFF(MONTH, release_date, now()) >= 6"; break;
         }
+        switch($filter["genre"])
+        {
+            case 'all': $where .= " AND true"; break;
+            default: $where .= " AND genre = '". $filter["genre"]."'";
+        }
+        switch($filter["locale"])
+        {
+            case 'all': $where .= " AND true"; break;
+            default: $where .= " AND Locale = '". $filter["locale"]."'";
+        }
+        switch($filter["format"])
+        {
+            case 'all': $where .= " AND true"; break;
+            default: $where .= " AND format = '". $filter["format"]."'";
+        }
+        return $where;
+    }
+
+    public function displayTable($filter)
+    {
+        $where = self::getTableFilter($filter);
+        
         $table = 'library';
          
         // Table's primary key
