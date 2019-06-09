@@ -1046,11 +1046,9 @@ class library extends station{
                 error_log($this->mysqli->error);
             }
 
-	    if(!is_null($genre_num)) {
-		// Insert library code with leading genre number
-		$library_code = "{$genre_num}-{$id_last}";
-		$this->mysqli->query("UPDATE library SET library_code='{$library_code}' WHERE RefCode={$id_last}");
-	    }
+	    // Insert library code with leading genre number
+	    $library_code = "{$genre_num}-{$id_last}";
+	    $this->mysqli->query("UPDATE library SET library_code='{$library_code}' WHERE RefCode={$id_last}");
 
 	    if(!is_null($labelNums)) {
 		// Insert album and record label combos into library_recordlabel intermediary table
