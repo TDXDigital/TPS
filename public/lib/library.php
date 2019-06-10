@@ -425,6 +425,32 @@ class library extends station{
     }
 
     /**
+     * @abstract return all the hometowns ever used on albums
+     * @global mysqli $mysqli
+     * @return array
+     */
+    public function getHometowns() {
+	$sql = $this->mysqli->query("SELECT name FROM hometowns ORDER BY name");
+	$hometowns = [];
+	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
+	    array_push($hometowns, $row['name']);
+	return $hometowns;
+    }
+
+    /**
+     * @abstract return all hometownss for a specific album
+     * @global mysqli $mysqli
+     * @return array
+     */
+    public function getHometownsByRefCode($refcode) {
+	$sql = $this->mysqli->query("SELECT name FROM hometowns WHERE id IN (SELECT hometown_id FROM library_hometowns WHERE library_RefCode=" . $refcode . ") ORDER BY name");
+	$hometowns = [];
+	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
+	    array_push($hometowns, $row['name']);
+	return $hometowns;
+    }
+
+    /**
      * @abstract return all the tags ever used on albums
      * @global mysqli $mysqli
      * @return array

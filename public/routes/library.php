@@ -17,6 +17,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             "govCats"=>$library->getGovernmentCodes(),
             "genres"=>$library->getLibraryGenres(),
 	    "tags"=>$library->getTags(),
+	    "hometowns"=>$library->getHometowns(),
             "labels"=>\TPS\label::nameSearch("%",False),
             "format"=>$library->getMediaFormats(),
             "scheduleBlock"=>$library->getScheduleBlocks(),
@@ -513,7 +514,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $app->render("error.html.twig",$params);
             $app->halt(500, "not valid");
         }
-        $album['label']=$library->getLabelbyId($album['labelid'])[0];
+	$album['hometowns'] = $library->getHometownsByRefCode($RefCode);
 	$album['labels'] = $library->getLabelsByRefCode($RefCode);
         $album['websites']=$library->getWebsitesByRefCode($RefCode);
         $album['playlist'] = $library->playlist->getAllByRefCode($RefCode);
@@ -524,6 +525,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             "govCats"=>$library->getGovernmentCodes(),
             "genres"=>$library->getLibraryGenres(),
 	    "tags"=>$library->getTags(),
+	    "hometowns"=>$library->getHometowns(),
             "labels"=>\TPS\label::nameSearch("%",False),
             "format"=>$library->getMediaFormats(),
             "scheduleBlock"=>$library->getScheduleBlocks(),

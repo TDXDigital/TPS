@@ -180,6 +180,11 @@
                         <label for="label" class="input-group-addon">Hometown</label>
                         <select name="hometown[]" id="hometown" multiple
                                 class="form-control chosen-select-add">
+                            {% for town in hometowns %}
+                                <option value="{{town}}"
+                                {% if town in album.hometowns %} selected {% endif %}
+                                >{{town}}</option>
+                            {% endfor %}
                         </select>
 		    </div>
                 </div>
@@ -189,7 +194,7 @@
                         <select name="label[]" id="label"
                                 required="required" multiple
                                 class="form-control chosen-select-add">
-                            {% for label in album.labels %}
+                            {% for label in labels %}
                                 <option value="{{label}}"
                                 {% if label in album.labels %} selected {% endif %}
                                 >{{label}}</option>
