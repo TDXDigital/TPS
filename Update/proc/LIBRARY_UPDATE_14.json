@@ -1,0 +1,19 @@
+{
+    "TPS_Errno" : "DRLB-014",
+    "type" : "database",
+    "execute" : "SQL",
+    "requires" : "DRLB-001",
+    "description" : "Adds hometowns to database",
+    "SQL_QRY" : {
+	"TEST" : "SHOW COLUMNS FROM `hometowns` WHERE `Field` = 'name'",
+	"RESULT" : {
+	    "Field" : [
+		"name"
+	    ]
+	},
+	"Negate" : 0,
+	"createMode" : 1,
+	"UPDATE_TYPE" : "FILE",
+	"UPDATE" : "LIBRARY_UPDATE_14.sql"
+    }
+}

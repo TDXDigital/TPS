@@ -1,0 +1,19 @@
+{
+    "TPS_Errno" : "DRLB-015",
+    "type" : "database",
+    "execute" : "SQL",
+    "requires" : "DRLB-014",
+    "description" : "Adds hometowns intermediary to database",
+    "SQL_QRY" : {
+	"TEST" : "SHOW COLUMNS FROM `library_hometowns` WHERE `Field` = 'library_RefCode'",
+	"RESULT" : {
+	    "Field" : [
+		"library_RefCode"
+	    ]
+	},
+	"Negate" : 0,
+	"createMode" : 1,
+	"UPDATE_TYPE" : "FILE",
+	"UPDATE" : "LIBRARY_UPDATE_15.sql"
+    }
+}

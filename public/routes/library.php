@@ -35,6 +35,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $album = filter_input(INPUT_POST,"album");
         $genre = filter_input(INPUT_POST,"genre")?:NULL;
         $datein = filter_input(INPUT_POST, "indate")?:NULL;
+        $hometowns = filter_input(INPUT_POST, "hometown", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
         $rec_labels = filter_input(INPUT_POST, "label", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
         $format = filter_input(INPUT_POST, "format")?:NULL;
 	$rating = filter_input(INPUT_POST, "rating")?:NULL;
@@ -152,7 +153,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 
         $result = $library->createAlbum($artist, $album, $format, $genre, $genre_num, $labelNums, $locale, $CanCon, $playlist,
             $governmentCategory, $schedule,$note, $accepted, $variousartists, $datein, $release_date, $print,
-	    $rating, $tags);
+	    $rating, $tags, $hometowns);
 
         if(is_string($result)){
             $app->flash('error',$mysqli->error);

@@ -965,7 +965,7 @@ class library extends station{
 
     public function createAlbum($artist, $album, $format, $genre, $genre_num, $labelNums, $locale, $CanCon, $playlist,
                                 $governmentCategory, $schedule, $note="", $accepted=1, $variousartists=False,
-                                $datein=null, $release_date=null, $print=1, $rating=null, $tags=null){
+                                $datein=null, $release_date=null, $print=1, $rating=null, $tags=null, $hometowns=[]){
         if(is_null($datein)){
             $datein = date("Y-m-d");
         }
@@ -1049,6 +1049,38 @@ class library extends station{
 	    // Insert library code with leading genre number
 	    $library_code = "{$genre_num}-{$id_last}";
 	    $this->mysqli->query("UPDATE library SET library_code='{$library_code}' WHERE RefCode={$id_last}");
+
+	    if(!is_null($hometowns)) {
+		// Check which hometowns are already in the database
+		$sql=$this->mysqli->query("SELECT * FROM hometowns WHERE name IN ('" . implode("', '", $hometowns) . "')");
+		$results = [];
+		while($result_temp = $sql->fetch_array(MYSQLI_ASSOC))
+		    array_push($results, $result_temp);
+		$hometown_ids = array_fill(0, sizeof($hometowns), NULL); // Parallel array of db id for each tag
+		foreach($results as $result)
+		    $hometown_ids[array_search($result['name'], $hometowns)] = $result['id'];
+		
+		// Insert all hometowns into the hometowns table that aren't already in there
+		$hometowns_to_add = [];
+		foreach($hometown_ids as $index => $id)
+		    if(is_null($id))
+			array_push($hometowns_to_add, $hometowns[$index]);
+		$this->mysqli->query("INSERT INTO hometowns (name) VALUES ('" . implode("'), ('", $hometowns_to_add) . "')");
+
+		// Gather all hometown id's for this album
+		$sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
+		$last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
+		foreach($hometown_ids as $i=>$id)
+		    if(is_null($id))
+			$hometown_ids[$i] = $last_insert_id++;
+
+		// Insert library/hometown combos into intermediary table
+		$values = "";
+		foreach($hometown_ids as $id)
+		    $values = $values . "(" . $id_last  .  ", " . $id  . "), ";
+		$values = substr($values, 0, strlen($values)-2); // Remove trailing comma
+		$this->mysqli->query("INSERT INTO library_hometowns (library_RefCode, hometown_id) VALUES " . $values);
+	    }
 
 	    if(!is_null($labelNums)) {
 		// Insert album and record label combos into library_recordlabel intermediary table
