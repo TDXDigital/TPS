@@ -102,7 +102,7 @@
                 <div class="col-md-6">
                     <div id="ind_group" class="form-group input-group">
                         <label for="locale" class="input-group-addon">Region</label>
-                        <select id="locale" class="form-control" name="locale">
+                        <select id="locale" class="form-control" name="locale" onclick="updateCanconFromRegionSelect()">
                             {% set locale=locale?:["International","Country","Province","Local"] %}
                             {% for key in locale %}
                                 <option value='{{key}}'
@@ -542,6 +542,14 @@
 <script type="text/javascript" src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
 <script type="text/javascript" src="{{siteUrl}}/js/bootstrap/checkbox/js/bootstrap-checkbox.js "></script>
 <script type="text/javascript">
+    function updateCanconFromRegionSelect() {
+	region = $("#locale").val();
+	canconButtonOn = $("#canconCheckbox").next().attr('class').split(" ").includes('active');
+	if (region == 'International' == canconButtonOn)
+	    // Toggle Cancon button
+	    $('#canconCheckbox').next().find('button').click();
+    }
+
     function getRegion(hometowns) {
 	regionNum = 3;
 	if (hometowns != null) {
