@@ -42,44 +42,83 @@
             </div>
         </div>
     {% endif %}
+    <h3>Filter </h3>
     <div class="form-group row">
         
         <div class="col-xs-2">
-          
+            <div class="form-group input-group">
+                <label for="filter_status" class="input-group-addon">Status&nbsp;</label>
+                 <select class="form-control table_filter" id="filter_status">
+                    <option value="all">All</option>
+                    <option value="accept">Accept</option>
+                    <option value="reject">Reject</option>
+                    <option value="na">N/A</option>
+              </select>
+            </div>
         </div>
+        <div class="col-xs-2">
+          <div class="form-group input-group">
+                <label for="filter_date" class="input-group-addon">Date&nbsp;</label>
+                <select class="form-control table_filter" id="filter_date">
+                    <option value="all">All</option>
+                    <option value="new_recive">New Received (6 Months)</option>
+                    <option value="new_release">New Released (6 Months)</option>
+                    <option value="old_recive">Old Received</option>
+                    <option value="old_release">Old Released</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-xs-2">
+            <div class="form-group input-group">
+                <label for="filter_genre" class="input-group-addon">Genre&nbsp;</label>
+                <select id="filter_genre" class="form-control table_filter" name="genre" data-placeholder="Album Genre">
+                    <option value="all">ALL</option>
+                    {% for key,value in genres %}
+                        <option value='{{key}}'
+                                {% if album.genre == key %} selected {% endif %}
+                                >{{value|default('Unknown Genre')}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="col-xs-2">
+          <div class="form-group input-group">
+                <label for="filter_location" class="input-group-addon">Location&nbsp;</label>
+                <select class="form-control table_filter" id="filter_location">
+                    <option value="all">All</option>
+                    <option value="Local">Local</option>
+                    <option value="Country">Country</option>
+                    <option value="State">State</option>
+                    <option value="Province">Province</option>
+                    <option value="Country">Country</option>
+                    <option value="International">International</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-xs-2">
+            <div class="form-group input-group">
+                <label for="filter_format" class="input-group-addon">Format</label>
+                <select class="form-control table_filter" id="filter_format">
+                    <option value="all">ALL</option>
+                    {% for key,value in format %}
+                        <option value='{{key}}'
+                                {% if key == album.format %} selected {% endif %}
+                                >{{value|default('Unknown format')}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+
     </div>
-    
+    <hr size="30">
     <form role="form" method="POST" action="/library/batch">
     <input type="hidden" name="_METHOD" value="PUT"/>
     <table class='table table-bordered table-hover display' id='data_table'>
         <thead>
-            <tr>
-                <th></th>
-                <th></th>
-                <th>
-                    
-                      <select class="form-control" id="filter_status">
-                        <option value="all">All</option>
-                        <option value="accept">Accept</option>
-                        <option value="reject">Reject</option>
-                        <option value="na">N/A</option>
-                      </select>
-                    
-                </th>
-                <th>
-                      <select class="form-control" id="filter_date">
-                        <option value="all">All</option>
-                        <option value="new_recive">New Received</option>
-                        <option value="new_release">New Released</option>
-                        <option value="old_recive">Old Received</option>
-                        <option value="old_release">Old Released</option>
-                      </select>
-                </th>
-                <th>some</th>
-                <th>more</th>
-                <th>filters</th>
-                <th></th>
-            </tr>
             <tr>
                 <th></th>
                 <th><i class="fa fa-barcode "></i></th>
