@@ -189,7 +189,7 @@
                         <select name="label[]" id="label"
                                 required="required" multiple
                                 class="form-control chosen-select-add">
-                            {% for label in labels %}
+                            {% for label in album.labels %}
                                 <option value="{{label}}"
                                 {% if label in album.labels %} selected {% endif %}
                                 >{{label}}</option>
