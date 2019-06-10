@@ -548,18 +548,21 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $album = filter_input(INPUT_POST,"album");
             $genre = filter_input(INPUT_POST,"genre")?:NULL;
             $datein = filter_input(INPUT_POST, "indate")?:NULL;
-            $label = filter_input(INPUT_POST, "label")?:NULL;
+            $hometowns = filter_input(INPUT_POST, "hometown", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
+            $rec_labels = filter_input(INPUT_POST, "label", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
             $format = filter_input(INPUT_POST, "format")?:NULL;
+	    $rating = filter_input(INPUT_POST, "rating")?:NULL;
             $governmentCategory = filter_input(INPUT_POST, "category")?:NULL;
-            $schedule = filter_input(INPUT_POST, "schedule")?:NULL;
-            $playlist = filter_input(INPUT_POST, "playlist")?:FALSE;
+            $schedule = filter_input(INPUT_POST, "schedule")?:2;
+            $playlist = filter_input(INPUT_POST, "playlist")?:1;
             $print = filter_input(INPUT_POST, "print")? : 0;
             $accepted = filter_input(INPUT_POST, "accept")? :0;
             $variousartists = filter_input(INPUT_POST, "va")? :0;
             $label_size = filter_input(INPUT_POST, "Label_Size")? : 1;
             $locale = filter_input(INPUT_POST, "locale")? :"international";
             $release_date = filter_input(INPUT_POST,'rel_date')?:NULL;
-            $note = filter_input(INPUT_POST, "notes")?:NULL;
+            $tags = filter_input(INPUT_POST, "tag", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
+    	    $note = filter_input(INPUT_POST, "notes")?:NULL;
 
             if($locale=="International"){
                 $CanCon=0;
@@ -571,47 +574,52 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             if($accepted<>0){
                 $accepted = 1;
             }
-            $labelNum = NULL;
 
-            // Get label number if exists
-            $stmt1 = $mysqli->prepare("SELECT labelNumber FROM recordlabel where Name=? limit 1");
-            $stmt1->bind_param("s",$label);
-            if(!$stmt1->execute()){
-                $stmt1->close();
-                $app->flash('error',$mysqli->error);
-                $app->redirect('./');
-            }
-            $stmt1->bind_result($labelNum);
-            $stmt1->fetch();
-            $stmt1->close();
-
-            //if does not exist create label
-            if(is_null($labelNum)){
-                $stmt2 = $mysqli->prepare("INSERT INTO recordlabel(Name,size) VALUES (?,?)");
-                $stmt2->bind_param("si",$label,$label_size);
-                if(!$stmt2->execute()){
-                    $stmt2->close();
-                    #header("location: ../library/?q=new&e=".$mysqli->errno."&s=2");
+	    $labelNums = array_fill(0, sizeof($rec_labels), NULL);
+	    foreach($rec_labels as $i=>&$label) {
+                // Get label number if exists
+                $stmt1 = $mysqli->prepare("SELECT labelNumber FROM recordlabel where Name=? limit 1");
+                $stmt1->bind_param("s",$label);
+                if(!$stmt1->execute()){
+                    $stmt1->close();
                     $app->flash('error',$mysqli->error);
                     $app->redirect('./');
-                    //echo "ERROR: " .    $mysqli->error;
                 }
-                else{
-                    $labelNum=$stmt2->insert_id;
-                    //echo "created recordlabel #".$labelNum;
+                $stmt1->bind_result($labelNums[$i]);
+                $stmt1->fetch();
+                $stmt1->close();
+
+                //if does not exist create label
+                if(is_null($labelNums[$i])){
+                    $stmt2 = $mysqli->prepare("INSERT INTO recordlabel(Name,size) VALUES (?,?)");
+                    $stmt2->bind_param("si",$label,$label_size);
+                    if(!$stmt2->execute()){
+                        $stmt2->close();
+                        #header("location: ../library/?q=new&e=".$mysqli->errno."&s=2");
+                        $app->flash('error',$mysqli->error);
+                        $app->redirect('./');
+                        //echo "ERROR: " .    $mysqli->error;
+                    }
+                    else{
+                        $labelNums[$i]=$stmt2->insert_id;
+                        //echo "created recordlabel #".$labelNum;
+                    }
+                    $stmt2->close();
                 }
-                $stmt2->close();
-            }
-            else{
-                //echo $labelNum ? : " NULL ";
-            }
+	    }
+
             //echo "creating album...";
+	    $genre_num = NULL;
             if($genre=="null"){
                 $genre=NULL;
-            }
-            if(is_null($labelNum)||$labelNum=="null"){
+            } else {
+	        $genre_text = $library->getLibraryGenres()[$genre];
+	        preg_match("/[0-9]+/", $genre_text, $matches);
+	        $genre_num = $matches[0];
+	    }
+            if(in_array(null, $labelNums, true)||in_array("null", $labelNums, true)){
                 #header("location: ../library/?q=new&e=9999&s=3");
-                $app->flash('error','label is required but was not proveded or was invalid. could not recieve album');
+                $app->flash('error','label is required but was not provided or was invalid. could not recieve album');
                 $app->redirect('./');
             }
 
@@ -665,7 +673,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     $format,
                     $genre,
                     $accepted,
-                    $labelNum,
+                    $labelNums[0],
                     $locale,
                     $CanCon,
                     $release_date,
