@@ -896,8 +896,7 @@ class library extends station{
 
             //for localhost development, load only 100 rows .. because of performance issue
             // if($getData[0] == 100)
-                // break;
-            
+            //     break;
             //skip the row if artist or album or label is empty
             if($getData[0] == '' || $getData[1] == '' || $getData[2] == '' || $getData[3] == '')   
                 continue;
@@ -928,6 +927,7 @@ class library extends station{
             $dateIn = date("Y-m-d", $dateIn);
             $dateRel = $getData[4] == '?'||''? $null:strtotime($getData[4]);
             $dateRel = date("Y-m-d", $dateRel);
+
             $locale = 'International';
             $canCon = 0;
             $rating = strlen($getData[10]);
@@ -961,8 +961,8 @@ class library extends station{
                         $labels,                //labelNum
                         $locale,                 //locale
                        $canCon,                 //cancon
-                        $dateRel,                   //release_date
-                        $getData[18],                   //year
+                        $null,                   //release_date
+                        $null,                   //year
                         $note,            //note
                         $playlist_flag,          //playlist
                         $null,                  //governmentCategory
@@ -1146,6 +1146,92 @@ class library extends station{
     }
 
 
+    public function updateAlbumAttribute($attName, $attValueList, $RefCode) {
+	if(!is_null($attValueList)) {
+	    // Check which {$attName}s are already in the database & get their ids
+	    $sql=$this->mysqli->query("SELECT * FROM {$attName}s WHERE name IN ('" . implode("', '", $attValueList) . "')");
+	    $results = [];
+	    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+	        array_push($results, $row);
+	    $ids = array_fill(0, sizeof($attValueList), NULL); // Parallel array of db id for each {$attName}
+	    $in_db = [];
+	    foreach($results as $result) {
+	        $ids[array_search($result['name'], $attValueList)] = $result['id'];
+		array_push($in_db, $result['name']);
+	    }
+
+	    // Determine which {$attName}s need to be added to the `{$attName}s` table
+	    $to_add_to_db = array_diff($attValueList, $in_db);
+
+	    // Insert all {$attName}s into the ${attName}s table that aren't already in there
+	    if(sizeof($to_add_to_db) > 0) {
+		// Insert new {$attName}s into `{$attName}s` table
+	    	$this->mysqli->query("INSERT INTO {$attName}s (name) VALUES ('" . implode("'), ('", $to_add_to_db) . "')");
+
+	        // Complete the list of {$attName} id's for this album
+	        $sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
+	        $last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
+		foreach($ids as $i=>$id)
+		    if(is_null($id))
+			$ids[$i] = $last_insert_id++;
+	    }
+
+	    // Determine which ${attName}s have been added to the album in the UI
+	    $add_to_album = [];
+	    $sql = $this->mysqli->query("SELECT name FROM {$attName}s WHERE id IN (SELECT {$attName}_id FROM library_{$attName}s WHERE library_RefCode={$RefCode})");
+	    $in_db_for_this_album = [];
+	    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+		array_push($in_db_for_this_album, $row['name']);
+	    $added_in_ui = array_diff($attValueList, $in_db_for_this_album);
+
+	    if(sizeof($added_in_ui)>0) {
+	        // Determine database ids for the added {$attName}s in the UI
+	        $sql = $this->mysqli->query("SELECT id FROM {$attName}s WHERE name IN ('" . implode("', '", $added_in_ui) . "')");
+	        $ids_of_added_in_ui = [];
+		while($row = $sql->fetch_array(MYSQLI_ASSOC))
+		    array_push($ids_of_added_in_ui, $row['id']);
+
+		// Insert new library/{$attName} combos into intermediary table
+	        $values = "";
+	        foreach($ids_of_added_in_ui as $id)
+	            $values = $values . "(" . $RefCode  .  ", " . $id  . "), ";
+	        $values = substr($values, 0, strlen($values)-2); // Remove trailing comma
+	        $this->mysqli->query("INSERT INTO library_{$attName}s (library_RefCode, {$attName}_id) VALUES " . $values);
+	    }
+	}
+
+	// Determine which {$attName}s have been removed from the album in the UI
+	$sql=$this->mysqli->query("SELECT * FROM {$attName}s WHERE id IN (SELECT {$attName}_id FROM library_{$attName}s WHERE library_RefCode={$RefCode})");
+	$assigned_in_db = [];
+	while($row = $sql->fetch_array(MYSQLI_ASSOC))
+	    $assigned_in_db[$row['id']] = $row['name'];
+	$to_remove_from_int_table = is_null($attValueList) ? $assigned_in_db : array_diff($assigned_in_db, $attValueList);
+
+	// Remove {$attName}s from album if needed
+	if(sizeof($to_remove_from_int_table) > 0) {
+	    // Delete {$attName} from intermediary table if user removed them in the UI
+	    $this->mysqli->query("DELETE FROM library_{$attName}s WHERE library_RefCode={$RefCode} " .
+	  	                 "AND {$attName}_id IN (" . implode(", ", array_keys($to_remove_from_int_table)) . ")");
+
+	    $sql = $this->mysqli->query("SELECT {$attName}s.id FROM {$attName}s RIGHT JOIN library_{$attName}s " .
+				        "ON library_{$attName}s.{$attName}_id={$attName}s.id GROUP BY {$attName}s.id");
+	    $ids_being_used = [];
+	    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+		array_push($ids_being_used, $row['id']);
+
+	    $sql = $this->mysqli->query("SELECT id FROM {$attName}s");
+	    $all = [];
+	    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+		array_push($all, $row['id']);
+
+	    // Delete {$attName}s from `{$attName}s` table if no albums use it anymore
+	    $to_delete = array_diff($all, $ids_being_used);
+	    if(sizeof($to_delete)>0)
+	        $this->mysqli->query("DELETE FROM {$attName}s WHERE id IN (" . implode(", ", $to_delete) . ")");
+	}
+    }
+
+
     public function addAttributeToAlbum($attName, $attValueList, $refcode) {
 	if(!is_null($attValueList)) {
 	    // Check which {$attName}s are already in the database
@@ -1156,13 +1242,16 @@ class library extends station{
 	    $ids = array_fill(0, sizeof($attValueList), NULL); // Parallel array of db id for each {$attName}
 	    foreach($results as $result)
 		$ids[array_search($result['name'], $attValueList)] = $result['id'];
+
 	    // Insert all {$attName}s into the {$attName}s table that aren't already in there
 	    $to_add = [];
 	    foreach($ids as $index => $id)
 		if(is_null($id))
 		    array_push($to_add, $attValueList[$index]);
+
 	    if(sizeof($to_add)>0) {
 		$this->mysqli->query("INSERT INTO {$attName}s (name) VALUES ('" . implode("'), ('", $to_add) . "')");
+
 	        // Gather all {$attName} id's for this album
 		$sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
 		$last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
@@ -1170,6 +1259,7 @@ class library extends station{
 		    if(is_null($id))
 			$ids[$i] = $last_insert_id++;
 	    }
+
 	    // Insert library/{$attName} combos into intermediary table
 	    $values = "";
 	    foreach($ids as $id)
