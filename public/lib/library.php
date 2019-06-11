@@ -760,7 +760,7 @@ class library extends station{
             case 'all': $where = " true"; break;
             case 'accept': $where = " status = 1"; break;
             case 'reject': $where = " status = 0"; break;
-            case 'na': $where = " status = null"; break;
+            case 'na': $where = " status is null"; break;
         }
         switch($filter["date"])
         {   
@@ -784,6 +784,15 @@ class library extends station{
         {
             case 'all': $where .= " AND true"; break;
             default: $where .= " AND format = '". $filter["format"]."'";
+        }
+        switch($filter["missing_info"])
+        {
+            case 'all': $where .= " AND true"; break;
+            case 'label': $where .= " AND labelid is null"; break;
+            case 'locale': $where .= " AND locale is null"; break;
+            case 'rating': $where .= " AND rating is null OR rating = 0"; break;
+            case 'rel_date': $where .= " AND release_date is null OR release_date = '1970-01-01'"; break;
+            case 'status': $where .= " AND status is null"; break;
         }
         return $where;
     }
@@ -917,7 +926,7 @@ class library extends station{
             $null = null;
             $dateIn = $getData[5] == '?'? $null:strtotime($getData[5]);
             $dateIn = date("Y-m-d", $dateIn);
-            $dateRel = $getData[4] == '?'? $null:strtotime($getData[4]);
+            $dateRel = $getData[4] == '?'||''? $null:strtotime($getData[4]);
             $dateRel = date("Y-m-d", $dateRel);
             $locale = 'International';
             $canCon = 0;

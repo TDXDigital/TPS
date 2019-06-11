@@ -16,9 +16,9 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $params = array(
             "govCats"=>$library->getGovernmentCodes(),
             "genres"=>$library->getLibraryGenres(),
-	    "subgenres"=>$library->getSubgenres(),
-	    "tags"=>$library->getTags(),
-	    "hometowns"=>$library->getHometowns(),
+    	    "subgenres"=>$library->getSubgenres(),
+    	    "tags"=>$library->getTags(),
+    	    "hometowns"=>$library->getHometowns(),
             "labels"=>\TPS\label::nameSearch("%",False),
             "format"=>$library->getMediaFormats(),
             "scheduleBlock"=>$library->getScheduleBlocks(),
