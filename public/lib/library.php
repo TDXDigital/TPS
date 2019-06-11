@@ -1187,15 +1187,16 @@ class library extends station{
 		foreach($hometown_ids as $index => $id)
 		    if(is_null($id))
 			array_push($hometowns_to_add, $hometowns[$index]);
-		$this->mysqli->query("INSERT INTO hometowns (name) VALUES ('" . implode("'), ('", $hometowns_to_add) . "')");
+		if(sizeof($hometowns_to_add)>0) {
+		    $this->mysqli->query("INSERT INTO hometowns (name) VALUES ('" . implode("'), ('", $hometowns_to_add) . "')");
 
-		// Gather all hometown id's for this album
-		$sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
-		$last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
-		foreach($hometown_ids as $i=>$id)
-		    if(is_null($id))
-			$hometown_ids[$i] = $last_insert_id++;
-
+		    // Gather all hometown id's for this album
+		    $sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
+		    $last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
+		    foreach($hometown_ids as $i=>$id)
+		        if(is_null($id))
+			    $hometown_ids[$i] = $last_insert_id++;
+		}
 		// Insert library/hometown combos into intermediary table
 		$values = "";
 		foreach($hometown_ids as $id)
@@ -1204,7 +1205,7 @@ class library extends station{
 		$this->mysqli->query("INSERT INTO library_hometowns (library_RefCode, hometown_id) VALUES " . $values);
 	    }
 
-	    if(!is_null($labelNums)) {
+	    if(sizeof($labelNums)>0) {
 		// Insert album and record label combos into library_recordlabel intermediary table
 		$values = "";
 		foreach($labelNums as $labelNum)
@@ -1213,7 +1214,7 @@ class library extends station{
 		$this->mysqli->query("INSERT INTO library_recordlabel (library_RefCode, recordlabel_LabelNumber) VALUES " . $values);
 	    }
 
-	    if(!is_null($tags)) {
+	    if(sizeof($tags)>0) {
 		// Check which album-assigned tags are already in the database
 		$sql=$this->mysqli->query("SELECT * FROM tags WHERE name IN ('" . implode("', '", $tags) . "')");
 		$results = [];
@@ -1228,15 +1229,16 @@ class library extends station{
 		foreach($tag_ids as $index => $id)
 		    if(is_null($id))
 			array_push($tags_to_add, $tags[$index]);
-		$this->mysqli->query("INSERT INTO tags (name) VALUES ('" . implode("'), ('", $tags_to_add) . "')");
+		if(sizeof($tags_to_add)>0) {
+		    $this->mysqli->query("INSERT INTO tags (name) VALUES ('" . implode("'), ('", $tags_to_add) . "')");
 
-		// Gather all tag id's for this album
-		$sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
-		$last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
-		foreach($tag_ids as $i=>$id)
-		    if(is_null($id))
-			$tag_ids[$i] = $last_insert_id++;
-
+		    // Gather all tag id's for this album
+		    $sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
+		    $last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
+		    foreach($tag_ids as $i=>$id)
+		        if(is_null($id))
+			    $tag_ids[$i] = $last_insert_id++;
+		}
 		// Insert tag/album combos into intermediary table
 		$values = "";
 		foreach($tag_ids as $id)
