@@ -846,7 +846,7 @@ class library extends station{
         }
 
         //for library
-        if(!$stmt4 = $this->mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,
+        if(!$stmt4 = $this->mysqli->prepare("INSERT IGNORE INTO library(datein,artist,album,variousartists,
             format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
             governmentCategory,scheduleCode, rating)
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
