@@ -803,6 +803,10 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 		$library_code = "{$genre_num}-{$RefCode}";
 		$mysqli->query("UPDATE library SET library_code='{$library_code}' WHERE RefCode={$RefCode};");
 
+		$library->updateAlbumAttribute("hometown", $hometowns, $RefCode);
+		$library->updateAlbumAttribute("tag", $tags, $RefCode);
+		$library->updateAlbumAttribute("subgenre", $subgenres, $RefCode);
+/*
 		if(sizeof($hometowns) > 0) {
 		    // Check which hometowns are already in the database & get their ids
 		    $sql=$mysqli->query("SELECT * FROM hometowns WHERE name IN ('" . implode("', '", $hometowns) . "')");
@@ -1048,7 +1052,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 		    if(sizeof($subgenres_to_delete)>0)
 		        $mysqli->query("DELETE FROM subgenres WHERE id IN (" . implode(", ", $subgenres_to_delete) . ")");
 		}
-
+*/
                 if(strtolower(substr($artist,-1))!='s'){
                     $s = "s";
                 }
