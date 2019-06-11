@@ -176,6 +176,21 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $filter = $app->request->get("filter");
         echo $library -> displayTable($filter);
     });
+
+    $app->post('/import', $authenticate, function () use ($app){
+         if(isset($_POST["Import"])){   
+            $filename=$_FILES["file"]["tmp_name"];    
+             if($_FILES["file"]["size"] > 0)
+             {
+                $library = new \TPS\library();
+               echo $library->importCSV($filename);
+             }
+          }   
+          echo 'asdasddsa';
+          // $app->redirect('./batch/');
+    });
+
+
     $app->get('/search', $authenticate, function () use ($app){
         $app->redirect('./search/');
     });
