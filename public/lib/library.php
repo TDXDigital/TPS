@@ -1111,6 +1111,42 @@ class library extends station{
         return $params;
     }
 
+    public function addAttributeToAlbum($attName, $attValueList, $refcode) {
+	if(!is_null($attValueList)) {
+	    // Check which {$attName}s are already in the database
+	    $sql=$this->mysqli->query("SELECT * FROM {$attName}s WHERE name IN ('" . implode("', '", $attValueList) . "')");
+	    $results = [];
+	    while($result_temp = $sql->fetch_array(MYSQLI_ASSOC))
+		array_push($results, $result_temp);
+	    $ids = array_fill(0, sizeof($attValueList), NULL); // Parallel array of db id for each {$attName}
+	    foreach($results as $result)
+		$ids[array_search($result['name'], $attValueList)] = $result['id'];
+
+	    // Insert all {$attName}s into the {$attName}s table that aren't already in there
+	    $to_add = [];
+	    foreach($ids as $index => $id)
+		if(is_null($id))
+		    array_push($to_add, $attValueList[$index]);
+	    if(sizeof($to_add)>0) {
+		$this->mysqli->query("INSERT INTO {$attName}s (name) VALUES ('" . implode("'), ('", $to_add) . "')");
+
+	        // Gather all {$attName} id's for this album
+		$sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
+		$last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
+		foreach($ids as $i=>$id)
+		    if(is_null($id))
+			$ids[$i] = $last_insert_id++;
+	    }
+	    // Insert library/{$attName} combos into intermediary table
+	    $values = "";
+	    foreach($ids as $id)
+		$values = $values . "(" . $refcode  .  ", " . $id  . "), ";
+	    $values = substr($values, 0, strlen($values)-2); // Remove trailing comma
+	    $this->mysqli->query("INSERT INTO library_${attName}s (library_RefCode, ${attName}_id) VALUES " . $values);
+	}
+    }
+
+
     public function createAlbum($artist, $album, $format, $genre, $genre_num, $labelNums, $locale, $CanCon, $playlist,
                                 $governmentCategory, $schedule, $note="", $accepted=1, $variousartists=False,
                                 $datein=null, $release_date=null, $print=1, $rating=null, $tags=null, $hometowns=[],
@@ -1199,6 +1235,11 @@ class library extends station{
 	    $library_code = "{$genre_num}-{$id_last}";
 	    $this->mysqli->query("UPDATE library SET library_code='{$library_code}' WHERE RefCode={$id_last}");
 
+	    
+	    $this->addAttributeToAlbum("hometown", $hometowns, $id_last);
+	    $this->addAttributeToAlbum("tag", $tags, $id_last);
+	    $this->addAttributeToAlbum("subgenre", $subgenres, $id_last);
+/*
 	    if(!is_null($hometowns)) {
 		// Check which hometowns are already in the database
 		$sql=$this->mysqli->query("SELECT * FROM hometowns WHERE name IN ('" . implode("', '", $hometowns) . "')");
@@ -1208,7 +1249,7 @@ class library extends station{
 		$hometown_ids = array_fill(0, sizeof($hometowns), NULL); // Parallel array of db id for each town
 		foreach($results as $result)
 		    $hometown_ids[array_search($result['name'], $hometowns)] = $result['id'];
-		
+
 		// Insert all hometowns into the hometowns table that aren't already in there
 		$hometowns_to_add = [];
 		foreach($hometown_ids as $index => $id)
@@ -1231,7 +1272,7 @@ class library extends station{
 		$values = substr($values, 0, strlen($values)-2); // Remove trailing comma
 		$this->mysqli->query("INSERT INTO library_hometowns (library_RefCode, hometown_id) VALUES " . $values);
 	    }
-
+*/
 	    if(sizeof($labelNums)>0) {
 		// Insert album and record label combos into library_recordlabel intermediary table
 		$values = "";
@@ -1240,7 +1281,7 @@ class library extends station{
 		$values = substr($values, 0, strlen($values)-2); // Remove trailing comma
 		$this->mysqli->query("INSERT INTO library_recordlabel (library_RefCode, recordlabel_LabelNumber) VALUES " . $values);
 	    }
-
+/*
 	    if(sizeof($tags)>0) {
 		// Check which album-assigned tags are already in the database
 		$sql=$this->mysqli->query("SELECT * FROM tags WHERE name IN ('" . implode("', '", $tags) . "')");
@@ -1306,7 +1347,7 @@ class library extends station{
 		$values = substr($values, 0, strlen($values)-2); // Remove trailing comma
 		$this->mysqli->query("INSERT INTO library_subgenres (library_RefCode, subgenre_id) VALUES " . $values);
 	    }
-
+*/
             if(strtolower(substr($artist,-1))!='s'){
                 $s = "s";
             }
