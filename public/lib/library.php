@@ -425,6 +425,32 @@ class library extends station{
     }
 
     /**
+     * @abstract return all the subgenres ever used on albums
+     * @global mysqli $mysqli
+     * @return array
+     */
+    public function getSubgenres() {
+	$sql = $this->mysqli->query("SELECT name FROM subgenres ORDER BY name");
+	$subgenres = [];
+	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
+	    array_push($subgenres, $row['name']);
+	return $subgenres;
+    }
+
+    /**
+     * @abstract return all subgenres for a specific album
+     * @global mysqli $mysqli
+     * @return array
+     */
+    public function getSubgenresByRefCode($refcode) {
+	$sql = $this->mysqli->query("SELECT name FROM subgenres WHERE id IN (SELECT subgenre_id FROM library_subgenres WHERE library_RefCode=" . $refcode . ") ORDER BY name");
+	$subgenres = [];
+	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
+	    array_push($subgenres, $row['name']);
+	return $subgenres;
+    }
+
+    /**
      * @abstract return all the hometowns ever used on albums
      * @global mysqli $mysqli
      * @return array
@@ -1034,6 +1060,7 @@ class library extends station{
         return $result;
     }
 
+
     /**
      * Takes a RefCode and returns an array with all library information included
      * @global \TPS\mysqli $mysqli
@@ -1106,9 +1133,45 @@ class library extends station{
         return $params;
     }
 
+
+    public function addAttributeToAlbum($attName, $attValueList, $refcode) {
+	if(!is_null($attValueList)) {
+	    // Check which {$attName}s are already in the database
+	    $sql=$this->mysqli->query("SELECT * FROM {$attName}s WHERE name IN ('" . implode("', '", $attValueList) . "')");
+	    $results = [];
+	    while($result_temp = $sql->fetch_array(MYSQLI_ASSOC))
+		array_push($results, $result_temp);
+	    $ids = array_fill(0, sizeof($attValueList), NULL); // Parallel array of db id for each {$attName}
+	    foreach($results as $result)
+		$ids[array_search($result['name'], $attValueList)] = $result['id'];
+	    // Insert all {$attName}s into the {$attName}s table that aren't already in there
+	    $to_add = [];
+	    foreach($ids as $index => $id)
+		if(is_null($id))
+		    array_push($to_add, $attValueList[$index]);
+	    if(sizeof($to_add)>0) {
+		$this->mysqli->query("INSERT INTO {$attName}s (name) VALUES ('" . implode("'), ('", $to_add) . "')");
+	        // Gather all {$attName} id's for this album
+		$sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
+		$last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
+		foreach($ids as $i=>$id)
+		    if(is_null($id))
+			$ids[$i] = $last_insert_id++;
+	    }
+	    // Insert library/{$attName} combos into intermediary table
+	    $values = "";
+	    foreach($ids as $id)
+		$values = $values . "(" . $refcode  .  ", " . $id  . "), ";
+	    $values = substr($values, 0, strlen($values)-2); // Remove trailing comma
+	    $this->mysqli->query("INSERT INTO library_${attName}s (library_RefCode, ${attName}_id) VALUES " . $values);
+	}
+    }
+
+
     public function createAlbum($artist, $album, $format, $genre, $genre_num, $labelNums, $locale, $CanCon, $playlist,
                                 $governmentCategory, $schedule, $note="", $accepted=1, $variousartists=False,
-                                $datein=null, $release_date=null, $print=1, $rating=null, $tags=null, $hometowns=[]){
+                                $datein=null, $release_date=null, $print=1, $rating=null, $tags=null, $hometowns=[],
+				$subgenres=[]){
         if(is_null($datein)){
             $datein = date("Y-m-d");
         }
@@ -1193,38 +1256,6 @@ class library extends station{
 	    $library_code = "{$genre_num}-{$id_last}";
 	    $this->mysqli->query("UPDATE library SET library_code='{$library_code}' WHERE RefCode={$id_last}");
 
-	    if(!is_null($hometowns)) {
-		// Check which hometowns are already in the database
-		$sql=$this->mysqli->query("SELECT * FROM hometowns WHERE name IN ('" . implode("', '", $hometowns) . "')");
-		$results = [];
-		while($result_temp = $sql->fetch_array(MYSQLI_ASSOC))
-		    array_push($results, $result_temp);
-		$hometown_ids = array_fill(0, sizeof($hometowns), NULL); // Parallel array of db id for each town
-		foreach($results as $result)
-		    $hometown_ids[array_search($result['name'], $hometowns)] = $result['id'];
-		
-		// Insert all hometowns into the hometowns table that aren't already in there
-		$hometowns_to_add = [];
-		foreach($hometown_ids as $index => $id)
-		    if(is_null($id))
-			array_push($hometowns_to_add, $hometowns[$index]);
-		$this->mysqli->query("INSERT INTO hometowns (name) VALUES ('" . implode("'), ('", $hometowns_to_add) . "')");
-
-		// Gather all hometown id's for this album
-		$sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
-		$last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
-		foreach($hometown_ids as $i=>$id)
-		    if(is_null($id))
-			$hometown_ids[$i] = $last_insert_id++;
-
-		// Insert library/hometown combos into intermediary table
-		$values = "";
-		foreach($hometown_ids as $id)
-		    $values = $values . "(" . $id_last  .  ", " . $id  . "), ";
-		$values = substr($values, 0, strlen($values)-2); // Remove trailing comma
-		$this->mysqli->query("INSERT INTO library_hometowns (library_RefCode, hometown_id) VALUES " . $values);
-	    }
-
 	    if(!is_null($labelNums)) {
 		// Insert album and record label combos into library_recordlabel intermediary table
 		$values = "";
@@ -1234,37 +1265,9 @@ class library extends station{
 		$this->mysqli->query("INSERT INTO library_recordlabel (library_RefCode, recordlabel_LabelNumber) VALUES " . $values);
 	    }
 
-	    if(!is_null($tags)) {
-		// Check which album-assigned tags are already in the database
-		$sql=$this->mysqli->query("SELECT * FROM tags WHERE name IN ('" . implode("', '", $tags) . "')");
-		$results = [];
-		while($result_temp = $sql->fetch_array(MYSQLI_ASSOC))
-		    array_push($results, $result_temp);
-		$tag_ids = array_fill(0, sizeof($tags), NULL); // Parallel array of db id for each tag
-		foreach($results as $result)
-		    $tag_ids[array_search($result['name'], $tags)] = $result['id'];
-
-		// Insert all the tags into tags table that aren't inserted yet
-		$tags_to_add = [];
-		foreach($tag_ids as $index => $id)
-		    if(is_null($id))
-			array_push($tags_to_add, $tags[$index]);
-		$this->mysqli->query("INSERT INTO tags (name) VALUES ('" . implode("'), ('", $tags_to_add) . "')");
-
-		// Gather all tag id's for this album
-		$sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
-		$last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
-		foreach($tag_ids as $i=>$id)
-		    if(is_null($id))
-			$tag_ids[$i] = $last_insert_id++;
-
-		// Insert tag/album combos into intermediary table
-		$values = "";
-		foreach($tag_ids as $id)
-		    $values = $values . "(" . $id_last  .  ", " . $id  . "), ";
-		$values = substr($values, 0, strlen($values)-2); // Remove trailing comma
-		$this->mysqli->query("INSERT INTO library_tags (library_RefCode, tag_id) VALUES " . $values);
-	    }
+	    $this->addAttributeToAlbum("hometown", $hometowns, $id_last);
+	    $this->addAttributeToAlbum("tag", $tags, $id_last);
+	    $this->addAttributeToAlbum("subgenre", $subgenres, $id_last);
 
             if(strtolower(substr($artist,-1))!='s'){
                 $s = "s";
