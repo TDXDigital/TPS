@@ -185,10 +185,13 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
              if($_FILES["file"]["size"] > 0)
              {
                 $library = new \TPS\library();
-               echo $library->importCSV($filename);
+                if($library->importCSV($filename))
+                    echo 'Completed <br>';
+                else
+                    echo 'Error<br>';
              }
           }   
-          echo 'asdasddsa';
+          echo '<a href="/">Go Back to Dashboard</a>  ';
           // $app->redirect('./batch/');
     });
 

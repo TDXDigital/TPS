@@ -887,7 +887,8 @@ class library extends station{
 
             //for localhost development, load only 100 rows .. because of performance issue
             // if($getData[0] == 100)
-            //     break;
+                // break;
+            
             //skip the row if artist or album or label is empty
             if($getData[0] == '' || $getData[1] == '' || $getData[2] == '' || $getData[3] == '')   
                 continue;
@@ -916,6 +917,8 @@ class library extends station{
             $null = null;
             $dateIn = $getData[5] == '?'? $null:strtotime($getData[5]);
             $dateIn = date("Y-m-d", $dateIn);
+            $dateRel = $getData[4] == '?'? $null:strtotime($getData[4]);
+            $dateRel = date("Y-m-d", $dateRel);
             $locale = 'International';
             $canCon = 0;
             $rating = strlen($getData[10]);
@@ -949,8 +952,8 @@ class library extends station{
                         $labels,                //labelNum
                         $locale,                 //locale
                        $canCon,                 //cancon
-                        $null,                   //release_date
-                        $null,                   //year
+                        $dateRel,                   //release_date
+                        $getData[18],                   //year
                         $note,            //note
                         $playlist_flag,          //playlist
                         $null,                  //governmentCategory
