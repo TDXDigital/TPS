@@ -177,6 +177,19 @@
                 </div>
                 <div class="col-md-12">
                     <div class="form-group input-group">
+                        <label for="label" class="input-group-addon">Subgenres</label>
+                        <select name="subgenres[]" id="subgenres" multiple
+                                class="form-control chosen-select-add">
+                            {% for subgenre in subgenres %}
+                                <option value="{{subgenre}}"
+                                {% if subgenre in album.subgenres %} selected {% endif %}
+                                >{{subgenre}}</option>
+                            {% endfor %}
+                        </select>
+		    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group input-group">
                         <label for="label" class="input-group-addon">Hometown</label>
                         <select name="hometown[]" id="hometown" multiple
                                 class="form-control chosen-select-add">
@@ -741,8 +754,8 @@
 
         // cache the select element as we'll be using it a few times
         //select = $(".chosen-select-add");
-	select = [$('#label'), $('#tag_selector'), $('#hometown')];
-	select_str = ['record label', 'tag', 'hometown']
+	select = [$('#subgenres'), $('#label'), $('#tag_selector'), $('#hometown')];
+	select_str = ['subgenre', 'record label', 'tag', 'hometown']
 
 	for (i = 0; i < select.length; i++) {
             // init the chosen plugin

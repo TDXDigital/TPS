@@ -424,6 +424,32 @@ class library extends station{
         return $result;
     }
 
+
+    /**
+     * @abstract return all the subgenres ever used on albums
+     * @global mysqli $mysqli
+     * @return array
+     */
+    public function getSubgenres() {
+	$sql = $this->mysqli->query("SELECT name FROM subgenres ORDER BY name");
+	$subgenres = [];
+	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
+	    array_push($subgenres, $row['name']);
+	return $subgenres;
+    }
+
+    /**
+     * @abstract return all subgenres for a specific album
+     * @global mysqli $mysqli
+     * @return array
+     */
+    public function getSubgenresByRefCode($refcode) {
+	$sql = $this->mysqli->query("SELECT name FROM subgenres WHERE id IN (SELECT subgenre_id FROM library_subgenres WHERE library_RefCode=" . $refcode . ") ORDER BY name");
+	$subgenres = [];
+	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
+	    array_push($subgenres, $row['name']);
+	return $subgenres;
+    }
     /**
      * @abstract return all the hometowns ever used on albums
      * @global mysqli $mysqli
@@ -1087,7 +1113,8 @@ class library extends station{
 
     public function createAlbum($artist, $album, $format, $genre, $genre_num, $labelNums, $locale, $CanCon, $playlist,
                                 $governmentCategory, $schedule, $note="", $accepted=1, $variousartists=False,
-                                $datein=null, $release_date=null, $print=1, $rating=null, $tags=null, $hometowns=[]){
+                                $datein=null, $release_date=null, $print=1, $rating=null, $tags=null, $hometowns=[],
+				$subgenres=[]){
         if(is_null($datein)){
             $datein = date("Y-m-d");
         }
@@ -1245,6 +1272,39 @@ class library extends station{
 		    $values = $values . "(" . $id_last  .  ", " . $id  . "), ";
 		$values = substr($values, 0, strlen($values)-2); // Remove trailing comma
 		$this->mysqli->query("INSERT INTO library_tags (library_RefCode, tag_id) VALUES " . $values);
+	    }
+
+	    if(sizeof($subgenres)>0) {
+		// Check which album-assigned subgenres are already in the database
+		$sql=$this->mysqli->query("SELECT * FROM subgenres WHERE name IN ('" . implode("', '", $subgenres) . "')");
+		$results = [];
+		while($result_temp = $sql->fetch_array(MYSQLI_ASSOC))
+		    array_push($results, $result_temp);
+		$subgenre_ids = array_fill(0, sizeof($subgenres), NULL); // Parallel array of db id for each subgenre
+		foreach($results as $result)
+		    $subgenre_ids[array_search($result['name'], $subgenres)] = $result['id'];
+
+		// Insert all the subgenres into subgenres table that aren't inserted yet
+		$subgenres_to_add = [];
+		foreach($subgenre_ids as $index => $id)
+		    if(is_null($id))
+			array_push($subgenres_to_add, $subgenres[$index]);
+		if(sizeof($subgenres_to_add)>0) {
+		    $this->mysqli->query("INSERT INTO subgenres (name) VALUES ('" . implode("'), ('", $subgenres_to_add) . "')");
+
+		    // Gather all subgenre id's for this album
+		    $sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
+		    $last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
+		    foreach($subgenre_ids as $i=>$id)
+		        if(is_null($id))
+			    $subgenre_ids[$i] = $last_insert_id++;
+		}
+		// Insert subgenre/album combos into intermediary table
+		$values = "";
+		foreach($subgenre_ids as $id)
+		    $values = $values . "(" . $id_last  .  ", " . $id  . "), ";
+		$values = substr($values, 0, strlen($values)-2); // Remove trailing comma
+		$this->mysqli->query("INSERT INTO library_subgenres (library_RefCode, subgenre_id) VALUES " . $values);
 	    }
 
             if(strtolower(substr($artist,-1))!='s'){
