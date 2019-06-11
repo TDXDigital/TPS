@@ -891,6 +891,7 @@ class library extends station{
             $locale = 'International';
             $canCon = 0;
             $rating = strlen($getData[10]);
+            $note = substr($getData[13], 0,119);
 
             switch($getData[22])
             {   
@@ -922,7 +923,7 @@ class library extends station{
                        $canCon,                 //cancon
                         $null,                   //release_date
                         $null,                   //year
-                        $getData[13],            //note
+                        $note,            //note
                         $playlist_flag,          //playlist
                         $null,                  //governmentCategory
                         $null,                  //schedule
