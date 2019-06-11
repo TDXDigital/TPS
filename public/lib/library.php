@@ -939,6 +939,7 @@ class library extends station{
             //     break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             $labelName = $getData[3];
             $size = 1;
             echo $getData[0]. " ". $labelName. "<br>";
@@ -953,6 +954,14 @@ class library extends station{
             //skip the row if artist or album or label is empty
             if($getData[1] == '' || $getData[2] == '' || $getData[3] == '')    
                 continue;
+=======
+            //for localhost development, load only 100 rows .. because of performance issue
+            if($getData[0] == 100)
+                break;
+            //skip the row if artist or album or label is empty
+            if($getData[1] == '' || $getData[2] == '' || $getData[3] == '')    
+                continue;
+>>>>>>> parent of 56c2d7f... csv import done
             // echo $getData[0]. " ". $labelName. "<br>";
 
             $labelName = $getData[3];
@@ -1035,6 +1044,9 @@ class library extends station{
         }
         $stmt4->close();
         $stmt3->close();
+<<<<<<< HEAD
+>>>>>>> parent of 56c2d7f... csv import done
+=======
 >>>>>>> parent of 56c2d7f... csv import done
         fclose($file);  
 }
