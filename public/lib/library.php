@@ -883,6 +883,8 @@ class library extends station{
                 return $this->mysqli->error;
             }
             $labels = \TPS\label::nameSearch($labelName);
+            if(sizeof($labels)==0)
+                continue;
             $labels = array_keys($labels)[0];
             $genreKey = array_keys(self::getLibraryGenres());
             $null = null;
