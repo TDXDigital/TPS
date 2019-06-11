@@ -864,74 +864,37 @@ class library extends station{
     {
         $file = fopen($filename, "r");
 
-        // if(!$stmt3 = $this->mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,
-        //     format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
-        //     governmentCategory,scheduleCode, rating)
-        //     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
-        //     $stmt3->close();
-        //     header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
-        // }
-        // while (($getData = fgetcsv($file, 10000, ",")) !== FALSE)
-        // {
-        //     // echo $getData[1]. "<br>";
-        //     $genreKey = array_keys(self::getLibraryGenres());
-
-        //     $accept = 1;
-        //     if($getData[9] == 'x' || '')
-        //         $accept = 0;
-
-        
-        // if(!$stmt3->bind_param(
-        //     "sssissiisisssissi",
-        //     $getData[5],    //dateIn
-        //     $getData[1],        //Artist
-        //     $getData[2],         //Album
-        //     NULL,    //Various Artist
-        //     $getData[11],            //format
-        //     $genreKey[$getData[6]],             //genre
-        //     $accept ,          //accepted
-        //     $labelNums[0],      //labelNum
-        //     $locale,            //locale
-        //     $CanCon,            //cancon
-        //     $release_date,      //release_date
-        //     $year,              //year
-        //     $note,              //note
-        //     $playlist,          //playlist
-        //     $governmentCategory,    //governmentCategory
-        //     $schedule,              //schedule
-        // $rating
-        // )){
-        //     $stmt3->close();
-        //     return $this->mysqli->error;
-        // }
-
-    //     if(!$stmt3->execute()){
-    //         error_log("SQL-STMT Error (SEG-3):[".$this->mysqli->errno."] ".$this->mysqli->error);
-    //         $error = [$this->mysqli->errno,$this->mysqli->error];
-    //         $stmt3->close();
-    //         return $this->mysqli->error;
-    //     }
-    // }
-
-    // fclose($file);
-
+        //for label
         if(!$stmt3 = $this->mysqli->prepare("INSERT IGNORE INTO recordlabel(Name,size)
             VALUES (?,?)")){
             $stmt3->close();
             header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
         }
+
+        //for library
+        if(!$stmt4 = $this->mysqli->prepare("INSERT IGNORE INTO library(datein,artist,album,variousartists,
+            format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
+            governmentCategory,scheduleCode, rating)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
+            $stmt4->close();
+            header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
+        }
+
         while (($getData = fgetcsv($file, 10000, ",")) !== FALSE)
         {
             if($getData[1]=='' && $getData[2]=='')
                 break;
 
-            $labelName = $getData[3];
-            $size = 1;
-            echo $getData[0]. " ". $labelName. "<br>";
+            //for localhost development, load only 100 rows .. because of performance issue
+            // if($getData[0] == 100)
+                // break;
 
-            if($labelName == '')
+            //skip the row if artist or album or label is empty
+            if($getData[0] == '' || $getData[1] == '' || $getData[2] == '' || $getData[3] == '')    
                 continue;
             
+            $labelName = $getData[3];
+            $size = 1;
             if(!$stmt3->bind_param(
                 "si",
                 $labelName,    
@@ -940,20 +903,75 @@ class library extends station{
                 $stmt3->close();
                 return $this->mysqli->error;
             }
-            $msc = microtime(true);
-            $stmt3->execute();
-            $msc = microtime(true)-$msc;
-            echo ($msc * 1000) . ' ms <br>'; // in millseconds
-            // if(!$stmt3->execute()){
-            //     error_log("SQL-STMT Error (SEG-3):[".$this->mysqli->errno."] ".$this->mysqli->error);
-            //     $error = [$this->mysqli->errno,$this->mysqli->error];
-            //     return $this->mysqli->error;
-            // }
+            if(!$stmt3->execute()){ 
+                error_log("SQL-STMT Error (SEG-3):[".$this->mysqli->errno."] ".$this->mysqli->error);
+                $error = [$this->mysqli->errno,$this->mysqli->error];
+                return $this->mysqli->error;
+            }
+            $labels = \TPS\label::nameSearch($labelName);
+            $labels = array_keys($labels)[0];
+            $genreKey = array_keys(self::getLibraryGenres());
+            $null = null;
+            $dateIn = $getData[5] == '?'? $null:strtotime($getData[5]);
+            $dateIn = date("Y-m-d", $dateIn);
+            $locale = 'International';
+            $canCon = 0;
+            $rating = strlen($getData[10]);
+
+            //locale
+            switch($getData[22])
+            {   
+                case 1: $locale = "Local"; break;
+                case 2: $locale = "Province"; break;
+                case 3: $locale = "Country"; break;
+            }
+            //Accept status and Playlist flag
+            switch($getData[9])
+            {   
+                case 'o': $accept = 1; $playlist_flag = 'Complete'; break;
+                case 'x': $accept = 0; $playlist_flag = 'False'; break;
+                case 'L': $accept = $null; $playlist_flag = 'False'; break;
+                default:  $accept = $null; $playlist_flag = 'False';
+            }
+            if($getData[9] == 'x' || '')
+                $accept = 0;
+            if(!$stmt4->bind_param(
+                "sssissiisissssssi",
+                        $dateIn,                //dateIn
+                        $getData[1],            //Artist
+                        $getData[2],            //Album
+                        $null,                  //Various Artist
+                        $getData[11],           //format
+                        $genreKey[$getData[6]], //genre
+                        $accept,                //accepted
+                        $labels,                //labelNum
+                        $locale,                 //locale
+                        $canCon,                 //cancon
+                        $null,                   //release_date
+                        $null,                   //year
+                        $getData[13],            //note
+                        $playlist_flag,          //playlist
+                        $null,                  //governmentCategory
+                        $null,                  //schedule
+                        $rating                 //rating
+                    )){
+                $stmt4->close();
+                return $this->mysqli->error;
+            }
+            if(!$stmt4->execute()){ 
+                error_log("SQL-STMT Error (SEG-3):[".$this->mysqli->errno."] ".$this->mysqli->error);
+                $error = [$this->mysqli->errno,$this->mysqli->error];
+                return $this->mysqli->error;
+            }
+            else
+            {
+                echo $getData[0].' '.$getData[1].' '.$getData[2].' --- Inserted <br>';
+            }
         }
-                echo 'COLOSED';
-                $stmt3->close();
-        // $stmt3->close();
-        fclose($file);  
+        $stmt4->close();
+        $stmt3->close();
+        fclose($file); 
+        return true;
 }
 
     /**

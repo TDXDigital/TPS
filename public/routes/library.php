@@ -188,8 +188,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                echo $library->importCSV($filename);
              }
           }   
-          echo 'asdasddsa';
-          // $app->redirect('./batch/');
+          echo 'Import Complete';
+            // $app->redirect('./batch/');
     });
 
 
