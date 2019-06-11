@@ -880,6 +880,87 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 		        $mysqli->query("DELETE FROM hometowns WHERE id IN (" . implode(", ", $hometowns_to_delete) . ")");
 		}
 
+		if(sizeof($tags) > 0) {
+		    // Check which tags are already in the database & get their ids
+		    $sql=$mysqli->query("SELECT * FROM tags WHERE name IN ('" . implode("', '", $tags) . "')");
+		    $results = [];
+		    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+		        array_push($results, $row);
+		    $tag_ids = array_fill(0, sizeof($tags), NULL); // Parallel array of db id for each tag
+		    $tags_in_db = [];
+		    foreach($results as $result) {
+		        $tag_ids[array_search($result['name'], $tags)] = $result['id'];
+			array_push($tags_in_db, $result['name']);
+		    }
+
+		    // Determine which tags need to be added to the `tags` table
+		    $tags_to_add_to_db = array_diff($tags, $tags_in_db);
+
+		    // Insert all tags into the tags table that aren't already in there
+		    if(sizeof($tags_to_add_to_db) > 0) {
+			// Insert new tags into `tags` table
+		    	$mysqli->query("INSERT INTO tags (name) VALUES ('" . implode("'), ('", $tags_to_add_to_db) . "')");
+
+		        // Complete the list of tag id's for this album
+		        $sql = $mysqli->query("SELECT LAST_INSERT_ID()");
+		        $last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
+			foreach($tag_ids as $i=>$id)
+			    if(is_null($id))
+				$tag_ids[$i] = $last_insert_id++;
+		    }
+
+		    // Determine which tags have been added to the album in the UI
+		    $tags_add_to_album = [];
+		    $sql = $mysqli->query("SELECT name FROM tags WHERE id IN (SELECT tag_id FROM library_tags WHERE library_RefCode={$RefCode})");
+		    $tags_in_db_for_this_album = [];
+		    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+			array_push($tags_in_db_for_this_album, $row['name']);
+		    $added_tags_in_ui = array_diff($tags, $tags_in_db_for_this_album);
+
+		    if(sizeof($added_tags_in_ui)>0) {
+		        // Determine database ids for the added tags in the UI
+		        $sql = $mysqli->query("SELECT id FROM tags WHERE name IN ('" . implode("', '", $added_tags_in_ui) . "')");
+		        $ids_of_added_tags_in_ui = [];
+			while($row = $sql->fetch_array(MYSQLI_ASSOC))
+			    array_push($ids_of_added_tags_in_ui, $row['id']);
+
+			// Insert new library/tag combos into intermediary table
+		        $values = "";
+		        foreach($ids_of_added_tags_in_ui as $id)
+		            $values = $values . "(" . $RefCode  .  ", " . $id  . "), ";
+		        $values = substr($values, 0, strlen($values)-2); // Remove trailing comma
+		        $mysqli->query("INSERT INTO library_tags (library_RefCode, tag_id) VALUES " . $values);
+		    }
+		}
+		// Determine which tags have been removed from the album in the UI
+		$sql=$mysqli->query("SELECT * FROM tags WHERE id IN (SELECT tag_id FROM library_tags WHERE library_RefCode={$RefCode})");
+		$tags_assigned_in_db = [];
+		while($row = $sql->fetch_array(MYSQLI_ASSOC))
+		    $tags_assigned_in_db[$row['id']] = $row['name'];
+		$tags_to_remove_from_int_table = is_null($tags) ? $tags_assigned_in_db : array_diff($tags_assigned_in_db, $tags);
+
+		// Remove tags from album if needed
+		if(sizeof($tags_to_remove_from_int_table) > 0) {
+		    // Delete tag from intermediary table if user removed them in the UI
+		    $mysqli->query("DELETE FROM library_tags WHERE library_RefCode={$RefCode} " .
+		  	           "AND tag_id IN (" . implode(", ", array_keys($tags_to_remove_from_int_table)) . ")");
+
+		    $sql = $mysqli->query("SELECT tags.id FROM tags RIGHT JOIN library_tags " .
+					  "ON library_tags.tag_id=tags.id GROUP BY tags.id");
+		    $tag_ids_being_used = [];
+		    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+			array_push($tag_ids_being_used, $row['id']);
+
+		    $sql = $mysqli->query("SELECT id FROM tags");
+		    $all_tags = [];
+		    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+			array_push($all_tags, $row['id']);
+
+		    // Delete tags from `tags` table if no albums use it anymore
+		    $tags_to_delete = array_diff($all_tags, $tag_ids_being_used);
+		    if(sizeof($tags_to_delete)>0)
+		        $mysqli->query("DELETE FROM tags WHERE id IN (" . implode(", ", $tags_to_delete) . ")");
+		}
 
                 if(strtolower(substr($artist,-1))!='s'){
                     $s = "s";
