@@ -864,37 +864,74 @@ class library extends station{
     {
         $file = fopen($filename, "r");
 
-        //for label
+        // if(!$stmt3 = $this->mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,
+        //     format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
+        //     governmentCategory,scheduleCode, rating)
+        //     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
+        //     $stmt3->close();
+        //     header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
+        // }
+        // while (($getData = fgetcsv($file, 10000, ",")) !== FALSE)
+        // {
+        //     // echo $getData[1]. "<br>";
+        //     $genreKey = array_keys(self::getLibraryGenres());
+
+        //     $accept = 1;
+        //     if($getData[9] == 'x' || '')
+        //         $accept = 0;
+
+        
+        // if(!$stmt3->bind_param(
+        //     "sssissiisisssissi",
+        //     $getData[5],    //dateIn
+        //     $getData[1],        //Artist
+        //     $getData[2],         //Album
+        //     NULL,    //Various Artist
+        //     $getData[11],            //format
+        //     $genreKey[$getData[6]],             //genre
+        //     $accept ,          //accepted
+        //     $labelNums[0],      //labelNum
+        //     $locale,            //locale
+        //     $CanCon,            //cancon
+        //     $release_date,      //release_date
+        //     $year,              //year
+        //     $note,              //note
+        //     $playlist,          //playlist
+        //     $governmentCategory,    //governmentCategory
+        //     $schedule,              //schedule
+        // $rating
+        // )){
+        //     $stmt3->close();
+        //     return $this->mysqli->error;
+        // }
+
+    //     if(!$stmt3->execute()){
+    //         error_log("SQL-STMT Error (SEG-3):[".$this->mysqli->errno."] ".$this->mysqli->error);
+    //         $error = [$this->mysqli->errno,$this->mysqli->error];
+    //         $stmt3->close();
+    //         return $this->mysqli->error;
+    //     }
+    // }
+
+    // fclose($file);
+
         if(!$stmt3 = $this->mysqli->prepare("INSERT IGNORE INTO recordlabel(Name,size)
             VALUES (?,?)")){
             $stmt3->close();
             header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
         }
-
-        //for library
-        if(!$stmt4 = $this->mysqli->prepare("INSERT IGNORE INTO library(datein,artist,album,variousartists,
-            format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
-            governmentCategory,scheduleCode, rating)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
-            $stmt4->close();
-            header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
-        }
-
         while (($getData = fgetcsv($file, 10000, ",")) !== FALSE)
         {
             if($getData[1]=='' && $getData[2]=='')
                 break;
 
-            //for localhost development, load only 100 rows .. because of performance issue
-            // if($getData[0] == 100)
-                // break;
-
-            //skip the row if artist or album or label is empty
-            if($getData[0] == '' || $getData[1] == '' || $getData[2] == '' || $getData[3] == '')    
-                continue;
-            
             $labelName = $getData[3];
             $size = 1;
+            echo $getData[0]. " ". $labelName. "<br>";
+
+            if($labelName == '')
+                continue;
+            
             if(!$stmt3->bind_param(
                 "si",
                 $labelName,    
@@ -903,75 +940,20 @@ class library extends station{
                 $stmt3->close();
                 return $this->mysqli->error;
             }
-            if(!$stmt3->execute()){ 
-                error_log("SQL-STMT Error (SEG-3):[".$this->mysqli->errno."] ".$this->mysqli->error);
-                $error = [$this->mysqli->errno,$this->mysqli->error];
-                return $this->mysqli->error;
-            }
-            $labels = \TPS\label::nameSearch($labelName);
-            $labels = array_keys($labels)[0];
-            $genreKey = array_keys(self::getLibraryGenres());
-            $null = null;
-            $dateIn = $getData[5] == '?'? $null:strtotime($getData[5]);
-            $dateIn = date("Y-m-d", $dateIn);
-            $locale = 'International';
-            $canCon = 0;
-            $rating = strlen($getData[10]);
-
-            //locale
-            switch($getData[22])
-            {   
-                case 1: $locale = "Local"; break;
-                case 2: $locale = "Province"; break;
-                case 3: $locale = "Country"; break;
-            }
-            //Accept status and Playlist flag
-            switch($getData[9])
-            {   
-                case 'o': $accept = 1; $playlist_flag = 'Complete'; break;
-                case 'x': $accept = 0; $playlist_flag = 'False'; break;
-                case 'L': $accept = $null; $playlist_flag = 'False'; break;
-                default:  $accept = $null; $playlist_flag = 'False';
-            }
-            if($getData[9] == 'x' || '')
-                $accept = 0;
-            if(!$stmt4->bind_param(
-                "sssissiisissssssi",
-                        $dateIn,                //dateIn
-                        $getData[1],            //Artist
-                        $getData[2],            //Album
-                        $null,                  //Various Artist
-                        $getData[11],           //format
-                        $genreKey[$getData[6]], //genre
-                        $accept,                //accepted
-                        $labels,                //labelNum
-                        $locale,                 //locale
-                        $canCon,                 //cancon
-                        $null,                   //release_date
-                        $null,                   //year
-                        $getData[13],            //note
-                        $playlist_flag,          //playlist
-                        $null,                  //governmentCategory
-                        $null,                  //schedule
-                        $rating                 //rating
-                    )){
-                $stmt4->close();
-                return $this->mysqli->error;
-            }
-            if(!$stmt4->execute()){ 
-                error_log("SQL-STMT Error (SEG-3):[".$this->mysqli->errno."] ".$this->mysqli->error);
-                $error = [$this->mysqli->errno,$this->mysqli->error];
-                return $this->mysqli->error;
-            }
-            else
-            {
-                echo $getData[0].' '.$getData[1].' '.$getData[2].' --- Inserted <br>';
-            }
+            $msc = microtime(true);
+            $stmt3->execute();
+            $msc = microtime(true)-$msc;
+            echo ($msc * 1000) . ' ms <br>'; // in millseconds
+            // if(!$stmt3->execute()){
+            //     error_log("SQL-STMT Error (SEG-3):[".$this->mysqli->errno."] ".$this->mysqli->error);
+            //     $error = [$this->mysqli->errno,$this->mysqli->error];
+            //     return $this->mysqli->error;
+            // }
         }
-        $stmt4->close();
-        $stmt3->close();
-        fclose($file); 
-        return true;
+                echo 'COLOSED';
+                $stmt3->close();
+        // $stmt3->close();
+        fclose($file);  
 }
 
     /**
@@ -1253,44 +1235,10 @@ class library extends station{
 	    $library_code = "{$genre_num}-{$id_last}";
 	    $this->mysqli->query("UPDATE library SET library_code='{$library_code}' WHERE RefCode={$id_last}");
 
-	    
 	    $this->addAttributeToAlbum("hometown", $hometowns, $id_last);
 	    $this->addAttributeToAlbum("tag", $tags, $id_last);
 	    $this->addAttributeToAlbum("subgenre", $subgenres, $id_last);
-/*
-	    if(!is_null($hometowns)) {
-		// Check which hometowns are already in the database
-		$sql=$this->mysqli->query("SELECT * FROM hometowns WHERE name IN ('" . implode("', '", $hometowns) . "')");
-		$results = [];
-		while($result_temp = $sql->fetch_array(MYSQLI_ASSOC))
-		    array_push($results, $result_temp);
-		$hometown_ids = array_fill(0, sizeof($hometowns), NULL); // Parallel array of db id for each town
-		foreach($results as $result)
-		    $hometown_ids[array_search($result['name'], $hometowns)] = $result['id'];
 
-		// Insert all hometowns into the hometowns table that aren't already in there
-		$hometowns_to_add = [];
-		foreach($hometown_ids as $index => $id)
-		    if(is_null($id))
-			array_push($hometowns_to_add, $hometowns[$index]);
-		if(sizeof($hometowns_to_add)>0) {
-		    $this->mysqli->query("INSERT INTO hometowns (name) VALUES ('" . implode("'), ('", $hometowns_to_add) . "')");
-
-		    // Gather all hometown id's for this album
-		    $sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
-		    $last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
-		    foreach($hometown_ids as $i=>$id)
-		        if(is_null($id))
-			    $hometown_ids[$i] = $last_insert_id++;
-		}
-		// Insert library/hometown combos into intermediary table
-		$values = "";
-		foreach($hometown_ids as $id)
-		    $values = $values . "(" . $id_last  .  ", " . $id  . "), ";
-		$values = substr($values, 0, strlen($values)-2); // Remove trailing comma
-		$this->mysqli->query("INSERT INTO library_hometowns (library_RefCode, hometown_id) VALUES " . $values);
-	    }
-*/
 	    if(sizeof($labelNums)>0) {
 		// Insert album and record label combos into library_recordlabel intermediary table
 		$values = "";
@@ -1299,73 +1247,7 @@ class library extends station{
 		$values = substr($values, 0, strlen($values)-2); // Remove trailing comma
 		$this->mysqli->query("INSERT INTO library_recordlabel (library_RefCode, recordlabel_LabelNumber) VALUES " . $values);
 	    }
-/*
-	    if(sizeof($tags)>0) {
-		// Check which album-assigned tags are already in the database
-		$sql=$this->mysqli->query("SELECT * FROM tags WHERE name IN ('" . implode("', '", $tags) . "')");
-		$results = [];
-		while($result_temp = $sql->fetch_array(MYSQLI_ASSOC))
-		    array_push($results, $result_temp);
-		$tag_ids = array_fill(0, sizeof($tags), NULL); // Parallel array of db id for each tag
-		foreach($results as $result)
-		    $tag_ids[array_search($result['name'], $tags)] = $result['id'];
 
-		// Insert all the tags into tags table that aren't inserted yet
-		$tags_to_add = [];
-		foreach($tag_ids as $index => $id)
-		    if(is_null($id))
-			array_push($tags_to_add, $tags[$index]);
-		if(sizeof($tags_to_add)>0) {
-		    $this->mysqli->query("INSERT INTO tags (name) VALUES ('" . implode("'), ('", $tags_to_add) . "')");
-
-		    // Gather all tag id's for this album
-		    $sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
-		    $last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
-		    foreach($tag_ids as $i=>$id)
-		        if(is_null($id))
-			    $tag_ids[$i] = $last_insert_id++;
-		}
-		// Insert tag/album combos into intermediary table
-		$values = "";
-		foreach($tag_ids as $id)
-		    $values = $values . "(" . $id_last  .  ", " . $id  . "), ";
-		$values = substr($values, 0, strlen($values)-2); // Remove trailing comma
-		$this->mysqli->query("INSERT INTO library_tags (library_RefCode, tag_id) VALUES " . $values);
-	    }
-
-	    if(sizeof($subgenres)>0) {
-		// Check which album-assigned subgenres are already in the database
-		$sql=$this->mysqli->query("SELECT * FROM subgenres WHERE name IN ('" . implode("', '", $subgenres) . "')");
-		$results = [];
-		while($result_temp = $sql->fetch_array(MYSQLI_ASSOC))
-		    array_push($results, $result_temp);
-		$subgenre_ids = array_fill(0, sizeof($subgenres), NULL); // Parallel array of db id for each subgenre
-		foreach($results as $result)
-		    $subgenre_ids[array_search($result['name'], $subgenres)] = $result['id'];
-
-		// Insert all the subgenres into subgenres table that aren't inserted yet
-		$subgenres_to_add = [];
-		foreach($subgenre_ids as $index => $id)
-		    if(is_null($id))
-			array_push($subgenres_to_add, $subgenres[$index]);
-		if(sizeof($subgenres_to_add)>0) {
-		    $this->mysqli->query("INSERT INTO subgenres (name) VALUES ('" . implode("'), ('", $subgenres_to_add) . "')");
-
-		    // Gather all subgenre id's for this album
-		    $sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
-		    $last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
-		    foreach($subgenre_ids as $i=>$id)
-		        if(is_null($id))
-			    $subgenre_ids[$i] = $last_insert_id++;
-		}
-		// Insert subgenre/album combos into intermediary table
-		$values = "";
-		foreach($subgenre_ids as $id)
-		    $values = $values . "(" . $id_last  .  ", " . $id  . "), ";
-		$values = substr($values, 0, strlen($values)-2); // Remove trailing comma
-		$this->mysqli->query("INSERT INTO library_subgenres (library_RefCode, subgenre_id) VALUES " . $values);
-	    }
-*/
             if(strtolower(substr($artist,-1))!='s'){
                 $s = "s";
             }
