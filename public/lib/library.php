@@ -790,6 +790,7 @@ class library extends station{
             case 'all': $where .= " AND true"; break;
             case 'label': $where .= " AND labelid is null"; break;
             case 'locale': $where .= " AND locale is null"; break;
+            case 'genre': $where .= " AND Genre is null"; break;
             case 'rating': $where .= " AND rating is null OR rating = 0"; break;
             case 'rel_date': $where .= " AND release_date is null OR release_date = '1970-01-01'"; break;
             case 'status': $where .= " AND status is null"; break;
