@@ -920,11 +920,25 @@ class library extends station{
             $stmt3->close();
             header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
         }
+<<<<<<< HEAD
+=======
+
+        //for library
+        if(!$stmt4 = $this->mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,
+            format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
+            governmentCategory,scheduleCode, rating)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
+            $stmt4->close();
+            header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
+        }
+
+>>>>>>> parent of 56c2d7f... csv import done
         while (($getData = fgetcsv($file, 10000, ",")) !== FALSE)
         {
-            if($getData[1]=='' && $getData[2]=='')
-                break;
+            // if($getData[1]=='' && $getData[2]=='')
+            //     break;
 
+<<<<<<< HEAD
             $labelName = $getData[3];
             $size = 1;
             echo $getData[0]. " ". $labelName. "<br>";
@@ -932,6 +946,18 @@ class library extends station{
             if($labelName == '')
                 continue;
             
+=======
+            //for localhost development, load only 100 rows .. because of performance issue
+            if($getData[0] == 100)
+                break;
+            //skip the row if artist or album or label is empty
+            if($getData[1] == '' || $getData[2] == '' || $getData[3] == '')    
+                continue;
+            // echo $getData[0]. " ". $labelName. "<br>";
+
+            $labelName = $getData[3];
+            $size = 1;
+>>>>>>> parent of 56c2d7f... csv import done
             if(!$stmt3->bind_param(
                 "si",
                 $labelName,    
@@ -940,6 +966,7 @@ class library extends station{
                 $stmt3->close();
                 return $this->mysqli->error;
             }
+<<<<<<< HEAD
             $msc = microtime(true);
             $stmt3->execute();
             $msc = microtime(true)-$msc;
@@ -953,6 +980,62 @@ class library extends station{
                 echo 'COLOSED';
                 $stmt3->close();
         // $stmt3->close();
+=======
+            if(!$stmt3->execute()){ 
+                error_log("SQL-STMT Error (SEG-3):[".$this->mysqli->errno."] ".$this->mysqli->error);
+                $error = [$this->mysqli->errno,$this->mysqli->error];
+                return $this->mysqli->error;
+            }
+            $labels = \TPS\label::nameSearch($labelName);
+            $labels = reset($labels);
+            $genreKey = array_keys(self::getLibraryGenres());
+            $null = null;
+            $dateIn = $getData[5] == '?'? $null:strtotime($getData[5]);
+            $dateIn = date("Y-m-d", $dateIn);
+            $accept = 1;
+            $locale = 'International';
+            $canCon = 0;
+            switch($getData[22])
+            {   
+                case 1: $locale = "Local"; break;
+                case 2: $locale = "Province"; break;
+                case 3: $locale = "Country"; break;
+            }
+            if($getData[9] == 'x' || '')
+                $accept = 0;
+            if(!$stmt4->bind_param(
+                "sssissiisisssissi",
+                        $dateIn,            //dateIn
+                        $getData[1],            //Artist
+                        $getData[2],            //Album
+                        $null,                  //Various Artist
+                        $getData[11],           //format
+                        $genreKey[$getData[6]], //genre
+                        $accept,                //accepted
+                        $labels,                //labelNum
+                        $locale,                 //locale
+                        $canCon,                  //cancon
+                        $null,            //release_date
+                        $null,           //year
+                        $getData[13],           //note
+                        $null,                  //playlist
+                        $null,                  //governmentCategory
+                        $null,                  //schedule
+                        $null
+                    )){
+                $stmt4->close();
+                return $this->mysqli->error;
+            }
+            if(!$stmt4->execute()){ 
+                error_log("SQL-STMT Error (SEG-3):[".$this->mysqli->errno."] ".$this->mysqli->error);
+                $error = [$this->mysqli->errno,$this->mysqli->error];
+                return $this->mysqli->error;
+            }
+            
+        }
+        $stmt4->close();
+        $stmt3->close();
+>>>>>>> parent of 56c2d7f... csv import done
         fclose($file);  
 }
 
