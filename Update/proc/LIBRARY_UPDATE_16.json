@@ -1,0 +1,19 @@
+{
+    "TPS_Errno" : "DRLB-016",
+    "type" : "database",
+    "execute" : "SQL",
+    "requires" : "DRLB-001",
+    "description" : "Adds subgenres to database",
+    "SQL_QRY" : {
+	"TEST" : "SHOW COLUMNS FROM `subgenres` WHERE `Field` = 'name'",
+	"RESULT" : {
+	    "Field" : [
+		"name"
+	    ]
+	},
+	"Negate" : 0,
+	"createMode" : 1,
+	"UPDATE_TYPE" : "FILE",
+	"UPDATE" : "LIBRARY_UPDATE_16.sql"
+    }
+}

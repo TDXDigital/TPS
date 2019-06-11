@@ -16,6 +16,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $params = array(
             "govCats"=>$library->getGovernmentCodes(),
             "genres"=>$library->getLibraryGenres(),
+	    "subgenres"=>$library->getSubgenres(),
 	    "tags"=>$library->getTags(),
 	    "hometowns"=>$library->getHometowns(),
             "labels"=>\TPS\label::nameSearch("%",False),
@@ -36,6 +37,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $album = filter_input(INPUT_POST,"album");
         $genre = filter_input(INPUT_POST,"genre")?:NULL;
         $datein = filter_input(INPUT_POST, "indate")?:NULL;
+        $subgenres = filter_input(INPUT_POST, "subgenres", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
         $hometowns = filter_input(INPUT_POST, "hometown", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
         $rec_labels = filter_input(INPUT_POST, "label", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
         $format = filter_input(INPUT_POST, "format")?:NULL;
@@ -154,7 +156,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 
         $result = $library->createAlbum($artist, $album, $format, $genre, $genre_num, $labelNums, $locale, $CanCon, $playlist,
             $governmentCategory, $schedule,$note, $accepted, $variousartists, $datein, $release_date, $print,
-	    $rating, $tags, $hometowns);
+	    $rating, $tags, $hometowns, $subgenres);
 
         if(is_string($result)){
             $app->flash('error',$mysqli->error);
@@ -529,6 +531,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $app->render("error.html.twig",$params);
             $app->halt(500, "not valid");
         }
+	$album['subgenres'] = $library->getSubgenresByRefCode($RefCode);
 	$album['hometowns'] = $library->getHometownsByRefCode($RefCode);
 	$album['labels'] = $library->getLabelsByRefCode($RefCode);
         $album['websites']=$library->getWebsitesByRefCode($RefCode);
@@ -539,6 +542,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             "album"=>$album,
             "govCats"=>$library->getGovernmentCodes(),
             "genres"=>$library->getLibraryGenres(),
+	    "subgenres"=>$library->getSubgenres(),
 	    "tags"=>$library->getTags(),
 	    "hometowns"=>$library->getHometowns(),
             "labels"=>\TPS\label::nameSearch("%",False),
@@ -563,6 +567,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $album = filter_input(INPUT_POST,"album");
             $genre = filter_input(INPUT_POST,"genre")?:NULL;
             $datein = filter_input(INPUT_POST, "indate")?:NULL;
+            $subgenres = filter_input(INPUT_POST, "subgenres", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
             $hometowns = filter_input(INPUT_POST, "hometown", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
             $rec_labels = filter_input(INPUT_POST, "label", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
             $format = filter_input(INPUT_POST, "format")?:NULL;
@@ -799,67 +804,250 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 		$mysqli->query("UPDATE library SET library_code='{$library_code}' WHERE RefCode={$RefCode};");
 
 		if(sizeof($hometowns) > 0) {
-		    // Check which hometowns are already in the database
+		    // Check which hometowns are already in the database & get their ids
 		    $sql=$mysqli->query("SELECT * FROM hometowns WHERE name IN ('" . implode("', '", $hometowns) . "')");
 		    $results = [];
-		    while($result_temp = $sql->fetch_array(MYSQLI_ASSOC))
-		        array_push($results, $result_temp);
+		    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+		        array_push($results, $row);
 		    $hometown_ids = array_fill(0, sizeof($hometowns), NULL); // Parallel array of db id for each hometown
-		    foreach($results as $result)
+		    $hometowns_in_db = [];
+		    foreach($results as $result) {
 		        $hometown_ids[array_search($result['name'], $hometowns)] = $result['id'];
+			array_push($hometowns_in_db, $result['name']);
+		    }
+
+		    // Determine which hometowns need to be added to the `hometowns` table
+		    $hometowns_to_add_to_db = array_diff($hometowns, $hometowns_in_db);
 
 		    // Insert all hometowns into the hometowns table that aren't already in there
-		    $hometowns_to_add = [];
-		    foreach($hometown_ids as $index => $id)
-		        if(is_null($id))
-			    array_push($hometowns_to_add, $hometowns[$index]);
-		    if(sizeof($hometowns_to_add) > 0) {
-			// Insert new hometowns
-		    	$mysqli->query("INSERT INTO hometowns (name) VALUES ('" . implode("'), ('", $hometowns_to_add) . "')");
+		    if(sizeof($hometowns_to_add_to_db) > 0) {
+			// Insert new hometowns into `hometowns` table
+		    	$mysqli->query("INSERT INTO hometowns (name) VALUES ('" . implode("'), ('", $hometowns_to_add_to_db) . "')");
 
-		        // Gather all hometown id's for this album
+		        // Complete the list of hometown id's for this album
 		        $sql = $mysqli->query("SELECT LAST_INSERT_ID()");
 		        $last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
-			$hometowns_to_add_ids = array_fill(0, sizeof($hometowns_to_add), NULL); // Parallel array of inserted ids in db
-		        foreach($hometowns_to_add as $i=>$id)
-			    $hometowns_to_add_ids[$i] = $last_insert_id++;
+			foreach($hometown_ids as $i=>$id)
+			    if(is_null($id))
+				$hometown_ids[$i] = $last_insert_id++;
+		    }
 
-		        // Insert new library/hometown combos into intermediary table
+		    // Determine which hometowns have been added to the album in the UI
+		    $hometowns_add_to_album = [];
+		    $sql = $mysqli->query("SELECT name FROM hometowns WHERE id IN (SELECT hometown_id FROM library_hometowns WHERE library_RefCode={$RefCode})");
+		    $hometowns_in_db_for_this_album = [];
+		    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+			array_push($hometowns_in_db_for_this_album, $row['name']);
+		    $added_hometowns_in_ui = array_diff($hometowns, $hometowns_in_db_for_this_album);
+
+		    if(sizeof($added_hometowns_in_ui)>0) {
+		        // Determine database ids for the added hometowns in the UI
+		        $sql = $mysqli->query("SELECT id FROM hometowns WHERE name IN ('" . implode("', '", $added_hometowns_in_ui) . "')");
+		        $ids_of_added_hometowns_in_ui = [];
+			while($row = $sql->fetch_array(MYSQLI_ASSOC))
+			    array_push($ids_of_added_hometowns_in_ui, $row['id']);
+
+			// Insert new library/hometown combos into intermediary table
 		        $values = "";
-		        foreach($hometowns_to_add_ids as $id)
+		        foreach($ids_of_added_hometowns_in_ui as $id)
 		            $values = $values . "(" . $RefCode  .  ", " . $id  . "), ";
 		        $values = substr($values, 0, strlen($values)-2); // Remove trailing comma
 		        $mysqli->query("INSERT INTO library_hometowns (library_RefCode, hometown_id) VALUES " . $values);
 		    }
-		    // Determine which hometowns have been removed from the album in the UI
-		    $sql=$mysqli->query("SELECT * FROM hometowns WHERE id IN (SELECT hometown_id FROM library_hometowns WHERE library_RefCode={$RefCode})");
-		    $hometowns_assigned = [];
+		}
+		// Determine which hometowns have been removed from the album in the UI
+		$sql=$mysqli->query("SELECT * FROM hometowns WHERE id IN (SELECT hometown_id FROM library_hometowns WHERE library_RefCode={$RefCode})");
+		$hometowns_assigned_in_db = [];
+		while($row = $sql->fetch_array(MYSQLI_ASSOC))
+		    $hometowns_assigned_in_db[$row['id']] = $row['name'];
+		$hometowns_to_remove_from_int_table = is_null($hometowns) ? $hometowns_assigned_in_db : array_diff($hometowns_assigned_in_db, $hometowns);
+
+		// Remove hometowns from album if needed
+		if(sizeof($hometowns_to_remove_from_int_table) > 0) {
+		    // Delete hometown from intermediary table if user removed them in the UI
+		    $mysqli->query("DELETE FROM library_hometowns WHERE library_RefCode={$RefCode} " .
+		  	           "AND hometown_id IN (" . implode(", ", array_keys($hometowns_to_remove_from_int_table)) . ")");
+
+		    $sql = $mysqli->query("SELECT hometowns.id FROM hometowns RIGHT JOIN library_hometowns " .
+					  "ON library_hometowns.hometown_id=hometowns.id GROUP BY hometowns.id");
+		    $hometown_ids_being_used = [];
 		    while($row = $sql->fetch_array(MYSQLI_ASSOC))
-			$hometowns_assigned[$row['id']] = $row['name'];
-		    $hometowns_to_remove = array_diff($hometowns_assigned, $hometowns);
+			array_push($hometown_ids_being_used, $row['id']);
 
-		    // Remove hometowns from album if needed
-		    if(sizeof($hometowns_to_remove) > 0) {
-			// Delete hometown from hometowns table if no albums use it anymore
-			$mysqli->query("DELETE FROM library_hometowns WHERE library_RefCode={$RefCode} " .
-				       "AND hometown_id IN (" . implode(", ", array_keys($hometowns_to_remove)) . ")");
+		    $sql = $mysqli->query("SELECT id FROM hometowns");
+		    $all_hometowns = [];
+		    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+			array_push($all_hometowns, $row['id']);
 
-			$sql = $mysqli->query("SELECT hometowns.id FROM hometowns RIGHT JOIN library_hometowns " .
-					      "ON library_hometowns.hometown_id=hometowns.id GROUP BY hometowns.id");
-			$hometown_ids_being_used = [];
-			while($row = $sql->fetch_array(MYSQLI_ASSOC))
-			    array_push($hometown_ids_being_used, $row['id']);
-
-			$sql = $mysqli->query("SELECT id FROM hometowns");
-			$all_hometowns = [];
-			while($row = $sql->fetch_array(MYSQLI_ASSOC))
-			    array_push($all_hometowns, $row['id']);
-
-			$hometowns_to_delete = array_diff($all_hometowns, $hometown_ids_being_used);
-			$mysqli->query("DELETE FROM hometowns WHERE id IN (" . implode(", ", $hometowns_to_delete) . ")");
-		    }
+		    // Delete hometowns from `hometowns` table if no albums use it anymore
+		    $hometowns_to_delete = array_diff($all_hometowns, $hometown_ids_being_used);
+		    if(sizeof($hometowns_to_delete)>0)
+		        $mysqli->query("DELETE FROM hometowns WHERE id IN (" . implode(", ", $hometowns_to_delete) . ")");
 		}
 
+		if(sizeof($tags) > 0) {
+		    // Check which tags are already in the database & get their ids
+		    $sql=$mysqli->query("SELECT * FROM tags WHERE name IN ('" . implode("', '", $tags) . "')");
+		    $results = [];
+		    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+		        array_push($results, $row);
+		    $tag_ids = array_fill(0, sizeof($tags), NULL); // Parallel array of db id for each tag
+		    $tags_in_db = [];
+		    foreach($results as $result) {
+		        $tag_ids[array_search($result['name'], $tags)] = $result['id'];
+			array_push($tags_in_db, $result['name']);
+		    }
+
+		    // Determine which tags need to be added to the `tags` table
+		    $tags_to_add_to_db = array_diff($tags, $tags_in_db);
+
+		    // Insert all tags into the tags table that aren't already in there
+		    if(sizeof($tags_to_add_to_db) > 0) {
+			// Insert new tags into `tags` table
+		    	$mysqli->query("INSERT INTO tags (name) VALUES ('" . implode("'), ('", $tags_to_add_to_db) . "')");
+
+		        // Complete the list of tag id's for this album
+		        $sql = $mysqli->query("SELECT LAST_INSERT_ID()");
+		        $last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
+			foreach($tag_ids as $i=>$id)
+			    if(is_null($id))
+				$tag_ids[$i] = $last_insert_id++;
+		    }
+
+		    // Determine which tags have been added to the album in the UI
+		    $tags_add_to_album = [];
+		    $sql = $mysqli->query("SELECT name FROM tags WHERE id IN (SELECT tag_id FROM library_tags WHERE library_RefCode={$RefCode})");
+		    $tags_in_db_for_this_album = [];
+		    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+			array_push($tags_in_db_for_this_album, $row['name']);
+		    $added_tags_in_ui = array_diff($tags, $tags_in_db_for_this_album);
+
+		    if(sizeof($added_tags_in_ui)>0) {
+		        // Determine database ids for the added tags in the UI
+		        $sql = $mysqli->query("SELECT id FROM tags WHERE name IN ('" . implode("', '", $added_tags_in_ui) . "')");
+		        $ids_of_added_tags_in_ui = [];
+			while($row = $sql->fetch_array(MYSQLI_ASSOC))
+			    array_push($ids_of_added_tags_in_ui, $row['id']);
+
+			// Insert new library/tag combos into intermediary table
+		        $values = "";
+		        foreach($ids_of_added_tags_in_ui as $id)
+		            $values = $values . "(" . $RefCode  .  ", " . $id  . "), ";
+		        $values = substr($values, 0, strlen($values)-2); // Remove trailing comma
+		        $mysqli->query("INSERT INTO library_tags (library_RefCode, tag_id) VALUES " . $values);
+		    }
+		}
+		// Determine which tags have been removed from the album in the UI
+		$sql=$mysqli->query("SELECT * FROM tags WHERE id IN (SELECT tag_id FROM library_tags WHERE library_RefCode={$RefCode})");
+		$tags_assigned_in_db = [];
+		while($row = $sql->fetch_array(MYSQLI_ASSOC))
+		    $tags_assigned_in_db[$row['id']] = $row['name'];
+		$tags_to_remove_from_int_table = is_null($tags) ? $tags_assigned_in_db : array_diff($tags_assigned_in_db, $tags);
+
+		// Remove tags from album if needed
+		if(sizeof($tags_to_remove_from_int_table) > 0) {
+		    // Delete tag from intermediary table if user removed them in the UI
+		    $mysqli->query("DELETE FROM library_tags WHERE library_RefCode={$RefCode} " .
+		  	           "AND tag_id IN (" . implode(", ", array_keys($tags_to_remove_from_int_table)) . ")");
+
+		    $sql = $mysqli->query("SELECT tags.id FROM tags RIGHT JOIN library_tags " .
+					  "ON library_tags.tag_id=tags.id GROUP BY tags.id");
+		    $tag_ids_being_used = [];
+		    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+			array_push($tag_ids_being_used, $row['id']);
+
+		    $sql = $mysqli->query("SELECT id FROM tags");
+		    $all_tags = [];
+		    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+			array_push($all_tags, $row['id']);
+
+		    // Delete tags from `tags` table if no albums use it anymore
+		    $tags_to_delete = array_diff($all_tags, $tag_ids_being_used);
+		    if(sizeof($tags_to_delete)>0)
+		        $mysqli->query("DELETE FROM tags WHERE id IN (" . implode(", ", $tags_to_delete) . ")");
+		}
+
+		if(sizeof($subgenres) > 0) {
+		    // Check which subgenres are already in the database & get their ids
+		    $sql=$mysqli->query("SELECT * FROM subgenres WHERE name IN ('" . implode("', '", $subgenres) . "')");
+		    $results = [];
+		    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+		        array_push($results, $row);
+		    $subgenre_ids = array_fill(0, sizeof($subgenres), NULL); // Parallel array of db id for each subgenre
+		    $subgenres_in_db = [];
+		    foreach($results as $result) {
+		        $subgenre_ids[array_search($result['name'], $subgenres)] = $result['id'];
+			array_push($subgenres_in_db, $result['name']);
+		    }
+
+		    // Determine which subgenres need to be added to the `subgenres` table
+		    $subgenres_to_add_to_db = array_diff($subgenres, $subgenres_in_db);
+
+		    // Insert all subgenres into the subgenres table that aren't already in there
+		    if(sizeof($subgenres_to_add_to_db) > 0) {
+			// Insert new subgenres into `subgenres` table
+		    	$mysqli->query("INSERT INTO subgenres (name) VALUES ('" . implode("'), ('", $subgenres_to_add_to_db) . "')");
+
+		        // Complete the list of subgenre id's for this album
+		        $sql = $mysqli->query("SELECT LAST_INSERT_ID()");
+		        $last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
+			foreach($subgenre_ids as $i=>$id)
+			    if(is_null($id))
+				$subgenre_ids[$i] = $last_insert_id++;
+		    }
+
+		    // Determine which subgenres have been added to the album in the UI
+		    $subgenres_add_to_album = [];
+		    $sql = $mysqli->query("SELECT name FROM subgenres WHERE id IN (SELECT subgenre_id FROM library_subgenres WHERE library_RefCode={$RefCode})");
+		    $subgenres_in_db_for_this_album = [];
+		    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+			array_push($subgenres_in_db_for_this_album, $row['name']);
+		    $added_subgenres_in_ui = array_diff($subgenres, $subgenres_in_db_for_this_album);
+
+		    if(sizeof($added_subgenres_in_ui)>0) {
+		        // Determine database ids for the added subgenres in the UI
+		        $sql = $mysqli->query("SELECT id FROM subgenres WHERE name IN ('" . implode("', '", $added_subgenres_in_ui) . "')");
+		        $ids_of_added_subgenres_in_ui = [];
+			while($row = $sql->fetch_array(MYSQLI_ASSOC))
+			    array_push($ids_of_added_subgenres_in_ui, $row['id']);
+
+			// Insert new library/subgenre combos into intermediary table
+		        $values = "";
+		        foreach($ids_of_added_subgenres_in_ui as $id)
+		            $values = $values . "(" . $RefCode  .  ", " . $id  . "), ";
+		        $values = substr($values, 0, strlen($values)-2); // Remove trailing comma
+		        $mysqli->query("INSERT INTO library_subgenres (library_RefCode, subgenre_id) VALUES " . $values);
+		    }
+		}
+		// Determine which subgenres have been removed from the album in the UI
+		$sql=$mysqli->query("SELECT * FROM subgenres WHERE id IN (SELECT subgenre_id FROM library_subgenres WHERE library_RefCode={$RefCode})");
+		$subgenres_assigned_in_db = [];
+		while($row = $sql->fetch_array(MYSQLI_ASSOC))
+		    $subgenres_assigned_in_db[$row['id']] = $row['name'];
+		$subgenres_to_remove_from_int_table = is_null($subgenres) ? $subgenres_assigned_in_db : array_diff($subgenres_assigned_in_db, $subgenres);
+
+		// Remove subgenres from album if needed
+		if(sizeof($subgenres_to_remove_from_int_table) > 0) {
+		    // Delete subgenre from intermediary table if user removed them in the UI
+		    $mysqli->query("DELETE FROM library_subgenres WHERE library_RefCode={$RefCode} " .
+		  	           "AND subgenre_id IN (" . implode(", ", array_keys($subgenres_to_remove_from_int_table)) . ")");
+
+		    $sql = $mysqli->query("SELECT subgenres.id FROM subgenres RIGHT JOIN library_subgenres " .
+					  "ON library_subgenres.subgenre_id=subgenres.id GROUP BY subgenres.id");
+		    $subgenre_ids_being_used = [];
+		    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+			array_push($subgenre_ids_being_used, $row['id']);
+
+		    $sql = $mysqli->query("SELECT id FROM subgenres");
+		    $all_subgenres = [];
+		    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+			array_push($all_subgenres, $row['id']);
+
+		    // Delete subgenres from `subgenres` table if no albums use it anymore
+		    $subgenres_to_delete = array_diff($all_subgenres, $subgenre_ids_being_used);
+		    if(sizeof($subgenres_to_delete)>0)
+		        $mysqli->query("DELETE FROM subgenres WHERE id IN (" . implode(", ", $subgenres_to_delete) . ")");
+		}
 
                 if(strtolower(substr($artist,-1))!='s'){
                     $s = "s";
