@@ -226,8 +226,10 @@ $(document).ready(function() {
                 "render": function ( data, type, row ) {
                     if(data == 1 )
                         return '<i class="fa fa-check-circle-o" style="color: #008000"> Accept</i>';
-                    else
+                    else if(data == 0)
                         return '<i class="fa fa-times-circle-o" style="color: #800000"> Reject</i>';
+                    else
+                        return '<i class="fa fa-exclamation-triangle" style="color: #FF4500">  N/A</i>';
                 },
                 "targets": 2
             },

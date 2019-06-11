@@ -80,21 +80,6 @@
             </ul>
         </li>
         {% endif %}
-        {% if permissions > 1 or "submission" in permissions %}
-        <li>
-            <a href="javascript:;" data-toggle="collapse" data-target="#submission"><i class="fa fa-fw fas fa-music"></i> Submission <i class="fa fa-fw fa-caret-down"></i></a>
-            <ul id="submission" class="{{secondLevelClass}}">
-                <li>
-                    <a href="/submission/"><i class='fa fa-search'></i> Search</a>
-                </li>
-                {% if permissions > 1 or "managePlaylist" in permissions %}
-                <li>
-                    <a href="/playlist/add/"><i class='fa fa-calculator'></i> Add Submission</a>
-                </li>
-                {% endif %}
-            </ul>
-        </li>
-        {% endif %}
 
         {% if permissions > 0 or "library" in permissions %}
         <li>
