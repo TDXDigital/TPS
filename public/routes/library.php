@@ -704,7 +704,6 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 $app->redirect('./');
                 #header("location: ../library/?q=new&e=".$mysqli->errno."&s=3_b&m=".$mysqli->error);
             }
-
             if(!$stmt3->execute()){
                 error_log("SQL-STMT Error (SEG-3):[".$mysqli->errno."] ".$mysqli->error);
                 $error = [$mysqli->errno,$mysqli->error];
@@ -774,7 +773,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     }
                     $stmt_del->close();
                 }
-                                    if($stmt_add=$mysqli->prepare("INSERT INTO band_websites (URL,Service,ID) VALUES (?,?,?) ")){
+                if($stmt_add=$mysqli->prepare("INSERT INTO band_websites (URL,Service,ID) VALUES (?,?,?) ")){
                     $stmt_add->bind_param("ssi",$url,$service,$RefCode);
                     /*if(strpos($services_add["bandcamp"], "soundcloud.com")&&(is_null($services_add['soundcloud'])||$service_add['soundcloud']==''))
                     {
@@ -794,6 +793,73 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 else{
                     error_log($mysqli->error);
                 }
+
+		// Update library code with potentially-new leading genre number
+		$library_code = "{$genre_num}-{$RefCode}";
+		$mysqli->query("UPDATE library SET library_code='{$library_code}' WHERE RefCode={$RefCode};");
+
+		if(sizeof($hometowns) > 0) {
+		    // Check which hometowns are already in the database
+		    $sql=$mysqli->query("SELECT * FROM hometowns WHERE name IN ('" . implode("', '", $hometowns) . "')");
+		    $results = [];
+		    while($result_temp = $sql->fetch_array(MYSQLI_ASSOC))
+		        array_push($results, $result_temp);
+		    $hometown_ids = array_fill(0, sizeof($hometowns), NULL); // Parallel array of db id for each hometown
+		    foreach($results as $result)
+		        $hometown_ids[array_search($result['name'], $hometowns)] = $result['id'];
+
+		    // Insert all hometowns into the hometowns table that aren't already in there
+		    $hometowns_to_add = [];
+		    foreach($hometown_ids as $index => $id)
+		        if(is_null($id))
+			    array_push($hometowns_to_add, $hometowns[$index]);
+		    if(sizeof($hometowns_to_add) > 0) {
+			// Insert new hometowns
+		    	$mysqli->query("INSERT INTO hometowns (name) VALUES ('" . implode("'), ('", $hometowns_to_add) . "')");
+
+		        // Gather all hometown id's for this album
+		        $sql = $mysqli->query("SELECT LAST_INSERT_ID()");
+		        $last_insert_id = $sql->fetch_array(MYSQLI_ASSOC)['LAST_INSERT_ID()'];
+			$hometowns_to_add_ids = array_fill(0, sizeof($hometowns_to_add), NULL); // Parallel array of inserted ids in db
+		        foreach($hometowns_to_add as $i=>$id)
+			    $hometowns_to_add_ids[$i] = $last_insert_id++;
+
+		        // Insert new library/hometown combos into intermediary table
+		        $values = "";
+		        foreach($hometowns_to_add_ids as $id)
+		            $values = $values . "(" . $RefCode  .  ", " . $id  . "), ";
+		        $values = substr($values, 0, strlen($values)-2); // Remove trailing comma
+		        $mysqli->query("INSERT INTO library_hometowns (library_RefCode, hometown_id) VALUES " . $values);
+		    }
+		    // Determine which hometowns have been removed from the album in the UI
+		    $sql=$mysqli->query("SELECT * FROM hometowns WHERE id IN (SELECT hometown_id FROM library_hometowns WHERE library_RefCode={$RefCode})");
+		    $hometowns_assigned = [];
+		    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+			$hometowns_assigned[$row['id']] = $row['name'];
+		    $hometowns_to_remove = array_diff($hometowns_assigned, $hometowns);
+
+		    // Remove hometowns from album if needed
+		    if(sizeof($hometowns_to_remove) > 0) {
+			// Delete hometown from hometowns table if no albums use it anymore
+			$mysqli->query("DELETE FROM library_hometowns WHERE library_RefCode={$RefCode} " .
+				       "AND hometown_id IN (" . implode(", ", array_keys($hometowns_to_remove)) . ")");
+
+			$sql = $mysqli->query("SELECT hometowns.id FROM hometowns RIGHT JOIN library_hometowns " .
+					      "ON library_hometowns.hometown_id=hometowns.id GROUP BY hometowns.id");
+			$hometown_ids_being_used = [];
+			while($row = $sql->fetch_array(MYSQLI_ASSOC))
+			    array_push($hometown_ids_being_used, $row['id']);
+
+			$sql = $mysqli->query("SELECT id FROM hometowns");
+			$all_hometowns = [];
+			while($row = $sql->fetch_array(MYSQLI_ASSOC))
+			    array_push($all_hometowns, $row['id']);
+
+			$hometowns_to_delete = array_diff($all_hometowns, $hometown_ids_being_used);
+			$mysqli->query("DELETE FROM hometowns WHERE id IN (" . implode(", ", $hometowns_to_delete) . ")");
+		    }
+		}
+
 
                 if(strtolower(substr($artist,-1))!='s'){
                     $s = "s";

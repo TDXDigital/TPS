@@ -1178,7 +1178,7 @@ class library extends station{
 		$results = [];
 		while($result_temp = $sql->fetch_array(MYSQLI_ASSOC))
 		    array_push($results, $result_temp);
-		$hometown_ids = array_fill(0, sizeof($hometowns), NULL); // Parallel array of db id for each tag
+		$hometown_ids = array_fill(0, sizeof($hometowns), NULL); // Parallel array of db id for each town
 		foreach($results as $result)
 		    $hometown_ids[array_search($result['name'], $hometowns)] = $result['id'];
 		
