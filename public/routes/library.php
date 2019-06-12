@@ -45,6 +45,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $governmentCategory = filter_input(INPUT_POST, "category")?:NULL;
         $schedule = filter_input(INPUT_POST, "schedule")?:2;
         $playlist = filter_input(INPUT_POST, "playlist")?:1;
+        $keep = filter_input(INPUT_POST, "accept")? : 0;
         $print = filter_input(INPUT_POST, "print")? : 0;
         $accepted = filter_input(INPUT_POST, "accept")? :0;
         $variousartists = filter_input(INPUT_POST, "VA")? :0;
@@ -69,7 +70,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 
         $library = new \TPS\library();
         $result = $library->searchLibraryWithAlbum($artist, $album, True);
-        if(sizeof($result)>0 && $result[0]['datein']==$datein){
+        if(sizeof($result)>0 && $result[0]['datein']==$datein && !$keep){
             $app->flash("error", "album already entered in database with same receiving date");
             $app->redirect("./".$result[0]['RefCode']);
             $app->halt();

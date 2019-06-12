@@ -633,14 +633,14 @@
 
     function updateVACheckbox() {
 	on = $("#va_checkbox").next().attr('class').split(" ").includes('active');
-	if ($('#art_field').val() == 'Various Artists' != on)
+	if ($('#art_field').val() == '~Various Artists~' != on)
 		$('#va_checkbox').next().find('button').click();
     }
 
     function toggleVA() {
 	variousArtists = !$("#va_checkbox").next().attr('class').split(" ").includes('active');
 	if (variousArtists)
-		$('#art_field').val("Various Artists");
+		$('#art_field').val("~Various Artists~");
 	else
 		$('#art_field').val("");
     }
@@ -653,6 +653,10 @@
 	if (keeping == printing)
 		// Recommend to print library label if keeping
 		$('#printCheckbox').next().find('button').click();
+	if (!keeping && $('#notes').val() == 'Duplicate copy')
+		// If not actually a duplicate copy, but just same artist and album names,
+		//  remove 'Duplicate copy' auto-fill in notes.
+		$('#notes').val("");
     }
 
     function dateChanged() {
@@ -871,7 +875,7 @@
     }
 
     function SetVariousArtists(){
-        $("#art_field").val("Various Artists");
+        $("#art_field").val("~Various Artists~");
         $("#va_checkbox label").eq(0).button('toggle');  //.prop("checked",true);
     }
 
