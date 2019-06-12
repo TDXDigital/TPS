@@ -187,7 +187,8 @@ $(document).ready(function() {
                         date: $('#filter_date').val(),
                         genre: $('#filter_genre').val(),
                         locale: $('#filter_location').val(),
-                        format: $('#filter_format').val()
+                        format: $('#filter_format').val(),
+                        missing_info: $('#missing_info').val()
                         }
                  }
         },
