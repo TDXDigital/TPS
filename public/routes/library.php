@@ -534,6 +534,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $app->render("error.html.twig",$params);
             $app->halt(500, "not valid");
         }
+	$album['rating'] = $library->getRatingByRefCode($RefCode);
 	$album['subgenres'] = $library->getSubgenresByRefCode($RefCode);
 	$album['hometowns'] = $library->getHometownsByRefCode($RefCode);
 	$album['labels'] = $library->getLabelsByRefCode($RefCode);

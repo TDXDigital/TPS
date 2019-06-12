@@ -425,6 +425,17 @@ class library extends station{
     }
 
     /**
+     * @abstract return the music director rating of a specific album
+     * @global mysqli $mysqli
+     * @return integer
+     */
+    public function getRatingByRefCode($refcode) {
+	$sql = $this->mysqli->query("SELECT rating FROM library WHERE RefCode={$refcode}");
+	$rating = $sql->fetch_array(MYSQLI_ASSOC)['rating'];
+	return $rating;
+    }
+
+    /**
      * @abstract return all the subgenres ever used on albums
      * @global mysqli $mysqli
      * @return array
