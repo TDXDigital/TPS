@@ -869,11 +869,11 @@ class library extends station{
 
         //
         $genreList = self::getLibraryGenres();
-        // foreach($lib_data['data'] as $i => $item)
-        // {
-        //     if($item['genre']!='')
-        //         $lib_data['data'][$i]['genre_detail'] = $genreList[$lib_data['data'][$i]['genre']];
-        // }
+        foreach($lib_data['data'] as $i => $item)
+        {
+            if($item['genre']!='')
+                $lib_data['data'][$i]['genre_detail'] = $genreList[$lib_data['data'][$i]['genre']];
+        }
         return json_encode($lib_data);
     }
     public function countSearchLibrary($term="",$exact=False){
@@ -984,22 +984,22 @@ class library extends station{
             if($getData[6] == '' || !is_numeric($getData[6]))
             {
                 $genreName = strtolower($getData[7]);
-                if(strpos($genreName, 'rock' !== false)||strpos($genreName, 'pop' !== false))
+                if(strpos($genreName, 'rock')!== false||strpos($genreName, 'pop')!== false)
                     $genreKey = 'RP';
-                elseif(strpos($genreName, 'folk' !== false)||strpos($genreName, 'roots' !== false))
+                elseif(strpos($genreName, 'folk') !== false||strpos($genreName, 'roots') !== false)
                     $genreKey = 'FR';
-                elseif(strpos($genreName, 'heavy' !== false)||strpos($genreName, 'punk' !== false)||
-                    strpos($getData[7], 'metal' !== false))
+                elseif(strpos($genreName, 'heavy') !== false||strpos($genreName, 'punk') !== false||
+                    strpos($getData[7], 'metal') !== false)
                     $genreKey = 'HM';
-                elseif(strpos($genreName, 'electronic' !== false))
+                elseif(strpos($genreName, 'electronic') !== false)
                     $genreKey = 'EL';
-                elseif(strpos($genreName, 'hipHop' !== false))
+                elseif(strpos($genreName, 'hipHop') !== false)
                     $genreKey = 'HH';
-                elseif(strpos($genreName, 'world' !== false))
+                elseif(strpos($genreName, 'world') !== false)
                     $genreKey = 'WD';
-                elseif(strpos($genreName, 'jazz' !== false)||strpos($genreName, 'classical' !== false))
+                elseif(strpos($genreName, 'jazz') !== false||strpos($genreName, 'classical') !== false)
                     $genreKey = 'JC';
-                elseif(strpos($genreName, 'experimental' !== false))
+                elseif(strpos($genreName, 'experimental') !== false)
                     $genreKey = 'EX';
                 else
                     $genreKey = 'OT';
