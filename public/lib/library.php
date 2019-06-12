@@ -436,6 +436,28 @@ class library extends station{
     }
 
     /**
+     * @abstract return the cancon status of a specific album
+     * @global mysqli $mysqli
+     * @return bool (1/0)
+     */
+    public function getCanconByRefCode($refcode) {
+	$sql = $this->mysqli->query("SELECT CanCon FROM library WHERE RefCode={$refcode}");
+	$cancon = $sql->fetch_array(MYSQLI_ASSOC)['CanCon'];
+	return $cancon;
+    }
+
+    /**
+     * @abstract return the various artists status of a specific album
+     * @global mysqli $mysqli
+     * @return bool (1/0)
+     */
+    public function getVariousArtistsByRefCode($refcode) {
+	$sql = $this->mysqli->query("SELECT variousartists FROM library WHERE RefCode={$refcode}");
+	$va = $sql->fetch_array(MYSQLI_ASSOC)['variousartists'];
+	return $va;
+    }
+
+    /**
      * @abstract return all the subgenres ever used on albums
      * @global mysqli $mysqli
      * @return array

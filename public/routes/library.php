@@ -47,7 +47,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $playlist = filter_input(INPUT_POST, "playlist")?:1;
         $print = filter_input(INPUT_POST, "print")? : 0;
         $accepted = filter_input(INPUT_POST, "accept")? :0;
-        $variousartists = filter_input(INPUT_POST, "va")? :0;
+        $variousartists = filter_input(INPUT_POST, "VA")? :0;
         $label_size = filter_input(INPUT_POST, "Label_Size")? : 1;
         $locale = filter_input(INPUT_POST, "locale")? :"international";
         $release_date = filter_input(INPUT_POST,'rel_date')?:NULL;
@@ -541,6 +541,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $album['websites']=$library->getWebsitesByRefCode($RefCode);
         $album['playlist'] = $library->playlist->getAllByRefCode($RefCode);
 	$album['tags'] = $library->getTagsByRefCode($RefCode);
+	$album['cancon'] = $library->getCanconByRefCode($RefCode);
+	$album['variousArtists'] = $library->getVariousArtistsByRefCode($RefCode);
 
         $params = array(
             "album"=>$album,
@@ -581,7 +583,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $playlist = filter_input(INPUT_POST, "playlist")?:1;
             $print = filter_input(INPUT_POST, "print")? : 0;
             $accepted = filter_input(INPUT_POST, "accept")? :0;
-            $variousartists = filter_input(INPUT_POST, "va")? :0;
+            $variousartists = filter_input(INPUT_POST, "VA")? :0;
             $label_size = filter_input(INPUT_POST, "Label_Size")? : 1;
             $locale = filter_input(INPUT_POST, "locale")? :"international";
             $release_date = filter_input(INPUT_POST,'rel_date')?:NULL;
@@ -696,6 +698,9 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 $app->redirect('./');
             }
 
+	    if($rating == "None")
+		$rating = 'NULL';
+
             if($playlist===FALSE){
                 // check if entry exists in playlist table
 
@@ -725,10 +730,9 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     // this should no happen unless changing back to already set value??
                 }*/
             }
-
             if(!$stmt3 = $mysqli->prepare("UPDATE library SET datein=?, artist=?, album=?, variousartists=?,
                 format=?,genre=?,status=?,labelid=?,Locale=?,CanCon=?,release_date=?,year=?,note=?,playlist_flag=?,
-                governmentCategory=?,scheduleCode=? WHERE RefCode=?")){
+                governmentCategory=?,scheduleCode=?, rating=? WHERE RefCode=?")){
                 header("location: ./?q=new&e=".$mysqli->errno."&s=3&m=".$mysqli->error);
             }
             if(!is_null($release_date)){
@@ -738,7 +742,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 $year = NULL;
             }
             if(!$stmt3->bind_param(
-                    "sssissiisisssissi",
+                    "sssissiisisssissii",
                     $datein,
                     $artist,
                     $album,
@@ -755,6 +759,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     $playlist,
                     $governmentCategory,
                     $schedule,
+		    $rating,
                     $RefCode
                     )){
                 $stmt3->close();

@@ -243,7 +243,9 @@
                 </div>
                 {% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
 		    <div class="col-lg-3">
-			<input id="recommendCheckbox" type="checkbox" data-label-prepend="REC" class="style3" name="recommend" value="1" />
+			<input id="recommendCheckbox" type="checkbox" data-label-prepend="REC" class="style3" name="recommend" 
+			       {% if album.rating in [4, 5] %} checked="checked" {% endif %} 
+			       value="1" />
 		    </div>
                     <div class="col-lg-3">
                         <input id="keepCheckbox" type="checkbox" data-label-prepend="Keep" onclick="toggleKeep()"
@@ -256,7 +258,8 @@
                     </div>
                     <div class="col-lg-3">
                         <input id='canconCheckbox' type="checkbox" data-label-prepend="Cancon" class="style3" 
-			       name="cancon" value="0" onclick="toggleCancon()" />
+			       name="cancon" value="0" onclick="toggleCancon()"
+			       {% if album.cancon %} checked="checked" {% endif %} />
                     </div>
                     <div class="col-lg-3">
                         <input id='playlistCheckbox' type="checkbox" data-label-prepend="PL" class="style3" name="playlist" checked="checked" value="0"/>
@@ -267,7 +270,8 @@
                     </div>
                     <div class="col-lg-3">
                         <input id='canconCheckbox' type="checkbox" data-label-prepend="Cancon" class="style3" 
-			       name="cancon" value="0" onclick="toggleCancon()" />
+			       name="cancon" value="0" onclick="toggleCancon()" 
+			       {% if album.cancon %} checked="checked" {% endif %} />
                     </div>
                     <div class="col-lg-3">
                         <!-- Single button -->
