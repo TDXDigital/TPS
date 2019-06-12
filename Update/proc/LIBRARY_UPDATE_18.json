@@ -1,0 +1,16 @@
+{
+    "TPS_Errno" : "DRLB-018",
+    "type" : "database",
+    "execute" : "SQL",
+    "description" : "Makes format required",
+    "SQL_QRY" : {
+        "TEST" : "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA='TPS' AND TABLE_NAME='library' AND IS_NULLABLE='NO' AND COLUMN_NAME='format'",
+        "RESULT" : {
+            "COLUMN_NAME" : [
+                "format"
+            ]
+        },
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "LIBRARY_UPDATE_18.sql"
+    }
+}
