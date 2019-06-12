@@ -978,7 +978,7 @@ class library extends station{
                 case 'L': $accept = $null; $playlist_flag = 'False'; break;
                 default:  $accept = $null; $playlist_flag = 'False';
             }
-            $year = $getData[18] == ''||$getData[18] == '?'? $null : $getData[18];
+            $year = $getData[18] == ''||!is_numeric($getData[18])? $null : $getData[18];
             
             //0~1200 rows, genre# is missing
             if($getData[6] == '' || !is_numeric($getData[6]))
