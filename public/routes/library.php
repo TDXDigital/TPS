@@ -154,6 +154,9 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 	    $rating = (int)$rating;
 	}
 
+	if($governmentCategory == "None")
+	    $governmentCategory = NULL;
+
         $result = $library->createAlbum($artist, $album, $format, $genre, $genre_num, $labelNums, $locale, $CanCon, $playlist,
             $governmentCategory, $schedule,$note, $accepted, $variousartists, $datein, $release_date, $print,
 	    $rating, $tags, $hometowns, $subgenres);
