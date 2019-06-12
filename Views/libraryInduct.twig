@@ -172,7 +172,7 @@
                 <div class="col-lg-6">
                     <div id="ind_group" class="form-group input-group">
                         <label for="reldate" class="input-group-addon">Release Date</label>
-                        <input id="reldate" type="text" onchange="dateChanged()" class="form-control" {% if album.release_date is not null %} value="{{album.release_date|date("Y-m-d")}}" {% else %} value="{{"now"|date("Y-m-d")}}" {% endif %} name="rel_date" />
+                        <input id="reldate" type="text" onchange="dateChanged()" class="form-control" {% if album.release_date is not null %} value="{{album.release_date|date("Y-m-d")}}" {% endif %} name="rel_date" />
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -670,9 +670,11 @@
 	millisecs_dif = in_date - rel_date;
 	months_old = millisecs_dif / millisecs_per_day / days_per_month;
 
-	curr_playlist_val = $('#playlistCheckbox').next().attr('class').split(" ").includes('active');
-	if (months_old <= 6 != curr_playlist_val)
-		$('#playlistCheckbox').next().find('button').click();
+	if ($('#playlistCheckbox').next().attr('class') != null) {
+		curr_playlist_val = $('#playlistCheckbox').next().attr('class').split(" ").includes('active');
+		if (months_old <= 6 != curr_playlist_val)
+			$('#playlistCheckbox').next().find('button').click();
+	}
     }
 
     function updateRating() {
