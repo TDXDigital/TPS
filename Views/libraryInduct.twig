@@ -266,7 +266,7 @@
                     </div>
                     {% else %}
                     <div class="col-lg-3">
-                        <input type="checkbox" data-label-prepend="Print" class="style3" name="print" value="1" />
+                        <input type="checkbox" id="printCheckbox" data-label-prepend="Print" class="style3" name="print" value="1" />
                     </div>
                     <div class="col-lg-3">
                         <input id='canconCheckbox' type="checkbox" data-label-prepend="Cancon" class="style3" 
@@ -630,10 +630,18 @@
 
     }
 
+    function updateVACheckbox() {
+	on = $("#va_checkbox").next().attr('class').split(" ").includes('active');
+	if ($('#art_field').val() == 'Various Artists' != on)
+		$('#va_checkbox').next().find('button').click();
+    }
+
     function toggleVA() {
 	variousArtists = !$("#va_checkbox").next().attr('class').split(" ").includes('active');
 	if (variousArtists)
 		$('#art_field').val("Various Artists");
+	else
+		$('#art_field').val("");
     }
 
     function toggleKeep() {
@@ -865,6 +873,7 @@
     }
 
     function catch_enter (event){
+	updateVACheckbox();
         if(event.keyCode === 13){
             get_albums();
             return true;
