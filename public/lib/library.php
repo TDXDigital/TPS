@@ -918,8 +918,8 @@ class library extends station{
         //for library
         if(!$stmt4 = $this->mysqli->prepare("REPLACE INTO library(datein,artist,album,variousartists,
             format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
-            governmentCategory,scheduleCode, rating)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
+            governmentCategory,scheduleCode, rating, playlistid)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
             $stmt4->close();
             header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
         }
@@ -978,8 +978,8 @@ class library extends station{
                 case 'L': $accept = $null; $playlist_flag = 'False'; break;
                 default:  $accept = $null; $playlist_flag = 'False';
             }
-            $year = $getData[18] == ''||'?'? $null : $getData[18];
-           
+            $year = $getData[18] == ''||$getData[18] == '?'? $null : $getData[18];
+            
             //0~1200 rows, genre# is missing
             if($getData[6] == '' || !is_numeric($getData[6]))
             {
@@ -1005,13 +1005,22 @@ class library extends station{
                     $genreKey = 'OT';
             }
             else
-            {
-                 $genreKey = $genreKeys[$getData[6]];
-            }
+                $genreKey = $genreKeys[$getData[6]];
             if($getData[9] == 'x' || '')
                 $accept = 0;
+            if(is_numeric($getData[16]))
+            {
+                $playlistid = $getData[16]; 
+                if(strlen($playlistid) == 3)
+                    $playlistid = '0'.$playlistid;
+            }
+            else
+            {
+                $playlistid = $null;
+            }
+
             if(!$stmt4->bind_param(
-                "sssissiisissssssi",
+                "sssissiisissssssii",
                         $dateIn,            //dateIn
                         $getData[1],            //Artist
                         $getData[2],            //Album
@@ -1028,7 +1037,8 @@ class library extends station{
                         $playlist_flag,          //playlist
                         $null,                  //governmentCategory
                         $null,                  //schedule
-                        $rating                 //rating
+                        $rating,                 //rating
+                        $playlistid           //playlistid
                     )){
                 $stmt4->close();
                 return $this->mysqli->error;
