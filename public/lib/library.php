@@ -869,10 +869,11 @@ class library extends station{
 
         //
         $genreList = self::getLibraryGenres();
-        // foreach($lib_data['data'] as $i => $item)
-        // {
-        //     $lib_data['data'][$i]['genre_detail'] = $genreList[$lib_data['data'][$i]['genre']];
-        // }
+        foreach($lib_data['data'] as $i => $item)
+        {
+            if($item['genre']!='')
+                $lib_data['data'][$i]['genre_detail'] = $genreList[$lib_data['data'][$i]['genre']];
+        }
         return json_encode($lib_data);
     }
     public function countSearchLibrary($term="",$exact=False){
@@ -915,7 +916,7 @@ class library extends station{
         }
 
         //for library
-        if(!$stmt4 = $this->mysqli->prepare("INSERT IGNORE INTO library(datein,artist,album,variousartists,
+        if(!$stmt4 = $this->mysqli->prepare("REPLACE INTO library(datein,artist,album,variousartists,
             format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
             governmentCategory,scheduleCode, rating)
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
@@ -928,10 +929,6 @@ class library extends station{
             if($getData[1]=='' && $getData[2]=='')
                 break;
 
-            //for localhost development, load only 100 rows .. because of performance issue
-            // if($getData[0] == 100)
-            //     break;
-            //skip the row if artist or album or label is empty
             if($getData[0] == '' || $getData[1] == '' || $getData[2] == '' || $getData[3] == '')   
                 continue;
             // echo $getData[0]. " ". $labelName. "<br>";
@@ -955,7 +952,7 @@ class library extends station{
             if(sizeof($labels)==0)
                 continue;
             $labels = array_keys($labels)[0];
-            $genreKey = array_keys(self::getLibraryGenres());
+            $genreKeys = array_keys(self::getLibraryGenres());
             $null = null;
             $dateIn = $getData[5] == '?'? $null:strtotime($getData[5]);
             $dateIn = date("Y-m-d", $dateIn);
@@ -981,6 +978,36 @@ class library extends station{
                 case 'L': $accept = $null; $playlist_flag = 'False'; break;
                 default:  $accept = $null; $playlist_flag = 'False';
             }
+            $year = $getData[18] == ''||'?'? $null : $getData[18];
+           
+            //0~1200 rows, genre# is missing
+            if($getData[6] == '' || !is_numeric($getData[6]))
+            {
+                $genreName = strtolower($getData[7]);
+                if(strpos($genreName, 'rock' !== false)||strpos($genreName, 'pop' !== false))
+                    $genreKey = 'RP';
+                elseif(strpos($genreName, 'folk' !== false)||strpos($genreName, 'roots' !== false))
+                    $genreKey = 'FR';
+                elseif(strpos($genreName, 'heavy' !== false)||strpos($genreName, 'punk' !== false)||
+                    strpos($getData[7], 'metal' !== false))
+                    $genreKey = 'HM';
+                elseif(strpos($genreName, 'electronic' !== false))
+                    $genreKey = 'EL';
+                elseif(strpos($genreName, 'hipHop' !== false))
+                    $genreKey = 'HH';
+                elseif(strpos($genreName, 'world' !== false))
+                    $genreKey = 'WD';
+                elseif(strpos($genreName, 'jazz' !== false)||strpos($genreName, 'classical' !== false))
+                    $genreKey = 'JC';
+                elseif(strpos($genreName, 'experimental' !== false))
+                    $genreKey = 'EX';
+                else
+                    $genreKey = 'OT';
+            }
+            else
+            {
+                 $genreKey = $genreKeys[$getData[6]];
+            }
             if($getData[9] == 'x' || '')
                 $accept = 0;
             if(!$stmt4->bind_param(
@@ -990,14 +1017,14 @@ class library extends station{
                         $getData[2],            //Album
                         $null,                  //Various Artist
                         $getData[11],           //format
-                        $genreKey[$getData[6]], //genre
+                        $genreKey, //genre
                         $accept,                //accepted
                         $labels,                //labelNum
                         $locale,                 //locale
-                       $canCon,                 //cancon
-                        $null,                   //release_date
-                        $null,                   //year
-                        $note,            //note
+                        $canCon,                 //cancon
+                        $dateRel,                   //release_date
+                        $year,                   //year
+                        $note,                  //note
                         $playlist_flag,          //playlist
                         $null,                  //governmentCategory
                         $null,                  //schedule
