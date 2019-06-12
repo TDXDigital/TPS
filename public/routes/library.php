@@ -631,6 +631,55 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 }
 	    }
 
+	    // Determine which recordlabels are already assigned to this album in the database
+	    $sql = $mysqli->query("SELECT * FROM recordlabel WHERE LabelNumber IN " .
+			  	  "(SELECT recordlabel_LabelNumber FROM library_recordlabel WHERE library_RefCode={$RefCode})");
+	    $labels_in_db_for_this_album = [];
+	    while($row = $sql->fetch_array(MYSQLI_ASSOC))
+		$labels_in_db_for_this_album[$row['LabelNumber']] = $row['Name'];
+
+	    // Determine which labels have been added to and removed from the album in the UI
+	    $added_in_ui = is_null($rec_labels) ? [] : array_diff($rec_labels, $labels_in_db_for_this_album);
+	    $removed_in_ui = is_null($rec_labels) ? $labels_in_db_for_this_album : array_diff($labels_in_db_for_this_album, $rec_labels);
+
+	    if(sizeof($added_in_ui) > 0) {
+		// Determine database LabelNumber(s) for the added record labels in the UI
+	        $sql = $mysqli->query("SELECT LabelNumber FROM recordlabel WHERE Name IN ('" . implode("', '", $added_in_ui) . "')");
+	        $ids_of_added_in_ui = [];
+		while($row = $sql->fetch_array(MYSQLI_ASSOC))
+		    array_push($ids_of_added_in_ui, $row['LabelNumber']);
+
+		// Insert new library/recordlabel combos into intermediary table
+	        $values = "";
+	        foreach($ids_of_added_in_ui as $id)
+	            $values = $values . "(" . $RefCode  .  ", " . $id  . "), ";
+	        $values = substr($values, 0, strlen($values)-2); // Remove trailing comma
+	        $mysqli->query("INSERT INTO library_recordlabel (library_RefCode, recordlabel_LabelNumber) VALUES " . $values);
+	    }
+
+	    if(sizeof($removed_in_ui) > 0) {
+		// Delete library/recordlabel combos from intermediary table if user removed them in the UI
+		$mysqli->query("DELETE FROM library_recordlabel WHERE library_RefCode={$RefCode} " .
+	  	               "AND recordlabel_LabelNumber IN (" . implode(", ", array_keys($removed_in_ui)) . ")");
+
+		$sql = $mysqli->query("SELECT recordlabel.LabelNumber FROM recordlabel RIGHT JOIN library_recordlabel " .
+				      "ON library_recordlabel.recordlabel_LabelNumber=recordlabel.LabelNumber GROUP BY recordlabel.LabelNumber");
+	    	$ids_being_used = [];
+	    	while($row = $sql->fetch_array(MYSQLI_ASSOC))
+		    array_push($ids_being_used, $row['LabelNumber']);
+
+	    	$sql = $mysqli->query("SELECT LabelNumber FROM recordlabel");
+	    	$all = [];
+	    	while($row = $sql->fetch_array(MYSQLI_ASSOC))
+		    array_push($all, $row['LabelNumber']);
+
+		// Delete recordlabel from `recordlabel` table if no albums use it anymore
+		// TODO: CAN ADD BACK ONCE LABEL COLUMN IS REMOVED FROM LIBRARY TABLE
+//	    	$to_delete = array_diff($all, $ids_being_used);
+//	    	if(sizeof($to_delete)>0)
+//	            $mysqli->query("DELETE FROM recordlabel WHERE LabelNumber IN (" . implode(", ", $to_delete) . ")");
+	    }
+
             //echo "creating album...";
 	    $genre_num = NULL;
             if($genre=="null"){
