@@ -1351,8 +1351,8 @@ class library extends station{
         }
         if(!$stmt3 = $this->mysqli->prepare("REPLACE INTO library(datein,artist,album,variousartists,
             format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
-            governmentCategory,scheduleCode, rating)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
+            governmentCategory,scheduleCode, rating, library_code)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
             $stmt3->close();
             header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
         }
@@ -1362,8 +1362,9 @@ class library extends station{
         else{
             $year = NULL;
         }
+        $library_code = 0;
         if(!$stmt3->bind_param(
-            "sssissiisissssssi",
+            "sssissiisissssssii",
             $datein,
             $artist,
             $album,
@@ -1380,7 +1381,8 @@ class library extends station{
             $playlist,
             $governmentCategory,
             $schedule,
-	    $rating
+	       $rating,
+            $library_code
         )){
             $stmt3->close();
             return $this->mysqli->error;
