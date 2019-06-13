@@ -1053,7 +1053,7 @@ class library extends station{
             }
             self::createAlbum($getData[1], $getData[2], $getData[11], $genreKey, $genre_num, $labels, 
                 $locale, $canCon, $playlist_flag, $null, $null, $note, $accept, false,
-                $dateIn, $dateRel, 1, $rating, $null, array($getData[8]), array($getData[7]));
+                $dateIn, $dateRel, 1, $rating, $null, array($getData[8]), explode('/', $getData[7]));
         
         }
         $stmt3->close();
