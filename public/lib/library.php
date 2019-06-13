@@ -1308,7 +1308,7 @@ class library extends station{
 	if(!is_null($attValueList)) {
 	    // Check which {$attName}s are already in the database
 	    $sql=$this->mysqli->query("SELECT * FROM {$attName}s WHERE name IN ('" .
-         implode("', '", mysqli::real_escape_string($attValueList)) . "')");
+        mysqli_real_escape_string($this->mysqli, implode("', '", $attValueList)) . "')");
 	    $results = [];
 	    while($result_temp = $sql->fetch_array(MYSQLI_ASSOC))
 		array_push($results, $result_temp);
@@ -1323,7 +1323,8 @@ class library extends station{
 		    array_push($to_add, $attValueList[$index]);
 
 	    if(sizeof($to_add)>0) {
-		$this->mysqli->query("INSERT INTO {$attName}s (name) VALUES ('" . implode("'), ('", $to_add) . "')");
+		$this->mysqli->query("INSERT INTO {$attName}s (name) VALUES ('" . 
+            mysqli_real_escape_string($this->mysqli, implode("'), ('", $to_add)) . "')");
 
 	        // Gather all {$attName} id's for this album
 		$sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
