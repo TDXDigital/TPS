@@ -82,11 +82,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $CanCon=1;
         }
 
-        if($accepted<>0){
-            $accepted = 1;
-
-        }
-        else{
+        if($accepted != 1){
             $print=0;
             $playlist=2;
         }
@@ -145,9 +141,6 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 	    $genre_num = $matches[0];
 	}
 
-        if(!$accepted){
-            $playlist=2;
-        }
 	if($rating == "None") {
 	    $rating = NULL;
 	} else {
@@ -598,10 +591,6 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             }
             else{
                 $CanCon=1;
-            }
-
-            if($accepted<>0){
-                $accepted = 1;
             }
 
 	    $labelNums = array_fill(0, sizeof($rec_labels), NULL);
