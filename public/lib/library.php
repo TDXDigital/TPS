@@ -1303,12 +1303,16 @@ class library extends station{
 	}
     }
 
+    public function mysql_escape($val) {
+	return mysqli_real_escape_string($this->mysqli, $val);
+    }
 
     public function addAttributeToAlbum($attName, $attValueList, $refcode) {
 	if(!is_null($attValueList)) {
 	    // Check which {$attName}s are already in the database
-	    $sql=$this->mysqli->query("SELECT * FROM {$attName}s WHERE name IN ('" .
-        mysqli_real_escape_string($this->mysqli, implode("', '", $attValueList)) . "')");
+	    $temp = $attValueList;
+	    $attValueList = array_map(array($this, 'mysql_escape'), $temp);
+	    $sql=$this->mysqli->query("SELECT * FROM {$attName}s WHERE name IN ('" . implode("', '", $attValueList) . "')");
 	    $results = [];
 	    while($result_temp = $sql->fetch_array(MYSQLI_ASSOC))
 		array_push($results, $result_temp);
@@ -1323,8 +1327,9 @@ class library extends station{
 		    array_push($to_add, $attValueList[$index]);
 
 	    if(sizeof($to_add)>0) {
-		$this->mysqli->query("INSERT INTO {$attName}s (name) VALUES ('" . 
-            mysqli_real_escape_string($this->mysqli, implode("'), ('", $to_add)) . "')");
+		$temp = $to_add;
+		$to_add = array_map(array($this, 'mysql_escape'), $temp);
+		$this->mysqli->query("INSERT INTO {$attName}s (name) VALUES ('" . implode("'), ('", $to_add) . "')");
 
 	        // Gather all {$attName} id's for this album
 		$sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
