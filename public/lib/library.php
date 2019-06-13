@@ -1346,7 +1346,7 @@ class library extends station{
 	    foreach($ids as $id)
 		$values = $values . "(" . $refcode  .  ", " . $id  . "), ";
 	    $values = substr($values, 0, strlen($values)-2); // Remove trailing comma
-	    $this->mysqli->query("INSERT INTO library_${attName}s (library_RefCode, ${attName}_id) VALUES " . $values);
+	    $this->mysqli->query("INSERT IGNORE INTO library_${attName}s (library_RefCode, ${attName}_id) VALUES " . $values);
 	}
     }
 

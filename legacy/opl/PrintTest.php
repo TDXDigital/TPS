@@ -61,10 +61,10 @@ $library = new \TPS\library();
     <div class="no-print">Please use top and bottom margin of 0.5" and 0.0" sides. some printers may vary, adjust as needed</div>
     <?php
         for($i=1;$i<$indent;$i++){
-            echo "<div class=\"label\" style=\"outline: none;\"></div>";
+            echo "<div class=\"label\" style=\"border: 1px dotted black;\"></div>";
         }
         foreach($_SESSION['PRINTID'] as $BCD){
-            $albums = $library->getAlbumByRefcode($BCD, TRUE);
+            $albums = $library->getAlbumByRefcode($BCD['RefCode'], TRUE);
             if(sizeof($albums)<1){
                 continue;
             }
@@ -76,13 +76,17 @@ $library = new \TPS\library();
             $format = $albumArr['format'];
             $CanCon = $albumArr['CanCon'];
             $locale = $albumArr['Locale'];
+	    $hometowns = $library->getHometownsByRefCode($RefCode);
+	    $subgenres = $library->getSubgenresByRefCode($RefCode);
+	    $libraryCode = $library->getLibraryCodeByRefCode($RefCode);
+	    $recordLabels = $library->getLabelsByRefCode($RefCode);
+	    $tags = $library->getTagsByRefCode($RefCode);
 
-            $genreCode = $library->getLibraryCodeByRefCode($RefCode);
             #$library->createBarcode($RefCode);
-            $padded= join('', array($genreCode,str_pad($BCD, 10, "0", STR_PAD_LEFT)));
+ //           $padded= join('', array($genreCode,str_pad($BCD['RefCode'], 10, "0", STR_PAD_LEFT)));
 
             //echo "<img src='barcode/createBarcode.php?bcd=$BCD'/>";
-            echo "<div class=\"label\" style=\"outline: none;\">";
+            echo "<div class=\"label\" style=\"border: 1px dotted black; width: 475px; height: 475px;\">";
             echo "<span><img style='float:left; margin:0px;' src='../legacy/opl/barcode/barcode.php?bcd=$padded' alt='$padded'/>";
             if($locale=="Country"){
                 echo "<img style='float: left; margin: 0px;' src='../legacy/opl/maple.gif' alt='CC'/>";
@@ -106,7 +110,19 @@ $library = new \TPS\library();
             else{
                 $albpost = "";
             }
-            echo "</span><br style='clear: both'><strong style='float: left'>".substr($artist,0,20).$artpost."</strong><br><i style='float:left; font-size: small;'>".substr($album,0,20).$albpost."</i><span style='float:right;'>$genre</span><br style='clear: both'/></div>";
+            echo "</span>" . 
+		 "<br style='clear: both'>" .
+		 "<strong style='float: left'>" . substr($artist,0,20) . $artpost . "</strong>" .
+		 "<br>" . 
+		 "<i style='float:left; font-size: small;'>" . substr($album,0,20) . $albpost."</i>" .
+		 "<span style='float:right;'>" . $genre . "</span>" . 
+		 "<br style='clear: both'/>" .
+		 "<p>" . implode(" & ", $hometowns) . "</p>" .
+		 "<p>" . implode(" & ", $subgenres) . "</p>" .
+		 "<p>" . $libraryCode . "</p>" .
+		 "<p>" . implode(" & ", $recordLabels) . "</p>" .
+		 "<p>" . implode(" & ", $tags) . "</p>" .
+		 "</div>";
         }
     ?>
 <div class="page-break"></div>
