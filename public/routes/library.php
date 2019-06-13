@@ -69,7 +69,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 
         $library = new \TPS\library();
         $result = $library->searchLibraryWithAlbum($artist, $album, True);
-        if(sizeof($result)>0 && $result[0]['datein']==$datein && !$keep){
+        if(sizeof($result)>0 && $result[0]['datein']==$datein && $accepted != 0){
             $app->flash("error", "album already entered in database with same receiving date");
             $app->redirect("./".$result[0]['RefCode']);
             $app->halt();
