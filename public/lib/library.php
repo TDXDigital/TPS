@@ -919,7 +919,7 @@ class library extends station{
         while (($getData = fgetcsv($file, 10000, ",")) !== FALSE)
         {
             
-            if($getData[1]=='' && $getData[2]=='' ||$getData[0]==100)
+            if($getData[1]=='' && $getData[2]=='')
                 break;
 
             if($getData[0] == '' || $getData[1] == '' || $getData[2] == '' || $getData[3] == '')   
