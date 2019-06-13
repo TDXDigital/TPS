@@ -1284,23 +1284,25 @@ class library extends station{
 	    // Delete {$attName} from intermediary table if user removed them in the UI
 	    $this->mysqli->query("DELETE FROM library_{$attName}s WHERE library_RefCode={$RefCode} " .
 	  	                 "AND {$attName}_id IN (" . implode(", ", array_keys($to_remove_from_int_table)) . ")");
-
-	    $sql = $this->mysqli->query("SELECT {$attName}s.id FROM {$attName}s RIGHT JOIN library_{$attName}s " .
-				        "ON library_{$attName}s.{$attName}_id={$attName}s.id GROUP BY {$attName}s.id");
-	    $ids_being_used = [];
-	    while($row = $sql->fetch_array(MYSQLI_ASSOC))
-		array_push($ids_being_used, $row['id']);
-
-	    $sql = $this->mysqli->query("SELECT id FROM {$attName}s");
-	    $all = [];
-	    while($row = $sql->fetch_array(MYSQLI_ASSOC))
-		array_push($all, $row['id']);
-
-	    // Delete {$attName}s from `{$attName}s` table if no albums use it anymore
-	    $to_delete = array_diff($all, $ids_being_used);
-	    if(sizeof($to_delete)>0)
-	        $this->mysqli->query("DELETE FROM {$attName}s WHERE id IN (" . implode(", ", $to_delete) . ")");
 	}
+
+	// Get all of the {$attNames}s being used by albums
+	$sql = $this->mysqli->query("SELECT {$attName}s.id FROM {$attName}s RIGHT JOIN library_{$attName}s " .
+				        "ON library_{$attName}s.{$attName}_id={$attName}s.id GROUP BY {$attName}s.id");
+	$ids_being_used = [];
+	while($row = $sql->fetch_array(MYSQLI_ASSOC))
+	    array_push($ids_being_used, $row['id']);
+
+	// Get all the {$attName}s in the database
+	$sql = $this->mysqli->query("SELECT id FROM {$attName}s");
+	$all = [];
+	while($row = $sql->fetch_array(MYSQLI_ASSOC))
+	    array_push($all, $row['id']);
+
+	// Delete any dangling {$attName}s from `{$attName}s` table if no albums use it anymore
+	$to_delete = array_diff($all, $ids_being_used);
+	if(sizeof($to_delete)>0)
+	    $this->mysqli->query("DELETE FROM {$attName}s WHERE id IN (" . implode(", ", $to_delete) . ")");
     }
 
     public function mysql_escape($val) {
