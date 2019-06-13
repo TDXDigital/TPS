@@ -1331,7 +1331,7 @@ class library extends station{
 	    if(sizeof($to_add)>0) {
 		$temp = $to_add;
 		$to_add = array_map(array($this, 'mysql_escape'), $temp);
-		$this->mysqli->query("INSERT INTO {$attName}s (name) VALUES ('" . implode("'), ('", $to_add) . "')");
+		$this->mysqli->query("INSERT IGNORE INTO {$attName}s (name) VALUES ('" . implode("'), ('", $to_add) . "')");
 
 	        // Gather all {$attName} id's for this album
 		$sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
@@ -1346,7 +1346,7 @@ class library extends station{
 	    foreach($ids as $id)
 		$values = $values . "(" . $refcode  .  ", " . $id  . "), ";
 	    $values = substr($values, 0, strlen($values)-2); // Remove trailing comma
-	    $this->mysqli->query("INSERT INTO library_${attName}s (library_RefCode, ${attName}_id) VALUES " . $values);
+	    $this->mysqli->query("INSERT IGNORE INTO library_${attName}s (library_RefCode, ${attName}_id) VALUES " . $values);
 	}
     }
 
