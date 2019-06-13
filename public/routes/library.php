@@ -45,9 +45,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $governmentCategory = filter_input(INPUT_POST, "category")?:NULL;
         $schedule = filter_input(INPUT_POST, "schedule")?:2;
         $playlist = filter_input(INPUT_POST, "playlist")?:1;
-        $keep = filter_input(INPUT_POST, "accept")? : 0;
         $print = filter_input(INPUT_POST, "print")? : 0;
-        $accepted = filter_input(INPUT_POST, "accept")? :0;
+        $accepted = filter_input(INPUT_POST, "keepSelect")? :0;
         $variousartists = filter_input(INPUT_POST, "VA")? :0;
         $label_size = filter_input(INPUT_POST, "Label_Size")? : 1;
         $locale = filter_input(INPUT_POST, "locale")? :"international";
@@ -586,7 +585,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $schedule = filter_input(INPUT_POST, "schedule")?:2;
             $playlist = filter_input(INPUT_POST, "playlist")?:1;
             $print = filter_input(INPUT_POST, "print")? : 0;
-            $accepted = filter_input(INPUT_POST, "accept")? :0;
+            $accepted = filter_input(INPUT_POST, "keepSelect")? :0;
             $variousartists = filter_input(INPUT_POST, "VA")? :0;
             $label_size = filter_input(INPUT_POST, "Label_Size")? : 1;
             $locale = filter_input(INPUT_POST, "locale")? :"international";

@@ -153,6 +153,18 @@
 		    </div>
 		</div>
                 <div class="col-lg-6">
+                    <div id="ind_group" class="form-group input-group">
+                        <label for="indate" class="input-group-addon">Date In</label>
+                        <input id="indate" type="text" onchange="dateChanged()" autocomplete="off" class="form-control" {% if album.datein is not null %} value="{{album.datein|date("Y-m-d")}}" {% else %} value="{{"now"|date("Y-m-d")}}" {% endif %}name="indate" />
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div id="ind_group" class="form-group input-group">
+                        <label for="reldate" class="input-group-addon">Release Date</label>
+                        <input id="reldate" type="text" onchange="dateChanged()" autocomplete="off" class="form-control" {% if album.release_date is not null %} value="{{album.release_date|date("Y-m-d")}}" {% endif %} name="rel_date" />
+                    </div>
+                </div>
+                <div class="col-lg-6">
                     <div id="format" class="form-group input-group">
                         <label for="label" class="input-group-addon">Format</label>
                         <select class="form-control" name="format">
@@ -165,15 +177,13 @@
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <div id="ind_group" class="form-group input-group">
-                        <label for="indate" class="input-group-addon">Date In</label>
-                        <input id="indate" type="text" onchange="dateChanged()" autocomplete="off" class="form-control" {% if album.datein is not null %} value="{{album.datein|date("Y-m-d")}}" {% else %} value="{{"now"|date("Y-m-d")}}" {% endif %}name="indate" />
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div id="ind_group" class="form-group input-group">
-                        <label for="reldate" class="input-group-addon">Release Date</label>
-                        <input id="reldate" type="text" onchange="dateChanged()" autocomplete="off" class="form-control" {% if album.release_date is not null %} value="{{album.release_date|date("Y-m-d")}}" {% endif %} name="rel_date" />
+                    <div id="format" class="form-group input-group">
+                        <label for="label" class="input-group-addon">Keep</label>
+                        <select class="form-control" id='keepSelect' name="keepSelect" onchange="toggleKeep()">
+			    <option value='1'>Yes</option>
+			    <option value='0'>No</option>
+			    <option value='-1'>Decide Later</option>
+                        </select>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -248,11 +258,6 @@
 			       {% if album.rating in [4, 5] %} checked="checked" {% endif %} 
 			       value="1" />
 		    </div>
-                    <div class="col-lg-3">
-                        <input id="keepCheckbox" type="checkbox" data-label-prepend="Keep" onclick="toggleKeep()"
-                               {% if album.status == 1 or album.status is null %} checked="checked" {% endif %}
-                               class="style3" name="accept" value="1"/>
-                    </div>
                     {% if album.status is null %}
                     <div class="col-lg-3">
                         <input id="printCheckbox" type="checkbox" data-label-prepend="Print" class="style3" name="print" checked="checked" value="1" />
@@ -646,17 +651,21 @@
     }
 
     function toggleKeep() {
-	keeping = $("#keepCheckbox").next().attr('class').split(" ").includes('active');
+	keeping = $('#keepSelect option:selected').text() == 'Yes';
+	passing = $('#keepSelect option:selected').text() == 'No';
 	printing = $('#printCheckbox').next().attr('class').split(" ").includes('active');
-	// Make notes required if not keeping
-	$('#notes').prop('required', keeping);
-	if (keeping == printing)
-		// Recommend to print library label if keeping
+
+	// Make notes required if passing
+	$('#notes').prop('required', passing);
+
+	// Recommend to print library label if keeping
+	if (keeping != printing)
 		$('#printCheckbox').next().find('button').click();
-	if (!keeping && $('#notes').val() == 'Duplicate copy')
-		// If not actually a duplicate copy, but just same artist and album names,
-		//  remove 'Duplicate copy' auto-fill in notes.
-		$('#notes').val("");
+
+	// If not actually a duplicate copy, but just same artist and album names,
+	//  remove 'Duplicate copy' auto-fill in notes.
+	if (keeping && $('#notes').val() == 'Duplicate copy')
+		$('#notes').val("");	
     }
 
     function dateChanged() {
@@ -904,14 +913,16 @@
         }).done(function(html_returned){
             $("#table_display").html(html_returned);
 
-	    // If the artist & album match one in the library, reject it.
+	    // If the artist & album match one in the library, recommend pass.
 	    var rows = $('#table_display').find('tr');
 	    for (var i = 1; i < rows.length; i++) {
 		if (rows[i].children[2].innerHTML.toLowerCase() == $('#art_field').val().toLowerCase() &&
 		    rows[i].children[3].innerHTML.toLowerCase() == $('#alb_field').val().toLowerCase()) {
 		    $('#notes').val('Duplicate copy');
-		    if ($("#keepCheckbox").next().attr('class').split(" ").includes('active'))
-		        $('#keepCheckbox').next().find('button').click();
+		    $("#keepSelect").val(0); // Set to No
+		    printing = $('#printCheckbox').next().attr('class').split(" ").includes('active');
+		    if (printing)
+			$('#printCheckbox').next().find('button').click();
 		    break;
 		}
 	    } 
