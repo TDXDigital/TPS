@@ -186,9 +186,14 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 else
                     echo 'Error<br>';
              }
-          }   
+          }  
           echo '<a href="/">Go Back to Dashboard</a>  ';
-          $app->redirect('./search/');
+          // $app->redirect('./search/');
+    });
+
+    $app->get('/import', $authenticate, function () use ($app){
+          echo '<a href="/">Go Back to Dashboard</a>  ';
+          // $app->redirect('./search/');
     });
 
 

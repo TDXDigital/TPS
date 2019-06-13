@@ -908,7 +908,6 @@ class library extends station{
     public function importCSV($filename)
     {
         $file = fopen($filename, "r");
-
         //for label
         if(!$stmt3 = $this->mysqli->prepare("INSERT IGNORE INTO recordlabel(Name,size)
             VALUES (?,?)")){
