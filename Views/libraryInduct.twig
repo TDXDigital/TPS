@@ -181,7 +181,7 @@
                         <label for="label" class="input-group-addon">Keep</label>
                         <select class="form-control" id='keepSelect' name="keepSelect" onchange="toggleKeep()">
 			    <option value='1' {% if album.status == 1 %} selected {% endif %}>Yes</option>
-			    <option value='0' {% if album.status == 0 %} selected {% endif %}>No</option>
+			    <option value='0' {% if (album.status == 0 and album.status is not null) %} selected {% endif %}>No</option>
 			    <option value='-1' {% if album.status < 0 %} selected {% endif %}>Decide Later</option>
                         </select>
                     </div>
@@ -835,12 +835,6 @@
 	
 	// Update the Region field when a user deselects a hometown
 	$('#hometown').chosen().change(function() {updateRegion();});
-
-        $('#form').on('submit', function(e) {
-            if(!$("#label").valid()) {
-                e.preventDefault();
-            }
-        });
 
 	$('#tags').keypress(function() {
 	    console.log("Change");
