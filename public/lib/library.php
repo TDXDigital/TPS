@@ -793,7 +793,7 @@ class library extends station{
             case 'all': $where = " true"; break;
             case 'accept': $where = " status = 1"; break;
             case 'reject': $where = " status = 0"; break;
-            case 'na': $where = " status is null"; break;
+            case 'na': $where = " status is null OR status = -1"; break;
         }
         switch($filter["date"])
         {   
@@ -826,7 +826,7 @@ class library extends station{
             case 'genre': $where .= " AND Genre is null"; break;
             case 'rating': $where .= " AND rating is null OR rating = 0"; break;
             case 'rel_date': $where .= " AND release_date is null OR release_date = '1970-01-01'"; break;
-            case 'status': $where .= " AND status is null"; break;
+            case 'status': $where .= " AND status is null OR status = -1"; break;
         }
         return $where;
     }
@@ -916,19 +916,10 @@ class library extends station{
             header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
         }
 
-        // //for library
-        // if(!$stmt4 = $this->mysqli->prepare("REPLACE INTO library(datein,artist,album,variousartists,
-        //     format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
-        //     governmentCategory,scheduleCode, rating, playlistid)
-        //     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
-        //     $stmt4->close();
-        //     header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
-        // }
-
         while (($getData = fgetcsv($file, 10000, ",")) !== FALSE)
         {
             
-            if($getData[1]=='' && $getData[2]=='')
+            if($getData[1]=='' && $getData[2]=='' ||$getData[0]==100)
                 break;
 
             if($getData[0] == '' || $getData[1] == '' || $getData[2] == '' || $getData[3] == '')   
@@ -1051,10 +1042,10 @@ class library extends station{
             {
                 $playlistid = $null;
             }
-            self::createAlbum($getData[1], $getData[2], $getData[11], $genreKey, $genre_num, $labels, 
+            $result = self::createAlbum($getData[1], $getData[2], $getData[11], $genreKey, $genre_num, $labels, 
                 $locale, $canCon, $playlist_flag, $null, $null, $note, $accept, false,
                 $dateIn, $dateRel, 1, $rating, $null, array($getData[8]), explode('/', $getData[7]));
-        
+            echo 'Inserting---- '.$result.' <br>';         
         }
         $stmt3->close();
         fclose($file);  
