@@ -207,6 +207,7 @@ $(document).ready(function() {
             { "data": "album" },
             { "data": "genre_detail" },
             { "data": "year" },
+            { "data": "rating" },
         ],
         "columnDefs": [
             {

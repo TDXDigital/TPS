@@ -863,6 +863,7 @@ class library extends station{
             array( 'db' => 'rating',   'dt' => 'rating' ),
             array( 'db' => 'playlist_flag',   'dt' => 'playlist_flag' ),
             array( 'db' => 'release_date',   'dt' => 'release_date' ),
+            array( 'db' => 'rating',   'dt' => 'rating' ),
         );
 
         $lib_data = \SSP::complex($_GET, $this->db, $table, $primaryKey, $columns, null, $where);
@@ -915,23 +916,24 @@ class library extends station{
             header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
         }
 
-        //for library
-        if(!$stmt4 = $this->mysqli->prepare("REPLACE INTO library(datein,artist,album,variousartists,
-            format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
-            governmentCategory,scheduleCode, rating, playlistid)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
-            $stmt4->close();
-            header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
-        }
+        // //for library
+        // if(!$stmt4 = $this->mysqli->prepare("REPLACE INTO library(datein,artist,album,variousartists,
+        //     format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
+        //     governmentCategory,scheduleCode, rating, playlistid)
+        //     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
+        //     $stmt4->close();
+        //     header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
+        // }
 
         while (($getData = fgetcsv($file, 10000, ",")) !== FALSE)
         {
+            
             if($getData[1]=='' && $getData[2]=='')
                 break;
 
             if($getData[0] == '' || $getData[1] == '' || $getData[2] == '' || $getData[3] == '')   
                 continue;
-            // echo $getData[0]. " ". $labelName. "<br>";
+
 
             $labelName = $getData[3];
             $size = 1;
@@ -951,19 +953,20 @@ class library extends station{
             $labels = \TPS\label::nameSearch($labelName);
             if(sizeof($labels)==0)
                 continue;
-            $labels = array_keys($labels)[0];
+            $labels = array_keys($labels);
+            // $labels = $stmt3->insert_id;
             $genreKeys = array_keys(self::getLibraryGenres());
             $null = null;
             $dateIn = $getData[5] == '?'? $null:strtotime($getData[5]);
             $dateIn = date("Y-m-d", $dateIn);
             $dateRel = $getData[4] == '?'||''? $null:strtotime($getData[4]);
             $dateRel = date("Y-m-d", $dateRel);
-
-            $locale = 'International';
+            
             $canCon = 0;
-            $rating = strlen($getData[10]);
+            $rating = substr_count($getData[10], "*");
             $note = substr($getData[13], 0,119);
 
+            $locale = 'International';
             switch($getData[22])
             {   
                 case 1: $locale = "Local"; break;
@@ -980,32 +983,62 @@ class library extends station{
             }
             $year = $getData[18] == ''||!is_numeric($getData[18])? $null : $getData[18];
             
-            //0~1200 rows, genre# is missing
+            //0~1200 rows, genre# is missing, so get it from genre name
             if($getData[6] == '' || !is_numeric($getData[6]))
             {
                 $genreName = strtolower($getData[7]);
                 if(strpos($genreName, 'rock')!== false||strpos($genreName, 'pop')!== false)
+                {
                     $genreKey = 'RP';
+                    $genre_num = 0;
+                }
                 elseif(strpos($genreName, 'folk') !== false||strpos($genreName, 'roots') !== false)
+                {
                     $genreKey = 'FR';
+                    $genre_num = 1;
+                }
                 elseif(strpos($genreName, 'heavy') !== false||strpos($genreName, 'punk') !== false||
                     strpos($getData[7], 'metal') !== false)
+                {
                     $genreKey = 'HM';
+                    $genre_num = 2;
+                }
                 elseif(strpos($genreName, 'electronic') !== false)
+                {
                     $genreKey = 'EL';
+                    $genre_num = 3;
+                }
                 elseif(strpos($genreName, 'hipHop') !== false)
+                {
                     $genreKey = 'HH';
+                    $genre_num = 4;
+                }
                 elseif(strpos($genreName, 'world') !== false)
+                {
                     $genreKey = 'WD';
+                    $genre_num = 5;
+                }
                 elseif(strpos($genreName, 'jazz') !== false||strpos($genreName, 'classical') !== false)
+                {
                     $genreKey = 'JC';
+                    $genre_num = 6;
+                }
                 elseif(strpos($genreName, 'experimental') !== false)
+                {
                     $genreKey = 'EX';
+                    $genre_num = 7;
+                }
                 else
+                {
                     $genreKey = 'OT';
+                    $genre_num = 8;
+                }
             }
             else
+            {
                 $genreKey = $genreKeys[$getData[6]];
+                $genre_num = $getData[6];
+            }
             if($getData[9] == 'x' || '')
                 $accept = 0;
             if(is_numeric($getData[16]))
@@ -1018,43 +1051,11 @@ class library extends station{
             {
                 $playlistid = $null;
             }
-
-            if(!$stmt4->bind_param(
-                "sssissiisissssssii",
-                        $dateIn,            //dateIn
-                        $getData[1],            //Artist
-                        $getData[2],            //Album
-                        $null,                  //Various Artist
-                        $getData[11],           //format
-                        $genreKey, //genre
-                        $accept,                //accepted
-                        $labels,                //labelNum
-                        $locale,                 //locale
-                        $canCon,                 //cancon
-                        $dateRel,                   //release_date
-                        $year,                   //year
-                        $note,                  //note
-                        $playlist_flag,          //playlist
-                        $null,                  //governmentCategory
-                        $null,                  //schedule
-                        $rating,                 //rating
-                        $playlistid           //playlistid
-                    )){
-                $stmt4->close();
-                return $this->mysqli->error;
-            }
-            if(!$stmt4->execute()){ 
-                error_log("SQL-STMT Error (SEG-3):[".$this->mysqli->errno."] ".$this->mysqli->error);
-                $error = [$this->mysqli->errno,$this->mysqli->error];
-                return $this->mysqli->error;
-            }
-            else
-            {
-                echo $getData[0].' '.$getData[1].' '.$getData[2].' --- Inserted <br>';
-            }
-            
+            self::createAlbum($getData[1], $getData[2], $getData[11], $genreKey, $genre_num, $labels, 
+                $locale, $canCon, $playlist_flag, $null, $null, $note, $accept, false,
+                $dateIn, $dateRel, 1, $rating, $null, array($getData[8]), array($getData[7]));
+        
         }
-        $stmt4->close();
         $stmt3->close();
         fclose($file);  
         return true;
@@ -1348,7 +1349,7 @@ class library extends station{
         if(is_null($datein)){
             $datein = date("Y-m-d");
         }
-        if(!$stmt3 = $this->mysqli->prepare("INSERT INTO library(datein,artist,album,variousartists,
+        if(!$stmt3 = $this->mysqli->prepare("REPLACE INTO library(datein,artist,album,variousartists,
             format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
             governmentCategory,scheduleCode, rating)
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
@@ -1362,7 +1363,7 @@ class library extends station{
             $year = NULL;
         }
         if(!$stmt3->bind_param(
-            "sssissiisisssissi",
+            "sssissiisissssssi",
             $datein,
             $artist,
             $album,
