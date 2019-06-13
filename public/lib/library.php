@@ -1331,7 +1331,7 @@ class library extends station{
 	    if(sizeof($to_add)>0) {
 		$temp = $to_add;
 		$to_add = array_map(array($this, 'mysql_escape'), $temp);
-		$this->mysqli->query("INSERT INTO {$attName}s (name) VALUES ('" . implode("'), ('", $to_add) . "')");
+		$this->mysqli->query("INSERT IGNORE INTO {$attName}s (name) VALUES ('" . implode("'), ('", $to_add) . "')");
 
 	        // Gather all {$attName} id's for this album
 		$sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
