@@ -1307,7 +1307,8 @@ class library extends station{
     public function addAttributeToAlbum($attName, $attValueList, $refcode) {
 	if(!is_null($attValueList)) {
 	    // Check which {$attName}s are already in the database
-	    $sql=$this->mysqli->query("SELECT * FROM {$attName}s WHERE name IN ('" . implode("', '", $attValueList) . "')");
+	    $sql=$this->mysqli->query("SELECT * FROM {$attName}s WHERE name IN ('" .
+         implode("', '", mysqli::real_escape_string($attValueList)) . "')");
 	    $results = [];
 	    while($result_temp = $sql->fetch_array(MYSQLI_ASSOC))
 		array_push($results, $result_temp);
