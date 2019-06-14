@@ -1104,7 +1104,7 @@ class library extends station{
             $album="%{$album}%";
         }
         if($stmt = $this->mysqli->prepare("SELECT datein,dateout,RefCode,artist,album,"
-                . "`format`,variousartists,`condition`,genre,`status`,labelid,"
+                . "`format`,variousartists,`condition`,genre,`status`,"
                 . "Locale,CanCon,updated,release_date,note,playlist_flag,year "
                 . "FROM library where "
                 . "artist like ? and album like ?")){
@@ -1112,7 +1112,7 @@ class library extends station{
             $stmt->execute();
             $stmt->bind_result($datein,$dateout,$RefCode_q,
                     $artist_q,$album_q,$format,$variousartists,
-                    $condition,$genre,$status,$labelid,
+                    $condition,$genre,$status,
                     $Locale,$CanCon,$updated,$release_date,
                     $note,$playlist_flag,$year);
             while($stmt->fetch()){
@@ -1121,7 +1121,6 @@ class library extends station{
                     'artist'=>$artist_q,'album'=>$album_q,'format'=>$format,
                     'variousartists'=>$variousartists,
                     'condition'=>$condition,'genre'=>$genre,'status'=>$status,
-                    'labelid'=>$labelid,
                     'Locale'=>$Locale,'CanCon'=>$CanCon,'updated'=>$updated,
                     'release_date'=>$release_date,
                     'note'=>$note,'playlist_flag'=>$playlist_flag,'year'=>$year
@@ -1168,6 +1167,36 @@ class library extends station{
     public function GetFullAlbum($term){
         $this->mysqli;
         $maxResult = 100;
+	$selectAlbum = "SELECT " .
+			"library.RefCode, " .
+			"if(band_websites.ID is NULL,'No','Yes') as hasWebsite, " .
+			"if(review.id is NULL,0,1) as reviewed, " .
+			"library.Locale, " .
+			"library.variousartists, " .
+			"library.format, " .
+			"library.year, " .
+			"library.album, " .
+			"library.artist, " .
+			"library.CanCon, " .
+			"library.datein, " .
+			"library.playlist_flag, " .
+			"library.genre, " .
+			"review.reviewer, " .
+			"review.ts, " .
+			"review.approved, " .
+			"review.femcon, " .
+			"review.hometown, " .
+			"review.subgenre, " .
+			"review.description, " .
+			"review.recommendations, " .
+			"review.id " .
+		"FROM " .
+			"library " .
+			"left join review on library.RefCode = review.RefCode " .
+			"left join band_websites on library.RefCode=band_websites.ID " .
+		"WHERE " .
+			"library.refcode = ? order by library.datein asc limit ?;";
+/*
         $selectAlbum = "Select library.RefCode, if(band_websites.ID is NULL,'No','Yes') as hasWebsite,if(recordlabel.name_alias_duplicate is NULL, recordlabel.Name, "
                 . "(SELECT Name from recordlabel where LabelNumber = recordlabel.name_alias_duplicate) ) as recordLabel, "
                 . "if(review.id is NULL,0,1) as reviewed, library.labelid, library.Locale, library.variousartists, library.format, library.year, library.album, "
@@ -1175,13 +1204,13 @@ class library extends station{
                 . "review.reviewer, review.ts, review.approved, review.femcon, review.hometown, review.subgenre, review.description, review.recommendations, review.id "
                 . "from library left join review on library.RefCode = review.RefCode left join recordlabel on library.labelid = recordlabel.LabelNumber left join band_websites on library.RefCode=band_websites.ID where "
                 . "library.refcode = ? order by library.datein asc limit ?;";
-        $selectWebsites = "Select band_websites.URL, band_websites.Service, band_websites.date_available, band_websites.date_discontinue"
+*/      $selectWebsites = "Select band_websites.URL, band_websites.Service, band_websites.date_available, band_websites.date_discontinue"
                 . " from band_websites where band_websites.ID=?;";
         $params = array();
         if($stmt = $this->mysqli->prepare($selectAlbum)){
             $stmt->bind_param('si',$term,$maxResult);
             $stmt->execute();
-            $stmt->bind_result($RefCode,$hasWebsite,$recordLabel,$reviewed,$labelid,$locale,$variousArtists,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre,
+            $stmt->bind_result($RefCode,$hasWebsite,$reviewed,$locale,$variousArtists,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre,
                     $reviewer,$timestamp,$approved,$femcon,$hometown,$subgenre,$description,$recommends,$reviewID);
             while($stmt->fetch()){
                 $params['album'] = array( // this is ok as if the review ID is null there will also be no other entries as ID is a PK
@@ -1198,13 +1227,18 @@ class library extends station{
                         "genre"=>$genre,
                         "locale"=>$locale,
                         "variousArtists"=>$variousArtists,
-                        "label"=>array(
-                            "Name"=>$recordLabel,
-                            "Id"=>$labelid,
-                        ),
+			"labels"=>[]
                     );
             }
             $stmt->close();
+	    $labels = $this->getLabelsByRefCode($RefCode);
+	    foreach($labels as $label) {
+		$label_info = array(
+		    "Name"=>$label['Name'],
+		    "Id"=>$label['LabelNumber']
+		);
+		array_push($params['album']['labels'], $label_info);
+	    }
         }
         else{
             $params['error']=$mysqli->error;
