@@ -382,11 +382,9 @@ class playlist extends TPS{
 		$result[$id]['labels'] = $labels;
             }
         }
-
-
         return $result;
     }
-    
+
     public function getUsedShortCodes($startDate, $endDate){
         $stmt = $this->db->prepare(
                 "SELECT SmallCode FROM playlist"
