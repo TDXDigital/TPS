@@ -907,6 +907,19 @@ class library extends station{
 
     public function importCSV($filename)
     {
+        // Turn off output buffering
+        ini_set('output_buffering', 'off');
+        // Turn off PHP output compression
+        ini_set('zlib.output_compression', false);
+                
+        //Flush (send) the output buffer and turn off output buffering
+        //ob_end_flush();
+        while (@ob_end_flush());
+                
+        // Implicitly flush the buffer(s)
+        ini_set('implicit_flush', true);
+        ob_implicit_flush(true);
+
         $file = fopen($filename, "r");
         //for label
         if(!$stmt3 = $this->mysqli->prepare("INSERT IGNORE INTO recordlabel(Name,size)
@@ -1044,7 +1057,8 @@ class library extends station{
             $result = self::createAlbum($getData[1], $getData[2], $getData[11], $genreKey, $genre_num, $labels, 
                 $locale, $canCon, $playlist_flag, $null, $null, $note, $accept, false,
                 $dateIn, $dateRel, 1, $rating, $null, array($getData[8]), explode('/', $getData[7]));
-            echo 'Inserting---- '.$result.' <br>';         
+            echo 'Inserting---- row: '.$getData[0].' RefCode: '$result.' <br>';
+            flush();    
         }
         $stmt3->close();
         fclose($file);  

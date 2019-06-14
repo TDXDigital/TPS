@@ -176,6 +176,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
     });
 
     $app->post('/import', $authenticate, function () use ($app){
+        
          if(isset($_POST["Import"])){   
             $filename=$_FILES["file"]["tmp_name"];    
              if($_FILES["file"]["size"] > 0)
@@ -188,14 +189,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
              }
           }  
           echo '<a href="/">Go Back to Dashboard</a>  ';
-          // $app->redirect('./search/');
+        // $app->redirect('./search/');
     });
-
-    $app->get('/import', $authenticate, function () use ($app){
-          echo '<a href="/">Go Back to Dashboard</a>  ';
-          // $app->redirect('./search/');
-    });
-
 
     $app->get('/search', $authenticate, function () use ($app){
         $app->redirect('./search/');
