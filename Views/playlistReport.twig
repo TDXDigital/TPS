@@ -105,7 +105,7 @@ value="{{today|default("now")|date("Y-m-d")}}" name="today"/>
             <th>Format</th>
             <th>Genre</th>
             <th>Received</th>
-            <th>Label</th>
+            <th>Labels</th>
             <th>Artist</th>
             <th>Album</th>
             <th style="min-width: 150px;">On Playlist</th>
@@ -131,8 +131,12 @@ value="{{today|default("now")|date("Y-m-d")}}" name="today"/>
                         </div></td>
                     <!--<td>{{playlist.release_date|date("Y-m-d")}}</td>-->
                     <td>{{playlist.datein|date("Y-m-d")}}</td>
-                    <td><a href="../../label/{{playlist.labelid}}" target="_pl">
-                            {{playlist.labelName}}</a></td>
+                    <td>
+			{% for label in playlist.labels %}
+			<a href="../../label/{{label.LabelNumber}}" target="_pl">
+                            {{label.Name}}</a> {% if not loop.last %}, <br>{% endif %} 
+			{% endfor %}
+		    </td>
                     <td><a href="../../library/{{playlist.RefCode}}" target="_pl">
                             {{playlist.artist}}</a></td>
                     <td><a href="../../library/{{playlist.RefCode}}" target="_pl">

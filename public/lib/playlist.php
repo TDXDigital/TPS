@@ -370,9 +370,20 @@ class playlist extends TPS{
         $result = array();
         if ($stmt->execute()) {
             while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                $result[$row['PlaylistId']] = $row;
+		$id = $row['PlaylistId'];
+                $result[$id] = $row;
+
+		// Attach labels
+		$labels = [];
+		$sql = $this->db->query("SELECT * FROM recordlabel WHERE LabelNumber IN " .
+					"(SELECT recordLabel_LabelNumber from library_recordlabel WHERE library_RefCode={$row['RefCode']})");
+		while ($label = $sql->fetch(\PDO::FETCH_ASSOC))
+		    array_push($labels, $label);
+		$result[$id]['labels'] = $labels;
             }
         }
+
+
         return $result;
     }
     
