@@ -1058,7 +1058,7 @@ class library extends station{
             $result = self::createAlbum($getData[1], $getData[2], $getData[11], $genreKey, $genre_num, $labels, 
                 $locale, $canCon, $playlist_flag, $null, $null, $note, $accept, false,
                 $dateIn, $dateRel, 1, $rating, $null, array($getData[8]), explode('/', $getData[7]));
-            echo 'Inserting---- row: '.$getData[0].' RefCode: '$result.' <br>';
+            echo 'Inserting---- row: '.$getData[0].' RefCode: '.$result.' <br>';
             flush();    
         }
         $stmt3->close();
