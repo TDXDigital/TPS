@@ -670,7 +670,7 @@ class library extends station{
             $refcode="%{$refcode}%";
         }*/
         if($stmt = $this->mysqli->prepare("SELECT Barcode,year,datein,dateout,RefCode,artist,album,"
-                . "`format`,variousartists,`condition`,genre,`status`,labelid,"
+                . "`format`,variousartists,`condition`,genre,`status`,"
                 . "Locale,CanCon,updated,release_date,note,playlist_flag,governmentCategory,"
                 . "scheduleCode "
                 . "FROM library where "
@@ -679,7 +679,7 @@ class library extends station{
             $stmt->execute();
             $stmt->bind_result($barcode,$year,$datein,$dateout,$RefCode_q,
                     $artist_q,$album_q,$format,$variousartists,
-                    $condition,$genre,$status,$labelid,
+                    $condition,$genre,$status,
                     $Locale,$CanCon,$updated,$release_date,
                     $note,$playlist_flag,$govCat,$scCode);
             while($stmt->fetch()){
@@ -689,7 +689,6 @@ class library extends station{
                     'artist'=>$artist_q,'album'=>$album_q,'format'=>$format,
                     'variousartists'=>$variousartists,
                     'condition'=>$condition,'genre'=>$genre,'status'=>$status,
-                    'labelid'=>$labelid,
                     'Locale'=>$Locale,'CanCon'=>$CanCon,'updated'=>$updated,
                     'release_date'=>$release_date,
                     'note'=>$note,'playlist_flag'=>$playlist_flag,
@@ -752,7 +751,7 @@ class library extends station{
             $saniCol = $this->db->quote($sort);
         }
         if($stmt = $this->mysqli->prepare("SELECT datein,dateout,RefCode,artist,album,"
-                . "`format`,variousartists,`condition`,genre,`status`,labelid,"
+                . "`format`,variousartists,`condition`,genre,`status`,"
                 . "Locale,CanCon,updated,release_date,note,playlist_flag,year "
                 . "FROM library where "
                 . "artist like ? or album like ? or note like ? or"
@@ -762,7 +761,7 @@ class library extends station{
             $stmt->execute();
             $stmt->bind_result($datein,$dateout,$RefCode_q,
                     $artist_q,$album_q,$format,$variousartists,
-                    $condition,$genre,$status,$labelid,
+                    $condition,$genre,$status,
                     $Locale,$CanCon,$updated,$release_date,
                     $note,$playlist_flag,$year);
             while($stmt->fetch()){
@@ -771,7 +770,6 @@ class library extends station{
                     'artist'=>$artist_q,'album'=>$album_q,'format'=>$format,
                     'variousartists'=>$variousartists,
                     'condition'=>$condition,'genre'=>$genre,'status'=>$status,
-                    'labelid'=>$labelid,
                     'Locale'=>$Locale,'CanCon'=>$CanCon,'updated'=>$updated,
                     'release_date'=>$release_date,
                     'note'=>$note,'playlist_flag'=>$playlist_flag,'year'=>$year,
