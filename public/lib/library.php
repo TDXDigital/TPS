@@ -908,6 +908,7 @@ class library extends station{
 
     public function importCSV($filename)
     {
+        header('X-Accel-Buffering: no');
         // Turn off output buffering
         ini_set('output_buffering', 'off');
         // Turn off PHP output compression
