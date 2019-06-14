@@ -272,8 +272,9 @@ class library extends station{
     }
 
     public function getLibraryCodeByRefCode($RefCode) {
-        $album = $this->getAlbumByRefcode($RefCode, TRUE)[0];
-        return $this->getLibraryCodeByGenre($album['genre']);
+	$sql = $this->mysqli->query("SELECT library_code FROM library WHERE RefCode={$RefCode}");
+	$library_code = $sql->fetch_array(MYSQLI_ASSOC)['library_code'];
+	return $library_code;
     }
 
     public function createBarcode($refcode){
