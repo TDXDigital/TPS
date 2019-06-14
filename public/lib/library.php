@@ -794,7 +794,7 @@ class library extends station{
             case 'all': $where = " true"; break;
             case 'accept': $where = " status = 1"; break;
             case 'reject': $where = " status = 0"; break;
-            case 'na': $where = " status is null OR status = -1"; break;
+            case 'na': $where = " status = -1"; break;
         }
         switch($filter["date"])
         {   
@@ -826,8 +826,8 @@ class library extends station{
             case 'locale': $where .= " AND locale is null"; break;
             case 'genre': $where .= " AND Genre is null"; break;
             case 'rating': $where .= " AND rating is null OR rating = 0"; break;
-            case 'rel_date': $where .= " AND release_date is null OR release_date = '1970-01-01'"; break;
-            case 'status': $where .= " AND status is null OR status = -1"; break;
+            case 'rel_date': $where .= " AND (release_date is null OR release_date = '1970-01-01')"; break;
+            case 'status': $where .= " AND status = -1"; break;
         }
         return $where;
     }
@@ -944,7 +944,7 @@ class library extends station{
             $labelName = $getData[3];
             if($labelName == 'SR' ||$labelName == 'Self-released' ||$labelName == 'S/R' ||$labelName == 'independent')
                 $labelName = 'Self-Released';
-            
+
             $size = 1;
             if(!$stmt3->bind_param(
                 "si",
@@ -983,17 +983,23 @@ class library extends station{
                 case 3: $locale = "Country"; break;
             }
              //Accept status and Playlist flag
-            switch($getData[9])
+            switch(strtoupper($getData[9]))
             {   
-                case 'o': $accept = 1; $playlist_flag = 'Complete'; break;
-                case 'x': $accept = 0; $playlist_flag = 'False'; break;
-                case 'L': $accept = $null; $playlist_flag = 'False'; break;
-                default:  $accept = $null; $playlist_flag = 'False';
+                case 'O': $accept = 1; $playlist_flag = 'Complete'; break;
+                case 'DUPLICATE': $accept = 1; $playlist_flag = 'Complete'; break;
+                case 'X': $accept = 0; $playlist_flag = 'False'; break;
+                case 'L': $accept = 1; $playlist_flag = 'False'; break;
+                default:  $accept = -1; $playlist_flag = 'False';
             }
             $year = $getData[18] == ''||!is_numeric($getData[18])? $null : $getData[18];
             
+            if($getData[6] == '' && $getData[7]=='')
+            {
+                $genreKey = $null;
+                $genre_num = 9;
+            }
             //0~1200 rows, genre# is missing, so get it from genre name
-            if($getData[6] == '' || !is_numeric($getData[6]))
+            else if($getData[6] == '' || !is_numeric($getData[6]))
             {
                 $genreName = strtolower($getData[7]);
                 if(strpos($genreName, 'rock')!== false||strpos($genreName, 'pop')!== false)
@@ -1007,7 +1013,7 @@ class library extends station{
                     $genre_num = 1;
                 }
                 elseif(strpos($genreName, 'heavy') !== false||strpos($genreName, 'punk') !== false||
-                    strpos($getData[7], 'metal') !== false)
+                    strpos($genreName, 'metal') !== false)
                 {
                     $genreKey = 'HM';
                     $genre_num = 2;
@@ -1017,7 +1023,7 @@ class library extends station{
                     $genreKey = 'EL';
                     $genre_num = 3;
                 }
-                elseif(strpos($genreName, 'hipHop') !== false)
+                elseif(strpos($genreName, 'hiphop') !== false)
                 {
                     $genreKey = 'HH';
                     $genre_num = 4;
@@ -1048,8 +1054,6 @@ class library extends station{
                 $genreKey = $genreKeys[$getData[6]];
                 $genre_num = $getData[6];
             }
-            if($getData[9] == 'x' || '')
-                $accept = 0;
             if(is_numeric($getData[16]))
             {
                 $playlistid = $getData[16]; 
@@ -1060,9 +1064,10 @@ class library extends station{
             {
                 $playlistid = $null;
             }
+            $subgenres = $getData[7] == ''? $null : explode('/', $getData[7]);
             $result = self::createAlbum($getData[1], $getData[2], $getData[11], $genreKey, $genre_num, $labels, 
                 $locale, $canCon, $playlist_flag, $null, $null, $note, $accept, false,
-                $dateIn, $dateRel, 1, $rating, $null, array($getData[8]), explode('/', $getData[7]));
+                $dateIn, $dateRel, 1, $rating, $null, array($getData[8]), $subgenres);
             echo 'Inserting---- row: '.$getData[0].' RefCode: '.$result.' <br>';
             flush();    
         }
