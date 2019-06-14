@@ -1196,15 +1196,7 @@ class library extends station{
 			"left join band_websites on library.RefCode=band_websites.ID " .
 		"WHERE " .
 			"library.refcode = ? order by library.datein asc limit ?;";
-/*
-        $selectAlbum = "Select library.RefCode, if(band_websites.ID is NULL,'No','Yes') as hasWebsite,if(recordlabel.name_alias_duplicate is NULL, recordlabel.Name, "
-                . "(SELECT Name from recordlabel where LabelNumber = recordlabel.name_alias_duplicate) ) as recordLabel, "
-                . "if(review.id is NULL,0,1) as reviewed, library.labelid, library.Locale, library.variousartists, library.format, library.year, library.album, "
-                . "library.artist, library.CanCon, library.datein, library.playlist_flag, library.genre, "
-                . "review.reviewer, review.ts, review.approved, review.femcon, review.hometown, review.subgenre, review.description, review.recommendations, review.id "
-                . "from library left join review on library.RefCode = review.RefCode left join recordlabel on library.labelid = recordlabel.LabelNumber left join band_websites on library.RefCode=band_websites.ID where "
-                . "library.refcode = ? order by library.datein asc limit ?;";
-*/      $selectWebsites = "Select band_websites.URL, band_websites.Service, band_websites.date_available, band_websites.date_discontinue"
+        $selectWebsites = "Select band_websites.URL, band_websites.Service, band_websites.date_available, band_websites.date_discontinue"
                 . " from band_websites where band_websites.ID=?;";
         $params = array();
         if($stmt = $this->mysqli->prepare($selectAlbum)){
