@@ -81,9 +81,9 @@ $app->group('/submission', function() use ($app, $authenticate, $playlist){
                     $_SESSION['CALLSIGN'], $today);
             foreach ($pending as &$entry) {
                 $entry['genre'] = $getCode($entry['genre'], $libCodes);
-                $label = $library->getLabelbyId($entry['labelid']);
-                $labelName = array_pop($label)['name'];
-                $entry['labelName'] = $labelName;
+		$labels = $library->getLabelsByRefCode($entry['RefCode']);
+		$entry['labelNames'] = array_map(function($label) {return $label['Name'];}, $labels);
+		$entry['labelIDs'] = array_map(function($label) {return $label['LabelNumber'];}, $labels);
                 try{
                     foreach ($validRanges[$entry['genre']['Genre']] 
                             as $key => &$value) {
