@@ -182,7 +182,7 @@
                         <select class="form-control" id='keepSelect' name="keepSelect" onchange="toggleKeep()">
 			    <option value='1' {% if album.status == 1 %} selected {% endif %}>Yes</option>
 			    <option value='0' {% if (album.status == 0 and album.status is not null) %} selected {% endif %}>No</option>
-			    <option value='-1' {% if album.status < 0 %} selected {% endif %}>Decide Later</option>
+			    <option value='-1' {% if album.status < 0 or album.status is null %} selected {% endif %}>Decide Later</option>
                         </select>
                     </div>
                 </div>
