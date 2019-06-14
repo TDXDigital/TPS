@@ -816,10 +816,8 @@
 			)) {
 			// Auto-correct to Self-Released
 			var currSelect = select.chosen().val();
-			var newSelect = currSelect.length ? currSelect.concat("Self-Released") : ["Self-Released"];
-			console.log(newSelect);
-			$('#label').val(newSelect);//.trigger("chosen:updated");
-			//select.chosen().val(["hello"]);
+			var newSelect = currSelect ? currSelect.concat("Self-Released") : ["Self-Released"];
+			$('#label').chosen().val(newSelect);
 		    } else {
                         // add the new option
                         select.append(option);
