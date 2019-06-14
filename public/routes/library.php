@@ -44,7 +44,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 	$rating = filter_input(INPUT_POST, "rating")?:NULL;
         $governmentCategory = filter_input(INPUT_POST, "category")?:NULL;
         $schedule = filter_input(INPUT_POST, "schedule")?:2;
-        $playlist = filter_input(INPUT_POST, "playlist")?:1;
+        $playlist = filter_input(INPUT_POST, "playlistBox")?:2;
         $print = filter_input(INPUT_POST, "print")? : 0;
         $accepted = filter_input(INPUT_POST, "keepSelect")? :0;
         $variousartists = filter_input(INPUT_POST, "VA")? :0;
