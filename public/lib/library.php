@@ -910,18 +910,18 @@ class library extends station{
     {
         header('X-Accel-Buffering: no');
         
-        // // Turn off output buffering
-        // ini_set('output_buffering', 'off');
-        // // Turn off PHP output compression
-        // ini_set('zlib.output_compression', false);
+        // Turn off output buffering
+        ini_set('output_buffering', 'off');
+        // Turn off PHP output compression
+        ini_set('zlib.output_compression', false);
                 
-        // //Flush (send) the output buffer and turn off output buffering
-        // //ob_end_flush();
-        // while (@ob_end_flush());
+        //Flush (send) the output buffer and turn off output buffering
+        //ob_end_flush();
+        while (@ob_end_flush());
                 
-        // // Implicitly flush the buffer(s)
-        // ini_set('implicit_flush', true);
-        // ob_implicit_flush(true);
+        // Implicitly flush the buffer(s)
+        ini_set('implicit_flush', true);
+        ob_implicit_flush(true);
 
         $file = fopen($filename, "r");
         //for label
