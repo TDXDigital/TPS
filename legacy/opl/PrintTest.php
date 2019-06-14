@@ -83,7 +83,14 @@ $library = new \TPS\library();
 	    $tags = $library->getTagsByRefCode($RefCode);
 
             #$library->createBarcode($RefCode);
- //           $padded= join('', array($genreCode,str_pad($BCD['RefCode'], 10, "0", STR_PAD_LEFT)));
+
+	    // Determine leading genre number
+	    preg_match("/[0-9]?/", $libraryCode, $matches);
+	    $genreNum = $matches[0];
+	    if($genreNum == '') // No genre assigned yet
+		$genreNum = 'N';
+
+            $padded= join('', array($genreNum, str_pad($BCD['RefCode'], 11 - strlen($genreNum), "0", STR_PAD_LEFT)));
 
             //echo "<img src='barcode/createBarcode.php?bcd=$BCD'/>";
             echo "<div class=\"label\" style=\"border: 1px dotted black; width: 475px; height: 475px;\">";
