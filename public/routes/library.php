@@ -532,7 +532,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 	$album['rating'] = $library->getRatingByRefCode($RefCode);
 	$album['subgenres'] = $library->getSubgenresByRefCode($RefCode);
 	$album['hometowns'] = $library->getHometownsByRefCode($RefCode);
-	$album['labels'] = $library->getLabelsByRefCode($RefCode);
+	$album['labels'] = array_map(function($label) {return $label['Name'];}, $library->getLabelsByRefCode($RefCode));
         $album['websites']=$library->getWebsitesByRefCode($RefCode);
         $album['playlist'] = $library->playlist->getAllByRefCode($RefCode);
 	$album['tags'] = $library->getTagsByRefCode($RefCode);

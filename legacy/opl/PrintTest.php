@@ -82,6 +82,8 @@ $library = new \TPS\library();
 	    $recordLabels = $library->getLabelsByRefCode($RefCode);
 	    $tags = $library->getTagsByRefCode($RefCode);
 
+	    $recordLabelNames = array_map(function($label) {return $label['Name'];}, $recordLabels);
+
             #$library->createBarcode($RefCode);
 
 	    // Determine leading genre number
@@ -127,7 +129,7 @@ $library = new \TPS\library();
 		 "<p>" . implode(" & ", $hometowns) . "</p>" .
 		 "<p>" . implode(" & ", $subgenres) . "</p>" .
 		 "<p>" . $libraryCode . "</p>" .
-		 "<p>" . implode(" & ", $recordLabels) . "</p>" .
+		 "<p>" . implode(" & ", $recordLabelNames) . "</p>" .
 		 "<p>" . implode(" & ", $tags) . "</p>" .
 		 "</div>";
         }
