@@ -74,19 +74,18 @@ class reviews extends station{
      */
     public function getReviewsByAlbum($RefCode, $pagination=1,$maxResult=25) {
         $this->sanitizePagination($pagination,$maxResult);
-        $select = "Select library.RefCode, if(band_websites.ID is NULL,'No','Yes') as hasWebsite, if(recordlabel.name_alias_duplicate is NULL, recordlabel.Name, "
-                . "(SELECT Name from recordlabel where LabelNumber = recordlabel.name_alias_duplicate) ) as recordLabel, "
-                . "if(review.id is NULL,0,1) as reviewed, library.labelid, library.Locale, library.variousartists, library.format, library.year, library.album, "
+        $select = "Select library.RefCode, if(band_websites.ID is NULL,'No','Yes') as hasWebsite, "
+                . "if(review.id is NULL,0,1) as reviewed, library.Locale, library.variousartists, library.format, library.year, library.album, "
                 . "library.artist, library.CanCon, library.datein, library.playlist_flag, library.genre, "
                 . "review.reviewer, review.ts, review.approved, review.femcon, review.hometown, review.subgenre, review.description, review.recommendations, review.id "
-                . "from library left join review on library.RefCode = review.RefCode left join recordlabel on library.labelid = recordlabel.LabelNumber "
+                . "from library left join review on library.RefCode = review.RefCode "
                 . "left join band_websites on library.RefCode=band_websites.ID where "
                 . "library.refcode = ? order by library.datein asc limit ?,?;";
         $params = array();
         if($stmt = $this->mysqli->prepare($select)){
             $stmt->bind_param('sii',$RefCode,$pagaination,$maxResult);
             $stmt->execute();
-            $stmt->bind_result($RefCode,$hasWebsite,$recordLabel,$reviewed,$labelid,$locale,$variousArtists,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre,
+            $stmt->bind_result($RefCode,$hasWebsite,$reviewed,$locale,$variousArtists,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre,
                     $reviewer,$timestamp,$approved,$femcon,$hometown,$subgenre,$description,$recommends,$reviewID);
             while($stmt->fetch()){
                 $params[$reviewID] = array( // this is ok as if the review ID is null there will also be no other entries as ID is a PK
@@ -103,10 +102,6 @@ class reviews extends station{
                         "genre"=>$genre,
                         "locale"=>$locale,
                         "variousArtists"=>$variousArtists,
-                        "label"=>array(
-                            "Name"=>$recordLabel,
-                            "Id"=>$labelid,
-                        ),
                         "review"=>array(
                             "reviewer"=>$reviewer,
                             "timestamp"=>$timestamp,
