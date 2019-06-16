@@ -528,6 +528,7 @@ class playlist extends TPS{
             $refcodes = array($refcodes);
         }
         $refcode = NULL;
+        $smallCode = $refcodes[0];
         $stmt = $this->db->prepare("INSERT INTO playlist (RefCode, Activate, "
                 . "Expire, ZoneCode, ZoneNumber, SmallCode) VALUES "
                 . "(:refcode, :activate, :expire, :zoneCode, :zoneNumber, "

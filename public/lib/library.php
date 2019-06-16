@@ -939,8 +939,8 @@ class library extends station{
                 continue;
 
 
-            $labelName = $getData[3];
-            if($labelName == 'SR' ||$labelName == 'Self-released' ||$labelName == 'S/R' ||$labelName == 'independent')
+            $labelName = strtoupper($getData[3]);
+            if($labelName == 'SR' ||$labelName == 'SELF-RELEASED' ||$labelName == 'S/R' ||$labelName == 'INDEPENDENT')
                 $labelName = 'Self-Released';
 
             $size = 1;
