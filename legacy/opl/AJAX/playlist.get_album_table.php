@@ -8,6 +8,9 @@
  */
 date_default_timezone_set("UTC");
 require_once '../barcode/validate.php';
+require_once '../../../public/lib/tps.php';
+require_once '../../../public/lib/playlist.php';
+require_once '../../../public/lib/library.php';
 
 session_start();
 $artist = addslashes(filter_input(INPUT_GET,'term',FILTER_SANITIZE_STRING))?:"";
@@ -22,7 +25,7 @@ if(validate_UPCABarcode($artist)||  validate_EAN13Barcode($artist)){
 include_once dirname(dirname(dirname(dirname(__FILE__)))).DIRECTORY_SEPARATOR."TPSBIN/functions.php";
 include_once dirname(dirname(dirname(dirname(__FILE__)))).DIRECTORY_SEPARATOR."TPSBIN/db_connect.php";
 
-$con = $mysqli->prepare("SELECT RefCode, datein, artist, album, genre, status, recordlabel.Name as label_name FROM library LEFT JOIN recordlabel on library.labelid=recordlabel.LabelNumber where artist REGEXP ? or refcode=? or barcode=? order by soundex(artist) asc limit ?;");
+$con = $mysqli->prepare("SELECT RefCode, datein, artist, album, genre, status FROM library where artist REGEXP ? or refcode=? or barcode=? order by soundex(artist) asc limit ?;");
 $result = array();
 $refcodeDB = NULL;
 $dateinDB = NULL;
@@ -34,7 +37,7 @@ $statusDB = NULL;
 
 if($con){
     $con->bind_param("sssi",$artist,$artist,$artist,$limit);
-    $con->bind_result($refcodeDB,$dateinDB,$artistDB,$albumDB,$genreDB,$statusDB,$labelDB);
+    $con->bind_result($refcodeDB,$dateinDB,$artistDB,$albumDB,$genreDB,$statusDB);
     $con->execute();
     while($con->fetch()){
         switch ($statusDB) {
@@ -55,8 +58,7 @@ if($con){
             "artist" => $artistDB,
             "album" => $albumDB,
             "genre" => $genreDB,
-            "status" => $statusDB,
-            "labelName" => $labelDB,
+            "status" => $statusDB
             );
     }
 }
@@ -70,16 +72,28 @@ else{
     http_response_code($response_code=500);
 }
 
+$library = new \TPS\library();
+foreach (array_keys($result) as $RefCode) {
+    $labels = $library->getLabelsByRefCode($RefCode);
+    $labelNames = array_map(function($label) {return $label['Name'];}, $labels);
+    $result[$RefCode]["labelNames"] = $labelNames;
+}
+
 if(strtolower($format)=="json"){
     print json_encode($result);
 }
 else{
-    echo "<table class=\"table table-condensed table-hover\"><th>#</th><th>Date-In</th><th>Artist</th><th>Album</th><th>Genre</th><th>Label Name</th><th>Status</th>";
+    echo "<table class=\"table table-condensed table-hover\"><th>#</th><th>Date-In</th><th>Artist</th><th>Album</th><th>Genre</th><th>Label Names</th><th>Status</th>";
     $i=1;
     foreach ($result as $refCode => $row) {
         echo"<tr><td><button type=\"button\" onclick='edit(".$refCode.")' class=\"btn btn-default btn-xs\">".$refCode." <i class=\"fa fa-edit\" aria-hidden=\"true\"></i></button>
-            </td><td>".$row['datein']."</td><td>".$row['artist']."</td><td>".$row['album']."</td><td>".$row['genre']."</td><td>".$row['labelName']."</td><td>".$row['status']."</td></tr>
-        ";
+            </td><td>".$row['datein']."</td><td>".$row['artist']."</td><td>".$row['album']."</td><td>".$row['genre']."</td><td>";
+	foreach ($row['labelNames'] as $index=>$labelName) {
+	    if ($index > 0)
+		echo "<br>";
+	    echo "-".$labelName;
+	}
+	echo "</td><td>".$row['status']."</td></tr>";
         $i++;
         if( $i > $limit-1){
             echo "<div class=\"alert alert-danger\" role=\"alert\">Results capped at 50, please refine search</div>";
