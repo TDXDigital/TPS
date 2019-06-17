@@ -1078,7 +1078,7 @@ class library extends station{
             $subgenres = $getData[7] == ''? $null : explode('/', $getData[7]);
             $result = self::createAlbum($getData[1], $getData[2], $getData[11], $genreKey, $genre_num, $labels, 
                 $locale, $canCon, $playlist_flag, $null, $null, $note, $accept, false,
-                $dateIn, $dateRel, 1, $rating, $tags, array($getData[8]), $subgenres);
+                $dateIn, $dateRel, 1, $rating, array($tags), array($getData[8]), $subgenres);
             echo 'Inserting---- row: '.$getData[0].' RefCode: '.$result.' <br>';
             flush();    
         }
