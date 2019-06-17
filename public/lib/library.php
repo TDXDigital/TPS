@@ -822,7 +822,7 @@ class library extends station{
         switch($filter["missing_info"])
         {
             case 'all': $where .= " AND true"; break;
-            case 'label': $where .= " AND labelid is null"; break;
+            case 'label': $where .= " AND labelid is null"; break;  // todo remove it
             case 'locale': $where .= " AND locale is null"; break;
             case 'genre': $where .= " AND Genre is null"; break;
             case 'rating': $where .= " AND rating is null OR rating = 0"; break;
@@ -1071,9 +1071,9 @@ class library extends station{
             {
                 $playlistid = $null;
             }
-            $tags = [];
+            $tags = $null;
             if($getData[11] == 'o')
-                array_push($tags, 'FemCon');
+                $tags = 'FemCon';
 
             $subgenres = $getData[7] == ''? $null : explode('/', $getData[7]);
             $result = self::createAlbum($getData[1], $getData[2], $getData[11], $genreKey, $genre_num, $labels, 
