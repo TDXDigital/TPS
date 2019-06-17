@@ -210,6 +210,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     $library->log->timerDuration(). "s");
             $genres = $library->getLibraryGenres();
             $formats = $library->getMediaFormats();
+            $tag = $library->getTags();
             $params = array(
                 "area"=>"Library",
                 "albums"=>$result,
@@ -220,7 +221,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 "sortReversed"=>$reverse?1:0,
                 "sortColumn"=>$sortCol,
                 "format"=>$formats,
-                "genres"=>$genres
+                "genres"=>$genres,
+                "tag"=>$tag
             );
             $isXHR = $app->request->isAjax();
             if($isXHR || $format=="json"){

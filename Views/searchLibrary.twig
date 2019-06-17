@@ -97,16 +97,15 @@
                 </select>
             </div>
         </div>
-
+        <div class="row"></div>
         <div class="col-xs-2">
             <div class="form-group input-group">
                 <label for="filter_format" class="input-group-addon">Format</label>
                 <select class="form-control table_filter" id="filter_format">
-                    <option value="all">ALL</option>
+                    <option value="all">All</option>
                     {% for key,value in format %}
                         <option value='{{key}}'
-                                {% if key == album.format %} selected {% endif %}
-                                >{{value|default('Unknown format')}}</option>
+                               {{value|default('Unknown format')}}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -119,10 +118,23 @@
                     <option value="all">All</option>
                     <option value="label">Record Label</option>
                     <option value="genre">Genre</option>
+                    <option value="crtc">CRTC Genre</option>
                     <option value="locale">Locale</option>
                     <option value="rating">Rating</option>
                     <option value="rel_date">Release Date</option>
                     <option value="status">Status</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-xs-2">
+            <div class="form-group input-group">
+                <label for="filter_tag" class="input-group-addon">Tag</label>
+                <select class="form-control table_filter" id="filter_tag">
+                    <option value="all">All</option>
+                    {% for key,value in tag %}
+                        <option value='{{value}}'
+                                >{{value|default('Unknown tag')}}</option>
+                    {% endfor %}
                 </select>
             </div>
         </div>

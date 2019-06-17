@@ -519,7 +519,9 @@ class library extends station{
 	$sql = $this->mysqli->query("SELECT name FROM tags ORDER BY name");
 	$tags = [];
 	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
-	    array_push($tags, $row['name']);
+        {
+	       array_push($tags, $row['name']);
+        }
 	return $tags;
     }
 
@@ -826,6 +828,13 @@ class library extends station{
             case 'rating': $where .= " AND rating is null OR rating = 0"; break;
             case 'rel_date': $where .= " AND (release_date is null OR release_date = '1970-01-01')"; break;
             case 'status': $where .= " AND status = -1"; break;
+            case 'crtc': $where .= " AND governmentCategory is null"; break;
+        }
+        switch($filter['tag'])
+        {
+            case 'all': $where .= " AND true"; break;
+            default: $where .= " AND RefCode IN (select library_refCode from library_tags where tag_id = (select id from tags where name = '". $filter['tag'] ."'));";
+            // default: $where .= " AND true"; break;
         }
         return $where;
     }
@@ -1062,10 +1071,14 @@ class library extends station{
             {
                 $playlistid = $null;
             }
+            $tags = [];
+            if($getData[11] == 'o')
+                array_push($tags, 'FemCon');
+
             $subgenres = $getData[7] == ''? $null : explode('/', $getData[7]);
             $result = self::createAlbum($getData[1], $getData[2], $getData[11], $genreKey, $genre_num, $labels, 
                 $locale, $canCon, $playlist_flag, $null, $null, $note, $accept, false,
-                $dateIn, $dateRel, 1, $rating, $null, array($getData[8]), $subgenres);
+                $dateIn, $dateRel, 1, $rating, $tags, array($getData[8]), $subgenres);
             echo 'Inserting---- row: '.$getData[0].' RefCode: '.$result.' <br>';
             flush();    
         }
