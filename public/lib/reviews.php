@@ -16,6 +16,7 @@ class reviews extends station{
      */
     public function __construct() {
         parent::__construct();
+	$this->library = new \TPS\library();
     }
     
     protected $error;
@@ -174,17 +175,16 @@ class reviews extends station{
     public function getFullReview($term){
         $params = array();
         $maxResult = 100;
-        $select = "Select library.RefCode, if(recordlabel.name_alias_duplicate is NULL, recordlabel.Name, "
-                . "(SELECT Name from recordlabel where LabelNumber = recordlabel.name_alias_duplicate) ) as recordLabel, "
-                . "if(review.id is NULL,0,1) as reviewed, library.labelid, library.Locale, library.variousartists, library.format, library.year, library.album, "
+        $select = "Select library.RefCode, "
+                . "if(review.id is NULL,0,1) as reviewed, library.Locale, library.variousartists, library.format, library.year, library.album, "
                 . "library.artist, library.CanCon, library.datein, library.playlist_flag, library.genre, "
                 . "review.reviewer, review.ts, review.approved, review.femcon, review.hometown, review.subgenre, review.description, review.recommendations, review.id, "
-                . "review.notes from library left join review on library.RefCode = review.RefCode left join recordlabel on library.labelid = recordlabel.LabelNumber where "
+                . "review.notes from library left join review on library.RefCode = review.RefCode where "
                 . "review.id = ? order by library.datein asc limit ?;";
         if($stmt = $this->mysqli->prepare($select)){
             $stmt->bind_param('si',$term,$maxResult);
             $stmt->execute();
-            $stmt->bind_result($RefCode,$recordLabel,$reviewed,$labelid,$locale,$variousArtists,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre,
+            $stmt->bind_result($RefCode,$reviewed,$locale,$variousArtists,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre,
                     $reviewer,$timestamp,$approved,$femcon,$hometown,$subgenre,$description,$recommends,$reviewID,$notes);
             while($stmt->fetch()){
                 $params = array(
@@ -200,10 +200,6 @@ class reviews extends station{
                         "genre"=>$genre,
                         "locale"=>$locale,
                         "variousArtists"=>$variousArtists,
-                        "label"=>array(
-                            "Name"=>$recordLabel,
-                            "Id"=>$labelid,
-                        ),
                         "review"=>array(
                             "id"=>$reviewID,
                             "reviewer"=>$reviewer,
@@ -219,6 +215,7 @@ class reviews extends station{
                     );
             }
             $stmt->close();
+	    $params["labels"] = $this->library->getLabelsByRefCode($RefCode);
         }
         else{
             error_log($this->mysqli->error);

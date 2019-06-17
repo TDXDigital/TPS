@@ -1,9 +1,9 @@
 <!doctype html>
 <?php
     error_reporting(E_ERROR);
-    include_once '../TPSBIN/functions.php';
-    include_once '../TPSBIN/db_connect.php';
-    include_once '../public/lib/libs.php';
+    include_once '../../TPSBIN/functions.php';
+    include_once '../../TPSBIN/db_connect.php';
+    include_once '../../public/lib/libs.php';
 ?>
 <html lang="en">
 <head>
@@ -75,23 +75,24 @@
         echo "<div class=\"label\" style=\"outline: none;\"></div>";
     }
     foreach ($reviews as $id ) {
-        $label = $review->getFullReview($id);
+	$label = $review->getFullReview($id);
         echo "<div class=\"label\" style='font-size:xx-small;'>";
         $trimArtist = $label['review']['hometown'];
         if(strlen($label['review']['hometown'])>25){
-            
             $trimArtist = substr($trimArtist,0, 23);
             $trimArtist = join('', array($trimArtist,'...'));
         }
         $trimAlbum = str_pad($label['RefCode'],11,0,STR_PAD_LEFT);
-        $trimLabel = $label['label']['Name'];
-        if(strlen($$trimLabel)>17){
-            
-            $trimLabel = substr($trimLabel,0, 14);
-            $trimLabel = join('', array($trimLabel,'...'));
-        }
         $title = strtolower($trimArtist.' ('.$trimAlbum.')');
-        echo "<small style='float: left'>$title</small><small style=\"float: right\">[".$trimLabel."]</small>";
+        echo "<small style='float: left'>$title</small>";
+	foreach ($label['labels'] as $rec_label) {
+            $trimLabel = $rec_label['Name'];
+            if(strlen($$trimLabel)>17){
+                $trimLabel = substr($trimLabel,0, 14);
+                $trimLabel = join('', array($trimLabel,'...'));
+            }
+            echo "<small style=\"float: right\">[".$trimLabel."]</small>";
+	}
         echo "<small><br style='clear: both'><span style='float: left; text-align:justify;'>".substr($label['review']['description'],0,220)."</span><br><i style='float:right'>".substr($label['review']['notes'],0,100)."</i><br style='clear: both'><span style='float:right;'>";
         if( sizeof($label['review']['recommendations'])>0){
             echo "RIYL: ";
@@ -99,7 +100,6 @@
         echo $label['review']['recommendations']."</span></small><br style='clear: both'/>";
         echo "</div>";
     }
-    
     /*if($stmt=$mysqli->prepare("SELECT artist, album, format, genre, CanCon, Locale FROM library WHERE RefCode = ?")){
         for($i=1;$i<$indent;$i++){
             echo "<div class=\"label\" style=\"outline: none;\"></div>";
