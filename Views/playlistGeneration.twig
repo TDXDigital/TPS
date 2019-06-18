@@ -98,7 +98,7 @@ value="{{today|default("now")|date("Y-m-d")}}" name="today"/>
                     <td>
 			{% for id in playlist.labelIDs %}
 			<a href="../../label/{{id}}" target="_pl">
-                            {{playlist.labelNames[loop.index0]}}</a>{% if loop.last %}{% else %}, <br>{% endif %} 
+                            -{{playlist.labelNames[loop.index0]}}</a><br> 
 			{% endfor %}
 		    </td>
                     <td><a href="../../library/{{playlist.RefCode}}" target="_pl">
