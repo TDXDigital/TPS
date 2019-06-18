@@ -77,7 +77,7 @@
             <div class="form-group input-group">
                 <label for="filter_genre" class="input-group-addon">Genre&nbsp;</label>
                 <select id="filter_genre" class="form-control table_filter" name="genre" data-placeholder="Album Genre">
-                    <option value="all">ALL</option>
+                    <option value="all">All</option>
                     {% for key,value in genres %}
                         <option value='{{key}}'>{{value|default('Unknown Genre')}}</option>
                     {% endfor %}

@@ -531,23 +531,23 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $app->render("error.html.twig",$params);
             $app->halt(500, "not valid");
         }
-	$album['rating'] = $library->getRatingByRefCode($RefCode);
-	$album['subgenres'] = $library->getSubgenresByRefCode($RefCode);
-	$album['hometowns'] = $library->getHometownsByRefCode($RefCode);
-	$album['labels'] = array_map(function($label) {return $label['Name'];}, $library->getLabelsByRefCode($RefCode));
+        $album['rating'] = $library->getRatingByRefCode($RefCode);
+        $album['subgenres'] = $library->getSubgenresByRefCode($RefCode);
+        $album['hometowns'] = $library->getHometownsByRefCode($RefCode);
+        $album['labels'] = array_map(function($label) {return $label['Name'];}, $library->getLabelsByRefCode($RefCode));
         $album['websites']=$library->getWebsitesByRefCode($RefCode);
         $album['playlist'] = $library->playlist->getAllByRefCode($RefCode);
-	$album['tags'] = $library->getTagsByRefCode($RefCode);
-	$album['cancon'] = $library->getCanconByRefCode($RefCode);
-	$album['variousArtists'] = $library->getVariousArtistsByRefCode($RefCode);
+        $album['tags'] = $library->getTagsByRefCode($RefCode);
+        $album['cancon'] = $library->getCanconByRefCode($RefCode);
+        $album['variousArtists'] = $library->getVariousArtistsByRefCode($RefCode);
 
         $params = array(
             "album"=>$album,
             "govCats"=>$library->getGovernmentCodes(),
             "genres"=>$library->getLibraryGenres(),
-	    "subgenres"=>$library->getSubgenres(),
-	    "tags"=>$library->getTags(),
-	    "hometowns"=>$library->getHometowns(),
+            "subgenres"=>$library->getSubgenres(),
+            "tags"=>$library->getTags(),
+            "hometowns"=>$library->getHometowns(),
             "labels"=>\TPS\label::nameSearch("%",False),
             "format"=>$library->getMediaFormats(),
             "scheduleBlock"=>$library->getScheduleBlocks(),

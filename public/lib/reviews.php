@@ -216,6 +216,8 @@ class reviews extends station{
             }
             $stmt->close();
 	    $params["labels"] = $this->library->getLabelsByRefCode($RefCode);
+        $params["hometown"] = $this->library->getHometownsByRefCode($RefCode);
+        $params['subgneres'] = $this->library->getSubgenresByRefCode($RefCode);
         }
         else{
             error_log($this->mysqli->error);

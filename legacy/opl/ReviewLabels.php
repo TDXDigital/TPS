@@ -45,10 +45,8 @@
             color:#000000
         }
     }
-     table { page-break-inside:auto }
-    div   { page-break-inside:avoid; } /* This is the key */
-    thead { display:table-header-group }
-    tfoot { display:table-footer-group }
+     table { page-break-inside:avoid }
+   
     @page :right{
         margin: 0.0cm;
     }
@@ -68,9 +66,8 @@
     }
     table {
       table-layout: fixed;
-      width: 453px;
-      height: 453px;  
-      display:block;
+      max-width: 453px;
+      max-height: 453px;  
     }
 
     </style>
@@ -96,20 +93,27 @@
         // echo "<small style=\"float: right\">[".$trimLabel."]</small>";
     }
 
+    $hometown = implode(", ", $label["hometown"]);
+    if(strlen($hometown)>30){
+        $hometown = substr($hometown,0, 30);
+        $hometown = join('', array($hometown,'...'));
+    }
+    $subgenres = implode(", ", $label["subgneres"]);
 
+    // print_r($label);
     echo '<table  border="1">';
     echo '
           <tr>
             <td colspan="2">'. $label['review']['timestamp'].'</td>
           </tr>
           <tr> 
-            <td>'. $label['artist'].' </td> <td>'. $label['album'].'</td>
+            <td>Artist: '. $label['artist'].' </td> <td>Album: '. $label['album'].'</td>
           </tr>
           <tr>
-            <td>'. $label['RefCode'].' </td> <td>'. $trimLabel.'</td>
+            <td>RefCode: '. $label['RefCode'].' </td> <td>Label: '. $trimLabel.'</td>
           </tr>
           <tr>
-            <td>'. $label['genre'].' </td> <td>'. $label['locale'].'</td>
+            <td>Sub genre: '. $subgenres.' </td> <td>Hometown: '. $hometown.'</td>
           </tr>
           <tr>
             <td colspan="2">RIYL: '. $label['review']['recommendations'].'</td>
