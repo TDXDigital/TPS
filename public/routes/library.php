@@ -39,7 +39,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $datein = filter_input(INPUT_POST, "indate")?:NULL;
         $subgenres = filter_input(INPUT_POST, "subgenres", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
         $hometowns = filter_input(INPUT_POST, "hometown", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
-        $rec_labels = filter_input(INPUT_POST, "label", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
+        $rec_labels = filter_input(INPUT_POST, "label", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:[];
         $format = filter_input(INPUT_POST, "format")?:NULL;
 	$rating = filter_input(INPUT_POST, "rating")?:NULL;
         $governmentCategory = filter_input(INPUT_POST, "category")?:NULL;

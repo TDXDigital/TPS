@@ -1426,7 +1426,7 @@ class library extends station{
         }
         $library_code = 0;
         if(!$stmt3->bind_param(
-            "sssissisissssssis",
+            "sssissisissssssii",
             $datein,
             $artist,
             $album,
@@ -1493,7 +1493,7 @@ class library extends station{
 	    $library_code = "{$genre_num}-{$id_last}";
 	    $this->mysqli->query("UPDATE library SET library_code='{$library_code}' WHERE RefCode={$id_last}");
 
-	    if(!is_null($labelNums)) {
+	    if(sizeof($labelNums)>0) {
 		// Insert album and record label combos into library_recordlabel intermediary table
 		$values = "";
 		foreach($labelNums as $labelNum)
