@@ -1414,7 +1414,7 @@ class library extends station{
         if(!$stmt3 = $this->mysqli->prepare("REPLACE INTO library(datein,artist,album,variousartists,
             format,genre,status,Locale,CanCon,release_date,year,note,playlist_flag,
             governmentCategory,scheduleCode, rating, library_code)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
             $stmt3->close();
             header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
         }
@@ -1426,7 +1426,7 @@ class library extends station{
         }
         $library_code = 0;
         if(!$stmt3->bind_param(
-            "sssissiisissssssii",
+            "sssissisissssssii",
             $datein,
             $artist,
             $album,
@@ -1493,7 +1493,7 @@ class library extends station{
 	    $library_code = "{$genre_num}-{$id_last}";
 	    $this->mysqli->query("UPDATE library SET library_code='{$library_code}' WHERE RefCode={$id_last}");
 
-	    if(!is_null($labelNums)) {
+	    if(sizeof($labelNums)>0) {
 		// Insert album and record label combos into library_recordlabel intermediary table
 		$values = "";
 		foreach($labelNums as $labelNum)
