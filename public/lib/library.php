@@ -822,11 +822,8 @@ class library extends station{
         switch($filter["missing_info"])
         {
             case 'all': $where .= " AND true"; break;
-<<<<<<< HEAD
-            case 'label': $where .= " AND labelid is null"; break;
-=======
+
             case 'label': $where .= " AND refCode NOT IN (SELECT library_refcode from library_recordlabel)"; break;
->>>>>>> a4826dd9f0cfd565a3c624e3b1cc7bc2160b7959
             case 'locale': $where .= " AND locale is null"; break;
             case 'genre': $where .= " AND Genre is null"; break;
             case 'rating': $where .= " AND (rating is null OR rating = 0)"; break;
