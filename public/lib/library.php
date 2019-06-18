@@ -1412,7 +1412,7 @@ class library extends station{
             $datein = date("Y-m-d");
         }
         if(!$stmt3 = $this->mysqli->prepare("REPLACE INTO library(datein,artist,album,variousartists,
-            format,genre,status,labelid,Locale,CanCon,release_date,year,note,playlist_flag,
+            format,genre,status,Locale,CanCon,release_date,year,note,playlist_flag,
             governmentCategory,scheduleCode, rating, library_code)
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
             $stmt3->close();
@@ -1434,7 +1434,6 @@ class library extends station{
             $format,
             $genre,
             $accepted,
-            $labelNums[0],
             $locale,
             $CanCon,
             $release_date,

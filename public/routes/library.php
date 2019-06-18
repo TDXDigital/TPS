@@ -572,7 +572,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $datein = filter_input(INPUT_POST, "indate")?:NULL;
             $subgenres = filter_input(INPUT_POST, "subgenres", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
             $hometowns = filter_input(INPUT_POST, "hometown", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
-            $rec_labels = filter_input(INPUT_POST, "label", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
+            $rec_labels = filter_input(INPUT_POST, "label", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:[];
             $format = filter_input(INPUT_POST, "format")?:NULL;
 	    $rating = filter_input(INPUT_POST, "rating")?:NULL;
             $governmentCategory = filter_input(INPUT_POST, "category")?:NULL;
@@ -670,10 +670,9 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 		    array_push($all, $row['LabelNumber']);
 
 		// Delete recordlabel from `recordlabel` table if no albums use it anymore
-		// TODO: CAN ADD BACK ONCE LABEL COLUMN IS REMOVED FROM LIBRARY TABLE
-//	    	$to_delete = array_diff($all, $ids_being_used);
-//	    	if(sizeof($to_delete)>0)
-//	            $mysqli->query("DELETE FROM recordlabel WHERE LabelNumber IN (" . implode(", ", $to_delete) . ")");
+	    	$to_delete = array_diff($all, $ids_being_used);
+	    	if(sizeof($to_delete)>0)
+	            $mysqli->query("DELETE FROM recordlabel WHERE LabelNumber IN (" . implode(", ", $to_delete) . ")");
 	    }
 
             //echo "creating album...";
@@ -724,7 +723,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 }*/
             }
             if(!$stmt3 = $mysqli->prepare("UPDATE library SET datein=?, artist=?, album=?, variousartists=?,
-                format=?,genre=?,status=?,labelid=?,Locale=?,CanCon=?,release_date=?,year=?,note=?,playlist_flag=?,
+                format=?,genre=?,status=?,Locale=?,CanCon=?,release_date=?,year=?,note=?,playlist_flag=?,
                 governmentCategory=?,scheduleCode=?, rating=? WHERE RefCode=?")){
                 header("location: ./?q=new&e=".$mysqli->errno."&s=3&m=".$mysqli->error);
             }
@@ -735,7 +734,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 $year = NULL;
             }
             if(!$stmt3->bind_param(
-                    "sssissiisisssissii",
+                    "sssissisisssissii",
                     $datein,
                     $artist,
                     $album,
@@ -743,7 +742,6 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     $format,
                     $genre,
                     $accepted,
-                    $labelNums[0],
                     $locale,
                     $CanCon,
                     $release_date,
