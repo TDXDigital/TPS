@@ -42,7 +42,11 @@
             </div>
         </div>
     {% endif %}
-    <h3>Filter </h3>
+    <h3 style="display:inline;">Filter </h3>
+    <button type="button" class="btn btn-default" id="clear_filter">Clear Filter</button>
+            
+    <br>
+    <br>
     <div class="form-group row">
         
         <div class="col-xs-2">
@@ -75,9 +79,7 @@
                 <select id="filter_genre" class="form-control table_filter" name="genre" data-placeholder="Album Genre">
                     <option value="all">ALL</option>
                     {% for key,value in genres %}
-                        <option value='{{key}}'
-                                {% if album.genre == key %} selected {% endif %}
-                                >{{value|default('Unknown Genre')}}</option>
+                        <option value='{{key}}'>{{value|default('Unknown Genre')}}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -104,7 +106,7 @@
                 <select class="form-control table_filter" id="filter_format">
                     <option value="all">All</option>
                     {% for key,value in format %}
-                        <option value='{{key}}'
+                        <option value='{{key}}'>
                                {{value|default('Unknown format')}}</option>
                     {% endfor %}
                 </select>
@@ -138,7 +140,6 @@
                 </select>
             </div>
         </div>
-
     </div>
     <hr size="30">
     <form role="form" method="POST" action="/library/batch">

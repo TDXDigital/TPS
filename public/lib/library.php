@@ -822,10 +822,10 @@ class library extends station{
         switch($filter["missing_info"])
         {
             case 'all': $where .= " AND true"; break;
-            case 'label': $where .= " AND labelid is null"; break;  // todo remove it
+            case 'label': $where .= " AND refCode NOT IN (SELECT library_refcode from library_recordlabel)"; break;
             case 'locale': $where .= " AND locale is null"; break;
             case 'genre': $where .= " AND Genre is null"; break;
-            case 'rating': $where .= " AND rating is null OR rating = 0"; break;
+            case 'rating': $where .= " AND (rating is null OR rating = 0)"; break;
             case 'rel_date': $where .= " AND (release_date is null OR release_date = '1970-01-01')"; break;
             case 'status': $where .= " AND status = -1"; break;
             case 'crtc': $where .= " AND governmentCategory is null"; break;
@@ -833,7 +833,7 @@ class library extends station{
         switch($filter['tag'])
         {
             case 'all': $where .= " AND true"; break;
-            default: $where .= " AND RefCode IN (select library_refCode from library_tags where tag_id = (select id from tags where name = '". $filter['tag'] ."'));";
+            default: $where .= " AND RefCode IN (select library_refCode from library_tags where tag_id = (select id from tags where name = '". $filter['tag'] ."'))";
             // default: $where .= " AND true"; break;
         }
         return $where;
