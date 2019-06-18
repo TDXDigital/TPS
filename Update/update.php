@@ -46,25 +46,32 @@ function DatabaseUpdateCheck($Update_PKG){
         if($Update_PKG["SQL_QRY"]['TEST']!=''){
             $sql_simple = [];
             if($res = $mysqli->query($Update_PKG["SQL_QRY"]['TEST'])){
-                $result = [];
-                $key_only = [];
+                $result = []; // A list of arrays which each contain 1 key-value pair of each RESULT key-value combo
+                $key_only = []; // An array of keys in RESULT
                 $keys = $Update_PKG["SQL_QRY"]['RESULT'];
                 $negate = $Update_PKG["SQL_QRY"]['Negate']?:0;
                 $Z = [];
+
+		// Fill $key_only and $result...
+		// 1 - Loop through each key of RESULT
                 foreach ($keys as $key => $val){
+		    // 2 - Push the key onto $key_only
                     array_push($key_only,$key);
-                    $r = 0;
+		    // 3 - Loop through the array values of each RESULT key
                     foreach ($val as $data){
+			// 4 - Push an array onto $result of key-value pairs for each of the RESULT key values
                         array_push($result,array($key=>$data));
-                        $r++;
                     }
 
                 }
-                $test = [];
+
+		// Gather the SQL test query rows
+                $test = []; // An array of each row from the SQL Test query -- [{"Column 1 Name":"Value","Column 2 Name":"Value"}, ...]
                 for($i=0;$i!=$res->num_rows;$i++){
                     array_push($test,$res->fetch_array(MYSQLI_ASSOC));
                 }
-                $new = array();
+
+                $new = array(); // Reorganize $test to remove duplicate table titles -- [{"Column 1 Name" : ["Row 1 Value", "Row 2 Value"], "Column 2 Name" : [...], ...}]
                 foreach($test as $key => $value) 
                 {
                   foreach ($value as $num_key => $content)
@@ -73,15 +80,22 @@ function DatabaseUpdateCheck($Update_PKG){
                   }
                 }
                 if(is_array($Update_PKG["SQL_QRY"]['RESULT'])||sizeof($test)>1){
-                    $match = []; $diff = []; $return = []; $klist = [];
-                    $f = 0;
+                    $match = [];
+		    $diff = [];
+		    $return = [];
+		    $klist = [];
+		    $db_drop = FALSE;
+                    $f = 0; // Counter of the key you're on
                     foreach($keys as $key=>$val){
                         $dt = [];
                         $temp[$f]=array_intersect_key($new,$keys);
                         foreach($temp[$f] as $gar=>$v2){
                             $match[$gar]=$v2;
                         }
+			if (empty($val) && !empty($match))
+			    $db_drop = TRUE;
                         $dt = array_diff_assoc($keys[$key],$match[$key]);
+
                         if(!empty($dt)){
                             array_push($diff,$dt);
                             array_push($klist,$key);
@@ -104,8 +118,10 @@ function DatabaseUpdateCheck($Update_PKG){
                 else{
                     $Pass = FALSE;
                 }
-                if(empty($return)&&sizeof($key_only)===sizeof($match)){
+                if(empty($return)&&(sizeof($key_only)===sizeof($match)||empty($test))){
                     $Pass = TRUE;
+		    if ($db_drop && !empty($new))
+			$Pass = FALSE;
                 }
                 else{
                     error_log("FAIL, due to empty string or mismatch size (".
