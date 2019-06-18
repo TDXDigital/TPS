@@ -1,0 +1,17 @@
+{
+    "TPS_Errno" : "DRLB-019",
+    "type" : "database",
+    "execute" : "SQL",
+    "requires" : "DRLB-002",
+    "description" : "Drops `labelid` column from `library` table",
+    "SQL_QRY" : {
+        "TEST" : "SHOW COLUMNS FROM `library` LIKE 'labelid%';",
+        "RESULT" : {
+	    "Field" : [
+	    ]
+	},
+	"Negate": 0,
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "LIBRARY_UPDATE_19.sql"
+    }
+}

@@ -822,7 +822,7 @@ class library extends station{
         switch($filter["missing_info"])
         {
             case 'all': $where .= " AND true"; break;
-            case 'label': $where .= " AND labelid is null"; break;  // todo remove it
+            case 'label': $where .= " AND labelid is null"; break;
             case 'locale': $where .= " AND locale is null"; break;
             case 'genre': $where .= " AND Genre is null"; break;
             case 'rating': $where .= " AND rating is null OR rating = 0"; break;
@@ -1071,14 +1071,14 @@ class library extends station{
             {
                 $playlistid = $null;
             }
-            $tags = $null;
+            $tags = [];
             if($getData[11] == 'o')
-                $tags = 'FemCon';
+                array_push($tags, 'FemCon');
 
             $subgenres = $getData[7] == ''? $null : explode('/', $getData[7]);
             $result = self::createAlbum($getData[1], $getData[2], $getData[11], $genreKey, $genre_num, $labels, 
                 $locale, $canCon, $playlist_flag, $null, $null, $note, $accept, false,
-                $dateIn, $dateRel, 1, $rating, array($tags), array($getData[8]), $subgenres);
+                $dateIn, $dateRel, 1, $rating, $tags, array($getData[8]), $subgenres);
             echo 'Inserting---- row: '.$getData[0].' RefCode: '.$result.' <br>';
             flush();    
         }
