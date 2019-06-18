@@ -45,7 +45,10 @@
             color:#000000
         }
     }
-    
+     table { page-break-inside:auto }
+    div   { page-break-inside:avoid; } /* This is the key */
+    thead { display:table-header-group }
+    tfoot { display:table-footer-group }
     @page :right{
         margin: 0.0cm;
     }
@@ -63,6 +66,13 @@
         background-color: orange;
         text-align: center;
     }
+    table {
+      table-layout: fixed;
+      width: 453px;
+      height: 453px;  
+      display:block;
+    }
+
     </style>
     <link rel="stylesheet" href="../../vendor/components/font-awesome/css/font-awesome.min.css">
 </head>
@@ -75,6 +85,46 @@
         echo "<div class=\"label\" style=\"outline: none;\"></div>";
     }
     foreach ($reviews as $id ) {
+    $label = $review->getFullReview($id);
+
+    foreach ($label['labels'] as $rec_label) {
+        $trimLabel = $rec_label['Name'];
+        if(strlen($$trimLabel)>17){
+            $trimLabel = substr($trimLabel,0, 14);
+            $trimLabel = join('', array($trimLabel,'...'));
+        }
+        // echo "<small style=\"float: right\">[".$trimLabel."]</small>";
+    }
+
+
+    echo '<table  border="1">';
+    echo '
+          <tr>
+            <td colspan="2">'. $label['review']['timestamp'].'</td>
+          </tr>
+          <tr> 
+            <td>'. $label['artist'].' </td> <td>'. $label['album'].'</td>
+          </tr>
+          <tr>
+            <td>'. $label['RefCode'].' </td> <td>'. $trimLabel.'</td>
+          </tr>
+          <tr>
+            <td>'. $label['genre'].' </td> <td>'. $label['locale'].'</td>
+          </tr>
+          <tr>
+            <td colspan="2">RIYL: '. $label['review']['recommendations'].'</td>
+          </tr>
+          <tr>
+            <td colspan="2">Note: '. $label['review']['notes'].'</td>
+          </tr>
+          <tr>
+            <td colspan="2">Desc: '. $label['review']['description'].'</td>
+          </tr>';
+    echo '</table>';
+    echo '<br>';
+
+
+    /*
 	$label = $review->getFullReview($id);
         echo "<div class=\"label\" style='font-size:xx-small;'>";
         $trimArtist = $label['review']['hometown'];
@@ -84,7 +134,8 @@
         }
         $trimAlbum = str_pad($label['RefCode'],11,0,STR_PAD_LEFT);
         $title = strtolower($trimArtist.' ('.$trimAlbum.')');
-        echo "<small style='float: left'>$title</small>";
+        // echo "<small style='float: left'>$title</small>";
+       
 	foreach ($label['labels'] as $rec_label) {
             $trimLabel = $rec_label['Name'];
             if(strlen($$trimLabel)>17){
@@ -99,6 +150,8 @@
         }
         echo $label['review']['recommendations']."</span></small><br style='clear: both'/>";
         echo "</div>";
+
+        */
     }
     /*if($stmt=$mysqli->prepare("SELECT artist, album, format, genre, CanCon, Locale FROM library WHERE RefCode = ?")){
         for($i=1;$i<$indent;$i++){

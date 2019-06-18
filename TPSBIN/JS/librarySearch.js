@@ -172,6 +172,7 @@ $(function () {
 
 
 
+
 // Load and render the data table
 $(document).ready(function() {
     var table = $('#data_table').DataTable({
@@ -239,12 +240,20 @@ $(document).ready(function() {
         ]
     });
 
-    enableColumnSearch(table);
+    enableFilter(table);
     detailControl(table);
+    filterClear(table);
     rowSelection();
     
 } );
 
+function filterClear(table)
+{
+    $( "#clear_filter" ).click(function() {
+      $(".table_filter").prop('selectedIndex', 0);
+      table.draw();
+    });
+}
 
 function rowSelection()
 {
@@ -260,7 +269,7 @@ function rowSelection()
             
     } );
 }
-function enableColumnSearch(table)
+function enableFilter(table)
 {
     $('.table_filter').on('change', function() {
         table.draw();
