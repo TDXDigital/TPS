@@ -10,6 +10,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
             'albums'=>$albums,
             'title'=>'Available Reviews'
             );
+
         $app->render('reviewList.twig',$params);
     });
     $app->get('/complete' ,$authenticate , function () use ($app){
@@ -31,6 +32,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
         }
         else{
             #$app->render('notSupported.twig');
+
             $description = $app->request()->post('description');
             $notes = $app->request()->post('notes');
             $reviewer = $app->request()->post('reviewer');
@@ -84,9 +86,20 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
     $app->get('/:id', $authenticate, function ($id) use ($app){ // Query
         // Create new Album Review
         $reviews = new \TPS\reviews();
+        $library = new \TPS\library();
         $review = $reviews->getAlbumAndReview($id);
+        $refCode = $review['album']['RefCode'];
         $review["title"] = "Edit";
         $review["area"] = "Reviews";
+        $review['tags'] = $library->getTags();
+        $review['hometowns'] = $library->getHometowns();
+        $review['subgenres'] = $library->getSubgenres();
+        $review['labels'] = \TPS\label::nameSearch("%",False);
+        $review['album']['subgenres'] = $library->getSubgenresByRefCode($refCode);
+        $review['album']['hometowns'] = $library->getHometownsByRefCode($refCode);
+        $review['album']['tags'] = $library->getTagsByRefCode($refCode);
+        $review['album']['labels'] = array_map(function($label) {return $label['Name'];}, $library->getLabelsByRefCode($refCode));
+
         $app->render('review.twig',$review);
     });
     
@@ -137,30 +150,15 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
         // Create new Album Review
         $reviews = new \TPS\reviews();
         $library = new \TPS\library();
-
-
         $params = $library->GetFullAlbum($term);
-        // $params = array(
-        //     "album"=>$album,
-        //     "govCats"=>$library->getGovernmentCodes(),
-        //     "genres"=>$library->getLibraryGenres(),
-        //     "subgenres"=>$library->getSubgenres(),
-        //     "tags"=>$library->getTags(),
-        //     "hometowns"=>$library->getHometowns(),
-        //     "labels"=>\TPS\label::nameSearch("%",False),
-        //     "format"=>$library->getMediaFormats(),
-        //     "scheduleBlock"=>$library->getScheduleBlocks(),
-        //     "title"=>"Receiving",
-        // );
-        $params['tags'] = $library->getHometowns();
+        $params['tags'] = $library->getTags();
         $params['hometowns'] = $library->getHometowns();
         $params['subgenres'] = $library->getSubgenres();
         $params['labels'] = \TPS\label::nameSearch("%",False);
-        $params['album']['subgenres'] = $library->getRatingByRefCode($term);
+        $params['album']['subgenres'] = $library->getSubgenresByRefCode($term);
         $params['album']['hometowns'] = $library->getHometownsByRefCode($term);
         $params['album']['tags'] = $library->getTagsByRefCode($term);
         $params['album']['labels'] = array_map(function($label) {return $label['Name'];}, $library->getLabelsByRefCode($term));
-        // $params['subgenres'] = $library->getSubgenresByRefCode($term);
         $params['title']="New Review for album #$term";
         $params['area']="Reviews";
         $app->render('review.twig',$params);
