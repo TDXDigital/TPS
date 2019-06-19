@@ -103,30 +103,12 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $library = new \TPS\library();
             $pending = $library->pendingPlaylist();
             $libCodes = $library->listLibraryCodes();
-            $validRanges = $playlist->getGenreDividedValidShortCodes(
-                    $_SESSION['CALLSIGN'], $today);
             foreach ($pending as &$entry) {
                 list($genreNum, $entry['genre']) = $getCode($entry['genre'], $libCodes);
 		$entry['genre']['number'] = $genreNum;
 		$labels = $library->getLabelsByRefCode($entry['RefCode']);
 		$entry['labelNames'] = array_map(function($label) {return $label['Name'];}, $labels);
 		$entry['labelIDs'] = array_map(function($label) {return $label['LabelNumber'];}, $labels);
-		try{
-                    foreach ($validRanges[$entry['genre']['Genre']] 
-                            as $key => &$value) {
-                        if(sizeof($value['shortCodes'])<1){
-                            continue;
-                        }
-                        if(in_array($entry['format'], $value['formats'])){
-                            $entry['ShortCode'] = array_shift(
-                                $value['shortCodes']);
-                            break;
-                        }
-                    }
-                } catch (Exception $ex) {
-                    $library->log->error("No Available ShortCodes for "
-                            . "library genre ".$entry['genre']['Genre']);
-                }
             }
 
 	    // Start sorting $pending by (1) genre number, then (2) Region...
@@ -161,6 +143,28 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
 		array_splice($pending, $albums_before, $count, $genre_group);
 	    }
 	    // $pending is now sorted!
+
+	    // Assign ShortCodes to albums
+            $validRanges = $playlist->getGenreDividedValidShortCodes(
+                    $_SESSION['CALLSIGN'], $today);
+            foreach ($pending as &$entry) {
+		try{
+                    foreach ($validRanges[$entry['genre']['Genre']] 
+                            as $key => &$value) {
+                        if(sizeof($value['shortCodes'])<1){
+                            continue;
+                        }
+                        if(in_array($entry['format'], $value['formats'])){
+                            $entry['ShortCode'] = array_shift(
+                                $value['shortCodes']);
+                            break;
+                        }
+                    }
+                } catch (Exception $ex) {
+                    $library->log->error("No Available ShortCodes for "
+                            . "library genre ".$entry['genre']['Genre']);
+                }
+	    }
 
             if($isXHR || strtolower($format) == "json"){
                 standardResult::ok($app, $pending, NULL);
