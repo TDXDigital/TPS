@@ -583,14 +583,16 @@
     }
 
     function getRegion(hometowns) {
-	regionNum = 3;
+	currSelect = $('#locale').prop('selectedIndex');
+	canconButtonOn = !$("#canconCheckbox").next().attr('class').split(" ").includes('active');
+	regionNum = canconButtonOn ? Math.max(currSelect, canconButtonOn) : 0;
 	if (hometowns != null) {
-		regionNum = Math.min(...hometowns.map(function(location) {
+		regionNum = Math.max(...hometowns.map(function(location) {
 			if (location == 'Lethbridge, AB')
-				return 0;  // Local
+				return 3;  // Local
 			prov = location.slice(-4);
 			if (prov == ', AB')
-				return 1;  // Provincial
+				return 2;  // Provincial
 			if (prov == ', BC' ||
 			    prov == ', SK' ||
 			    prov == ', MB' ||
@@ -603,15 +605,15 @@
 			    prov == ', YK' ||
 			    prov == ', NT' ||
 			    prov == ', IQ')
-				return 2;  // National
-			return 3;          // International
+				return 1;  // National
+			return 0;          // International
 		}));
 	}
 	switch(regionNum) {
-	  case 0: return "Local";
-	  case 1: return "Province";
-	  case 2: return "Country";
-	  case 3: return "International";
+	  case 0: return "International";
+	  case 1: return "Country";
+	  case 2: return "Province";
+	  case 3: return "Local";
 	} 
     }
 
