@@ -53,30 +53,30 @@
     </form>
     <table class='table table-bordered table-hover' >
         <thead>
-            <th>Id</th>
-            <th>ShortCode</th>
-            <th>ZoneCode</th>
-            <th>ZoneNumber</th>
-            <th>Active</th>
-            <th>Ends</th>
+            <th>Playlist #</th>
             <th>Artist</th>
             <th>Album</th>
-            <td>Received</td>
+	    <th>Subgenres</th>
+	    <th>Location</th>
+	    <th>Recommended</th>
+            <th>Add Date</th>
+            <th>End Date</th>
+            <th>Received</th>
             <th>Edit</th>
         </thead>
         <tbody>
             {% for id,playlist in playlists %}
                 <tr style="background-color: {{playlist.color|default('#FFF')}};">
-                    <td>{{id}}</td>
                     <td>{{playlist.SmallCode}}</td>
-                    <td>{{playlist.ZoneCode}}</td>
-                    <td>{{playlist.ZoneNumber}}</td>
-                    <td>{{playlist.Activate|date("Y-m-d")}}</td>
-                    <td>{{playlist.Expire|date("Y-m-d")}}</td>
                     <td><a href="../library/{{playlist.RefCode}}" target="_blank">
                             {{playlist.library.artist}}</a></td>
                     <td><a href="../library/{{playlist.RefCode}}" target="_blank">
                             {{playlist.library.album}}</a></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+                    <td>{{playlist.Activate|date("Y-m-d")}}</td>
+                    <td>{{playlist.Expire|date("Y-m-d")}}</td>
                     <td>{{playlist.library.datein}}</td>
                     <td><a href="./{{id}}"><i class="fa fa-edit"></i></a></td>
                 </tr>

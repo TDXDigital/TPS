@@ -77,7 +77,7 @@ value="{{today|default("now")|date("Y-m-d")}}" name="today"/>
             <th title="A short Identifier for an album">Short Code</th>
             <th>Enabled</th>
         </thead>
-        <tbody>
+        <tbody id="sortable">
             {% for playlist in playlists %}
                 <tr>
                     <td><div id="LC_SCI_{{playlist.RefCode}}">
@@ -137,7 +137,7 @@ value="{{today|default("now")|date("Y-m-d")}}" name="today"/>
                                value="{{"%04d"|format(playlist.ShortCode)}}"
                                {% endif %}
                                onchange="javascript:verifyShortCode(
-                                        'SCI_{{playlist.RefCode}}')"/>
+                                        'SCI_{{playlist.RefCode}}')" readonly/>
                         </div></td>
                     <td><input type="hidden" name="refCode[]" value="{{playlist.RefCode}}"/>
                         <input type="checkbox" checked name="enabled[]" value="{{playlist.RefCode}}"/></td>
@@ -161,7 +161,48 @@ value="{{today|default("now")|date("Y-m-d")}}" name="today"/>
 <script type="text/javascript" src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
 <script type="text/javascript" src="{{siteUrl}}/js/bootstrap/checkbox/js/bootstrap-checkbox.js "></script>
 <script>
+    function shuffleShortCodes(start_pos, end_pos) {
+	genreCol = 2;
+	shortCodeCol = 9;
+	movedDown = start_pos < end_pos;
+	rows = $('#sortable').children();
+	rowMoved = rows[end_pos];
+	genreMoved = rowMoved.children[genreCol].children[0].innerText;
+	shortCodeMoved = rowMoved.children[shortCodeCol].children[0].children[0].value; 
+	cache = shortCodeMoved;
+	swapped = 0;
+	for (var i = start_pos;  movedDown ? i <= end_pos : i >= end_pos; movedDown ? i++ : i--) {
+	    sameGenre = rows[i].children[genreCol].children[0].innerText == genreMoved;
+	    if (sameGenre) {
+	        if (swapped == 0) { // First one that needs to be switched		    
+		    cache = rows[i].children[shortCodeCol].children[0].children[0].value;
+		    rows[i].children[shortCodeCol].children[0].children[0].value = shortCodeMoved;
+		} else {
+		    temp = cache;
+		    cache = rows[i].children[shortCodeCol].children[0].children[0].value;
+		    rows[i].children[shortCodeCol].children[0].children[0].value = temp;
+		}
+		swapped++;
+	    }
+	}
+    }
+
     $(function() {
+	// Make table sortable
+	$('#sortable').sortable({
+	    start: function(event, ui) {
+		var start_pos = ui.item.index();
+		ui.item.data('start_pos', start_pos);
+	    },
+	    deactivate: function(event, ui) {
+		var start_pos = ui.item.data('start_pos');
+		var end_pos = ui.item.index();
+		shuffleShortCodes(start_pos, end_pos);
+	    }
+	});
+
+	$('#sortable').disableSelection();
+
         // Activate chosen elements
         $( ".datepicker" ).datepicker({
             numberOfMonths: 3,
