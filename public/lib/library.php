@@ -674,7 +674,7 @@ class library extends station{
         if($stmt = $this->mysqli->prepare("SELECT Barcode,year,datein,dateout,RefCode,artist,album,"
                 . "`format`,variousartists,`condition`,genre,`status`,"
                 . "Locale,CanCon,updated,release_date,note,playlist_flag,governmentCategory,"
-                . "scheduleCode "
+                . "scheduleCode, rating "
                 . "FROM library where "
                 . "Refcode = ?")){
             $stmt->bind_param('s',$refcode);
@@ -683,7 +683,7 @@ class library extends station{
                     $artist_q,$album_q,$format,$variousartists,
                     $condition,$genre,$status,
                     $Locale,$CanCon,$updated,$release_date,
-                    $note,$playlist_flag,$govCat,$scCode);
+                    $note,$playlist_flag,$govCat,$scCode, $rating);
             while($stmt->fetch()){
                 array_push($result, array(
                     'barcode'=>$barcode,'year'=>$year,
@@ -695,6 +695,7 @@ class library extends station{
                     'release_date'=>$release_date,
                     'note'=>$note,'playlist_flag'=>$playlist_flag,
                     'governmentCategory'=>$govCat,'scheduleCode'=>$scCode,
+		    'rating'=>$rating
                 ));
             }
             $stmt->close();

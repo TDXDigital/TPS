@@ -54,6 +54,8 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             foreach ($result as $key => $value) {
                 $lib = $library->getAlbumByRefcode($value['RefCode']);
                 $result[$key]["library"] = array_pop($lib);
+		$result[$key]['library']["subgenres"] = $library->getSubgenresByRefCode($value['RefCode']);
+		$result[$key]['library']['hometowns'] = $library->getHometownsByRefCode($value['RefCode']);
             }
             $params = array(
                 "title"=>"Playlist",
