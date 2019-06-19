@@ -95,7 +95,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $getCode = function ($genre, $codes){
                 foreach ($codes as $key => $value) {
                     if($value['Genre'] == $genre){
-                        return $value;
+                        return array($key, $value);
                     }
                 }
                 return FALSE;
@@ -106,7 +106,8 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $validRanges = $playlist->getGenreDividedValidShortCodes(
                     $_SESSION['CALLSIGN'], $today);
             foreach ($pending as &$entry) {
-                $entry['genre'] = $getCode($entry['genre'], $libCodes);
+                list($genreNum, $entry['genre']) = $getCode($entry['genre'], $libCodes);
+		$entry['genre']['number'] = $genreNum;
 		$labels = $library->getLabelsByRefCode($entry['RefCode']);
 		$entry['labelNames'] = array_map(function($label) {return $label['Name'];}, $labels);
 		$entry['labelIDs'] = array_map(function($label) {return $label['LabelNumber'];}, $labels);
@@ -127,6 +128,40 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
                             . "library genre ".$entry['genre']['Genre']);
                 }
             }
+
+	    // Start sorting $pending by (1) genre number, then (2) Region...
+	    function sort_by_genre_num($a, $b) {
+		return $a['genre']['number'] > $b['genre']['number'];
+	    }
+
+	    function sort_by_region($a, $b) {
+		$region_ranking = ["Local" => 1, "Province" => 2, "Country" => 3, "International" => 4];
+		return $region_ranking[$a['Locale']] > $region_ranking[$b['Locale']];
+	    }
+
+	    usort($pending, 'sort_by_genre_num');
+	    $albums_per_genre = [];
+	    foreach ($pending as $i=>$album) {
+		$index = $album['genre']['number'];
+		if (isset($albums_per_genre[$index]))
+		    $albums_per_genre[$index]++;
+		else
+		    $albums_per_genre[$index] = 1;
+	    }
+	    $albums_per_genre = array_values($albums_per_genre); // Reset array keys
+	    foreach ($albums_per_genre as $i=>$count) {
+		$j = $i - 1;
+		$albums_before = 0;
+		while ($j >= 0) {
+		    $albums_before += $albums_per_genre[$j];
+		    $j--;
+		}
+		$genre_group = array_slice($pending, $albums_before, $count);
+		usort($genre_group, 'sort_by_region');
+		array_splice($pending, $albums_before, $count, $genre_group);
+	    }
+	    // $pending is now sorted!
+
             if($isXHR || strtolower($format) == "json"){
                 standardResult::ok($app, $pending, NULL);
             }
