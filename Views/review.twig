@@ -1,4 +1,7 @@
-{% extends 'baseAdmin.twig' %}
+{% extends 'libraryInduct.twig' %}
+{% block headScripts %}
+{{parent()}}
+{% endblock %}
 
 {% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
 {% block breadcrumb %}
@@ -18,205 +21,216 @@
 </ol>
 {% endblock %}
 {% block content %}
-    <form role="form" {% if review.ReviewID is null %}
-          method="POST" action="../{{album.RefCode}}">
-        {% else %}
-            method="POST" action="./{{review.ReviewID}}" > <!-- PUT NOT YET SUPPORTED BY BROWSER -->
-            <input type="hidden" value="{{review.ReviewID}}" name="id" />
-        {% endif %}
-        <div class="row">
-            <div class="col-lg-12">
-                {% if permissions > 1 %}
-                        <div class="pull-left form-group col-lg-3">
-                            {% if review.ReviewID is not null %}
-                                <label>Review Status</label>
-                                <select name="accepted" class="form-control">
-                                {% if review.approved is null %}
-                                    <option
-                                    selected="selected" 
-                                /> Pending Approval</option>
-                                {% endif %}
-                                <option value="1" 
-                                {% if review.approved == 1 %}
-                                    selected="selected" 
-                                {% endif %}/> Approved</option>
-                                <option value="0" 
-                                {% if review.approved is not null 
-                                        and review.approved == 0 %}
-                                    selected="selected" 
-                                {% endif %}
-                                /> Rejected</option>
-                                </select>
-                            {% endif %}
-                        </div>
-                    {% else %}
-                    <span class="pull-left {% if review.ReviewID is not null %}
-                          {% if review.accepted is null%}
-                            text-warning"><i class="fa fa-warning"></i> REVIEW PENDING APPROVAL
-                      {% elseif review.accepted == 1 %}
-                          text-success"><i class="fa fa-check-square-o"></i> REVIEW APPROVED
-                      {% elseif review.accepted == 0 %}
-                          text-danger"><i class="fa fa-warning"></i> REVIEW REJECTED
-                      {% else %}
-                          text-danger"><i class="fa fa-exclamation-triangle"></i>****** UNKNOWN STATUS / ERROR *******
-                      {% endif %}
-                    {% endif %}
-                    </span>
+<form role="form" {% if review.ReviewID is null %}
+method="POST" action="../{{album.RefCode}}">
+{% else %}
+method="POST" action="./{{review.ReviewID}}" > <!-- PUT NOT YET SUPPORTED BY BROWSER -->
+<input type="hidden" value="{{review.ReviewID}}" name="id" />
+{% endif %}
+<div class="row">
+    <div class="col-lg-12">
+        {% if permissions > 1 %}
+        <div class="pull-left form-group col-lg-3">
+            {% if review.ReviewID is not null %}
+            <label>Review Status</label>
+            <select name="accepted" class="form-control">
+                {% if review.approved is null %}
+                <option
+                selected="selected" 
+                /> Pending Approval</option>
                 {% endif %}
-                    <div class="pull-right text-muted"><span class="pull-right"><i class="fa fa-language" title="Form input is restricted to alphanumeric (a-Z,0-9) and the following special characters: ,">
-                                &nbsp;input is restricted to alphanumeric (a-Z,0-9) entry</i></span><br><span class='text-muted pull-right'>Last update {{ review.ts|date('H:m d-M-Y') }} UTC</span></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-3">
-                <div class="form-group">
-                    <label>Artist</label>
-                    <p class="form-control-static">{{album.artist}}</p>
-                </div>
-                <div class="form-group">
-                    <label>Date received</label>
-                    <p class="form-control-static">{% if album.datein < album.year-1 %}
-                        <span style="color: #c00;" title="the release year is after the received date, this is possible but could signify a problem">
-                            <i class="fa fa-warning"></i>
-                            {{album.datein}}
-                        </span>
-                        {% else %}
-                            {{album.datein}}
-                        {% endif %}</p>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="form-group">
-                    <label>Album</label>
-                    <p class="form-control-static">{{album.album}}</p>
-                </div>
-                <div class="form-group">
-                    <label>Labels</label>
-		    {% for label in album.labels %}
-			<p class="form-control-static">{{label.Name}}</p>
-		    {% endfor %}
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="form-group">
-                    <label>Origin</label>
-                    <p class="form-control-static">{{album.locale}}</p>
-                </div>
-                <div class="form-group">
-                    <label>Genre</label>
-                    <p class="form-control-static">{{album.genre|default('<span style="color: #d48c00;">Unknown</span>')|raw}}</p>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="form-group">
-                    <label>Various Artists</label>
-                    <p class="form-control-static">{% if album.variousArtists == 0 %}
-                                No
-                            {% elseif album.variousArtists == 1 %}
-                                Yes
-                            {% else %}
-                                Unknown/Undefined
-                        {% endif %}
-                    </p>
-                </div>
-                <div class="form-group">
-                    <label>Release year</label>
-                    {% if album.year == 0 %}
-                        <p class="form-control-static" title="the release year is unknown for this album">
-                            <span style="color: #d48c00;">
-                                <i class="fa fa-warning"></i> Unknown
-                            </span>
-                        </p>
-                    {% else %}
-                        <p class="form-control-static">
-                            {{album.year}}
-                        </p>
+                <option value="1" 
+                {% if review.approved == 1 %}
+                selected="selected" 
+                {% endif %}/> Approved</option>
+                <option value="0" 
+                {% if review.approved is not null 
+                    and review.approved == 0 %}
+                    selected="selected" 
                     {% endif %}
-                </div>
+                    /> Rejected</option>
+                </select>
+                {% endif %}
             </div>
+            {% else %}
+            <span class="pull-left {% if review.ReviewID is not null %}
+            {% if review.accepted is null%}
+            text-warning"><i class="fa fa-warning"></i> REVIEW PENDING APPROVAL
+            {% elseif review.accepted == 1 %}
+            text-success"><i class="fa fa-check-square-o"></i> REVIEW APPROVED
+            {% elseif review.accepted == 0 %}
+            text-danger"><i class="fa fa-warning"></i> REVIEW REJECTED
+            {% else %}
+            text-danger"><i class="fa fa-exclamation-triangle"></i>****** UNKNOWN STATUS / ERROR *******
+            {% endif %}
+            {% endif %}
+        </span>
+        {% endif %}
+        <div class="pull-right text-muted"><span class="pull-right"><i class="fa fa-language" title="Form input is restricted to alphanumeric (a-Z,0-9) and the following special characters: ,">
+        &nbsp;input is restricted to alphanumeric (a-Z,0-9) entry</i></span><br><span class='text-muted pull-right'>Last update {{ review.ts|date('H:m d-M-Y') }} UTC</span></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-3">
+        <div class="form-group">
+            <label>Artist</label>
+            <p class="form-control-static">{{album.artist}}</p>
         </div>
-        {% if websites is not null %}
-        <div class="row">
-            {% for service,serviceAttr in websites %}
-            <div class="col-lg-3">
-                <div class="form-group">
-                    <label title="{{serviceAttr.url|lower|striptags}}"><a href="{{serviceAttr.url}}" target="_externalLink">{{service|upper}} <i class="fa fa-external-link"></i></a></label>
-                </div>
-            </div>
+        <div class="form-group">
+            <label>Date received</label>
+            <p class="form-control-static">{% if album.datein < album.year-1 %}
+                <span style="color: #c00;" title="the release year is after the received date, this is possible but could signify a problem">
+                    <i class="fa fa-warning"></i>
+                    {{album.datein}}
+                </span>
+                {% else %}
+                {{album.datein}}
+            {% endif %}</p>
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="form-group">
+            <label>Album</label>
+            <p class="form-control-static">{{album.album}}</p>
+        </div>
+        <div class="form-group">
+            <label>Labels</label>
+            {% for label in album.labels %}
+            <p class="form-control-static">{{label.Name}}</p>
             {% endfor %}
         </div>
-        {% endif %}
-        <hr>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="form-group">
-                    <label for='rname'>Reviewer Name</label>
-                    <input id='rname' name="reviewer" class="form-control" required type="text" 
-                           {% if review.reviewer is not null %}
-                               value="{{review.reviewer}}" 
-                            {% endif %}
-                           placeholder="Your first and last name (eg. Joe Swanson)"/>
-                </div>
-                <div class="form-group">
-                    <label for='hometown'>Band Hometown</label>
-                    <input id='hometown' name="hometown" class="form-control" type="text" 
-                           {% if review.hometown is not null %}
-                               value="{{review.hometown}}" 
-                            {% endif %}
-                            placeholder="Please list city, abbreviated province/state (if applicable), country (eg: Toronto, ON, Canada)" />
-                </div>
-                <div class="form-group">
-                    <label for='subgenres'><i class="fa fa-language" title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: ,"></i> Additional SubGenres</label>
-                    <input id='subgenres' name="subgenres" class="form-control" type="text" pattern="[a-zA-Z0-9\s\,]+" 
-                           {% if review.subGenre is not null %}
-                               value="{{review.subGenre}}" 
-                            {% endif %}
-                            placeholder="List distinct genre crossovers or more specific ones (eg: Punk-rock, gypsy-punk, cow-punk)" />
-                </div>
-                <div class="form-group">
-                    <label for='RIYL'><i class="fa fa-language" title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: (,!.:-)"></i> Recommended if you like:</label>
-                    <input id='RIYL' name="recommend" class="form-control" type="text" maxlength="45" pattern="[a-zA-Z0-9\s\,\!\.\:\)\(\-]+" 
-                           {% if review.recommends is not null %}
-                               value="{{review.recommends}}" 
-                            {% endif %}
-                           placeholder="Name a couple additional artists they sound like (eg: Arcade Fire, Metric, Broken Social Scene)" />
-                    <h6 class="pull-right" id="count_riyl"></h6>
-                </div>
-                <div class="form-group">
-                                <label for="femcon">FemCon</label>
-                                <select id=femcon" name="femcon" class="form-control">
-                                    <option {% if review.femcon is null or review.femcon == 0 %}
-                                        selected 
-                                        {% endif %} value="0">No / Unknown</option>
-                                    <option {% if review.femcon == 1%} selected {% endif %} value="1">Yes</option>
-                                </select>
-                            </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="form-group">
+            <label>Origin</label>
+            <p class="form-control-static">{{album.locale}}</p>
+        </div>
+        <div class="form-group">
+            <label>Genre</label>
+            <p class="form-control-static">{{album.genre|default('<span style="color: #d48c00;">Unknown</span>')|raw}}</p>
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="form-group">
+            <label>Various Artists</label>
+            <p class="form-control-static">{% if album.variousArtists == 0 %}
+                No
+                {% elseif album.variousArtists == 1 %}
+                Yes
+                {% else %}
+                Unknown/Undefined
+                {% endif %}
+            </p>
+        </div>
+        <div class="form-group">
+            <label>Release year</label>
+            {% if album.year == 0 %}
+            <p class="form-control-static" title="the release year is unknown for this album">
+                <span style="color: #d48c00;">
+                    <i class="fa fa-warning"></i> Unknown
+                </span>
+            </p>
+            {% else %}
+            <p class="form-control-static">
+                {{album.year}}
+            </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% if websites is not null %}
+<div class="row">
+    {% for service,serviceAttr in websites %}
+    <div class="col-lg-3">
+        <div class="form-group">
+            <label title="{{serviceAttr.url|lower|striptags}}"><a href="{{serviceAttr.url}}" target="_externalLink">{{service|upper}} <i class="fa fa-external-link"></i></a></label>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+<hr>
+<div class="row">
+    <div class="col-lg-6">
+        <div class="form-group">
+            <label for='rname'>Reviewer Name</label>
+            <input id='rname' name="reviewer" class="form-control" required type="text" 
+            {% if review.reviewer is not null %}
+            value="{{review.reviewer}}" 
+            {% endif %}
+            placeholder="Your first and last name (eg. Joe Swanson)"/>
+        </div>
+        {#
+            <div class="form-group">
+                <label for='hometown'>Band Hometown</label>
+                <input id='hometown' name="hometown" class="form-control" type="text" 
+                {% if review.hometown is not null %}
+                value="{{review.hometown}}" 
+                {% endif %}
+                placeholder="Please list city, abbreviated province/state (if applicable), country (eg: Toronto, ON, Canada)" />
             </div>
-            <div class="col-lg-6">
+            <div class="form-group">
+                <label for='subgenres'><i class="fa fa-language" title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: ,"></i> Additional SubGenres</label>
+                <input id='subgenres' name="subgenres" class="form-control" type="text" pattern="[a-zA-Z0-9\s\,]+" 
+                {% if review.subGenre is not null %}
+                value="{{review.subGenre}}" 
+                {% endif %}
+                placeholder="List distinct genre crossovers or more specific ones (eg: Punk-rock, gypsy-punk, cow-punk)" />
+            </div>
+            #}
+            <div class="form-group">
+                <label for='RIYL'><i class="fa fa-language" title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: (,!.:-)"></i> Recommended if you like:</label>
+                <input id='RIYL' name="recommend" class="form-control" type="text" maxlength="45" pattern="[a-zA-Z0-9\s\,\!\.\:\)\(\-]+" 
+                {% if review.recommends is not null %}
+                value="{{review.recommends}}" 
+                {% endif %}
+                placeholder="Name a couple additional artists they sound like (eg: Arcade Fire, Metric, Broken Social Scene)" />
+                <h6 class="pull-right" id="count_riyl"></h6>
+            </div>
+
+            {#
+                <div class="form-group">
+                    <label for="femcon">FemCon</label>
+                    <select id=femcon" name="femcon" class="form-control">
+                        <option {% if review.femcon is null or review.femcon == 0 %}
+                        selected 
+                        {% endif %} value="0">No / Unknown</option>
+                        <option {% if review.femcon == 1%} selected {% endif %} value="1">Yes</option>
+                    </select>
+                </div>
+                #}
                 <div class="form-group">
                     <label for="description"><i class="fa fa-language"  title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: (,!.:#)"></i> Description</label>
                     <textarea id="description" class="form-control" required rows="5" maxlength="220" 
-                              placeholder="A brief and relatively objective description of relevant facts about album, artist, collaborations, and sound" name="description" 
-                              pattern="[a-zA-Z0-9\s\,\!\.\:\)\(\#]+" >{% if review.description is not null %}{{review.description}}{% endif %}</textarea>
+                    placeholder="A brief and relatively objective description of relevant facts about album, artist, collaborations, and sound" name="description" 
+                    pattern="[a-zA-Z0-9\s\,\!\.\:\)\(\#]+" >{% if review.description is not null %}{{review.description}}{% endif %}</textarea>
                     <h6 class="pull-right" id="count_message"></h6>
                 </div>
             </div>
+            
             <div class="col-lg-6">
+                <br>
+                {% block review_editable %}
+                {{parent()}}
+                {% endblock %}
+
                 <div class="form-group">
                     <label for="notes"><i class="fa fa-language"  title="Input is restricted to alphanumeric (a-Z,0-9) and the following special characters: (,!.:)"></i> Notes</label>
                     <textarea id="notes" class="form-control" rows="2" maxlength="100" placeholder="Add composer notes (eg: all by M. Richter or #1 by C. Smith #2 by H. Smith), instrumental track numbers, and track numbers with profanity or obscenity" name="notes" 
-                              pattern="[a-zA-Z0-9\s\,\!\.\:\)\(]+" >{% if review.notes is not null %}{{review.notes}}{% endif %}</textarea>
+                    pattern="[a-zA-Z0-9\s\,\!\.\:\)\(]+" >{% if review.notes is not null %}{{review.notes}}{% endif %}</textarea>
                     <h6 class="pull-right" id="count_message_notes"></h6>
                 </div>
+
             </div>
+            
             <div class="col-lg-6">
                 <hr>
                 <div class="form-group pull-right">
                     {% if review.ReviewID is not null %}
-                        <input type="hidden" name="_METHOD" value="PUT"/>
+                    <input type="hidden" name="_METHOD" value="PUT"/>
                     {% endif %}
-                <button type="submit" class="btn btn-success">Submit</button>
-                <!--<button type="reset" class="btn btn-warning">Reset</button>-->
+                    <button type="submit" class="btn btn-success">Submit</button>
+                    <!--<button type="reset" class="btn btn-warning">Reset</button>-->
                 </div>
             </div>
         </div>
@@ -244,8 +258,9 @@
             {% endfor %}
         </tbody>
     </table>-->
-{% endblock %}
-{% block lastScripts %}
+    {% endblock %}
+    {% block lastScripts %}
+    {{parent()}}
     <script>
         
         function count_description(){
@@ -272,17 +287,17 @@
             count_description();
             $('#description').keyup(function() {
               count_description();
-            });
+          });
             
             count_notes();
             $('#notes').keyup(function() {
               count_notes();
-            });
+          });
             
             count_riyl();
             $('#RIYL').keyup(function() {
               count_riyl();
-            });
+          });
         });
     </script>
-{% endblock %}
+    {% endblock %}

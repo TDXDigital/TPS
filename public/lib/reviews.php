@@ -332,10 +332,11 @@ class reviews extends station{
         $subgenres = $app->request()->post('subgenres');
         $recommend = $app->request()->post('recommend');
         $femcon = $app->request()->post('femcon');
-        $newReviewSql = "INSERT INTO review (RefCode,reviewer,femcon,hometown,subgenre,ip,description,recommendations,notes) "
-                . "VALUES (?,?,?,?,?,?,?,?,?)";
+        $approved = 1;
+        $newReviewSql = "INSERT INTO review (RefCode,reviewer, approved ,femcon,hometown,subgenre,ip,description,recommendations,notes) "
+                . "VALUES (?,?,?,?,?,?,?,?,?,?)";
         if($stmt = $this->mysqli->prepare($newReviewSql)){
-            $stmt->bind_param('isissssss',$RefCode,$reviewer,$femcon,$hometown,
+            $stmt->bind_param('isiissssss',$RefCode,$reviewer,$approved,$femcon,$hometown,
                     $subgenres,$ip,$description,$recommend,$notes);
             if($stmt->execute()){
                 $app->flash('success',"Review submitted for album #$RefCode");
