@@ -186,6 +186,8 @@
                         </select>
                     </div>
                 </div>
+
+                {% block review_editable %}
                 <div class="col-md-12">
                     <div class="form-group input-group">
                         <label for="label" class="input-group-addon">Subgenres</label>
@@ -239,6 +241,8 @@
                         </select>
 		    </div>
                 </div>
+            {% endblock %}
+            
                 <div class="col-md-12">
                     <div id="ind_group" class="form-group input-group">
                         <label for="notes" class="input-group-addon">Notes</label>

@@ -331,12 +331,22 @@ class reviews extends station{
         $hometown = $app->request()->post('hometown');
         $subgenres = $app->request()->post('subgenres');
         $recommend = $app->request()->post('recommend');
-        $femcon = $app->request()->post('femcon');
-        $newReviewSql = "INSERT INTO review (RefCode,reviewer,femcon,hometown,subgenre,ip,description,recommendations,notes) "
-                . "VALUES (?,?,?,?,?,?,?,?,?)";
+        // $femcon = $app->request()->post('femcon');
+        $approved = 1;
+        $tag = $app->request()->post('tag');
+
+        $library = new \TPS\library();
+        $library->updateAlbumAttribute("hometown", $hometown, $RefCode);
+        $library->updateAlbumAttribute("tag", $tag, $RefCode);
+        $library->updateAlbumAttribute("subgenre", $subgenres, $RefCode);
+
+
+        
+
+        $newReviewSql = "INSERT INTO review (RefCode,reviewer, approved,ip,description,recommendations,notes) "
+                . "VALUES (?,?,?,?,?,?,?)";
         if($stmt = $this->mysqli->prepare($newReviewSql)){
-            $stmt->bind_param('isissssss',$RefCode,$reviewer,$femcon,$hometown,
-                    $subgenres,$ip,$description,$recommend,$notes);
+            $stmt->bind_param('isissss',$RefCode,$reviewer,$approved,$ip,$description,$recommend,$notes);
             if($stmt->execute()){
                 $app->flash('success',"Review submitted for album #$RefCode");
                 return TRUE;
