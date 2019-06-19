@@ -881,7 +881,7 @@ class library extends station{
         $genreList = self::getLibraryGenres();
         foreach($lib_data['data'] as $i => $item)
         {
-            if($item['genre']!='')
+            if($item['genre']!='' && isset($genreList[$lib_data['data'][$i]['genre']]))
                 $lib_data['data'][$i]['genre_detail'] = $genreList[$lib_data['data'][$i]['genre']];
         }
         return json_encode($lib_data);
