@@ -67,6 +67,25 @@ class playlist extends TPS{
         }
         return $max;
     }
+
+    public function displayTable($filter) {
+	$where = " playlist_flag = 'COMPLETE'";
+	switch($filter['recommended']) {
+	    case 'only': $where .= " AND rating >= 4"; break;
+	    case 'not' : $where .= " AND rating < 4"; break;
+	}
+	$table = 'library';
+	$primaryKey = 'RefCode';
+        $columns = array(
+            array( 'db' => 'refCode', 'dt' => 'refCode' ),
+            array( 'db' => 'datein', 'dt' => 'datein' ),
+            array( 'db' => 'artist',  'dt' => 'artist' ),
+            array( 'db' => 'album',   'dt' => 'album' ),
+            array( 'db' => 'rating',   'dt' => 'rating' )
+        );
+	$lib_data = \SSP::complex($_GET, $this->db, $table, $primaryKey, $columns, null, $where);
+	return json_encode($lib_data);
+    }
     
     public function getRangeGaps($list, $start=FALSE){
         if($start===FALSE){

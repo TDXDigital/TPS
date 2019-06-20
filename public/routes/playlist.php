@@ -86,14 +86,9 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
         }
     });
     $app->get('/display-playlist', $authenticate, function () use ($app) {
-	$data = ["draw"=>1,
-		 "recordsTotal"=>1,
-		 "recordsFiltered"=>1,
-		 "data" => [
-			["item"=> "1"]
-		 ]
-		];
-	echo json_encode($data);
+	$filter = $app->request->get("filter");
+	$playlist = new \TPS\playlist;
+	echo $playlist->displayTable($filter);
     });
     $app->get('/generate', function () use ($app) {
         $app->redirect('./generate/');

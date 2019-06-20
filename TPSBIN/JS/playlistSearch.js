@@ -97,7 +97,10 @@ $(document).ready(function() {
 
 
 
-
+function getRecommendation(rating) {
+    console.log(rating);
+    return "1";
+}
 
 // Load and render the data table
 $(document).ready(function() {
@@ -106,17 +109,11 @@ $(document).ready(function() {
         "serverSide": true,
         "ajax": {
             "url": "/playlist/display-playlist", 
-/*            "data": function(d) {
+            "data": function(d) {
                     d.filter = {
-                        status: 1, 
-                        date: 2,
-                        genre: 3,
-                        locale: 4,
-                        format: 5,
-                        missing_info: 6,
-                        tag: 7
+                        recommended: $('#filter_recommended').val()
                         }
-                 }*/
+                    }
         },
         "columns": [
             {
@@ -126,68 +123,73 @@ $(document).ready(function() {
                 "defaultContent": "",
             },
             {
-                "class":          "details-control",
+                "orderable":      true,
+                "data":           "artist",
+                "defaultContent": "",
+            },
+            {
+                "orderable":      false,
+                "data":           "album",
+                "defaultContent": "",
+            },
+            {
+                "orderable":      false,
+                "data":           "item",
+                "defaultContent": "",
+            },
+            {
+                "orderable":      false,
+                "data":           "item",
+                "defaultContent": "",
+            },
+            {
+                "orderable":      false,
+                "data":           "rating",
+                "defaultContent": "",
+            },
+            {
                 "orderable":      true,
                 "data":           "item",
                 "defaultContent": "",
             },
             {
-                "class":          "details-control",
-                "orderable":      false,
-                "data":           "item",
-                "defaultContent": "",
-            },
-            {
-                "class":          "details-control",
-                "orderable":      false,
-                "data":           "item",
-                "defaultContent": "",
-            },
-            {
-                "class":          "details-control",
-                "orderable":      false,
-                "data":           "item",
-                "defaultContent": "",
-            },
-            {
-                "class":          "details-control",
-                "orderable":      false,
-                "data":           "item",
-                "defaultContent": "",
-            },
-            {
-                "class":          "details-control",
                 "orderable":      true,
                 "data":           "item",
                 "defaultContent": "",
             },
             {
-                "class":          "details-control",
                 "orderable":      true,
-                "data":           "item",
+                "data":           "datein",
                 "defaultContent": "",
             },
             {
-                "class":          "details-control",
-                "orderable":      true,
-                "data":           "item",
-                "defaultContent": "",
-            },
-            {
-                "class":          "details-control",
                 "orderable":      false,
                 "data":           "item",
                 "defaultContent": "",
             },
-        ]
+        ],
+	"columnDefs": [
+	    {
+		"render": function(data, type, row) {
+			tag = '<img class="star" style="width: 25px;" src="../../images/';
+			if (data < 4)
+			    tag += 'not_';
+			return tag + 'recommended.png" />';
+		},
+			"targets" : 5
+	    },
+	    { className: "centeredTD", targets: 5}
+	]
     });
-//    enableFilter(table);
+    enableFilter(table);
 //    detailControl(table);
-//   filterClear(table);
-//    rowSelection();
+    filterClear(table);
+    rowSelection();
+    $('#playlist_table thead th').removeClass('centeredTD');
+    $('#playlist_table tfoot th').removeClass('centeredTD');
 } );
 
-/*
+
 function filterClear(table)
 {
     $( "#clear_filter" ).click(function() {
@@ -198,7 +200,7 @@ function filterClear(table)
 
 function rowSelection()
 {
-    $('#data_table tbody').on( 'click', 'td', function () {
+    $('#playlist_table tbody').on( 'click', 'td', function () { // CHANGED THIS TO #playlist_table from #data_table
             // Make the table row is clickable if the td is not details-control
            if(!$(this).hasClass('details-control') && $(this).closest('tr').attr('id'))
            {
@@ -218,7 +220,7 @@ function enableFilter(table)
 }
 
 
-
+/*
 
 function detailControl(table)
 {

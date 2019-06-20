@@ -5,6 +5,10 @@
             height:200px;
             width: 200px;
           }
+
+	.centeredTD {
+	    text-align: center;
+	}
     </style>
 {% endblock %}
 {% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
@@ -41,6 +45,23 @@
         </div>
     {% endif %}
 
+    <h3 style="display:inline;">Filter </h3>
+    <button type="button" class="btn btn-default" id="clear_filter">Clear Filter</button>
+    <br>
+    <br>
+    <div class="form-group row">        
+        <div class="col-xs-2">
+            <div class="form-group input-group">
+                <label for="filter_recommended" class="input-group-addon">Recommended&nbsp;</label>
+                 <select class="form-control table_filter" id="filter_recommended">
+                    <option value="all">Any</option>
+                    <option value="only">Only</option>
+                    <option value="not">Not</option>
+              </select>
+            </div>
+        </div>
+    </div>
+    <hr size="30">
 
     <table class='table table-bordered table-hover' id='playlist_table'>
         <thead>
