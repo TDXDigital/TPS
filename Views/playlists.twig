@@ -40,6 +40,41 @@
             </div>
         </div>
     {% endif %}
+
+
+    <table class='table table-bordered table-hover' >
+        <thead>
+	    <tr>
+                <th>Playlist #</th>
+                <th>Artist</th>
+                <th>Album</th>
+	        <th>Subgenres</th>
+	        <th>Hometowns</th>
+	        <th>Recommended</th>
+                <th>Add Date</th>
+                <th>End Date</th>
+                <th>Received</th>
+                <th>Edit</th>
+	    </tr>
+        </thead>
+	<tfoot>
+	    <tr>
+                <th>Playlist #</th>
+                <th>Artist</th>
+                <th>Album</th>
+	        <th>Subgenres</th>
+	        <th>Hometowns</th>
+	        <th>Recommended</th>
+                <th>Add Date</th>
+                <th>End Date</th>
+                <th>Received</th>
+                <th>Edit</th>
+	    </tr>
+	</tfoot>
+    </table>
+
+
+<!--
     <form role="form" method="POST" action="/playlist/search/">
         <div class="row">
             <div class="form-group input-group">
@@ -96,6 +131,8 @@
             {% endfor %}
         </tbody>
     </table>
+-->
+
 <div class="row">
     <div class="col-lg-6">
         <span>Reports:</span>
@@ -108,4 +145,7 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block lastScripts %}
+<script src="{{siteUrl}}/TPSBIN/JS/playlistSearch.js"></script>
 {% endblock %}
