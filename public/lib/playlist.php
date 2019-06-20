@@ -72,7 +72,7 @@ class playlist extends TPS{
 	$where = " playlist_flag = 'COMPLETE'";
 	switch($filter['recommended']) {
 	    case 'only': $where .= " AND rating >= 4"; break;
-	    case 'not' : $where .= " AND rating < 4"; break;
+	    case 'not' : $where .= " AND rating < 4 AND rating > 0"; break;
 	}
 	$table = 'library';
 	$primaryKey = 'RefCode';
@@ -89,7 +89,8 @@ class playlist extends TPS{
 	foreach($lib_data['data'] as &$album) {
 	    $refCode = $album['refCode'];
 	    $album_playlist_info = array_values($this->getAllByRefCode($refCode))[0];
-	    $album['playlistID'] = $album_playlist_info['SmallCode'];
+	    $album['playlistID'] = $album_playlist_info['PlaylistId'];
+	    $album['ShortCode'] = $album_playlist_info['SmallCode'];
 	    $album['addDate'] = substr($album_playlist_info['Activate'], 0, 10);
 	    $album['endDate'] = substr($album_playlist_info['Expire'], 0, 10);
 	    $album['subgenres'] = $library->getSubgenresByRefCode($refCode);

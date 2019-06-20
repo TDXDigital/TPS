@@ -119,7 +119,7 @@ $(document).ready(function() {
             {
                 "class":          "details-control",
                 "orderable":      true,
-                "data":           "playlistID",
+                "data":           "ShortCode",
                 "defaultContent": "",
             },
             {
@@ -164,7 +164,7 @@ $(document).ready(function() {
             },
             {
                 "orderable":      false,
-                "data":           "item",
+                "data":           "playlistID",
                 "defaultContent": "",
             },
         ],
@@ -183,12 +183,20 @@ $(document).ready(function() {
 	    },
 	    {
 		"render": function(data, type, row) {
+			if (data == 0 || data == null)
+			    return '';
 			tag = '<img class="star" style="width: 25px;" src="../../images/';
 			if (data < 4)
 			    tag += 'not_';
 			return tag + 'recommended.png" />';
 		},
 			"targets" : 5
+	    },
+	    {
+		"render": function(data, type, row) {
+			return '<a href="./' + data + '"><i class="fa fa-edit"></i></a>';
+		},
+			"targets" : 9
 	    },
 	    { className: "centeredTD", targets: 5}
 	]
