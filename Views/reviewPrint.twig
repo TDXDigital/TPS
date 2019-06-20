@@ -109,6 +109,7 @@
                                 <select class="form-control" id="media-type">
                                     <option value="5160">Avery 5160</option>
                                     <option value="5163">Avery 5163</option>
+                                    <option value="8660">Avery 8660</option>
                                 </select>
                             </div>
                         </div>
@@ -153,7 +154,11 @@ function PrintLabels(){
     print_start = $("#start").val();
     media_type = $("#media-type").val();
     outline = $("#outline").is(':checked');
-    window.open('/legacy/opl/ReviewLabels.php?type='+media_type+'&start='+print_start+
+    if(media_type == 8660)
+        window.open('/legacy/opl/ReviewLabels8660.php?type='+media_type+'&start='+print_start+
+            '&outline='+outline, '  printwindow');
+    else
+        window.open('/legacy/opl/ReviewLabels.php?type='+media_type+'&start='+print_start+
             '&outline='+outline, '  printwindow');
 }
 
