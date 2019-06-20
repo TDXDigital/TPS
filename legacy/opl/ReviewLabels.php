@@ -82,6 +82,7 @@
         echo "<div class=\"label\" style=\"outline: none;\"></div>";
     }
     foreach ($reviews as $id ) {
+        /*
     $label = $review->getFullReview($id);
 
     foreach ($label['labels'] as $rec_label) {
@@ -127,8 +128,8 @@
     echo '</table>';
     echo '<br>';
 
-
-    /*
+*/
+    
 	$label = $review->getFullReview($id);
         echo "<div class=\"label\" style='font-size:xx-small;'>";
         $trimArtist = $label['review']['hometown'];
@@ -155,7 +156,7 @@
         echo $label['review']['recommendations']."</span></small><br style='clear: both'/>";
         echo "</div>";
 
-        */
+        
     }
     /*if($stmt=$mysqli->prepare("SELECT artist, album, format, genre, CanCon, Locale FROM library WHERE RefCode = ?")){
         for($i=1;$i<$indent;$i++){

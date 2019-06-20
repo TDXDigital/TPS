@@ -99,15 +99,15 @@ class library extends station{
      */
     public function getLibraryGenres(){
         $genres = array(
-                "RP" => "0--- Rock/Pop",
-                "FR" => "1--- Folk/Roots",
-                "HM" => "2--- Heavy/Punk/Metal",
-                "EL" => "3--- Electronic",
-                "HH" => "4--- Hip-Hop",
-                "WD" => "5--- World",
-                "JC" => "6--- Jazz/Classical",
-                "EX" => "7--- Experimental",
-                "OT" => "8--- Other",
+                "RP" => "0-- Rock/Pop",
+                "FR" => "1-- Folk/Roots",
+                "HM" => "2-- Heavy/Punk/Metal",
+                "EL" => "3-- Electronic",
+                "HH" => "4-- Hip-Hop",
+                "WD" => "5-- World",
+                "JC" => "6-- Jazz/Classical",
+                "EX" => "7-- Experimental",
+                "OT" => "8-- Other",
             );
         return $genres;
     }
