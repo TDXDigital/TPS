@@ -9,7 +9,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
         $params=array(
             'albums'=>$albums,
             'title'=>'Available Reviews'
-            );
+        );
 
         $app->render('reviewList.twig',$params);
     });
@@ -24,6 +24,24 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
         );
         $app->render('reviewListCompleted.twig',$params);
     });
+     $app->post('/import', $authenticate, function () use ($app){
+
+       if(isset($_POST["Import"])){   
+        $filename=$_FILES["file"]["tmp_name"];    
+        if($_FILES["file"]["size"] > 0)
+        {
+            $reviews = new \TPS\reviews();
+            if($reviews->importCSV($app, $filename))
+                echo 'Completed <br>';
+            else
+                echo 'Error<br>';
+        }
+    }  
+    echo '<a href="/">Go Back to Dashboard</a>  ';
+        // $app->redirect('./search/');
+    });
+
+
     $app->put('/:id', $authenticate, function ($id) use ($app){ // Update
         $reviews = new \TPS\reviews();
         if($_SESSION['access']<2){
@@ -50,14 +68,14 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
             }
             global $mysqli;
             $update = "UPDATE review SET approved=?, femcon=?, reviewer=?,"
-                    . "hometown=?, subgenre=?, description=?, recommendations=?,"
-                    . "notes=? where id=?";
+            . "hometown=?, subgenre=?, description=?, recommendations=?,"
+            . "notes=? where id=?";
             $albums = array();
             $params = array();
             if($stmt = $mysqli->prepare($update)){
                 $stmt->bind_param('iissssssi',
-                        $approved,$femcon,$reviewer,$hometown,$subgenres,
-                        $description,$recommend,$notes,$id);
+                    $approved,$femcon,$reviewer,$hometown,$subgenres,
+                    $description,$recommend,$notes,$id);
                 if($stmt->execute()){
                     $stmt->close();
                     $app->flash('success',"$id updated succesfully");
@@ -115,7 +133,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
                 'currentPage'=>$p,
                 'limit'=>$max,
                 'max'=>$numReviews,
-                    );
+            );
             $params = array(
                 "area" => "Reviews",
                 "title" => "Approved",
@@ -141,37 +159,37 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
 
     // review/album group
     $app->group('/album', $authenticate, function () use ($app,$authenticate){
-    $app->post('/:refcode', $authenticate, function ($RefCode) use ($app){
-        $reviews = new \TPS\reviews();
-        $reviews->createReview($app, $RefCode);
-        $app->redirect('/review');
-    });
-    $app->get('/:refcode/new', $authenticate, function ($term) use ($app){
+        $app->post('/:refcode', $authenticate, function ($RefCode) use ($app){
+            $reviews = new \TPS\reviews();
+            $reviews->createReview($app, $RefCode);
+            $app->redirect('/review');
+        });
+        $app->get('/:refcode/new', $authenticate, function ($term) use ($app){
         // Create new Album Review
-        $reviews = new \TPS\reviews();
-        $library = new \TPS\library();
-        $params = $library->GetFullAlbum($term);
-        $params['tags'] = $library->getTags();
-        $params['hometowns'] = $library->getHometowns();
-        $params['subgenres'] = $library->getSubgenres();
-        $params['labels'] = \TPS\label::nameSearch("%",False);
-        $params['album']['subgenres'] = $library->getSubgenresByRefCode($term);
-        $params['album']['hometowns'] = $library->getHometownsByRefCode($term);
-        $params['album']['tags'] = $library->getTagsByRefCode($term);
-        $params['album']['labels'] = array_map(function($label) {return $label['Name'];}, $library->getLabelsByRefCode($term));
-        $params['title']="New Review for album #$term";
-        $params['area']="Reviews";
-        $app->render('review.twig',$params);
-    });
-    $app->get('/:refcode', $authenticate, function ($term) use ($app){
-        $params = array(
-            "title" => "Completed Reviews for $term",
-        );
-        $reviews = new \TPS\reviews();
-        $reviews = $reviews->getReviewsByAlbum($term);
-        $params['reviews']=$reviews;
-        $app->render('reviewListCompleted.twig',$params);
-    });
+            $reviews = new \TPS\reviews();
+            $library = new \TPS\library();
+            $params = $library->GetFullAlbum($term);
+            $params['tags'] = $library->getTags();
+            $params['hometowns'] = $library->getHometowns();
+            $params['subgenres'] = $library->getSubgenres();
+            $params['labels'] = \TPS\label::nameSearch("%",False);
+            $params['album']['subgenres'] = $library->getSubgenresByRefCode($term);
+            $params['album']['hometowns'] = $library->getHometownsByRefCode($term);
+            $params['album']['tags'] = $library->getTagsByRefCode($term);
+            $params['album']['labels'] = array_map(function($label) {return $label['Name'];}, $library->getLabelsByRefCode($term));
+            $params['title']="New Review for album #$term";
+            $params['area']="Reviews";
+            $app->render('review.twig',$params);
+        });
+        $app->get('/:refcode', $authenticate, function ($term) use ($app){
+            $params = array(
+                "title" => "Completed Reviews for $term",
+            );
+            $reviews = new \TPS\reviews();
+            $reviews = $reviews->getReviewsByAlbum($term);
+            $params['reviews']=$reviews;
+            $app->render('reviewListCompleted.twig',$params);
+        });
 }); // end review/album group
     
     // SEARCH REVIEWS
@@ -190,7 +208,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
                 'search'=>$orig_term,
                 'area'=>'Search',
                 'title'=>'Available Reviews'
-                );
+            );
             $app->render('reviewList.twig',$params);
         });
         $app->get('/album/:term', $authenticate, function ($term) use ($app){
@@ -201,7 +219,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
                 'search'=>$term,
                 'area'=>'Search',
                 'title'=>'Available Reviews'
-                );
+            );
             $app->render('reviewList.twig',$params);
         });
         $app->get('/:term', $authenticate, function ($term) use ($app){
@@ -211,7 +229,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
                 'search'=>$term,
                 'area'=>'Search',
                 'title'=>'Reviews',
-                );
+            );
             $isXHR = $app->request->isAjax();
             if($isXHR){
                 print json_encode($reviewList);
@@ -224,7 +242,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
             $params=array(
                 'area'=>'Reviews',
                 'title'=>'Search'
-                );
+            );
             $app->render('reviewList.twig',$params);
         });
     });
