@@ -85,6 +85,16 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $app->redirect("./".array_pop($result));
         }
     });
+    $app->get('/display-playlist', $authenticate, function () use ($app) {
+	$data = ["draw"=>1,
+		 "recordsTotal"=>1,
+		 "recordsFiltered"=>1,
+		 "data" => [
+			["item"=> "1"]
+		 ]
+		];
+	echo json_encode($data);
+    });
     $app->get('/generate', function () use ($app) {
         $app->redirect('./generate/');
     });
@@ -202,7 +212,6 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $app->redirect("../");
         });
     });
-    
     $app->get('/shortcode', function () use ($app) {
         $app->redirect('./shortcode/');
     });

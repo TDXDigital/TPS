@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 /*
 function toggle(source) {
     checkboxes = document.getElementsByName('bulkEditId[]');
@@ -82,83 +83,111 @@ function changeAttrOptions(divId, targetObj){
     }
 }
 
+$(document).ready(function() {
+    var table = $('#playlist_table').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "select": true,
+        "ajax": {
+            "url": "/playlist/display"
+        },
+    });
+} );
 */
 
 
 
 
-/*
+
 // Load and render the data table
 $(document).ready(function() {
-    var table = $('#data_table').DataTable({
+    var table = $('#playlist_table').DataTable({
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "/library/display", 
-            "data": function(d) {
+            "url": "/playlist/display-playlist", 
+/*            "data": function(d) {
                     d.filter = {
-                        status: $('#filter_status').val(), 
-                        date: $('#filter_date').val(),
-                        genre: $('#filter_genre').val(),
-                        locale: $('#filter_location').val(),
-                        format: $('#filter_format').val(),
-                        missing_info: $('#missing_info').val(),
-                        tag: $('#filter_tag').val()
+                        status: 1, 
+                        date: 2,
+                        genre: 3,
+                        locale: 4,
+                        format: 5,
+                        missing_info: 6,
+                        tag: 7
                         }
-                 }
+                 }*/
         },
         "columns": [
             {
                 "class":          "details-control",
                 "orderable":      true,
-                "data":           "refCode",
+                "data":           "item",
                 "defaultContent": "",
             },
-            // { "data": "check" },
-            { "data": "refCode" },
-            { "data": "status" },
-            { "data": "datein" },
-            { "data": "artist" },
-            { "data": "album" },
-            { "data": "genre_detail" },
-            { "data": "year" },
-            { "data": "rating" },
-        ],
-        "columnDefs": [
             {
-              "render": function (data, type, row) {
-                         return '<i class="fa fa-plus-square" aria-hidden="true" style="color:green">&nbsp&nbsp</i> &ensp;' + data +
-                         '<input type="checkbox" name="bulkEditId[]" style="visibility:hidden" value="'+data+'">';
-                },
-                     "targets": 0
+                "class":          "details-control",
+                "orderable":      true,
+                "data":           "item",
+                "defaultContent": "",
             },
             {
-                "render": function ( data, type, row ) {
-                    return '<button type="button" onclick="location.href=\'/library/'+data+'\';" class="btn btn-default btn-xs">' +
-                        'Edit ' + '<i class="fa fa-edit" aria-hidden="true"></i></button>';
-                },
-                "targets": 1
+                "class":          "details-control",
+                "orderable":      false,
+                "data":           "item",
+                "defaultContent": "",
             },
             {
-                "render": function ( data, type, row ) {
-                    if(data == 1 )
-                        return '<i class="fa fa-check-circle-o" style="color: #008000"> Accept</i>';
-                    else if(data == 0)
-                        return '<i class="fa fa-times-circle-o" style="color: #800000"> Reject</i>';
-                    else
-                        return '<i class="fa fa-exclamation-triangle" style="color: #FF4500">  N/A</i>';
-                },
-                "targets": 2
+                "class":          "details-control",
+                "orderable":      false,
+                "data":           "item",
+                "defaultContent": "",
+            },
+            {
+                "class":          "details-control",
+                "orderable":      false,
+                "data":           "item",
+                "defaultContent": "",
+            },
+            {
+                "class":          "details-control",
+                "orderable":      false,
+                "data":           "item",
+                "defaultContent": "",
+            },
+            {
+                "class":          "details-control",
+                "orderable":      true,
+                "data":           "item",
+                "defaultContent": "",
+            },
+            {
+                "class":          "details-control",
+                "orderable":      true,
+                "data":           "item",
+                "defaultContent": "",
+            },
+            {
+                "class":          "details-control",
+                "orderable":      true,
+                "data":           "item",
+                "defaultContent": "",
+            },
+            {
+                "class":          "details-control",
+                "orderable":      false,
+                "data":           "item",
+                "defaultContent": "",
             },
         ]
     });
-
 //    enableFilter(table);
 //    detailControl(table);
 //   filterClear(table);
 //    rowSelection();
 } );
 
+/*
 function filterClear(table)
 {
     $( "#clear_filter" ).click(function() {
