@@ -84,6 +84,17 @@ class playlist extends TPS{
             array( 'db' => 'rating',   'dt' => 'rating' )
         );
 	$lib_data = \SSP::complex($_GET, $this->db, $table, $primaryKey, $columns, null, $where);
+
+	$library = new \TPS\library();
+	foreach($lib_data['data'] as &$album) {
+	    $refCode = $album['refCode'];
+	    $album_playlist_info = array_values($this->getAllByRefCode($refCode))[0];
+	    $album['playlistID'] = $album_playlist_info['SmallCode'];
+	    $album['addDate'] = substr($album_playlist_info['Activate'], 0, 10);
+	    $album['endDate'] = substr($album_playlist_info['Expire'], 0, 10);
+	    $album['subgenres'] = $library->getSubgenresByRefCode($refCode);
+	    $album['hometowns'] = $library->getHometownsByRefCode($refCode);
+	}
 	return json_encode($lib_data);
     }
     

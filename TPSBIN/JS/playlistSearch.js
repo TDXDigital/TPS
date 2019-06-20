@@ -119,7 +119,7 @@ $(document).ready(function() {
             {
                 "class":          "details-control",
                 "orderable":      true,
-                "data":           "item",
+                "data":           "playlistID",
                 "defaultContent": "",
             },
             {
@@ -134,12 +134,12 @@ $(document).ready(function() {
             },
             {
                 "orderable":      false,
-                "data":           "item",
+                "data":           "subgenres",
                 "defaultContent": "",
             },
             {
                 "orderable":      false,
-                "data":           "item",
+                "data":           "hometowns",
                 "defaultContent": "",
             },
             {
@@ -149,12 +149,12 @@ $(document).ready(function() {
             },
             {
                 "orderable":      true,
-                "data":           "item",
+                "data":           "addDate",
                 "defaultContent": "",
             },
             {
                 "orderable":      true,
-                "data":           "item",
+                "data":           "endDate",
                 "defaultContent": "",
             },
             {
@@ -169,6 +169,18 @@ $(document).ready(function() {
             },
         ],
 	"columnDefs": [
+	    {
+		"render": function(data, type, row) {
+			return cellBulletPoints(data);
+		},
+			"targets" : 3
+	    },
+	    {
+		"render": function(data, type, row) {
+			return cellBulletPoints(data);
+		},
+			"targets" : 4
+	    },
 	    {
 		"render": function(data, type, row) {
 			tag = '<img class="star" style="width: 25px;" src="../../images/';
@@ -188,6 +200,15 @@ $(document).ready(function() {
     $('#playlist_table thead th').removeClass('centeredTD');
     $('#playlist_table tfoot th').removeClass('centeredTD');
 } );
+
+function cellBulletPoints(data)
+{
+    td = "";
+    for (var i = 0; i < data.length; i++)
+        if (data[i].length > 0)
+	    td += "-" + data[i] + "<br />";
+    return td;
+}
 
 
 function filterClear(table)
