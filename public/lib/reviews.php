@@ -331,18 +331,20 @@ class reviews extends station{
         $hometown = $app->request()->post('hometown');
         $subgenres = $app->request()->post('subgenres');
         $recommend = $app->request()->post('recommend');
+        // echo 'reviewr: '. $_POST['reviewer'];
+        echo $reviewer;
+        exit;
         // $femcon = $app->request()->post('femcon');
         $approved = 1;
         $tag = $app->request()->post('tag');
 
-        $library = new \TPS\library();
-        $library->updateAlbumAttribute("hometown", $hometown, $RefCode);
-        $library->updateAlbumAttribute("tag", $tag, $RefCode);
-        $library->updateAlbumAttribute("subgenre", $subgenres, $RefCode);
-
-
-        
-
+        if(!isset($_POST["csvImport"]))
+        {
+            $library = new \TPS\library();
+            $library->updateAlbumAttribute("hometown", $hometown, $RefCode);
+            $library->updateAlbumAttribute("tag", $tag, $RefCode);
+            $library->updateAlbumAttribute("subgenre", $subgenres, $RefCode);    
+        }
         $newReviewSql = "INSERT INTO review (RefCode,reviewer, approved,ip,description,recommendations,notes) "
                 . "VALUES (?,?,?,?,?,?,?)";
         if($stmt = $this->mysqli->prepare($newReviewSql)){
@@ -596,4 +598,72 @@ class reviews extends station{
         $params['websites']=$websites?:NULL;
         return $params;
     }
+
+
+
+    public function importCSV($app, $filename)
+    {
+        header('X-Accel-Buffering: no');
+        
+        // Turn off output buffering
+        ini_set('output_buffering', 'off');
+        // Turn off PHP output compression
+        ini_set('zlib.output_compression', false);
+                
+        //Flush (send) the output buffer and turn off output buffering
+        //ob_end_flush();
+        while (@ob_end_flush());
+                
+        // Implicitly flush the buffer(s)
+        ini_set('implicit_flush', true);
+        ob_implicit_flush(true);
+
+        $file = fopen($filename, "r");
+        // Retrive refcode
+        if(!$stmt3 = $this->mysqli->prepare("SELECT refCode FROM library where artist = ? AND album = ?"))
+        {
+            $stmt3->close();
+            header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
+        }
+
+        while (($getData = fgetcsv($file, 10000, ",")) !== FALSE)
+        {
+            //skip the first row
+            if($getData[0]=='timestamp')
+                continue;
+
+            if(!$stmt3->bind_param(
+                "ss",
+                $getData[1],    
+                $getData[2]    
+            )){
+                $stmt3->close();
+                return $this->mysqli->error;
+            }
+            $stmt3->execute();
+            $stmt3->store_result();
+            $stmt3->bind_result($refCode);
+            $stmt3->fetch();
+            if($refCode == '')
+            {
+                echo $getData[1].' - '.$getData[2].' does not exist in DB <br>';
+            }
+            else
+            {
+                $_POST['description'] = $getData[4];
+                $_POST['notes'] = $getData[3];
+                $app->request->withAttribute('Excel_Import', $_POST);
+                $_POST['recommend'] = $getData[5];
+                $_POST['csvImport'] = 'true';
+                echo 'Inserting---- row: '. $refCode .' <br>';
+                self::createReview($app, $refCode);
+            }
+            $stmt3->free_result();
+            flush();    
+        }
+        $stmt3->close();
+        fclose($file);  
+        return true;
+}
+
 }
