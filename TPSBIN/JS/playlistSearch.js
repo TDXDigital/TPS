@@ -120,7 +120,6 @@ $(document).ready(function() {
 	    },
 	    { className: "centeredTD", targets: 5}
 	],
-	"drawCallback": function(settings) {console.log("Top");}
     });
 
     var newArchiveTable = $('#new_archive_table').DataTable({
@@ -203,7 +202,6 @@ $(document).ready(function() {
 	    },
 	    { className: "centeredTD", targets: 5}
 	],
-	"drawCallback": function(settings) {console.log("Bottom");}
     });
 
 
