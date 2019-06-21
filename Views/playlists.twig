@@ -1,11 +1,6 @@
 {% extends 'baseAdmin.twig' %}
 {% block headScripts %}
     <style>
-        .donut200{
-            height:200px;
-            width: 200px;
-          }
-
 	.centeredTD {
 	    text-align: center;
 	}
@@ -93,66 +88,6 @@
 	    </tr>
 	</tfoot>
     </table>
-
-
-<!--
-    <form role="form" method="POST" action="/playlist/search/">
-        <div class="row">
-            <div class="form-group input-group">
-                <input type="text" class="form-control" name="q" 
-                       {% if search %}
-                           value="{{search}}"
-                       {% endif %} disabled>
-                <span class="input-group-btn"><button class="btn btn-default" type="button"><i class="fa fa-search"></i></button></span>
-            </div>
-        </div>
-    </form>
-    <table class='table table-bordered table-hover' >
-        <thead>
-            <th>Playlist #</th>
-            <th>Artist</th>
-            <th>Album</th>
-	    <th>Subgenres</th>
-	    <th>Hometowns</th>
-	    <th>Recommended</th>
-            <th>Add Date</th>
-            <th>End Date</th>
-            <th>Received</th>
-            <th>Edit</th>
-        </thead>
-        <tbody>
-            {% for id,playlist in playlists %}
-                <tr style="background-color: {{playlist.color|default('#FFF')}};">
-                    <td>{{playlist.SmallCode}}</td>
-                    <td><a href="../library/{{playlist.RefCode}}" target="_blank">
-                            {{playlist.library.artist}}</a></td>
-                    <td><a href="../library/{{playlist.RefCode}}" target="_blank">
-                            {{playlist.library.album}}</a></td>
-		    <td>{% for subgenre in playlist.library.subgenres %}
-			    -{{subgenre}}<br />
-			{% endfor %}
-		    </td>
-		    <td>{% for hometown in playlist.library.hometowns %}
-			    -{{hometown}}<br />
-			{% endfor %}
-		    </td>
-		    <td style="text-align: center; vertical-align: middle;">
-			<img style="width: 25px;" src=
-			{% if playlist.library.rating >= 4 %}
-			    "../images/recommended.png"
-			{% else %}
-			    "../images/not_recommended.png"
-			{% endif %} />
-		    </td>
-                    <td>{{playlist.Activate|date("Y-m-d")}}</td>
-                    <td>{{playlist.Expire|date("Y-m-d")}}</td>
-                    <td>{{playlist.library.datein}}</td>
-                    <td><a href="./{{id}}"><i class="fa fa-edit"></i></a></td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
--->
 
 <div class="row">
     <div class="col-lg-6">
