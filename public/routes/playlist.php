@@ -90,6 +90,12 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
 	$playlist = new \TPS\playlist;
 	echo $playlist->displayTable($filter);
     });
+    $app->get('/convert', function () use ($app, $authenticate, $playlist) {
+	$expired = $playlist->getExpiredAlbums();
+	foreach ($expired as &$e)
+	    $e = $e['RefCode'];
+	$playlist->moveAlbumsToLibrary($expired);
+    });
     $app->get('/generate', function () use ($app) {
         $app->redirect('./generate/');
     });

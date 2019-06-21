@@ -261,6 +261,22 @@ class playlist extends TPS{
             return $ranges;
         }
     }
+
+    public function getExpiredAlbums() {
+	$sql = $this->db->query("SELECT * FROM library WHERE RefCode IN (SELECT RefCode FROM playlist WHERE Expire < now());");
+	$expiredAlbums = [];
+        while ($row = $sql->fetch(\PDO::FETCH_ASSOC))
+	    array_push($expiredAlbums, $row);
+	return $expiredAlbums;
+    }
+
+    public function moveAlbumsToLibrary($albumRefCodes) {
+	if (sizeof($albumRefCodes) > 0) {
+	    $refCodeList = "(" . implode(", ", $albumRefCodes) . ")";
+	    $this->db->query("DELETE FROM playlist WHERE RefCode IN " . $refCodeList . ";");
+	    $this->db->query("UPDATE library SET playlist_flag='FALSE' WHERE RefCode IN " . $refCodeList . ";");
+	}
+    }
     
     public function setExpiry($playlistIds, $date){
        if(!is_array($playlistIds)){
