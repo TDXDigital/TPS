@@ -73,16 +73,6 @@ $(document).ready(function() {
                 "defaultContent": "",
             },
             {
-                "orderable":      true,
-                "data":           "endDate",
-                "defaultContent": "",
-            },
-            {
-                "orderable":      true,
-                "data":           "datein",
-                "defaultContent": "",
-            },
-            {
                 "orderable":      false,
                 "data":           "playlistID",
                 "defaultContent": "",
@@ -116,7 +106,7 @@ $(document).ready(function() {
 		"render": function(data, type, row) {
 			return '<a href="./' + data + '"><i class="fa fa-edit"></i></a>';
 		},
-			"targets" : 9
+			"targets" : 7
 	    },
 	    { className: "centeredTD", targets: 5}
 	],
@@ -125,6 +115,7 @@ $(document).ready(function() {
     var newArchiveTable = $('#new_archive_table').DataTable({
         "processing": true,
         "serverSide": true,
+	"order" : [[1, "asc"]],
         "ajax": {
             "url": "/library/display-archive", 
             "data": function(d) {
@@ -136,7 +127,7 @@ $(document).ready(function() {
         "columns": [
             {
                 "class":          "details-control",
-                "orderable":      true,
+                "orderable":      false,
                 "data":           "libraryCode",
                 "defaultContent": "",
             },
@@ -166,12 +157,12 @@ $(document).ready(function() {
                 "defaultContent": "",
             },
 	    {
-                "orderable":      true,
+                "orderable":      false,
                 "data":           "datein",
                 "defaultContent": "",
             },
 	    {
-                "orderable":      true,
+                "orderable":      false,
                 "data":           "release_date",
                 "defaultContent": "",
             },
@@ -203,7 +194,6 @@ $(document).ready(function() {
 	    { className: "centeredTD", targets: 5}
 	],
     });
-
 
     enableFilter(playlistTable);
     enableFilter(newArchiveTable);
