@@ -491,6 +491,13 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $firstKey = key($shortCodes);
             $keys = array_keys($shortCodes[$firstKey]);
             array_unshift($shortCodes, $keys);
+	    foreach ($shortCodes as $j=>&$shortCode) {
+		$labelsCell = "";
+		if (array_keys($shortCode)[0])
+		    foreach ($shortCode['labels'] as $i=>$label)
+		        $labelsCell .= "-".$label['Name']."\n";
+	        $shortCode['labels'] = $labelsCell;
+	    }
             $writer->writeSheet($shortCodes);//$data);
             echo $writer->writeToString();
         });
