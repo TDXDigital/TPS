@@ -887,6 +887,40 @@ class library extends station{
         }
         return json_encode($lib_data);
     }
+
+    public function displayArchiveTable($filter)
+    {
+        $where = " playlist_flag = 'FALSE' AND datein > DATE_SUB(now(), INTERVAL 6 MONTH)";
+	switch($filter['recommended']) {
+	    case 'only': $where .= " AND rating >= 4"; break;
+	    case 'not' : $where .= " AND rating < 4 AND rating > 0"; break;
+	}
+        $table = 'library';
+        $primaryKey = 'RefCode';
+
+        // Array of database columns which should be read and sent back to DataTables.
+        // The `db` parameter represents the column name in the database, while the `dt`
+        // parameter represents the DataTables column identifier. In this case simple
+        // indexes
+        $columns = array(
+            array( 'db' => 'refCode', 'dt' => 'refCode' ),
+            array( 'db' => 'library_code', 'dt' => 'libraryCode' ),
+            array( 'db' => 'datein', 'dt' => 'datein' ),
+            array( 'db' => 'release_date',   'dt' => 'release_date' ),
+            array( 'db' => 'artist',  'dt' => 'artist' ),
+            array( 'db' => 'album',   'dt' => 'album' ),
+            array( 'db' => 'rating',   'dt' => 'rating' ),
+        );
+
+        $lib_data = \SSP::complex($_GET, $this->db, $table, $primaryKey, $columns, null, $where);
+	foreach ($lib_data['data'] as &$album) {
+	    $refCode = $album['refCode'];
+	    $album['subgenres'] = $this->getSubgenresByRefCode($refCode);
+	    $album['hometowns'] = $this->getHometownsByRefCode($refCode);
+	}
+        return json_encode($lib_data);
+    }
+
     public function countSearchLibrary($term="",$exact=False){
         //$this->mysqli;
         $tps = new \TPS\TPS();
