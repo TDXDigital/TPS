@@ -118,7 +118,7 @@ function DatabaseUpdateCheck($Update_PKG){
                 else{
                     $Pass = FALSE;
                 }
-                if(empty($return)&&(sizeof($key_only)===sizeof($match)||empty($test))){
+                if(empty($return)&&sizeof($key_only)===sizeof($match)){
                     $Pass = TRUE;
 		    if ($db_drop && !empty($new))
 			$Pass = FALSE;
