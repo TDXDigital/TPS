@@ -381,6 +381,7 @@ class reviews extends station{
             $_SESSION['ReviewLabels'] = [];
         }
         if($_SESSION['ReviewLabels'][] = $RefCode){
+            print_r($_SESSION['ReviewLabels']);
             return array(TRUE,201);
         }
         else{

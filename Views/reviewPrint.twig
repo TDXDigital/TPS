@@ -214,6 +214,7 @@ function removeLabel(number){
     }).done(function(data) {
         $(enable_button).prop('disabled', false);//function(i, v) { return !v; });
         $(disable_button).prop('disabled', true);
+        $('#printAll').prop('checked', false);
         //location.reload();
     }).fail(function(data){
         alert(data.status);
@@ -225,16 +226,27 @@ $(document).ready(function()
     $("#printAll").click(function() {
             if($(this).is(':checked'))
             {
-                $(this).prop('checked', true);
-                $( ".addBtn" ).each(function( index ) {
-                    $(this).click();
-                });
-                // $(".addBtn").click();
+                 $.ajax({
+                    url: "./addAll",
+                    type: 'PUT',
+                    }).done(function(data) {
+                    }).fail(function(data){
+                        alert(data.status);
+                    });
+                $('.addBtn').prop('disabled', true);//function(i, v) { return !v; });
+                $('.rmvBtn').prop('disabled', false);
             }
             else
             {
-                $(this).prop('checked', false);
-                $(".rmvBtn").click();
+                $.ajax({
+                    url: "./rmvAll",
+                    type: 'DELETE',
+                    }).done(function(data) {
+                    }).fail(function(data){
+                        alert(data.status);
+                    });
+                $('.addBtn').prop('disabled', false);//function(i, v) { return !v; });
+                $('.rmvBtn').prop('disabled', true);
                 
             }
     });                 

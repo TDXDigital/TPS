@@ -143,6 +143,30 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
             );
             $app->render('reviewPrint.twig',$params);
         });
+        $app->put('/addAll', $authenticate, function() use ($app){
+            $review = new \TPS\reviews();
+            $numReviews = $review->countApprovedReviews();
+            $reviews = $review->getApprovedReviews(1,$numReviews);
+            foreach($reviews as $key => $value)
+            {
+                $result = $review->setPrintLabel($key);
+            }
+            $app->response->setStatus($result[1]);
+            
+        });
+
+        $app->delete('/rmvAll', $authenticate, function() use ($app){
+            $review = new \TPS\reviews();
+            $numReviews = $review->countApprovedReviews();
+            $reviews = $review->getApprovedReviews(1,$numReviews);
+            foreach($reviews as $key => $value)
+            {
+                $result = $review->clearPrintLabel($key);
+            }
+            $app->response->setStatus($result[1]);
+            
+        });
+
         $app->put('/:RefCode', $authenticate, function($RefCode) use ($app){
             $reviews = new \TPS\reviews();
             $result = $reviews->setPrintLabel($RefCode);
