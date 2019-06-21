@@ -325,27 +325,32 @@ class reviews extends station{
         else{
             $ip=NULL;
         }
-        $description = $app->request()->post('description');
-        $notes = $app->request()->post('notes');
-        $reviewer = $app->request()->post('reviewer');
-        $hometown = $app->request()->post('hometown');
-        $subgenres = $app->request()->post('subgenres');
-        $recommend = $app->request()->post('recommend');
-        // echo 'reviewr: '. $_POST['reviewer'];
-        echo $reviewer;
-        exit;
-        // $femcon = $app->request()->post('femcon');
+       
         $approved = 1;
-        $tag = $app->request()->post('tag');
-
-        if(!isset($_POST["csvImport"]))
+       
+        if(isset($_POST["csvImport"]))
         {
+            $description = $_POST['description'];
+            $notes =  $_POST['notes'];
+            $reviewer = $_POST['reviewer'];
+            $recommend = $_POST['recommend'];
+        }
+        else
+        {
+            $description = $app->request()->post('description');
+            $notes = $app->request()->post('notes');
+            $reviewer = $app->request()->post('reviewer');
+            $hometown = $app->request()->post('hometown');
+            $subgenres = $app->request()->post('subgenres');
+            $recommend = $app->request()->post('recommend');
+            $tag = $app->request()->post('tag');
             $library = new \TPS\library();
+
             $library->updateAlbumAttribute("hometown", $hometown, $RefCode);
             $library->updateAlbumAttribute("tag", $tag, $RefCode);
             $library->updateAlbumAttribute("subgenre", $subgenres, $RefCode);    
         }
-        $newReviewSql = "INSERT INTO review (RefCode,reviewer, approved,ip,description,recommendations,notes) "
+        $newReviewSql = "INSERT IGNORE INTO review (RefCode,reviewer, approved,ip,description,recommendations,notes) "
                 . "VALUES (?,?,?,?,?,?,?)";
         if($stmt = $this->mysqli->prepare($newReviewSql)){
             $stmt->bind_param('isissss',$RefCode,$reviewer,$approved,$ip,$description,$recommend,$notes);
@@ -366,6 +371,7 @@ class reviews extends station{
     }
     
     public function setPrintLabel($RefCode){
+        // echo $RefCode;
         if(array_key_exists('ReviewLabels',$_SESSION)){
             if(($key = array_search($RefCode, $_SESSION['ReviewLabels'])) !== false){
                 return array(TRUE,304);
@@ -652,10 +658,10 @@ class reviews extends station{
             {
                 $_POST['description'] = $getData[4];
                 $_POST['notes'] = $getData[3];
-                $app->request->withAttribute('Excel_Import', $_POST);
+                $_POST['reviewer'] = 'Excel Import';
                 $_POST['recommend'] = $getData[5];
                 $_POST['csvImport'] = 'true';
-                echo 'Inserting---- row: '. $refCode .' <br>';
+                echo 'Inserting---- refCode: '. $refCode .' <br>';
                 self::createReview($app, $refCode);
             }
             $stmt3->free_result();
