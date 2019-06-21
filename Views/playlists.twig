@@ -89,18 +89,58 @@
 	</tfoot>
     </table>
 
-<div class="row">
-    <div class="col-lg-6">
-        <span>Reports:</span>
-        <a class="btn btn-default" href="./report/xlsx" target="_blank">XLSX</a>
-    </div>
-    <div class="col-lg-6">
-        <div class="pull-right">
-            <a class="btn btn-success" href="./new">New</a>
-            <a class="btn btn-primary" href="">Refresh</a>
+    <div class="row">
+        <div class="col-lg-6">
+            <span>Download:</span>
+            <a class="btn btn-default" href="./report/xlsx" target="_blank">XLSX</a>
+        </div>
+        <div class="col-lg-6">
+            <div class="pull-right">
+                <a class="btn btn-success" href="./new">New</a>
+                <a class="btn btn-primary" href="">Refresh</a>
+            </div>
         </div>
     </div>
-</div>
+    <hr size="30">
+
+    <br />
+    <br />
+    <h3>Latest Archived Albums</h3>
+    <hr size="30">
+    <table class='table table-bordered table-hover' id='new_archive_table'>
+        <thead>
+	    <tr>
+                <th>Library #</th>
+                <th>Artist</th>
+                <th>Album</th>
+	        <th>Subgenres</th>
+	        <th>Hometowns</th>
+	        <th>Recommended</th>
+                <th>Received</th>
+                <th>Released</th>
+	    </tr>
+        </thead>
+	<tfoot>
+	    <tr>
+                <th>Library #</th>
+                <th>Artist</th>
+                <th>Album</th>
+	        <th>Subgenres</th>
+	        <th>Hometowns</th>
+	        <th>Recommended</th>
+                <th>Received</th>
+                <th>Released</th>
+	    </tr>
+	</tfoot>
+    </table>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <span>Download:</span>
+            <a class="btn btn-default" href="./report/xlsx" target="_blank">XLSX</a>
+        </div>
+    </div>
+
 {% endblock %}
 {% block lastScripts %}
 <script src="{{siteUrl}}/TPSBIN/JS/playlistSearch.js"></script>

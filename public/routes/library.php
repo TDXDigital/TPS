@@ -170,13 +170,16 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         }
     });
     $app->get('/display', $authenticate, function () use ($app){
-         $library = new \TPS\library();
+        $library = new \TPS\library();
         $filter = $app->request->get("filter");
         echo $library -> displayTable($filter);
     });
-
+    $app->get('/display-archive', $authenticate, function () use ($app){
+        $library = new \TPS\library();
+        $filter = $app->request->get("filter");
+        echo $library->displayArchiveTable($filter);
+    });
     $app->post('/import', $authenticate, function () use ($app){
-        
          if(isset($_POST["Import"])){   
             $filename=$_FILES["file"]["tmp_name"];    
              if($_FILES["file"]["size"] > 0)

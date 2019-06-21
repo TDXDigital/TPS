@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 
-// Load and render the data table
+// Load and render the data tables
 $(document).ready(function() {
-    var table = $('#playlist_table').DataTable({
+    var playlistTable = $('#playlist_table').DataTable({
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -119,20 +119,114 @@ $(document).ready(function() {
 			"targets" : 9
 	    },
 	    { className: "centeredTD", targets: 5}
-	]
+	],
+	"drawCallback": function(settings) {console.log("Top");}
     });
-    enableFilter(table);
-    filterClear(table);
+
+    var newArchiveTable = $('#new_archive_table').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": "/library/display-archive", 
+            "data": function(d) {
+                    d.filter = {
+                        recommended: $('#filter_recommended').val()
+                        }
+                    }
+        },
+        "columns": [
+            {
+                "class":          "details-control",
+                "orderable":      true,
+                "data":           "libraryCode",
+                "defaultContent": "",
+            },
+            {
+                "orderable":      true,
+                "data":           "artist",
+                "defaultContent": "",
+            },
+            {
+                "orderable":      false,
+                "data":           "album",
+                "defaultContent": "",
+            },
+            {
+                "orderable":      false,
+                "data":           "subgenres",
+                "defaultContent": "",
+            },
+            {
+                "orderable":      false,
+                "data":           "hometowns",
+                "defaultContent": "",
+            },
+            {
+                "orderable":      false,
+                "data":           "rating",
+                "defaultContent": "",
+            },
+	    {
+                "orderable":      true,
+                "data":           "datein",
+                "defaultContent": "",
+            },
+	    {
+                "orderable":      true,
+                "data":           "release_date",
+                "defaultContent": "",
+            },
+        ],
+	"columnDefs": [
+	    {
+		"render": function(data, type, row) {
+			return cellBulletPoints(data);
+		},
+			"targets" : 3
+	    },
+	    {
+		"render": function(data, type, row) {
+			return cellBulletPoints(data);
+		},
+			"targets" : 4
+	    },
+	    {
+		"render": function(data, type, row) {
+			if (data == 0 || data == null)
+			    return '';
+			tag = '<img class="star" style="width: 25px;" src="../../images/';
+			if (data < 4)
+			    tag += 'not_';
+			return tag + 'recommended.png" />';
+		},
+			"targets" : 5
+	    },
+	    { className: "centeredTD", targets: 5}
+	],
+	"drawCallback": function(settings) {console.log("Bottom");}
+    });
+
+
+    enableFilter(playlistTable);
+    enableFilter(newArchiveTable);
+
+    filterClear(playlistTable);
+    filterClear(newArchiveTable);
+
     $('#playlist_table thead th').removeClass('centeredTD');
     $('#playlist_table tfoot th').removeClass('centeredTD');
+
+    $('#new_archive_table thead th').removeClass('centeredTD');
+    $('#new_archive_table tfoot th').removeClass('centeredTD');
 } );
 
 function cellBulletPoints(data)
 {
     td = "";
-    for (var i = 0; i < data.length; i++)
-        if (data[i].length > 0)
-	    td += "-" + data[i] + "<br />";
+    if (data != null)
+	for (var i = 0; i < data.length; i++)
+            if (data[i].length > 0)
+	        td += "-" + data[i] + "<br />";
     return td;
 }
 
