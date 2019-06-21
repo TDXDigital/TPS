@@ -134,7 +134,7 @@ value="{{today|default("now")|date("Y-m-d")}}" name="today"/>
                     <td>
 			{% for label in playlist.labels %}
 			<a href="../../label/{{label.LabelNumber}}" target="_pl">
-                            {{label.Name}}</a> {% if not loop.last %}, <br>{% endif %} 
+                            -{{label.Name}}</a>{% if not loop.last %}<br>{% endif %} 
 			{% endfor %}
 		    </td>
                     <td><a href="../../library/{{playlist.RefCode}}" target="_pl">
