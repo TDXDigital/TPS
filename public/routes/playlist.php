@@ -96,7 +96,8 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
 //	    $e = $e['RefCode'];
 //	$playlist->moveAlbumsToLibrary($expired);
 //	$playlistID = 1000;
-//	$playlist->setToMissing(1000);
+//	$playlist->setToMissing($playlistID);
+//	$playlist->setToFound($playlistID);
     });
     $app->get('/generate', function () use ($app) {
         $app->redirect('./generate/');
