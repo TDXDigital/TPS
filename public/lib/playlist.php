@@ -262,6 +262,10 @@ class playlist extends TPS{
         }
     }
 
+    /*
+    * @abstract Gets all of the expired albums on the playlist
+    * @return Array of associate arrays which contain the information of each album
+    */
     public function getExpiredAlbums() {
 	$sql = $this->db->query("SELECT * FROM library WHERE RefCode IN (SELECT RefCode FROM playlist WHERE Expire < now());");
 	$expiredAlbums = [];
@@ -270,14 +274,40 @@ class playlist extends TPS{
 	return $expiredAlbums;
     }
 
-    public function moveAlbumsToLibrary($albumRefCodes) {
-	if (sizeof($albumRefCodes) > 0) {
-	    $refCodeList = "(" . implode(", ", $albumRefCodes) . ")";
+    /*
+    * @abstract Update the database information to move an album(s) from the playlist to the library
+    * @param int/array $refCode The album's unique playlist number. May be a single RefCode or a list of RefCodes.
+    */
+    public function moveAlbumToLibrary($refCode) {
+	if (!is_array($refCode))
+	    $refCode = [$refCode];
+	if (sizeof($refCode) > 0) {
+	    $refCodeList = "(" . implode(", ", $refCode) . ")";
 	    $this->db->query("DELETE FROM playlist WHERE RefCode IN " . $refCodeList . ";");
 	    $this->db->query("UPDATE library SET playlist_flag='FALSE' WHERE RefCode IN " . $refCodeList . ";");
 	}
     }
-    
+
+
+    /*
+    * @abstract Marks the album as missing in the database and returns info on how to find it
+    * @param int $playlistNumber The album's unique playlist number
+    * @return Associative array listing the last program that played the album and the date it was played. May be empty.
+    * @TODO Make this function work by passing the album RefCode so it works with non-playlist albums. To do this, we need
+    *  to ensure the RefCode is stored for each entry in the song table.
+    */
+    public function setToMissing($playlistNumber) {
+	$sql = $this->db->query("SELECT RefCode FROM playlist WHERE SmallCode=" . $playlistNumber . ";");
+        while ($row = $sql->fetch(\PDO::FETCH_ASSOC))
+	    $refCode = $row['RefCode'];
+	$this->db->query("UPDATE library SET missing=1 WHERE RefCode=" . $refCode . ";");
+	$sql = $this->db->query("SELECT programname, date FROM song WHERE playlistnumber=" . $playlistNumber .  " ORDER BY date DESC LIMIT 1;");
+	$lastProgram = [];
+        while ($row = $sql->fetch(\PDO::FETCH_ASSOC))
+	    array_push($lastProgram, $row);
+	return $lastProgram;
+    }
+
     public function setExpiry($playlistIds, $date){
        if(!is_array($playlistIds)){
             $playlistIds = array($playlistIds);

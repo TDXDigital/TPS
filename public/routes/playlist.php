@@ -91,10 +91,12 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
 	echo $playlist->displayTable($filter);
     });
     $app->get('/convert', function () use ($app, $authenticate, $playlist) {
-	$expired = $playlist->getExpiredAlbums();
-	foreach ($expired as &$e)
-	    $e = $e['RefCode'];
-	$playlist->moveAlbumsToLibrary($expired);
+//	$expired = $playlist->getExpiredAlbums();
+//	foreach ($expired as &$e)
+//	    $e = $e['RefCode'];
+//	$playlist->moveAlbumsToLibrary($expired);
+//	$playlistID = 1000;
+//	$playlist->setToMissing(1000);
     });
     $app->get('/generate', function () use ($app) {
         $app->redirect('./generate/');
