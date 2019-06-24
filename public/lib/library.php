@@ -1115,6 +1115,14 @@ class library extends station{
             $result = self::createAlbum($getData[1], $getData[2], $getData[11], $genreKey, $genre_num, $labels, 
                 $locale, $canCon, $playlist_flag, $null, $null, $note, $accept, false,
                 $dateIn, $dateRel, 1, $rating, $tags, array($getData[8]), $subgenres);
+
+            $date = date("Y-m-d");
+            $playlist = new \TPS\playlist();
+
+            if($playlist_flag == 'Complete')
+                $playlist->create($result, $date, $date,
+            $null,$null ,$result);
+
             echo 'Inserting---- row: '.$getData[0].' RefCode: '.$result.' <br>';
             flush();    
         }
