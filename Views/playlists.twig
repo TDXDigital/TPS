@@ -55,9 +55,32 @@
               </select>
             </div>
         </div>
-    </div>
-    <hr size="30">
 
+        <div class="col-xs-2">
+            <div class="form-group input-group">
+                <label for="filter_expiry" class="input-group-addon">Expiry&nbsp;</label>
+                 <select class="form-control table_filter" id="filter_expiry">
+                    <option value="all">All</option>
+                    <option value="active">Active</option>
+                    <option value="expired">Expired</option>
+              </select>
+            </div>
+        </div>
+
+        <div class="col-xs-2">
+            <div class="form-group input-group">
+                <label for="filter_missing" class="input-group-addon">Missing&nbsp;</label>
+                 <select class="form-control table_filter" id="filter_missing">
+                    <option value="all">All</option>
+                    <option value="missing">missing</option>
+              </select>
+            </div>
+        </div>
+
+
+    </div>
+    <h3>Playlist</h3>
+    <hr size="30">
     <table class='table table-bordered table-hover' id='playlist_table'>
         <thead>
 	    <tr>
@@ -68,6 +91,7 @@
 	        <th>Hometowns</th>
 	        <th>Recommended</th>
                 <th>Add Date</th>
+                <th>End Date</th>
                 <th>Edit</th>
 	    </tr>
         </thead>
@@ -80,6 +104,7 @@
 	        <th>Hometowns</th>
 	        <th>Recommended</th>
                 <th>Add Date</th>
+                <th>End Date</th>
                 <th>Edit</th>
 	    </tr>
 	</tfoot>

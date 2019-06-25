@@ -71,9 +71,23 @@ class playlist extends TPS{
     public function displayTable($filter) {
 	$where = " playlist_flag = 'COMPLETE'";
 	switch($filter['recommended']) {
+        case 'all': $where .= " AND true"; break;
 	    case 'only': $where .= " AND rating >= 4"; break;
 	    case 'not' : $where .= " AND rating < 4 AND rating > 0"; break;
 	}
+    switch($filter['expiry']) {
+        case 'all': $where .= " AND true"; break;
+        case 'active': $where .= " AND RefCode = (SELECT RefCode from playlist 
+                                    WHERE now() <= expire AND library.RefCode = playlist.RefCode) "; break;
+        case 'expired' : $where .= " AND RefCode = (SELECT RefCode from playlist 
+                                    WHERE now() > expire AND library.RefCode = playlist.RefCode) "; break;
+    }
+
+     switch($filter['missing']) {
+        case 'all': $where .= " AND true"; break;
+        case 'missing': $where .= " AND missing = 1"; break;
+    }
+
 	$table = 'library';
 	$primaryKey = 'RefCode';
         $columns = array(

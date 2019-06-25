@@ -31,7 +31,9 @@ $(document).ready(function() {
             "url": "/playlist/display-playlist", 
             "data": function(d) {
                     d.filter = {
-                        recommended: $('#filter_recommended').val()
+                        recommended: $('#filter_recommended').val(),
+                        expiry : $('#filter_expiry').val(),
+                        missing: $('#filter_missing').val()            
                         }
                     }
         },
@@ -70,6 +72,11 @@ $(document).ready(function() {
             {
                 "orderable":      true,
                 "data":           "addDate",
+                "defaultContent": "",
+            },
+            {
+                "orderable":      true,
+                "data":           "endDate",
                 "defaultContent": "",
             },
             {
@@ -114,7 +121,7 @@ $(document).ready(function() {
 		"render": function(data, type, row) {
 			return '<a href="./' + data + '"><i class="fa fa-edit"></i></a>';
 		},
-			"targets" : 7
+			"targets" : 8
 	    },
 	    { className: "centeredTD", targets: 5}
 	],
