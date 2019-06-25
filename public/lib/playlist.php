@@ -338,8 +338,8 @@ class playlist extends TPS{
     /*
     * @abstract Return the top 40 ranked albums for the given time period
     * @param string $startDate The starting date of ranking
-    * @param string $endDate The ending date of ranking
-    * @return array of dictionaries containing the top 40 albums information
+    * @param string $endDate The ending date of ranking.
+    * @return array of dictionaries containing the top 40 albums information (or less if <40 albums played)
     */
     public function getTop40($startDate, $endDate) {
 	$startDate = new \DateTime($startDate);
@@ -357,13 +357,13 @@ class playlist extends TPS{
 	$fourWeekStart = clone $threeWeekStart;
 	$fourWeekStart->modify('-7 days');
 
-	$sql = $this->db->query("SELECT library.release_date, library.rating, library.Locale, playlist.Activate, playlist.SmallCode " .
+	$sql = $this->db->query("SELECT playlist.SmallCode, library.release_date, library.rating, library.Locale, playlist.Activate " .
 				"FROM library LEFT JOIN playlist ON library.RefCode=playlist.RefCode WHERE library.RefCode IN " .
 				"(SELECT RefCode FROM playlist WHERE SmallCode IN (SELECT playlistnumber FROM song " .
 				"WHERE playlistnumber IS NOT NULL AND date >= '" . $startDate->format('Y-m-d') . "' AND date <= '" . $endDate->format('Y-m-d') . "'));");
-	$albumsInfo = [];
+	$albumInfo = [];
         while ($row = $sql->fetch(\PDO::FETCH_ASSOC))
-	    array_push($albumsInfo, $row);
+	    array_push($albumInfo, $row);
 
 	$sql = $this->db->query("SELECT programname, playlistnumber as SmallCode, " .
 				"SUM(IF(date > '" .$oneWeekStart->format('Y-m-d') . "' AND date <= '" . $endDate->format('Y-m-d') . "', 1, 0)) as 1wk, " .
@@ -375,7 +375,167 @@ class playlist extends TPS{
         while ($row = $sql->fetch(\PDO::FETCH_ASSOC))
 	    array_push($albumPlays, $row);
 
-	return json_encode($albumsInfo);
+	foreach ($albumInfo as &$album) {
+	    // Assign week x play count
+	    $lastWeekPlays  = 0;
+	    $twoWeekPlays   = 0;
+	    $threeWeekPlays = 0;
+	    $fourWeekPlays  = 0;
+
+	    foreach ($albumPlays as $plays)
+		if ($plays['SmallCode'] == $album['SmallCode']) {
+		    $lastWeekPlays  += $plays['1wk'];
+		    $twoWeekPlays   += $plays['2wk'];
+		    $threeWeekPlays += $plays['3wk'];
+		    $fourWeekPlays  += $plays['4wk'];
+		}
+
+	    // Assign recentCode
+	    if ($lastWeekPlays > 0)
+	 	$recentCode = 3;
+	    elseif ($twoWeekPlays > 0)
+		$recentCode = 1.5;
+	    elseif ($threeWeekPlays > 0)
+		$recentCode = 1.1;
+	    else
+		$recentCode = 1;
+
+	    // Assign previousWeeksPlayScore
+	    if ($twoWeekPlays > 0)
+		$score = 3;
+	    elseif ($threeWeekPlays > 0)
+		$score = 2;
+	    elseif ($fourWeekPlays > 0)
+		$score = 1;
+	    else
+		$score = 0;
+	    $previousWeeksPlayScore = $score;
+
+	    // Assign playlistCode
+	    $activDate = new \DateTime($album['Activate']); // To include the 3rd, set as midnight of 4th?
+	    $playlistCode = $this->getPlaylistCode($activDate, $endDate);
+
+	    // Assign releaseCode
+	    $releaseDate = new \DateTime($album['release_date']);
+	    $releaseCode = $this->getReleaseCode($releaseDate, $endDate);
+
+	    // Assign numShow - WAITING
+	    $numShow = 1;
+
+	    // Assign rateAmount
+	    $rateAmount = $this->getRateAmount($album['rating']);
+
+	    // Assign numDJs - NEED NUMSHOW
+	    $numDJs = 1;
+
+	    // Assign locationCode
+	    $locationCode = $this->getLocationCode($album['Locale'], $album['SmallCode']);
+
+	    // Assign totalScore
+	    $noPlays = $lastWeekPlays + $twoWeekPlays + $threeWeekPlays + $fourWeekPlays == 0;
+	    if ($noPlays)
+		$totalScore = 0;
+	    else
+		$totalScore = pow($lastWeekPlays + 1, 2) * $numShow * $recentCode * $playlistCode * pow($releaseCode, 2) * $numDJs * $rateAmount + $locationCode + $previousWeeksPlayScore;
+	    $album['totalScore'] = $totalScore;
+	}
+
+	// Return the top 40 albums (or less if <40 albums in $albumInfo)
+        usort($albumInfo, array($this, 'sortByTotalScore'));
+	$top40 = array_slice($albumInfo, 0, 40);
+	return json_encode($top40);
+    }
+
+    /*
+    * @abstract A helper function to determine the playlist code of a top 40 album
+    * @param date $activDate The activation date of the album on the playlist
+    * @param date $endDate The ending date of the charting period
+    * @return int The playlist code of the given album
+    */
+    private function getPlaylistCode($activDate, $endDate) {
+	$weeksOnPL = $endDate->diff($activDate)->d/7;
+	if ($weeksOnPL <= 1)
+	     return 2;
+	elseif ($weeksOnPL <= 2)
+	     return 1.5;
+	elseif ($weeksOnPL <= 3)
+	     return 1.2;
+	else
+	     return 1;
+    }
+
+    /*
+    * @abstract A helper function to determine the release code of a top 40 album
+    * @param date $releaseDate The release date of the album
+    * @param date $endDate The ending date of the charting period
+    * @return int The release code of the given album
+    */
+    private function getReleaseCode($releaseDate, $endDate) {
+	$daysOld = (int)$releaseDate->diff($endDate)->format('%r%a');
+	$dateDiff = max($daysOld, 1); // Unreleased or today-released albums can't be negative
+	if ($dateDiff <= 40)
+	    return 5;
+	elseif ($dateDiff < 60)
+	    return 3;
+	elseif ($dateDiff < 80)
+	    return 2.5;
+	elseif ($dateDiff < 100)
+	    return 2;
+	elseif ($dateDiff < 130)
+	    return 1.5;
+	elseif ($dateDiff < 150)
+	    return 1.2;
+	elseif ($dateDiff < 180)
+	    return 1.1;
+	else
+	    return 1;
+    }
+
+    /*
+    * @abstract A helper function to convert rating to a weighted rate amount
+    * @param string $rating Rating of an album
+    * @return int The rate amount of the given rating
+    */
+    private function getRateAmount($rating) {
+	if ($rating == 2)
+	    return 1;
+	elseif ($rating == 3)
+	    return 1.5;
+	elseif ($rating == 4)
+	    return 2.5;
+	elseif ($rating == 5)
+	    return 3;
+	else
+	    return 0;
+    }
+
+    /*
+    * @abstract A helper function to convert string locale to an integer code
+    * @param string $locale Locale of an artist
+    * @param int $smallCode Playlist SmallCode of the album
+    * @return int The location code of the given locale
+    */
+    private function getLocationCode($locale, $smallCode) {
+	if ($locale == 'International')
+	    return 1;
+	elseif ($locale == 'Country')
+	    return 2;
+	elseif ($locale == 'Province')
+	    return 3;
+	elseif ($locale == 'Local')
+	    return 4;
+	else
+	    throw new Exception("Invalid locale assigned to album. (SmallCode: " . $smallCode . ")");
+    }
+
+    /*
+    * @abstract A helper function to sort albums by their totalScore
+    * @param dictionary $a Information about an album
+    * @param dictionary $b Information about an album
+    * @return array The non-decreasing order of the two albums by totalScore
+    */
+    private function sortByTotalScore($a, $b) {
+        return $a['totalScore'] < $b['totalScore'];
     }
 
     public function setExpiry($playlistIds, $date){
