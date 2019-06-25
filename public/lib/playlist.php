@@ -422,13 +422,9 @@ class playlist extends TPS{
 	    // Assign numShow - WAITING
 	    $numShow = 1;
 
-	    // Assign rateAmount
+	    // Assign rateAmount, numDJs, and locationCode
 	    $rateAmount = $this->getRateAmount($album['rating']);
-
-	    // Assign numDJs - NEED NUMSHOW
-	    $numDJs = 1;
-
-	    // Assign locationCode
+	    $numDJs = $this->getNumDJs($numShow, $rateAmount);
 	    $locationCode = $this->getLocationCode($album['Locale'], $album['SmallCode']);
 
 	    // Assign totalScore
@@ -505,6 +501,27 @@ class playlist extends TPS{
 	    return 2.5;
 	elseif ($rating == 5)
 	    return 3;
+	else
+	    return 0;
+    }
+
+    /*
+    * @abstract A helper function to get the weighted number of DJs that played an album
+    * @param int $numShow The weighted number of shows that played the album
+    * @param float $rateAmount The weighted rate amount for the album
+    * @return int The weighted number of DJs that played the album
+    */
+    private function getNumDJs($numShow, $rateAmount) {
+	if ($numShow == 0)
+	    return 0;
+	elseif ($rateAmount == 3 || $rateAmount == 2.5)
+	    return $numShow + 1;
+	elseif ($rateAmount == 1.5)
+	    return $numShow;
+	elseif ($rateAmount == 1 && $numShow == 0.5)
+	    return 1;
+	elseif ($rateAmount == 1)
+	    return $numShow - 0.5;
 	else
 	    return 0;
     }
