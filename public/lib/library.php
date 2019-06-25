@@ -1098,15 +1098,13 @@ class library extends station{
                 $genre_num = $getData[6];
             }
             if(is_numeric($getData[16]))
-            {
                 $playlistid = $getData[16]; 
-                if(strlen($playlistid) == 3)
-                    $playlistid = '0'.$playlistid;
-            }
             else
             {
                 $playlistid = $null;
+                $playlist_flag = 'False';
             }
+
             $tags = [];
             if($getData[11] == 'o')
                 array_push($tags, 'FemCon');
@@ -1116,12 +1114,14 @@ class library extends station{
                 $locale, $canCon, $playlist_flag, $null, $null, $note, $accept, false,
                 $dateIn, $dateRel, 1, $rating, $tags, array($getData[8]), $subgenres);
 
-            $date = date("Y-m-d");
-            $playlist = new \TPS\playlist();
-
-            if($playlist_flag == 'Complete')
-                $playlist->create($result, $date, $date,
-            $null,$null ,$result);
+            if($playlist_flag == 'Complete' && $playlistid != $null)
+            {
+                $expire = $null;
+                if((bool)strtotime($dateIn))
+                    $expire = date('Y-m-d', strtotime($dateIn. " +180 days"));
+                $playlist = new \TPS\playlist();
+                $playlist->create($result, $dateIn, $expire, $null,$null ,$playlistid);
+            }
 
             echo 'Inserting---- row: '.$getData[0].' RefCode: '.$result.' <br>';
             flush();    

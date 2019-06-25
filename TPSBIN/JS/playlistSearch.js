@@ -79,6 +79,14 @@ $(document).ready(function() {
             },
         ],
 	"columnDefs": [
+        {
+        "render": function(data, type, row) {
+            if(data.length == 3)
+                data = "0" + data;
+            return data;
+        },
+            "targets" : 0
+        },
 	    {
 		"render": function(data, type, row) {
 			return cellBulletPoints(data);
