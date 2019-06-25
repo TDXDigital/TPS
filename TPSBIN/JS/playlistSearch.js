@@ -41,7 +41,10 @@ $(document).ready(function() {
         "columns": [
             {
                 "orderable":      true,
-                "data":           "ShortCode",
+                "data":         {   
+                                    "refCode" : "refCode"
+                                },
+                // "data":           "data",
                 "defaultContent": "",
             },
             {
@@ -89,11 +92,14 @@ $(document).ready(function() {
 
         {
         "render": function (data, type, row) {
-            var id = data;
-            if(data.length == 3)
-                id = "0" + data;
+            
+            var id = data.ShortCode;
+
+            if(data.ShortCode.length == 3){
+                id = "0" + data.ShortCode;
+            }
            
-             return '<input type="checkbox" name="bulkEditId[]" style="visibility:hidden" value="'+data+'">' + id;
+             return '<input type="checkbox" name="bulkEditId[]" style="visibility:hidden" value="'+data.refCode+'"/>' + id;
         },
                  "targets": 0
         },

@@ -310,10 +310,10 @@ class playlist extends TPS{
     * @TODO Make this function work by passing the album RefCode so it works with non-playlist albums. To do this, we need
     *  to ensure the RefCode is stored for each entry in the song table.
     */
-    public function setToMissing($playlistNumber) {
-	$sql = $this->db->query("SELECT RefCode FROM playlist WHERE SmallCode=" . $playlistNumber . ";");
+    public function setToMissing($refCode) {
+	$sql = $this->db->query("SELECT PlaylistId FROM playlist WHERE RefCode=" . $refCode . ";");
         while ($row = $sql->fetch(\PDO::FETCH_ASSOC))
-	    $refCode = $row['RefCode'];
+	    $playlistNumber = $row['PlaylistId'];
 	$this->db->query("UPDATE library SET missing=1 WHERE RefCode=" . $refCode . ";");
 	$sql = $this->db->query("SELECT programname, date FROM song WHERE playlistnumber=" . $playlistNumber .  " ORDER BY date DESC LIMIT 1;");
 	$lastProgram = [];
@@ -328,10 +328,10 @@ class playlist extends TPS{
     * @TODO Make this function work by passing the album RefCode so it works with non-playlist albums. To do this, we need
     *  to ensure the RefCode is stored for each entry in the song table.
     */
-    public function setToFound($playlistNumber) {
-	$sql = $this->db->query("SELECT RefCode FROM playlist WHERE SmallCode=" . $playlistNumber . ";");
-        while ($row = $sql->fetch(\PDO::FETCH_ASSOC))
-	    $refCode = $row['RefCode'];
+    public function setToFound($refCode) {
+	// $sql = $this->db->query("SELECT RefCode FROM playlist WHERE SmallCode=" . $playlistNumber . ";");
+ //        while ($row = $sql->fetch(\PDO::FETCH_ASSOC))
+	//     $refCode = $row['RefCode'];
 	$this->db->query("UPDATE library SET missing=0 WHERE RefCode=" . $refCode . ";");
     }
 
