@@ -297,7 +297,7 @@ class playlist extends TPS{
 	    $refCode = [$refCode];
 	if (sizeof($refCode) > 0) {
 	    $refCodeList = "(" . implode(", ", $refCode) . ")";
-	    $this->db->query("DELETE FROM playlist WHERE RefCode IN " . $refCodeList . ";");
+	    $this->db->query("UPDATE playlist SET Expire=NOW() WHERE RefCode IN " . $refCodeList . ";");
 	    $this->db->query("UPDATE library SET playlist_flag='FALSE' WHERE RefCode IN " . $refCodeList . ";");
 	}
     }
