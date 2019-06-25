@@ -99,6 +99,11 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
 //	$playlist->setToMissing($playlistID);
 //	$playlist->setToFound($playlistID);
     });
+    $app->get('/chart', function () use ($app, $authenticate, $playlist) {
+	$startDate = '2019-06-02';
+	$endDate = '2019-06-29';
+	echo $playlist->getTop40($startDate, $endDate);
+    });
     $app->get('/generate', function () use ($app) {
         $app->redirect('./generate/');
     });

@@ -127,100 +127,10 @@ $(document).ready(function() {
 	],
     });
 
-    var newArchiveTable = $('#new_archive_table').DataTable({
-        "processing": true,
-        "serverSide": true,
-	"order" : [[1, "asc"]],
-        "ajax": {
-            "url": "/library/display-archive", 
-            "data": function(d) {
-                    d.filter = {
-                        recommended: $('#filter_recommended').val()
-                        }
-                    }
-        },
-        "columns": [
-            {
-                "class":          "details-control",
-                "orderable":      false,
-                "data":           "libraryCode",
-                "defaultContent": "",
-            },
-            {
-                "orderable":      true,
-                "data":           "artist",
-                "defaultContent": "",
-            },
-            {
-                "orderable":      false,
-                "data":           "album",
-                "defaultContent": "",
-            },
-            {
-                "orderable":      false,
-                "data":           "subgenres",
-                "defaultContent": "",
-            },
-            {
-                "orderable":      false,
-                "data":           "hometowns",
-                "defaultContent": "",
-            },
-            {
-                "orderable":      false,
-                "data":           "rating",
-                "defaultContent": "",
-            },
-	    {
-                "orderable":      false,
-                "data":           "datein",
-                "defaultContent": "",
-            },
-	    {
-                "orderable":      false,
-                "data":           "release_date",
-                "defaultContent": "",
-            },
-        ],
-	"columnDefs": [
-	    {
-		"render": function(data, type, row) {
-			return cellBulletPoints(data);
-		},
-			"targets" : 3
-	    },
-	    {
-		"render": function(data, type, row) {
-			return cellBulletPoints(data);
-		},
-			"targets" : 4
-	    },
-	    {
-		"render": function(data, type, row) {
-			if (data == 0 || data == null)
-			    return '';
-			tag = '<img class="star" style="width: 25px;" src="../../images/';
-			if (data < 4)
-			    tag += 'not_';
-			return tag + 'recommended.png" />';
-		},
-			"targets" : 5
-	    },
-	    { className: "centeredTD", targets: 5}
-	],
-    });
-
     enableFilter(playlistTable);
-    enableFilter(newArchiveTable);
-
     filterClear(playlistTable);
-    filterClear(newArchiveTable);
-
     $('#playlist_table thead th').removeClass('centeredTD');
     $('#playlist_table tfoot th').removeClass('centeredTD');
-
-    $('#new_archive_table thead th').removeClass('centeredTD');
-    $('#new_archive_table tfoot th').removeClass('centeredTD');
 } );
 
 function cellBulletPoints(data)
