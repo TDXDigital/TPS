@@ -37,6 +37,7 @@ $(document).ready(function() {
                         }
                     }
         },
+        "rowId": 'playlistID',
         "columns": [
             {
                 "class":          "details-control",
@@ -129,9 +130,17 @@ $(document).ready(function() {
 
     enableFilter(playlistTable);
     filterClear(playlistTable);
+    rowSelection(playlistTable);
     $('#playlist_table thead th').removeClass('centeredTD');
     $('#playlist_table tfoot th').removeClass('centeredTD');
 } );
+
+function rowSelection(playlistTable)
+{
+    playlistTable.on( 'click', 'tr', function () {
+        $(this).toggleClass('selected');
+    } );    
+}
 
 function cellBulletPoints(data)
 {
