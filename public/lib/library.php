@@ -1076,8 +1076,9 @@ class library extends station{
             if($getData[11] == 'o')
                 array_push($tags, 'FemCon');
 
+            $format = $getData[12] == ''? 'CD':$getData[12];
             $subgenres = $getData[7] == ''? $null : explode('/', $getData[7]);
-            $result = self::createAlbum($getData[1], $getData[2], $getData[11], $genreKey, $genre_num, $labels, 
+            $result = self::createAlbum($getData[1], $getData[2], $format, $genreKey, $genre_num, $labels, 
                 $locale, $canCon, $playlist_flag, $null, $null, $note, $accept, false,
                 $dateIn, $dateRel, 1, $rating, $tags, array($getData[8]), $subgenres);
 
