@@ -321,6 +321,49 @@ class playlist extends TPS{
 	$this->db->query("UPDATE library SET missing=0 WHERE RefCode=" . $refCode . ";");
     }
 
+    /*
+    * @abstract Return the top 40 ranked albums for the given time period
+    * @param string $startDate The starting date of ranking
+    * @param string $endDate The ending date of ranking
+    * @return array of dictionaries containing the top 40 albums information
+    */
+    public function getTop40($startDate, $endDate) {
+	$startDate = new \DateTime($startDate);
+	$endDate = new \DateTime($endDate);
+
+	$oneWeekStart = clone $endDate;
+	$oneWeekStart->modify('-7 days');
+
+	$twoWeekStart = clone $oneWeekStart;
+	$twoWeekStart->modify('-7 days');
+
+	$threeWeekStart = clone $twoWeekStart;
+	$threeWeekStart->modify('-7 days');
+
+	$fourWeekStart = clone $threeWeekStart;
+	$fourWeekStart->modify('-7 days');
+
+	$sql = $this->db->query("SELECT library.release_date, library.rating, library.Locale, playlist.Activate, playlist.SmallCode " .
+				"FROM library LEFT JOIN playlist ON library.RefCode=playlist.RefCode WHERE library.RefCode IN " .
+				"(SELECT RefCode FROM playlist WHERE SmallCode IN (SELECT playlistnumber FROM song " .
+				"WHERE playlistnumber IS NOT NULL AND date >= '" . $startDate->format('Y-m-d') . "' AND date <= '" . $endDate->format('Y-m-d') . "'));");
+	$albumsInfo = [];
+        while ($row = $sql->fetch(\PDO::FETCH_ASSOC))
+	    array_push($albumsInfo, $row);
+
+	$sql = $this->db->query("SELECT programname, playlistnumber as SmallCode, " .
+				"SUM(IF(date > '" .$oneWeekStart->format('Y-m-d') . "' AND date <= '" . $endDate->format('Y-m-d') . "', 1, 0)) as 1wk, " .
+				"SUM(IF(date > '" . $twoWeekStart->format('Y-m-d') . "' AND date <= '" . $oneWeekStart->format('Y-m-d') . "', 1, 0)) as 2wk, " .
+				"SUM(IF(date > '" . $threeWeekStart->format('Y-m-d') . "' AND date <= '" . $twoWeekStart->format('Y-m-d') . "', 1, 0)) as 3wk, " .
+				"SUM(IF(date > '" . $fourWeekStart->format('Y-m-d') . "' AND date <= '" . $threeWeekStart->format('Y-m-d') . "', 1, 0)) as 4wk " .
+				"FROM song WHERE playlistnumber IS NOT NULL GROUP BY programname, SmallCode;");
+	$albumPlays = [];
+        while ($row = $sql->fetch(\PDO::FETCH_ASSOC))
+	    array_push($albumPlays, $row);
+
+	return json_encode($albumsInfo);
+    }
+
     public function setExpiry($playlistIds, $date){
        if(!is_array($playlistIds)){
             $playlistIds = array($playlistIds);
