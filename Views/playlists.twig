@@ -81,6 +81,8 @@
     </div>
     <h3>Playlist</h3>
     <hr size="30">
+    <form role="form" method="POST" action="/playlist/batch">
+    <input type="hidden" name="_METHOD" value="PUT"/>
     <table class='table table-bordered table-hover' id='playlist_table'>
         <thead>
 	    <tr>
@@ -97,19 +99,38 @@
         </thead>
 	<tfoot>
 	    <tr>
-                <th>Playlist #</th>
-                <th>Artist</th>
-                <th>Album</th>
-	        <th>Subgenres</th>
-	        <th>Hometowns</th>
-	        <th>Recommended</th>
-                <th>Add Date</th>
-                <th>End Date</th>
-                <th>Edit</th>
+            <th>Playlist #</th>
+            <th>Artist</th>
+            <th>Album</th>
+            <th>Subgenres</th>
+            <th>Hometowns</th>
+            <th>Recommended</th>
+            <th>Add Date</th>
+            <th>End Date</th>
+            <th>Edit</th>
 	    </tr>
 	</tfoot>
+   
     </table>
-
+    <div class="container">
+        {% if permissions > 1 or BulkEdit in permssions %}
+        <div class="row">
+         <label for="checkAll">All</label> <input type="checkbox" id="checkAll" style="visibility:visible">
+        </div>
+            <div class="row">
+                <span>Batch Edit</span>
+                <select name="action" required id="batchSelect">
+                    <option value="">Select</option>
+                    <option value="convert">Convert (Send to Library)</option>
+                    <option value="missing">Missing</option>
+                </select>
+                <span id="batchExtension"></span>
+                <input type="submit" class="btn btn-primary btn-xs"/>
+            </div>
+        {% endif %}
+    </div>
+    <br>
+    </form>
     <div class="row">
         <div class="col-lg-6">
             <span>Report:</span>

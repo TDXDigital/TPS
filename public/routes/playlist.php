@@ -516,6 +516,121 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             echo $writer->writeToString();
         });
     });
+
+
+
+        $app->put('/batch', $authenticate($app, array(2)), function () use ($app){
+
+
+            echo 'test';
+            exit;
+        $library = new \TPS\library();
+        $XHR = $app->request->isAjax();
+        $bulkIds = $app->request->put('bulkEditId');
+        $action = $app->request->put('action');
+        $value = $app->request->put('value');
+        $attribute = $app->request->put('attribute');
+        $bulkActions = array("status", "attribute", "playlistStatus", "proper");
+        $result = [];
+        if(in_array($action, $bulkActions)){
+            switch ($action){
+                case "status":
+                    if($value==TRUE){
+                        $result[] = $library->enable($bulkIds);
+                        break;
+                    }
+                    $result[] = $library->disable($bulkIds);
+                    break;
+                case "attribute":
+                    $result[] = $library->attribute($bulkIds, $attribute, $value);
+                    break;
+                case "proper":
+                    if(in_array(strtolower($attribute),
+                            array("proper", "upper", "lower", "cap_first"))){
+                        $albums = array();
+                        foreach ($bulkIds as $key => $val) {
+                            $albums[$val] = $library->getAlbumByRefcode(
+                                    $val)[0];
+                        }
+                        if(strtolower($value) == "properartist"){
+                            foreach ($albums as $key => $val2) {
+                                $library->attribute(
+                                        $key, ucwords($val2['artist']),
+                                        "artist");
+                            }
+                        }
+                        elseif(strtolower($value) == "properalbum"){
+                            foreach ($albums as $key => $val2) {
+                                $library->attribute(
+                                        $key, ucwords($val2['album']),
+                                        "album");
+                            }
+                        }
+                        elseif(strtolower($value) == "propernotes"){
+                            foreach ($albums as $key => $val2) {
+                                $library->attribute(
+                                        $key, ucwords($val2['note']),
+                                        "note");
+                            }
+                        }
+                        else{
+                            throw new Exception("Invalid value provided");
+                        }
+                        break;
+                    }
+                    throw new Exception(
+                            "Invalid attribute provided for proper");
+                case "playlistStatus":
+                    if(in_array(strtolower($value),
+                                array("complete", "pending", "false")
+                            )){
+                        $result[] = $library->playlistStatus($bulkIds,
+                                                           strtoupper($value));
+                        break;
+                    }
+                    throw new Exception("Invalid value for playlist flag");
+            }
+        }
+        else{
+            foreach( $bulkIds as $bulk ){
+                switch ($action) {
+                    case "print":
+                        $_SESSION['PRINTID'][] = array("RefCode"=>$bulk);
+                        break;
+                    default:
+                        throw new \Exception("Unknown Attribute");
+                        break;
+                }
+            }
+        }
+
+        if(in_array(TRUE, $result)){
+            $app->flash('success',"Batch Update Performed");
+        }
+        if(in_array(FALSE, $result)){
+            $fails = array_filter($result, function($n) {
+                if($n === FALSE){
+                    return $n;
+                }
+            });
+            $app->flash("error",
+                    "Could not set the Playlist Status for: "
+                    . implode(", ",$fails));
+        }
+        if($XHR){
+            print json_encode($result);
+            return TRUE;
+        }
+        $app->redirect($app->request->getReferrer());
+    });
+    $app->get('/batch', $authenticate, function () use ($app){
+        $app->redirect('./batch/');
+    });
+
+
+
+
+
     $app->group('/labels', $authenticate, function () use ($app) {
         // inventory management
         $app->get('/', function () use ($app) {
@@ -567,3 +682,6 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
         }
     });
 });
+
+
+
