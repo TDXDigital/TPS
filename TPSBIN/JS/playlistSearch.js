@@ -40,9 +40,11 @@ $(document).ready(function() {
         "rowId": 'playlistID',
         "columns": [
             {
-                "class":          "details-control",
                 "orderable":      true,
-                "data":           "ShortCode",
+                "data":         {   
+                                    "refCode" : "refCode"
+                                },
+                // "data":           "data",
                 "defaultContent": "",
             },
             {
@@ -87,13 +89,19 @@ $(document).ready(function() {
             },
         ],
 	"columnDefs": [
+
         {
-        "render": function(data, type, row) {
-            if(data.length == 3)
-                data = "0" + data;
-            return data;
+        "render": function (data, type, row) {
+            
+            var id = data.ShortCode;
+
+            if(data.ShortCode.length == 3){
+                id = "0" + data.ShortCode;
+            }
+           
+             return '<input type="checkbox" name="bulkEditId[]" style="visibility:hidden" value="'+data.refCode+'"/>' + id;
         },
-            "targets" : 0
+                 "targets": 0
         },
 	    {
 		"render": function(data, type, row) {
@@ -139,6 +147,13 @@ function rowSelection(playlistTable)
 {
     playlistTable.on( 'click', 'tr', function () {
         $(this).toggleClass('selected');
+        var checked = $(':checkbox', $(this).closest('tr')).prop('checked', function(index, attr){
+            if(attr){
+                $('#checkAll').prop('checked', false);
+                return false;
+            }
+            return true;
+        });
     } );    
 }
 
@@ -167,3 +182,101 @@ function enableFilter(table)
         table.draw();
     });
 }
+
+$(document).ready(function()
+{
+    $("#checkAll").click(function() {
+            if($(this).is(':checked'))
+            {
+                $('#playlist_table .selected').click();
+                $('#playlist_table tr').click();
+                $('#checkAll').prop('checked', true);
+            }
+            else
+            {
+                $('#playlist_table .selected').click();
+            }
+    });                 
+});
+
+
+
+
+
+
+
+
+
+
+function toggle(source) {
+    checkboxes = document.getElementsByName('bulkEditId[]');
+    for(var i=0, n=checkboxes.length;i<n;i++) {
+      checkboxes[i].checked = source.checked;
+    }
+  }
+
+
+function batchChange(element, url){
+    console.log(element);
+    var val = element.val();
+    if(!val){
+        alert (val);
+        return true;
+    }
+    console.log(val);
+
+    var batch = $.ajax({
+        url:"../batch/options/"+val,
+        dataType: "json"
+    })
+    .done(function(data){
+        if ( console && console.log ) {
+            console.log( data );
+        }
+        if($.type(data) === "boolean"){
+            $("#batchExtension").html("");
+            return true;
+        }
+        if ( console && console.log ) {
+            console.log($.type(data));
+            console.log(data.inputType);
+            console.log(data.values);
+        }
+        if(data.inputType==="select"){
+            $("#batchExtension").html(
+                "<select name='value' id='beval' required>"+
+                "<option>Select</option></select>");
+            $.each(data.values, function(key, value){
+                $("#beval")
+                    .append($("<option></option>")
+                    .attr("value", key)
+                    .text(value));
+            });
+        }
+        else if(data.inputType==="attribute"){
+            $("#batchExtension").html(
+                "Attribute: <select name='value' id='beval' required>"+
+                "<option>Select</option></select>"+
+                "&nbsp;<span id='beattr'></span>");
+            $.each(data.values, function(key, value){
+                $("#beval")
+                    .append($("<option></option>")
+                    .attr("value", key)
+                    .attr("class", value.input)
+                    .text(value.value));
+            });
+
+        }
+        changeAttrOptions("#beval option:selected", "#beattr");
+        //$("#batchExtension").html("THIS IS A TEST");
+    })
+    .fail(function(data){
+        if ( console && console.log ) {
+            console.log( data );
+        }
+    });
+
+}
+
+
+

@@ -516,6 +516,47 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             echo $writer->writeToString();
         });
     });
+
+
+
+        $app->put('/batch', $authenticate($app, array(2)), function () use ($app){
+
+        $playlist = new \TPS\playlist();
+        $bulkIds = $app->request->put('bulkEditId');
+        $action = $app->request->put('action');
+        $attribute = $app->request->put('attribute');
+
+        switch($action) {
+        case 'convert': 
+            foreach($bulkIds as $key => $refCode)   
+            {
+                $playlist->moveAlbumToLibrary($refCode);
+            }
+            break;
+        case 'missing':
+            foreach($bulkIds as $key => $refCode)   
+            {
+                $playlist->setToMissing($refCode);
+            }
+            break;
+        case 'found':
+            foreach($bulkIds as $key => $refCode)   
+            {
+                $playlist->setToFound($refCode);
+            }
+            break;
+            
+        }
+        $app->redirect($app->request->getReferrer());
+    });
+    $app->get('/batch', $authenticate, function () use ($app){
+        $app->redirect('./batch/');
+    });
+
+
+
+
+
     $app->group('/labels', $authenticate, function () use ($app) {
         // inventory management
         $app->get('/', function () use ($app) {
@@ -567,3 +608,6 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
         }
     });
 });
+
+
+
