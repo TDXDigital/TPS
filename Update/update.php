@@ -92,7 +92,7 @@ function DatabaseUpdateCheck($Update_PKG){
                         foreach($temp[$f] as $gar=>$v2){
                             $match[$gar]=$v2;
                         }
-			if (empty($val) && !empty($match))
+			if (empty($val))
 			    $db_drop = TRUE;
                         $dt = array_diff_assoc($keys[$key],$match[$key]);
 
@@ -118,7 +118,7 @@ function DatabaseUpdateCheck($Update_PKG){
                 else{
                     $Pass = FALSE;
                 }
-                if(empty($return)&&sizeof($key_only)===sizeof($match)){
+                if(empty($return)&&sizeof($key_only)===sizeof($match) || $db_drop){
                     $Pass = TRUE;
 		    if ($db_drop && !empty($new))
 			$Pass = FALSE;
