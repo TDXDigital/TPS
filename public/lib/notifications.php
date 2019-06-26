@@ -131,4 +131,22 @@ class notification extends station{
     public function acknowledge($id) {
 	$this->db->query("UPDATE notification SET acknowledged=NOW() WHERE notificationid=" . $id .";");
     }
+
+    public function checkConvert() {
+	$playlist = new \TPS\playlist();
+	$numExpired = sizeof($playlist->getExpiredAlbums());
+	if ($numExpired > 0) {
+	    $stmt = $this->db->query("SELECT message FROM notification WHERE tag='expired albums';");
+	    $alreadyNotifiedOf = 0;
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+		preg_match('/[0-9]+/', $row['message'], $num);
+		$alreadyNotifiedOf = $num[0];
+	    }
+	    if ($alreadyNotifiedOf != $numExpired) {
+	        $this->db->query("DELETE FROM notification WHERE tag='expired albums';");
+	        $this->db->query("INSERT INTO notification (message, time, tag, path) VALUES ('" .
+				 $numExpired . " expired albums are on the playlist', NOW(), 'expired albums', '/playlist');");
+	    }
+	}
+    }
 }

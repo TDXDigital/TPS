@@ -304,7 +304,8 @@
             $.ajax({
                 url: '/message/acknowledge',
                 type: 'PUT',
-                data: { id: id}
+                data: { id: id},
+		async: false
             });
     }
 

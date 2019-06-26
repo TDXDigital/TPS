@@ -250,7 +250,12 @@ $app->hook('slim.before.dispatch', function() use ($app) {
    $access = null;
    if (isset($_SESSION['access'])) {
       $access = $_SESSION['access'];
+      if ($access > 1 && !is_null($callsign)) {
+	  $notifications = new \TPS\notification($callsign);
+          $notifications->checkConvert();
+      }
    }
+
    $app->view()->setData('userName',$user);
    $app->view()->setData('userId',$uid);
    $app->view()->setData('permissions',$access);
