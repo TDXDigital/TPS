@@ -38,4 +38,9 @@ $app->group("/message", array($authenticate($app,[1,2])),
         $value = array_merge($broadcasts, $messages);
         standardResult::ok($app, $value, null);
     });
+    $app->put("/acknowledge", $authenticate($app, [1, 2]), function () use ($app, $notifications) {
+	$id = $app->request->put("id");
+	$notifications = new \TPS\notification(\TPS\util::get($_SESSION, 'CALLSIGN'));
+	$notifications->acknowledge($id);
+    });
 });

@@ -1,0 +1,1 @@
+ALTER TABLE `notification` ADD COLUMN `path` VARCHAR(50) NOT NULL DEFAULT '#';

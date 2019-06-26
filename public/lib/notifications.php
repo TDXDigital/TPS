@@ -54,7 +54,7 @@ class notification extends station{
                 . "WHERE (`station`=:station OR `station`='*') AND "
                 . "CASE WHEN (:userName != '' AND :userName != '*') THEN "
                 . "`userName`=:userName ELSE (`userName` = '*' OR `userName` IS null) END "
-                . "AND `permissionRequired`<=:permission");
+                . "AND `permissionRequired`<=:permission AND `acknowledged` IS NULL");
         $stmt->bindParam(":userName", $userName);
         $stmt->bindParam(":station", $this->callsign);
         $stmt->bindParam(":permission", $permission);
@@ -87,6 +87,8 @@ class notification extends station{
             );
             $internal['time'] = \TPS\util::get($value, 'time', date('now'));
             $internal['content'] = \TPS\util::get($value, 'message', "No Content Provided");
+	    $internal['id'] = \TPS\util::get($value, 'notificationid', -1);
+	    $internal['path'] = \TPS\util::get($value, 'path', '#');
             array_push($result, $internal);
         }
         return $result;
@@ -124,5 +126,9 @@ class notification extends station{
             }
         }
         return true;
+    }
+
+    public function acknowledge($id) {
+	$this->db->query("UPDATE notification SET acknowledged=NOW() WHERE notificationid=" . $id .";");
     }
 }

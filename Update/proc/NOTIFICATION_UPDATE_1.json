@@ -1,0 +1,19 @@
+{
+    "TPS_Errno" : "NOT-001",
+    "type" : "database",
+    "execute" : "SQL",
+    "requires" : "TASK-INS",
+    "description" : "Adds `path` column to `notification` table",
+    "SQL_QRY" : {
+        "TEST" : "SHOW COLUMNS FROM `notification` WHERE Field='path';",
+        "RESULT" : {
+	    "Field" : [
+		"path"
+	    ]
+	},
+	"Negate": 0,
+	"createMode" : 1,
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "NOTIFICATION_UPDATE_1.sql"
+    }
+}

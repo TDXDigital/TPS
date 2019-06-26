@@ -68,11 +68,11 @@
                     <ul class="dropdown-menu message-dropdown">
                         {% if not messages %}
                             {% set messages = [{'image':{'url':'https://placehold.it/50x50','alt':''},
-                                                'user':{'name':user.name},'time':date('now'),'content':'No Messages'}] %}
+                                                'user':{'name':user.name},'time':date('now'),'content':'No Messages', 'path': '#'}] %}
                         {% endif %}
                         {% for message in messages %}
-                        <li class="message-preview">
-                            <a href="#">
+                        <li class="message-preview" onclick="dismissMessage({{message.id}})">
+                            <a href="{{message.path}}">
                                 <div class="media">
                                     <span class="pull-left">
                                         <img class="media-object" src="{{message.image.url}}" alt="{{message.image.alt}}">
@@ -298,6 +298,15 @@
     $(function () {
         setNavigation();
     });
+
+    function dismissMessage(id) {
+	if (id != null)
+            $.ajax({
+                url: '/message/acknowledge',
+                type: 'PUT',
+                data: { id: id}
+            });
+    }
 
     function setActiveIfHref(uri){
         var located = false;
