@@ -66,6 +66,7 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i {% if messages %}class="fa fa-envelope" style="color:yellow" {% else %} class="fa fa-envelope-o" {% endif %}></i> <b class="caret"></b></a>
                     <ul class="dropdown-menu message-dropdown">
+                        
                         {% if not messages %}
                             {% set messages = [{'image':{'url':'https://placehold.it/50x50','alt':''},
                                                 'user':{'name':user.name},'time':date('now'),'content':'No Messages', 'path': '#'}] %}
