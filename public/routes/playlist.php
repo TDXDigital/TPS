@@ -54,8 +54,8 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             foreach ($result as $key => $value) {
                 $lib = $library->getAlbumByRefcode($value['RefCode']);
                 $result[$key]["library"] = array_pop($lib);
-		$result[$key]['library']["subgenres"] = $library->getSubgenresByRefCode($value['RefCode']);
-		$result[$key]['library']['hometowns'] = $library->getHometownsByRefCode($value['RefCode']);
+        		$result[$key]['library']["subgenres"] = $library->getSubgenresByRefCode($value['RefCode']);
+        		$result[$key]['library']['hometowns'] = $library->getHometownsByRefCode($value['RefCode']);
             }
             $params = array(
                 "title"=>"Playlist",
@@ -99,6 +99,15 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
 //	$playlist->setToMissing($playlistID);
 //	$playlist->setToFound($playlistID);
     });
+
+   $app->get('/lastProg/:id', $authenticate, function($id) use ($app, $playlist){
+            $prog = $playlist->getLastProgram($id);
+            // $lastProg["name"] 
+            echo 'Last Program: ' . $prog[0]["programname"] . PHP_EOL .
+                    'Date: ' . $prog[0]["date"];
+            // return json_encode($prog);
+        });
+
     $app->get('/chart', function () use ($app, $authenticate, $playlist) {
 	$startDate = '2019-06-02';
 	$endDate = '2019-06-29';

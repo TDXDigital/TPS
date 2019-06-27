@@ -42,9 +42,8 @@ $(document).ready(function() {
             {
                 "orderable":      true,
                 "data":         {   
-                                    "refCode" : "refCode"
+                                    "ShortCode" : "ShortCode"
                                 },
-                // "data":           "data",
                 "defaultContent": "",
             },
             {
@@ -98,10 +97,15 @@ $(document).ready(function() {
             if(data.ShortCode.length == 3){
                 id = "0" + data.ShortCode;
             }
-           
-             return '<input type="checkbox" name="bulkEditId[]" style="visibility:hidden" value="'+data.refCode+'"/>' + id;
+            if(data.missing == 1)
+            {
+                return '<input type="checkbox" name="bulkEditId[]" style="visibility:hidden" value="'+data.refCode+'"/>' + 
+                '<a href="#" class="missingAlbum">'+ id.toString() +'</a>';
+            }
+            else   
+                return '<input type="checkbox" name="bulkEditId[]" style="visibility:hidden" value="'+data.refCode+'"/>' + id.toString();
         },
-                 "targets": 0
+            "targets": 0,
         },
 	    {
 		"render": function(data, type, row) {
@@ -139,8 +143,11 @@ $(document).ready(function() {
     enableFilter(playlistTable);
     filterClear(playlistTable);
     rowSelection(playlistTable);
+    missingAlbumLink(playlistTable);
     $('#playlist_table thead th').removeClass('centeredTD');
     $('#playlist_table tfoot th').removeClass('centeredTD');
+
+    
 } );
 
 function rowSelection(playlistTable)
@@ -157,6 +164,24 @@ function rowSelection(playlistTable)
     } );    
 }
 
+
+function missingAlbumLink(playlistTable)
+{
+     playlistTable.on( 'click', 'a', function () {
+        var id = $(this).closest('tr').attr('id')
+
+         $.ajax({
+        url: "./lastProg/"+id,
+            type: 'GET',
+        }).done(function(data) {
+            // var obj = JSON.parse(data);
+            alert(data);
+            //location.reload();
+        }).fail(function(data){
+            alert(data.status);
+        });
+    });    
+}
 function cellBulletPoints(data)
 {
     td = "";
@@ -185,19 +210,21 @@ function enableFilter(table)
 
 $(document).ready(function()
 {
+    //All Check box for batch edit
     $("#checkAll").click(function() {
-            if($(this).is(':checked'))
-            {
-                $('#playlist_table .selected').click();
-                $('#playlist_table tr').click();
-                $('#checkAll').prop('checked', true);
-            }
-            else
-            {
-                $('#playlist_table .selected').click();
-            }
-    });                 
+        if($(this).is(':checked'))
+        {
+            $('#playlist_table .selected').click();
+            $('#playlist_table tr').click();
+            $('#checkAll').prop('checked', true);
+        }
+        else
+        {
+            $('#playlist_table .selected').click();
+        }
+    });   
 });
+
 
 
 
