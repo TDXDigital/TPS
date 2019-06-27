@@ -56,7 +56,8 @@
         "hellogerard/jobby": "*",
         "mholt/papaparse": "^4.0.0",
         "glench/fuzzyset.js": "*",
-        "texy/texy": "^2.9"
+        "texy/texy": "^2.9",
+        "mpdf/mpdf": "^8.0"
     },
     "require-dev": {
         "phpunit/phpunit-skeleton-generator": "*",
@@ -69,6 +70,8 @@
             "Controller\\": "./"
         }
     },
+    "minimum-stability": "beta",
+    "prefer-stable": true,
     "license": "MIT",
     "authors": [
         {
