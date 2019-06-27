@@ -1,13 +1,13 @@
 <?php
       session_start();
 
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
+$con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
+	die('Error connecting to SQL Server, could not connect due to: ' . mysqli_error() . ';  username=' . $_SESSION["username"]);
 	}
 else if($con){
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /login.php');}
+	if(!mysqli_select_db($con, $_SESSION['DBNAME'])){header('Location: /login.php');}
 }
 else{
 	echo 'ERROR! cannot obtain access... this terminal may not be authorised for access';
@@ -15,16 +15,16 @@ else{
 
         $INSENDQU = "update episode set endtime='" . addslashes($_POST['end']) . "', totalspokentime='". addslashes($_POST['spoken'])."', IP_Finalized='".$_SERVER['REMOTE_ADDR']."',EndStamp=NOW() WHERE callsign='".addslashes($_POST['callsign'])."' and programname='".addslashes($_POST['program'])."' and date='".addslashes($_POST['user_date'])."' ";
 
-        if(!mysql_query($INSENDQU,$con)){
-            echo "Error Finalizing Episode<br>".mysql_error();
+        if(!mysqli_query($con,$INSENDQU)){
+            echo "Error Finalizing Episode<br>".mysqli_error($con);
         }
         else{
 
         }
         $PROGRAMQUERY = "select * from episode where callsign='". addslashes($_POST['callsign'])."' and programname='" . addslashes($_POST['program']) . "' and date='". addslashes($_POST['user_date'])."' and starttime='".addslashes($_POST['user_time'])."'";
-        $PROGRAMDATA = mysql_query($PROGRAMQUERY);
-        $PROGRAMARRAY = mysql_fetch_array($PROGRAMDATA);
-        if( mysql_num_rows($PROGRAMDATA) == "0" )
+        $PROGRAMDATA = mysqli_query($con,$PROGRAMQUERY);
+        $PROGRAMARRAY = mysqli_fetch_array($PROGRAMDATA);
+        if( mysqli_num_rows($PROGRAMDATA) == "0" )
         {
           echo 'No Shows Match Given Data, or No Data Provided <br />';
         }
@@ -51,18 +51,18 @@ else{
              $br = strtolower($_SERVER['HTTP_USER_AGENT']); // what browser they use.
             //echo $br;
 
-            if(ereg("opera", $br)) {
+            if(preg_match("/opera/", $br)) {
               //echo 'Browser Supported';
             //    header("location: originalhomepage.php");
             }
-            else if(ereg("chrome", $br)) {
+            else if(preg_match("/chrome/", $br)) {
               echo "<tr><td colspan=\"100%\>
               <h3 width=\"100%\" style=\"background-color:yellow; color:black;\"><strong>WARNING: This browser does not support the needed HTML5 forms on Windows<br />
               please launch or download opera that supports these required forms. This does not apply to MAC OS</strong></h3>
               </td></tr>";
             //    header("location: originalhomepage.php");
             }
-            else if(ereg("safari", $br)) {
+            else if(preg_match("/safari/", $br)) {
               echo "<tr><td colspan=\"100%\>
               <h3 width=\"100%\" style=\"background-color:yellow; color:black;\"><strong>WARNING: This browser does not support the needed HTML5 forms on Windows<br />
               please launch or download opera that supports these required forms. This does not apply to MAC OS</strong></h3>
@@ -171,13 +171,13 @@ else{
                <tr> <!-- Row for displaying already entered data -->
                    <?php
                      $query = "select * from SONG where callsign='" . addslashes($PROGRAMARRAY['callsign']). "' and programname='" . addslashes($PROGRAMARRAY['programname']) . "' and date='" . addslashes($PROGRAMARRAY['date']) . "' and starttime='" . addslashes($PROGRAMARRAY['starttime']) . "' order by time";
-                     $listed=mysql_query($query,$con);
-                     if(mysql_num_rows($listed)=="0"){
+                     $listed=mysqli_query($con,$query);
+                     if(mysqli_num_rows($listed)=="0"){
                        echo "<tr><td colspan=\"11\" style=\"background-color:yellow;\">no data returned</td></tr>";
                      }
                      else
                      {
-                         while ($list=mysql_fetch_array($listed))
+                         while ($list=mysqli_fetch_array($listed))
                          {
                            echo "<tr>";
                            echo "<td>";
@@ -198,8 +198,8 @@ else{
                                 echo $list['hit'];
                            echo "</td><td>";
                                 echo $list['instrumental'];
-                           $songlang = mysql_query("select languageid from LANGUAGE where callsign='" . addslashes($list['callsign']) . "' and programname='" . addslashes($list['programname']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and songid='". addslashes($list['songid']) ."'");
-                           $rowlang = mysql_fetch_array($songlang);
+                           $songlang = mysqli_query("select languageid from LANGUAGE where callsign='" . addslashes($list['callsign']) . "' and programname='" . addslashes($list['programname']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and songid='". addslashes($list['songid']) ."'");
+                           $rowlang = mysqli_fetch_array($songlang);
                            echo "</td><td>";
                                 echo $rowlang['languageid'];
                            echo "</td>";
