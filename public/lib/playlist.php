@@ -69,61 +69,60 @@ class playlist extends TPS{
     }
 
     public function displayTable($filter) {
-       $where = " playlist_flag = 'COMPLETE'";
-       switch($filter['recommended']) {
-        case 'all': $where .= " AND true"; break;
-        case 'only': $where .= " AND rating >= 4"; break;
-        case 'not' : $where .= " AND rating < 4 AND rating > 0"; break;
-    }
-    switch($filter['expiry']) {
-        case 'all': $where .= " AND true"; break;
-        case 'active': $where .= " AND RefCode = (SELECT RefCode from playlist 
-        WHERE now() <= expire AND library.RefCode = playlist.RefCode) "; break;
-        case 'expired' : $where .= " AND RefCode = (SELECT RefCode from playlist 
-        WHERE now() > expire AND library.RefCode = playlist.RefCode) "; break;
+        $where = " playlist_flag = 'COMPLETE'";
+        switch($filter['recommended']) {
+            case 'all': $where .= " AND true"; break;
+            case 'only': $where .= " AND rating >= 4"; break;
+            case 'not' : $where .= " AND rating < 4 AND rating > 0"; break;
+        }
+        switch($filter['expiry']) {
+            case 'all': $where .= " AND true"; break;
+            case 'active': $where .= " AND RefCode = (SELECT RefCode from playlist 
+            WHERE now() <= expire AND library.RefCode = playlist.RefCode) "; break;
+            case 'expired' : $where .= " AND RefCode = (SELECT RefCode from playlist 
+            WHERE now() > expire AND library.RefCode = playlist.RefCode) "; break;
+        }
+        switch($filter['missing']) {
+            case 'all': $where .= " AND true"; break;
+            case 'missing': $where .= " AND missing = 1"; break;
+        }
+
+        $table = 'library';
+        $primaryKey = 'refCode';
+        $columns = array(
+            array( 'db' => 'refCode', 'dt' => 'refCode' ),
+            array( 'db' => 'datein', 'dt' => 'datein' ),
+            array( 'db' => 'artist',  'dt' => 'artist' ),
+            array( 'db' => 'album',   'dt' => 'album' ),
+            array( 'db' => 'rating',   'dt' => 'rating' ),
+            array( 'db' => 'missing',   'dt' => 'missing' ),
+        );
+        $lib_data = \SSP::complex($_GET, $this->db, $table, $primaryKey, $columns, null, $where);
+
+        $library = new \TPS\library();
+        foreach($lib_data['data'] as &$album) {
+            $refCode = $album['refCode'];
+            $album_playlist_info = array_values($this->getAllByRefCode($refCode))[0];
+            $album['playlistID'] = $album_playlist_info['PlaylistId'];
+            $album['ShortCode'] = $album_playlist_info['SmallCode'];
+            $album['addDate'] = substr($album_playlist_info['Activate'], 0, 10);
+            $album['endDate'] = substr($album_playlist_info['Expire'], 0, 10);
+            $album['subgenres'] = $library->getSubgenresByRefCode($refCode);
+            $album['hometowns'] = $library->getHometownsByRefCode($refCode);
+        }
+        return json_encode($lib_data);
     }
 
-    switch($filter['missing']) {
-        case 'all': $where .= " AND true"; break;
-        case 'missing': $where .= " AND missing = 1"; break;
-    }
-
-    $table = 'library';
-    $primaryKey = 'refCode';
-    $columns = array(
-        array( 'db' => 'refCode', 'dt' => 'refCode' ),
-        array( 'db' => 'datein', 'dt' => 'datein' ),
-        array( 'db' => 'artist',  'dt' => 'artist' ),
-        array( 'db' => 'album',   'dt' => 'album' ),
-        array( 'db' => 'rating',   'dt' => 'rating' ),
-        array( 'db' => 'missing',   'dt' => 'missing' ),
-    );
-    $lib_data = \SSP::complex($_GET, $this->db, $table, $primaryKey, $columns, null, $where);
-
-    $library = new \TPS\library();
-    foreach($lib_data['data'] as &$album) {
-       $refCode = $album['refCode'];
-       $album_playlist_info = array_values($this->getAllByRefCode($refCode))[0];
-       $album['playlistID'] = $album_playlist_info['PlaylistId'];
-       $album['ShortCode'] = $album_playlist_info['SmallCode'];
-       $album['addDate'] = substr($album_playlist_info['Activate'], 0, 10);
-       $album['endDate'] = substr($album_playlist_info['Expire'], 0, 10);
-       $album['subgenres'] = $library->getSubgenresByRefCode($refCode);
-       $album['hometowns'] = $library->getHometownsByRefCode($refCode);
-   }
-   return json_encode($lib_data);
-}
-
-public function getRangeGaps($list, $start=FALSE){
-    if($start===FALSE){
-        $start = min($list);
-    }
-    $ranges = array();
-    while ($start < max($list)) {
-        $max = $this->getRangeGap($start, $list);
-        array_push($ranges, [$start, $max]);
-            $start = $max+2; #plus one will not work as we know 
-            # the +1 value is missing
+    public function getRangeGaps($list, $start=FALSE){
+        if($start===FALSE){
+            $start = min($list);
+        }
+        $ranges = array();
+        while ($start < max($list)) {
+            $max = $this->getRangeGap($start, $list);
+            array_push($ranges, [$start, $max]);
+                $start = $max+2; #plus one will not work as we know 
+                # the +1 value is missing
         }
         return $ranges;
     }
@@ -565,6 +564,44 @@ public function getRangeGaps($list, $start=FALSE){
     private function sortByTotalScore($a, $b) {
         return $a['totalScore'] < $b['totalScore'];
     }
+
+    /*
+    * @abstract Given a list of albums, build and return an html table of the information
+    * @param array $albums A list of albums with their information
+    * @param string $color The color associated with the table
+    * @return string The html code for the albums table
+    */
+    public function createPDFTable($albums, $color) {
+	$html = "<table cellspacing='0' cellpadding='2' class='{$color}-table'><tr><th>#</th><th>Artist</th><th>Album</th><th>Subgenres</th><th>Hometowns</th><th>Date Added</th><th>Recommended</th></tr>";
+        foreach ($albums as $album) {
+            $html .= "<tr><td class='centered'>"  . $album['SmallCode'] . "</td>" .
+                     "<td>" . $album['library']['artist'] . "</td>" .
+                     "<td>" . $album['library']['album'] . "</td>";
+
+            $html .= "<td>";
+            foreach ($album['library']['subgenres'] as $subgenre)
+                $html .= "-" . $subgenre . "<br/>";
+            $html .= "</td>";
+
+            $html .= "<td>";
+            foreach ($album['library']['hometowns'] as $hometown)
+                $html .= "-" . $hometown . "<br/>";
+            $html .= "</td>";
+
+            $html .= "<td class='centered'>" . substr($album['Activate'], 0, 10) . "</td>";
+            $rating = $album['library']['rating'];
+            if (is_null($rating) || $rating == 0)
+                $recommended = "N/A";
+            elseif ($rating < 4)
+                $recommended = "No";
+            else
+                $recommended = "Yes";
+            $html .= "<td class='centered'>" . $recommended . "</td></tr>";
+        }
+        $html .= "</table>";
+	return $html;
+    }
+
 
     public function setExpiry($playlistIds, $date){
      if(!is_array($playlistIds)){

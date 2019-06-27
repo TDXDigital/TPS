@@ -14,3 +14,19 @@ table {
 .centered {
     text-align: center;
 }
+
+.green-table tr:nth-child(odd) {
+    background-color: #0f7;
+}
+
+.green-table th {
+    background-color: #00ff02;
+}
+
+.blue-table tr:nth-child(odd) {
+    background-color: #00dcff;
+}
+
+.blue-table th {
+    background-color: #0082ff;
+}

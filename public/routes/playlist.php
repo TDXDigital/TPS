@@ -528,12 +528,12 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
 	    $library = new \TPS\library();
 	    $startDate = $app->request->get("startDate")?:"1000-01-01";
             $endDate = $app->request->get("endDate")?:"9999-12-31";
-	    $playlistAlbums = $playlist->getAll($startDate, $endDate);
-	    foreach ($playlistAlbums as $key => $value) {
-                $lib = $library->getAlbumByRefcode($value['RefCode']);
-                $playlistAlbums[$key]["library"] = array_pop($lib);
-        	$playlistAlbums[$key]['library']["subgenres"] = $library->getSubgenresByRefCode($value['RefCode']);
-        	$playlistAlbums[$key]['library']['hometowns'] = $library->getHometownsByRefCode($value['RefCode']);
+	    $playlistAlbums = array_values($playlist->getAll($startDate, $endDate));
+	    foreach ($playlistAlbums as &$album) {
+                $lib = $library->getAlbumByRefcode($album['RefCode']);
+                $album["library"] = array_pop($lib);
+        	$album['library']["subgenres"] = $library->getSubgenresByRefCode($album['RefCode']);
+        	$album['library']['hometowns'] = $library->getHometownsByRefCode($album['RefCode']);
             }
 	    $today = (new \DateTime())->format('Y-m-d');
 	    $mpdf = new \Mpdf\Mpdf();
@@ -541,34 +541,20 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
 
 	    $html = '<h1>Playlist</h1>';
 	    $html .= "<h3>" . $today . "</h3>";
-	    $html .= "<table cellspacing='0'><tr><th>#</th><th>Artist</th><th>Album</th><th>Subgenres</th><th>Hometowns</th><th>Date Added</th><th>Recommended</th></tr>";
-	    foreach (array_values($playlistAlbums) as $album) {
-		$html .= "<tr><td>"  . $album['SmallCode'] . "</td>" .
-			 "<td>" . $album['library']['artist'] . "</td>" .
-			 "<td>" . $album['library']['album'] . "</td>";
 
-		$html .= "<td>";
-		foreach ($album['library']['subgenres'] as $subgenre)
-		    $html .= "-" . $subgenre . "<br/>";
-		$html .= "</td>";
-
-		$html .= "<td>";
-		foreach ($album['library']['hometowns'] as $hometown)
-		    $html .= "-" . $hometown . "<br/>";
-		$html .= "</td>";
-
-		$html .= "<td>" . substr($album['Activate'], 0, 10) . "</td>";
-		$rating = $album['library']['rating'];
-	  	if (is_null($rating) || $rating == 0)
-		    $recommended = "N/A";
-		elseif ($rating < 4)
-		    $recommended = "No";
-		else
-		    $recommended = "Yes";
-		$html .= "<td class='centered'>" . $recommended . "</td></tr>";
+	    // Create table for albums sorted by playlist number
+	    function sortByPLNum($a, $b) {
+		return $a['SmallCode'] > $b['SmallCode'];
 	    }
+	    usort($playlistAlbums, 'sortByPLNum');
+	    $html .= $playlist->createPDFTable($playlistAlbums, 'green');
 
-	    $html .= "</table>";
+	    // Create table for albums sorted by artist name
+	    function sortByArtistName($a, $b) {
+		return $a['library']['artist'] > $b['library']['artist'];
+	    }
+	    usort($playlistAlbums, 'sortByArtistName');
+	    $html .= "<pagebreak />" . $playlist->createPDFTable($playlistAlbums, 'blue');
 
 	    $mpdf->WriteHTML($stylesheet, 1);
 	    $mpdf->WriteHTML($html, 2);
