@@ -198,7 +198,7 @@ else{
                                 echo $list['hit'];
                            echo "</td><td>";
                                 echo $list['instrumental'];
-                           $songlang = mysqli_query("select languageid from LANGUAGE where callsign='" . addslashes($list['callsign']) . "' and programname='" . addslashes($list['programname']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and songid='". addslashes($list['songid']) ."'");
+                           $songlang = mysqli_query($con, "select languageid from LANGUAGE where callsign='" . addslashes($list['callsign']) . "' and programname='" . addslashes($list['programname']) . "' and date='" . addslashes($_POST['user_date']) . "' and starttime='" . addslashes($_POST['user_time']) . "' and songid='". addslashes($list['songid']) ."'");
                            $rowlang = mysqli_fetch_array($songlang);
                            echo "</td><td>";
                                 echo $rowlang['languageid'];

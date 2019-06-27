@@ -1,0 +1,73 @@
+{% extends 'baseAdmin.twig' %}
+
+{% block headScripts %}
+    <style type="text/css">
+        td label {
+           display: block;
+           text-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+    </li>
+ </ol>
+{% endblock %}
+{% block content %}
+    {% if flash.error %}
+        <div class="row">
+            <div class="alert alert-danger">
+                <strong>Error</strong> {{flash.error}}
+            </div>
+        </div>
+    {% endif %}
+    {% if flash.success %}
+        <div class="row">
+            <div class="alert alert-success">
+                <strong>Success</strong> {{flash.success}}
+            </div>
+        </div>
+    {% endif %}
+
+    <hr size="30">
+    <table class='table table-bordered table-hover'>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>SmallCode</th>
+                <th>Artist</th>
+                <th>Album</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+               <th>Rank</th>
+                <th>SmallCode</th>
+                <th>Artist</th>
+                <th>Album</th>
+                <th>Score</th>
+            </tr>
+        </tfoot>
+        <tbody>
+            {% for chart in charts %}
+                <tr>
+                   
+                    <td>{{loop.index}}</td>
+                    <td>{{chart.SmallCode}}</td>
+                    <td>{{chart.artist}}</td>
+                    <td>{{chart.album}}</td>
+                    <td>{{chart.totalScore}}</td>
+                </tr>
+            {% endfor %} 
+        </tbody>
+    </table>
+{% endblock %}
+{% block lastScripts %}
+
+{#<script src="{{siteUrl}}/TPSBIN/JS/playlistChart.js"></script>#}
+{% endblock %}

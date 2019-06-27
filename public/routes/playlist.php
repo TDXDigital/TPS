@@ -111,7 +111,16 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
     $app->get('/chart', function () use ($app, $authenticate, $playlist) {
 	$startDate = '2019-06-02';
 	$endDate = '2019-06-29';
-	echo $playlist->getTop40($startDate, $endDate);
+	$charts =  $playlist->getTop40($startDate, $endDate);
+    
+     $param = array(
+                    "title"=>"Chart",
+                    "charts"=>$charts,
+                );
+     // print_r($param);
+     // exit;
+     $app->render('chart.twig', $param);
+
     });
     $app->get('/generate', function () use ($app) {
         $app->redirect('./generate/');
@@ -492,6 +501,8 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
                     "today"=>$startDate,
                     "playlists"=>$playlistVals,
                 );
+                // print_r($params);
+                // exit;
                 $app->render("playlistReport.twig", $params);
             }
         });
@@ -599,6 +610,13 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
         $app->redirect('./batch/');
     });
 
+    $app->group('/chartPage', $authenticate, function () use ($app) {
+        // inventory management
+        $app->get('/', function () use ($app) {
+            $app->render('chartPage.twig',array(
+                'some'=>'thing'));
+        });
+    });
 
 
 

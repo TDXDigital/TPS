@@ -360,7 +360,7 @@ class playlist extends TPS{
         $fourWeekStart = clone $threeWeekStart;
         $fourWeekStart->modify('-7 days');
 
-        $sql = $this->db->query("SELECT playlist.SmallCode, library.release_date, library.rating, library.Locale, playlist.Activate " .
+        $sql = $this->db->query("SELECT playlist.SmallCode, library.artist, library.album, library.release_date, library.rating, library.Locale, playlist.Activate " .
         			"FROM library LEFT JOIN playlist ON library.RefCode=playlist.RefCode WHERE library.RefCode IN " .
         			"(SELECT RefCode FROM playlist WHERE SmallCode IN (SELECT playlistnumber FROM song " .
         			"WHERE playlistnumber IS NOT NULL AND date >= '" . $startDate->format('Y-m-d') . "' AND date <= '" . $endDate->format('Y-m-d') . "'));");
@@ -442,7 +442,7 @@ class playlist extends TPS{
 	// Return the top 40 albums (or less if <40 albums in $albumInfo)
         usort($albumInfo, array($this, 'sortByTotalScore'));
         $top40 = array_slice($albumInfo, 0, 40);
-        return json_encode($top40);
+        return $top40;
     }
 
     /*
