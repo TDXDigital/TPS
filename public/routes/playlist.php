@@ -515,6 +515,57 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $writer->writeSheet($shortCodes);//$data);
             echo $writer->writeToString();
         });
+	$app->get('/pdf', $authenticate($app, [1,2]), function() use ($app, $playlist) {
+	    $library = new \TPS\library();
+	    $startDate = $app->request->get("startDate")?:"1000-01-01";
+            $endDate = $app->request->get("endDate")?:"9999-12-31";
+	    $playlistAlbums = $playlist->getAll($startDate, $endDate);
+	    foreach ($playlistAlbums as $key => $value) {
+                $lib = $library->getAlbumByRefcode($value['RefCode']);
+                $playlistAlbums[$key]["library"] = array_pop($lib);
+        	$playlistAlbums[$key]['library']["subgenres"] = $library->getSubgenresByRefCode($value['RefCode']);
+        	$playlistAlbums[$key]['library']['hometowns'] = $library->getHometownsByRefCode($value['RefCode']);
+            }
+	    $today = (new \DateTime())->format('Y-m-d');
+	    $mpdf = new \Mpdf\Mpdf();
+	    $stylesheet = file_get_contents('css/playlist_pdf.css');
+
+	    $html = '<h1>Playlist</h1>';
+	    $html .= "<h3>" . $today . "</h3>";
+	    $html .= "<table cellspacing='0'><tr><th>#</th><th>Artist</th><th>Album</th><th>Subgenres</th><th>Hometowns</th><th>Date Added</th><th>Recommended</th></tr>";
+	    foreach (array_values($playlistAlbums) as $album) {
+		$html .= "<tr><td>"  . $album['SmallCode'] . "</td>" .
+			 "<td>" . $album['library']['artist'] . "</td>" .
+			 "<td>" . $album['library']['album'] . "</td>";
+
+		$html .= "<td>";
+		foreach ($album['library']['subgenres'] as $subgenre)
+		    $html .= "-" . $subgenre . "<br/>";
+		$html .= "</td>";
+
+		$html .= "<td>";
+		foreach ($album['library']['hometowns'] as $hometown)
+		    $html .= "-" . $hometown . "<br/>";
+		$html .= "</td>";
+
+		$html .= "<td>" . substr($album['Activate'], 0, 10) . "</td>";
+		$rating = $album['library']['rating'];
+	  	if (is_null($rating) || $rating == 0)
+		    $recommended = "N/A";
+		elseif ($rating < 4)
+		    $recommended = "No";
+		else
+		    $recommended = "Yes";
+		$html .= "<td class='centered'>" . $recommended . "</td></tr>";
+	    }
+
+	    $html .= "</table>";
+
+	    $mpdf->WriteHTML($stylesheet, 1);
+	    $mpdf->WriteHTML($html, 2);
+
+	    $mpdf->Output("playlist_" . $today . ".pdf", "D");
+	});
     });
 
 
