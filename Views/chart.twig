@@ -1,6 +1,10 @@
 {% extends 'baseAdmin.twig' %}
 
 {% block headScripts %}
+
+
+    <link rel="stylesheet" href="{{siteUrl}}/js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>
+
     <style type="text/css">
         td label {
            display: block;
@@ -32,13 +36,40 @@
             </div>
         </div>
     {% endif %}
+<div class="row">
+	<form role="form" method="post" action="./chart" >
+        <div class="col-md-3">
+           
+                <fieldset>
+                    <div id="sort_group" class="form-group input-group">
+                        <label for="startDate" class="input-group-addon">Start Date</label>
+                        <input type="text" class="form-control datepicker" required
+                               name="startDate" id="startDate" placeholder="2000-01-01"
+                               pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
+                               value="{{ post.dateFrom | date_modify('-7 day')|date('Y-m-d') }}">
+                    </div>
+                </fieldset>
+            </div>
+             <div class="col-md-3">
+                <fieldset>
+                    <div id="sort_group" class="form-group input-group">
+                        <label for="endDate" class="input-group-addon">End Date</label>
+                        <input type="text" class="form-control datepicker" required
+                               name="endDate" id="endDate" placeholder="2000-01-02"
+                               pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
+                                value="{{ 'now'|date('Y-m-d') }}">
+                    </div>
+                </fieldset>
+          	</div>
+          		<input type="submit" class="btn btn-primary btn-md"/>
+            </form>
+        </div>
 
     <hr size="30">
     <table class='table table-bordered table-hover'>
         <thead>
             <tr>
                 <th>Rank</th>
-                <th>SmallCode</th>
                 <th>Artist</th>
                 <th>Album</th>
                 <th>Score</th>
@@ -47,7 +78,6 @@
         <tfoot>
             <tr>
                <th>Rank</th>
-                <th>SmallCode</th>
                 <th>Artist</th>
                 <th>Album</th>
                 <th>Score</th>
@@ -58,7 +88,6 @@
                 <tr>
                    
                     <td>{{loop.index}}</td>
-                    <td>{{chart.SmallCode}}</td>
                     <td>{{chart.artist}}</td>
                     <td>{{chart.album}}</td>
                     <td>{{chart.totalScore}}</td>
@@ -70,4 +99,17 @@
 {% block lastScripts %}
 
 {#<script src="{{siteUrl}}/TPSBIN/JS/playlistChart.js"></script>#}
+<script src="{{siteUrl}}/js/chosen.jquery.min.js"></script>
+<script type="text/javascript" src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
+<script>
+    $(function() {
+        // Activate chosen elements
+        $(".chosen-select").chosen();
+        $( ".datepicker" ).datepicker({
+            numberOfMonths: 3,
+            showButtonPanel: true,
+            dateFormat: "yy-mm-dd"
+        });
+      });
+	</script>
 {% endblock %}

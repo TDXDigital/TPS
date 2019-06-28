@@ -109,8 +109,8 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
         });
 
     $app->get('/chart', function () use ($app, $authenticate, $playlist) {
-	$startDate = '2019-06-02';
-	$endDate = '2019-06-29';
+	$startDate = $date_modify(date("Y-m-d"), "-7 days");
+	$endDate = date("Y-m-d");
 	$charts =  $playlist->getTop40($startDate, $endDate);
     
      $param = array(
@@ -122,6 +122,23 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
      $app->render('chart.twig', $param);
 
     });
+
+    $app->post('/chart', function () use ($app, $authenticate, $playlist) {
+    $startDate = $app->request->post("startDate");
+    $endDate = $app->request->post("endDate");
+    $charts =  $playlist->getTop40($startDate, $endDate);
+    
+     $param = array(
+                    "title"=>"Chart",
+                    "charts"=>$charts,
+                );
+     // print_r($param);
+     // exit;
+     $app->render('chart.twig', $param);
+
+    });
+
+
     $app->get('/generate', function () use ($app) {
         $app->redirect('./generate/');
     });
