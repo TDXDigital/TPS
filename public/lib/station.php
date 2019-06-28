@@ -412,7 +412,7 @@ class station extends TPS{
      * @return boolean
      */
     public function setStationTimeZone($tz){
-        $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
+        $tzlist = \DateTimeZone::listIdentifiers(\DateTimeZone::ALL);
         if(!in_array($tz, $tzlist)){
             trigger_error(
                     "TimeZone $tz not found in TimeZone list", E_USER_WARNING);

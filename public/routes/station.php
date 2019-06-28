@@ -146,6 +146,8 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
             if($forceComposer!=$station->forceComposer()){
                 $station->toggleForceComposer();
             }
+	    if($timezone!=$stn['timezone'])
+		$station->setStationTimeZone($timezone);
             $app->flash('success',"$callsign updated succesfully");
             $app->redirect("./$callsign");
         }
