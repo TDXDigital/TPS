@@ -70,6 +70,21 @@ class station extends TPS{
         $this->genres = new \TPS\genre($this->callsign);
     }
 
+    /*
+    * @abstract Convert the datetime data stored in the database using `NOW()` to the station's local timezone
+    * @param string $serverTime The datetime stored in the database using a simple `NOW()` statement
+    * @return string The $serverTime arugement converted to the stations local timezone
+    */
+    public function getTimeFromServerTime($serverTime) {
+	$serverTZCode = strtolower(system('date +"%Z"'));
+	$serverTZId = \DateTimeZone::listAbbreviations(\DateTimeZone::ALL)[$serverTZCode][0]['timezone_id'];
+	$stmt = $this->mysqli->query("SELECT CONVERT_TZ('" . $serverTime . "','" . $serverTZId . 
+				     "',(SELECT timezone FROM station WHERE callsign='" . $_SESSION['CALLSIGN'] . "')) as time;");
+	while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
+            return $row['time'];
+	throw new Exception("Error while converting server time to station time.");
+    }
+
     public function getAlertProviders(){
         $con = $this->mysqli->prepare(
                 "SELECT id, provider, url, logo, locations, active, area FROM"
