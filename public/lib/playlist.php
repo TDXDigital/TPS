@@ -381,12 +381,21 @@ class playlist extends TPS{
 	}
 
 	$sql = $this->db->query("SELECT song.programname, song.playlistnumber AS SmallCode, song.date, song.time, program.weight " . 
-				"FROM song LEFT JOIN program ON song.programname=program.programname WHERE playlistnumber IS NOT NULL;");
+				"FROM song LEFT JOIN program ON song.programname=program.programname " .
+				"WHERE playlistnumber IS NOT NULL AND date >= '" . $startDate->format('Y-m-d') . "' " .
+				"AND date <= '" . $endDate->format('Y-m-d') . "';");
         $albumPlays = [];
         while ($row = $sql->fetch(\PDO::FETCH_ASSOC)) {
 	    $row['dateTime'] = new\DateTime($row['date'] . " " . $row['time']);
             array_push($albumPlays, $row);
 	}
+
+	$sql = $this->db->query("SELECT performs.programname, performs.Alias, performs.STdate, performs.ENdate, dj.weight FROM performs ".
+				"LEFT JOIN dj ON performs.Alias=dj.Alias WHERE performs.ENdate >= '" . $startDate->format('Y-m-d'). "' " .
+				"AND performs.STDate <= '" . $endDate->format('Y-m-d') . "';");
+        $djsByShow = [];
+        while ($row = $sql->fetch(\PDO::FETCH_ASSOC))
+            array_push($djsByShow, $row);
 
 	foreach ($albumInfo as &$album) {
 	    $lastWeekPlays  = 0;
@@ -413,14 +422,32 @@ class playlist extends TPS{
 		    elseif ($daysAgo < 28)
 			$fourWeekPlays += 1;
 
-		    // Update the numShows property based on the shows weight
-		    $show = $plays['programname'];
-		    if (!in_array($show, $playedOnShows)) {
-			array_push($playedOnShows, $show);
+		    if ($daysAgo < 28) {
+		        // Update the numShows property based on the shows weight
+		        $show = $plays['programname'];
+		        $time = $plays['dateTime'];
+			if (in_array($show, array_keys($playedOnShows)))
+			    array_push($playedOnShows[$show], $time);
+			else
+			    $playedOnShows[$show] = [$time];
 			$numShows += $plays['weight'];
 		    }
 		}
 	    }
+
+	    $djs = [];
+	    foreach ($playedOnShows as $show => $playTimes) {
+		foreach ($playTimes as $playTime)
+		    foreach ($djsByShow as $djInfo) {
+			$name = $djInfo['Alias'];
+			// If this DJ was a host the show when the album was played and hasn't already been counted yet...
+			if ($djInfo['programname'] == $show && $djInfo['STdate'] <= $playTime && 
+			    $djInfo['ENdate'] >= $playTime && !in_array($name, array_keys($djs)))
+			    // Record them as a DJ that played it, with their influence/weight.
+			    $djs[$name] = $djInfo['weight'];
+		    }
+	    }
+	    $weightedNumDJs = array_sum($djs);
 
 	    // Assign recentCode
             if ($lastWeekPlays > 0)
@@ -453,8 +480,8 @@ class playlist extends TPS{
 
 	    // Assign rateAmount, numDJs, and locationCode
 	    $rateAmount = $this->getRateAmount($album['rating']);
-	    $numDJs = $this->getNumDJs($numShows, $rateAmount);
 	    $locationCode = $this->getLocationCode($album['Locale'], $album['SmallCode']);
+	    $numDJs = $this->getNumDJs($weightedNumDJs, $rateAmount);
 
 	    // Assign totalScore
 	    $noPlays = $lastWeekPlays + $twoWeekPlays + $threeWeekPlays + $fourWeekPlays == 0;
@@ -535,22 +562,22 @@ class playlist extends TPS{
    }
 
     /*
-    * @abstract A helper function to get the weighted number of DJs that played an album
-    * @param int $numShow The weighted number of shows that played the album
+    * @abstract A helper function to get the number of DJs that played an album taking the rating into account
+    * @param int $weightedNumDJs The weighted number of djs that played the album
     * @param float $rateAmount The weighted rate amount for the album
     * @return int The weighted number of DJs that played the album
     */
-    private function getNumDJs($numShow, $rateAmount) {
-        if ($numShow == 0)
+    private function getNumDJs($weightedNumDJs, $rateAmount) {
+        if ($weightedNumDJs == 0)
             return 0;
         elseif ($rateAmount == 3 || $rateAmount == 2.5)
-            return $numShow + 1;
+            return $weightedNumDJs + 1;
         elseif ($rateAmount == 1.5)
             return $numShow;
-        elseif ($rateAmount == 1 && $numShow == 0.5)
+        elseif ($rateAmount == 1 && $weightedNumDJs == 0.5)
             return 1;
         elseif ($rateAmount == 1)
-            return $numShow - 0.5;
+            return $weightedNumDJs - 0.5;
         else
             return 0;
    }
