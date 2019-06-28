@@ -360,6 +360,8 @@ class playlist extends TPS{
         $fourWeekStart = clone $threeWeekStart;
         $fourWeekStart->modify('-7 days');
 
+	$startDate = $startDate < $fourWeekStart ? $startDate : $fourWeekStart;
+
 	$station = new \TPS\Station();
 	$sql = $this->db->query("SELECT library.RefCode, library.release_date, library.rating, library.Locale, " .
 				"library.playlist_flag, playlist.Activate, playlist.Expire, playlist.SmallCode " .
