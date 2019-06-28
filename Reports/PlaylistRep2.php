@@ -19,10 +19,10 @@ else if($con){
     $CONTROL=0;
     while ($row=mysqli_fetch_array($proresult)) {
         $name=$row["programname"];
-		//$entries = mysql_query("Select count(songid) from song where programname='" . addslashes($name) . "' and date='" . $row['date'] . "' and starttime='" . $row['starttime'] . "' group by programname") or die(mysqli_error($con));
-		$entries = mysql_query("Select count(programname) from episode where programname='". addslashes($name) . "' and date between '" . addslashes($_POST['from']) . "' and '" . addslashes($_POST['to']) . "' ");
-		if(mysql_num_rows($entries)!=0){
-			$rowprecount = mysql_fetch_array($entries);
+		//$entries = mysqli_query("Select count(songid) from song where programname='" . addslashes($name) . "' and date='" . $row['date'] . "' and starttime='" . $row['starttime'] . "' group by programname") or die(mysqli_error($con));
+		$entries = mysqli_query($con, "Select count(programname) from episode where programname='". addslashes($name) . "' and date between '" . addslashes($_POST['from']) . "' and '" . addslashes($_POST['to']) . "' ");
+		if(mysqli_num_rows($entries)!=0){
+			$rowprecount = mysqli_fetch_array($entries);
 			$rowcount = $rowprecount['count(programname)'];
 		}
 		else{
@@ -34,14 +34,14 @@ else if($con){
 		}
         $prooptions.="><td colspan=\"2\" >". $name ."</td><td><input type=\"checkbox\" name=\"exempt[]\" value=\"". addslashes($name) ."\"></td>";
 
-		$episodes=mysql_query("select * from episode where programname='" . addslashes($name) . "' and date between '" . addslashes($_POST['from']) . "' and '" . addslashes($_POST['to']) . "' ");
+		$episodes=mysqli_query($con, "select * from episode where programname='" . addslashes($name) . "' and date between '" . addslashes($_POST['from']) . "' and '" . addslashes($_POST['to']) . "' ");
 
 		$SUBCON=0;
-		if(mysql_num_rows($episodes)>1){
+		if(mysqli_num_rows($episodes)>1){
 			$prooptions.="<td align=center> </td><td align=center>   </td><td align=center>" . $rowcount . "</td><td>";
 			$prooptions.="<button type=\"button\" id=\"".$name."\" onclick=\"showsub('".addslashes($name)."')\">Show/Hide</button></td></tr>";
 			$prooptions .= "<tr class=\"" . addslashes($name) . "\" style=\"background-color:#FFEEAA; display:none; \"><th>Number of Playlist</th><th>songs</th><th>Exclude</th><th>Date</th><th>Time</th><th>End Time</th><th>View</th>";
-			while($subrow=mysql_fetch_array($episodes)){
+			while($subrow=mysqli_fetch_array($episodes)){
 				$prooptions .= "<tr class=\"" . $name;
 				if($SUBCON%2){
 					$prooptions .= "\" style=\"background-color:#FFFF99; display:none;\" ";
@@ -53,7 +53,7 @@ else if($con){
 
 		//##################### - Playlist Count - ##########################
 				$SQLPLAY="select count(playlistnumber) from SONG where programname='".addslashes($subrow['programname'])."' and date='".$subrow['date']."' and starttime='".$subrow['starttime']."' and playlistnumber IS NOT NULL";
-				if($subplay = mysql_fetch_array(mysql_query($SQLPLAY)))
+				if($subplay = mysqli_fetch_array(mysqli_query($con, $SQLPLAY)))
 				{
 					$prooptions .= $subplay["count(playlistnumber)"];
 				}
@@ -66,7 +66,7 @@ else if($con){
 
 		//##################### - Song Count - ##########################
 				$SQLSONG="select count(songid) from SONG where category NOT LIKE '1%' and category NOT LIKE '4%' and category NOT LIKE '5%' and programname='".addslashes($subrow['programname'])."' and date='".$subrow['date']."' and starttime='".$subrow['starttime']."'";
-				if($subsong = mysql_fetch_array(mysql_query($SQLSONG)))
+				if($subsong = mysqli_fetch_array(mysqli_query($con, $SQLSONG)))
 				{
 					$prooptions .= $subsong["count(songid)"];
 				}
@@ -108,7 +108,7 @@ else if($con){
 		}
 		else{
 		$prooptions.="<td align=center>" . $row['date'] . "</td><td align=center>" . $row['starttime'] . "</td><td align=center>" . $rowcount . "</td><td>";
-		$subrow=mysql_fetch_array($episodes);
+		$subrow=mysqli_fetch_array($episodes);
 		$prooptions .="<button type=\"button\" onclick=\"javascript:quickview('../legacy/oep/quickview.php?args=".addslashes($subrow['programname'])."@".$subrow['date']."@".$subrow['starttime']."@".$subrow['callsign']."')\">View</button>";
         $prooptions.="</td></tr>
         ";

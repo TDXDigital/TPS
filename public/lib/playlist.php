@@ -459,7 +459,7 @@ class playlist extends TPS{
 	// Return the top 40 albums (or less if <40 albums in $albumInfo)
         usort($albumInfo, array($this, 'sortByTotalScore'));
         $top40 = array_slice($albumInfo, 0, 40);
-        return json_encode($top40);
+        return $top40;
     }
 
     /*

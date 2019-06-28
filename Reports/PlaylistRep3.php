@@ -76,7 +76,7 @@ else if($con){
             else{
                 $VERR=NULL;
             }
-            $TableVals .= ",
+            $TableVals = ",
             [$chnum,".$row['playlist'].",".$row['count(playlistnumber)'].",'".addslashes($row['artist'])."','".addslashes($row['album'])."',$VERR,'<a href=\'../Reports/p2SongSearch.php?playlist=".$row['playlist']."&from=".$_POST['from']."&to=".$_POST['to']."\' target=\'_blank\'><span class=\"ui-icon ui-icon-circle-plus\">View</span></a>']";
 			++$chnum;
 		}

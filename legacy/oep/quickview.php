@@ -1,13 +1,13 @@
 <?php
       session_start();
 
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
+$con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  username=' . $_SESSION["username"]);
+	die('Error connecting to SQL Server, could not connect due to: ' . mysqli_error() . ';  username=' . $_SESSION["username"]);
 	}
 else if($con){
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../logout.php');}
+	if(!mysqli_select_db($con, $_SESSION['DBNAME'])){header('Location: ../logout.php');}
 }
 else{
 	echo 'ERROR! cannot obtain access... this terminal may not be authorised for access';
@@ -36,11 +36,11 @@ else{
 			<tr><th>Cat</th><th>Playlist</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th><th>Composer</th><th>CC</th><th>Hit</th><th>Ins</th><th>Lang</th></tr>
 			<?php
 				$FETCH = "select * from SONG where callsign='" . addslashes($callsign) . "' and programname='" . addslashes(urldecode($program)) . "' and date='" . addslashes($date) . "' and starttime='" . addslashes($time) . "' order by time , songid ";
-				if(!$Result=mysql_query($FETCH)){
-					echo "<tr><td>ERROR</td><td>".mysql_errno()."</td><td colspan=\"100%\">".mysql_error()."</td></tr>";
+				if(!$Result=mysqli_query($con, $FETCH)){
+					echo "<tr><td>ERROR</td><td>".mysqli_errno()."</td><td colspan=\"100%\">".mysqli_error($con)."</td></tr>";
 				}
 				else{
-					while($row = mysql_fetch_array($Result)){
+					while($row = mysqli_fetch_array($Result)){
 						echo "<tr><td>" . $row['category'] . "</td><td>". $row['playlistnumber'] ."</td><td>".$row['time']."</td><td>" . $row['title'] . "</td><td>" . $row['artist'] . "</td>
 						<td>".$row['album']."</td><td>".$row['composer']."</td><td>".$row['cancon']."</td><td>".$row['hit']."</td><td>".$row['instrumental']."</td>";
 						echo "</tr>";

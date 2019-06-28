@@ -1,15 +1,15 @@
 <?php
     session_start();
 
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
+$con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
+	die('Error connecting to SQL Server, could not connect due to: ' . mysqli_error() . ';  
 
 	username=' . $_SESSION["username"]);
 }
 else if($con){
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /user/login');}
+	if(!mysqli_select_db($con, $_SESSION['DBNAME'])){header('Location: /user/login');}
 
 		if(!isset($_POST['PAGIN'])){
 			$PAGIN = 50;
@@ -32,7 +32,7 @@ else if($con){
 			$pagenum = addslashes($_POST['page']);
 		}
         // Get POST or GET Values, have POST take priority
-        if($_POST['Playlist']!=''){
+        if(isset($_POST['Playlist'])){
             $playlist = addslashes($_POST['Playlist']);
         }
         elseif(isset($_GET['playlist'])){
@@ -41,7 +41,7 @@ else if($con){
         else{
             $playlist="";
         }
-        if($_POST['from']!=''){
+        if(isset($_POST['from'])){
             $from = addslashes($_POST['from']);
         }
         elseif(isset($_GET['from'])){
@@ -50,7 +50,7 @@ else if($con){
         else{
             $from="";
         }
-        if($_POST['to']!=''){
+        if(isset($_POST['to'])){
             $to = addslashes($_POST['to']);
         }
         elseif(isset($_GET['to'])){
@@ -74,7 +74,7 @@ else if($con){
 			$SQLBUFF.=" playlistnumber LIKE '$playlist' ";
 		}
 
-		if($_POST['Artist']!="")
+		if(isset($_POST['Artist']))
 		{
 			if($CONT == true){
 				$SQLBUFF .= " and ";
@@ -85,7 +85,7 @@ else if($con){
 			$SQLBUFF.=" artist like '%".addslashes($_POST['Artist'])."%' ";
 		}
 
-		if($_POST['Album']!="")
+		if(isset($_POST['Album']))
 		{
 			if($CONT == true){
 				$SQLBUFF .= " and ";
@@ -96,7 +96,7 @@ else if($con){
 			$SQLBUFF.=" album like '%".addslashes($_POST['Album'])."%' ";
 		}
 
-		if($_POST['Category']!="")
+		if(isset($_POST['Category']))
 		{
 			if($CONT == true){
 				$SQLBUFF .= " and ";
@@ -107,7 +107,7 @@ else if($con){
 			$SQLBUFF.=" category like '%".addslashes($_POST['Category'])."%' ";
 		}
 
-		if($_POST['Title']!="")
+		if(isset($_POST['Title']))
 		{
 			if($CONT == true){
 				$SQLBUFF .= " and ";
@@ -148,25 +148,29 @@ else if($con){
 			$SQLBUFF.=" date <= '$to' ";
         }
 
-		if($_POST['option']=="Playlist")
-		{
-			if($CONT == true){
-				$SQLBUFF .= " and ";
+        if(isset($_POST['option']))
+        {
+        	if($_POST['option']=="Playlist")
+			{
+				if($CONT == true){
+					$SQLBUFF .= " and ";
+				}
+				else{
+					$CONT = true;
+				}
+				$SQLBUFF.=" playlistnumber is not NULL ";
 			}
-			else{
-				$CONT = true;
+			else if ($_POST['option']=="Exclusive"){
+				if($CONT == true){
+					$SQLBUFF .= " and ";
+				}
+				else{
+					$CONT = true;
+				}
+				$SQLBUFF.=" playlistnumber is NULL ";
 			}
-			$SQLBUFF.=" playlistnumber is not NULL ";
-		}
-		else if ($_POST['option']=="Exclusive"){
-			if($CONT == true){
-				$SQLBUFF .= " and ";
-			}
-			else{
-				$CONT = true;
-			}
-			$SQLBUFF.=" playlistnumber is NULL ";
-		}
+        }
+		
 		// Does not need else, if standard, then return both
 		if($CONT == true){
 			$SQL .= " where " . $SQLBUFF ;
@@ -175,7 +179,7 @@ else if($con){
 
 
 		//echo $SQLC;
-		$numrow = mysql_fetch_array(mysql_query($SQLC));
+		$numrow = mysqli_fetch_array(mysqli_query($con, $SQLC));
 		//echo $numrow['count(songid)'];
 		$last = ceil($numrow['count(songid)']/$PAGIN);
         if($last==0){
@@ -188,7 +192,7 @@ else if($con){
 		}
         $SQL .= " limit " . ($pagenum-1) * $PAGIN . "," . $PAGIN ;
 
-		$data = mysql_query($SQL);
+		$data = mysqli_query($con, $SQL);
 ?>
 
 <!DOCTYPE HTML>
@@ -297,14 +301,14 @@ if(($pagenum + 2) < $last){
 	</div>
 	<div id="content">
 <?php
-    if(mysql_error()){
-        echo "<div style='width:100%;'>Error ".mysql_errno()." ".mysql_error()."</div>";
+    if(mysqli_error($con)){
+        echo "<div style='width:100%;'>Error ".mysqli_errno()." ".mysqli_error()."</div>";
         echo "<div style='width:100%;'>Query: ".$SQL."</div>";
     }
     //echo "<div style='width:100%;'>Query: ".$SQL."</div>";
 		echo "<table><tr><th>Playlist</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th><th>CC</th><th>Hit</th><th>Ins</th><th>Program</th><th>Log</th></tr>";
 		$ROW = 0;
-		while($row = mysql_fetch_array($data)){
+		while($row = mysqli_fetch_array($data)){
 			echo "<tr";
 			if($ROW%2){
 				echo " style='background-color:#DAFFFF;' ";
