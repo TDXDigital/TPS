@@ -360,16 +360,22 @@ class playlist extends TPS{
         $fourWeekStart = clone $threeWeekStart;
         $fourWeekStart->modify('-7 days');
 
+	$station = new \TPS\Station();
 	$sql = $this->db->query("SELECT library.RefCode, library.release_date, library.rating, library.Locale, " .
 				"library.playlist_flag, playlist.Activate, playlist.Expire, playlist.SmallCode " .
 				"FROM library LEFT JOIN playlist ON library.RefCode=playlist.RefCode " .
 				"WHERE library.RefCode IN (SELECT RefCode FROM playlist WHERE SmallCode IN " .
-				"(SELECT playlistnumber FROM song WHERE playlistnumber IS NOT NULL AND date > " .
-				"'" . $startDate->format('Y-m-d') . "' AND date < '" . $endDate->format('Y-m-d') . "')) " .
-				"AND (library.playlist_flag='COMPLETE' OR playlist.Expire > '" . $startDate->format('Y-m-d') . "');");
+				"(SELECT playlistnumber FROM song WHERE playlistnumber IS NOT NULL AND date >= " .
+				"'" . $startDate->format('Y-m-d') . "' AND date <= '" . $endDate->format('Y-m-d') . "')) " .
+				"AND (library.playlist_flag='COMPLETE' OR playlist.Expire >= '" . $startDate->format('Y-m-d') . "');");
         $albumInfo = [];
-        while ($row = $sql->fetch(\PDO::FETCH_ASSOC))
+        while ($row = $sql->fetch(\PDO::FETCH_ASSOC)) {
+	    // If the album is no longer on the playlist...
+	    if ($row['playlist_flag'] == 'FALSE')
+		// Update the `Expire` property to be the station's local time
+		$row['Expire'] = $station->getTimeFromServerTime($row['Expire']);
             array_push($albumInfo, $row);
+	}
 
 	$sql = $this->db->query("SELECT song.programname, song.playlistnumber AS SmallCode, song.date, song.time, program.weight " . 
 				"FROM song LEFT JOIN program ON song.programname=program.programname WHERE playlistnumber IS NOT NULL;");
