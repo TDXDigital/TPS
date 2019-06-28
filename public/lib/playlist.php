@@ -341,7 +341,7 @@ class playlist extends TPS{
     /*
     * @abstract Return the top 40 ranked albums for the given time period
     * @param string $startDate The starting date of ranking
-    * @param string $endDate The ending date of ranking.
+    * @param string $endDate The ending date of ranking. If the user wants to include the 4th, set to midnight of the 5th.
     * @return array of dictionaries containing the top 40 albums information (or less if <40 albums played)
     */
     public function getTop40($startDate, $endDate) {
@@ -435,7 +435,7 @@ class playlist extends TPS{
             $previousWeeksPlayScore = $score;
 
 	    // Assign playlistCode
-	    $activDate = new \DateTime($album['Activate']); // To include the 3rd, set as midnight of 4th?
+	    $activDate = new \DateTime($album['Activate']);
 	    $playlistCode = $this->getPlaylistCode($activDate, $endDate);
 
 	    // Assign releaseCode
