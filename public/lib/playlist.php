@@ -360,38 +360,58 @@ class playlist extends TPS{
         $fourWeekStart = clone $threeWeekStart;
         $fourWeekStart->modify('-7 days');
 
-        $sql = $this->db->query("SELECT playlist.SmallCode, library.release_date, library.rating, library.Locale, playlist.Activate " .
-        			"FROM library LEFT JOIN playlist ON library.RefCode=playlist.RefCode WHERE library.RefCode IN " .
-        			"(SELECT RefCode FROM playlist WHERE SmallCode IN (SELECT playlistnumber FROM song " .
-        			"WHERE playlistnumber IS NOT NULL AND date >= '" . $startDate->format('Y-m-d') . "' AND date <= '" . $endDate->format('Y-m-d') . "'));");
+	$sql = $this->db->query("SELECT library.RefCode, library.release_date, library.rating, library.Locale, " .
+				"library.playlist_flag, playlist.Activate, playlist.Expire, playlist.SmallCode " .
+				"FROM library LEFT JOIN playlist ON library.RefCode=playlist.RefCode " .
+				"WHERE library.RefCode IN (SELECT RefCode FROM playlist WHERE SmallCode IN " .
+				"(SELECT playlistnumber FROM song WHERE playlistnumber IS NOT NULL AND date > " .
+				"'" . $startDate->format('Y-m-d') . "' AND date < '" . $endDate->format('Y-m-d') . "')) " .
+				"AND (library.playlist_flag='COMPLETE' OR playlist.Expire > '" . $startDate->format('Y-m-d') . "');");
         $albumInfo = [];
         while ($row = $sql->fetch(\PDO::FETCH_ASSOC))
             array_push($albumInfo, $row);
 
-        $sql = $this->db->query("SELECT programname, playlistnumber as SmallCode, " .
-        			"SUM(IF(date > '" .$oneWeekStart->format('Y-m-d') . "' AND date <= '" . $endDate->format('Y-m-d') . "', 1, 0)) as 1wk, " .
-			        "SUM(IF(date > '" . $twoWeekStart->format('Y-m-d') . "' AND date <= '" . $oneWeekStart->format('Y-m-d') . "', 1, 0)) as 2wk, " .
-			        "SUM(IF(date > '" . $threeWeekStart->format('Y-m-d') . "' AND date <= '" . $twoWeekStart->format('Y-m-d') . "', 1, 0)) as 3wk, " .
-			        "SUM(IF(date > '" . $fourWeekStart->format('Y-m-d') . "' AND date <= '" . $threeWeekStart->format('Y-m-d') . "', 1, 0)) as 4wk " .
-			        "FROM song WHERE playlistnumber IS NOT NULL GROUP BY programname, SmallCode;");
+	$sql = $this->db->query("SELECT song.programname, song.playlistnumber AS SmallCode, song.date, song.time, program.weight " . 
+				"FROM song LEFT JOIN program ON song.programname=program.programname WHERE playlistnumber IS NOT NULL;");
         $albumPlays = [];
-        while ($row = $sql->fetch(\PDO::FETCH_ASSOC))
+        while ($row = $sql->fetch(\PDO::FETCH_ASSOC)) {
+	    $row['dateTime'] = new\DateTime($row['date'] . " " . $row['time']);
             array_push($albumPlays, $row);
+	}
 
-        foreach ($albumInfo as &$album) {
-	    // Assign week x play count
-            $lastWeekPlays  = 0;
-            $twoWeekPlays   = 0;
-            $threeWeekPlays = 0;
-            $fourWeekPlays  = 0;
+	foreach ($albumInfo as &$album) {
+	    $lastWeekPlays  = 0;
+	    $twoWeekPlays   = 0;
+	    $threeWeekPlays = 0;
+	    $fourWeekPlays  = 0;
+	    $numShows = 0;
+	    $playedOnShows = [];
 
-            foreach ($albumPlays as $plays)
-                if ($plays['SmallCode'] == $album['SmallCode']) {
-                    $lastWeekPlays  += $plays['1wk'];
-                    $twoWeekPlays   += $plays['2wk'];
-                    $threeWeekPlays += $plays['3wk'];
-                    $fourWeekPlays  += $plays['4wk'];
-                }
+	    foreach ($albumPlays as &$plays) {
+		// If this is the album the DJ played...
+		if ($plays['SmallCode'] == $album['SmallCode'] &&
+		   ($plays['dateTime'] >= $album['Activate'] && $plays['dateTime'] <= $album['Expire'] || $album['playlist_flag'] == 'COMPLETE')) {
+		    // Figure out when it was played relative to the $endDate
+		    $daysAgo = date_diff($endDate, $plays['dateTime'])->days;
+
+		    // Increment the approriate week number of plays
+		    if ($daysAgo < 7)
+			$lastWeekPlays += 1;
+		    elseif ($daysAgo < 14)
+			$twoWeekPlays += 1;
+		    elseif ($daysAgo < 21)
+			$threeWeekPlays += 1;
+		    elseif ($daysAgo < 28)
+			$fourWeekPlays += 1;
+
+		    // Update the numShows property based on the shows weight
+		    $show = $plays['programname'];
+		    if (!in_array($show, $playedOnShows)) {
+			array_push($playedOnShows, $show);
+			$numShows += $plays['weight'];
+		    }
+		}
+	    }
 
 	    // Assign recentCode
             if ($lastWeekPlays > 0)
@@ -422,12 +442,9 @@ class playlist extends TPS{
 	    $releaseDate = new \DateTime($album['release_date']);
 	    $releaseCode = $this->getReleaseCode($releaseDate, $endDate);
 
-	    // Assign numShow - WAITING
-	    $numShow = 1;
-
 	    // Assign rateAmount, numDJs, and locationCode
 	    $rateAmount = $this->getRateAmount($album['rating']);
-	    $numDJs = $this->getNumDJs($numShow, $rateAmount);
+	    $numDJs = $this->getNumDJs($numShows, $rateAmount);
 	    $locationCode = $this->getLocationCode($album['Locale'], $album['SmallCode']);
 
 	    // Assign totalScore
@@ -435,7 +452,7 @@ class playlist extends TPS{
 	    if ($noPlays)
                 $totalScore = 0;
             else
-                $totalScore = pow($lastWeekPlays + 1, 2) * $numShow * $recentCode * $playlistCode * pow($releaseCode, 2) * $numDJs * $rateAmount + $locationCode + $previousWeeksPlayScore;
+                $totalScore = pow($lastWeekPlays + 1, 2) * $numShows * $recentCode * $playlistCode * pow($releaseCode, 2) * $numDJs * $rateAmount + $locationCode + $previousWeeksPlayScore;
             $album['totalScore'] = $totalScore;
         }
 
@@ -452,7 +469,7 @@ class playlist extends TPS{
     * @return int The playlist code of the given album
     */
     private function getPlaylistCode($activDate, $endDate) {
-        $weeksOnPL = $endDate->diff($activDate)->d/7;
+        $weeksOnPL = $endDate->diff($activDate)->days/7;
         if ($weeksOnPL <= 1)
             return 2;
         elseif ($weeksOnPL <= 2)
