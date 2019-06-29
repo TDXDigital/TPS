@@ -363,7 +363,8 @@ class playlist extends TPS{
 	$startDate = $startDate < $fourWeekStart ? $startDate : $fourWeekStart;
 
 	$station = new \TPS\Station();
-	$sql = $this->db->query("SELECT library.RefCode, library.release_date, library.rating, library.Locale, " .
+	$sql = $this->db->query("SELECT library.RefCode, library.artist, library.album,
+                             library.release_date, library.rating, library.Locale, " .
 				"library.playlist_flag, playlist.Activate, playlist.Expire, playlist.SmallCode " .
 				"FROM library LEFT JOIN playlist ON library.RefCode=playlist.RefCode " .
 				"WHERE library.RefCode IN (SELECT RefCode FROM playlist WHERE SmallCode IN " .
