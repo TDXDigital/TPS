@@ -426,22 +426,23 @@ class playlist extends TPS{
 		        $show = $plays['programname'];
 		        $time = $plays['dateTime'];
 			if (in_array($show, array_keys($playedOnShows)))
-			    array_push($playedOnShows[$show], $time);
+			    array_push($playedOnShows[$show], (array)$time);
 			else
-			    $playedOnShows[$show] = [$time];
+			    $playedOnShows[$show] = [(array)$time];
 			$numShows += $plays['weight'];
 		    }
 		}
 	    }
 
+	    // Calculated the weightedNumDJs
 	    $djs = [];
 	    foreach ($playedOnShows as $show => $playTimes) {
 		foreach ($playTimes as $playTime)
 		    foreach ($djsByShow as $djInfo) {
 			$name = $djInfo['Alias'];
 			// If this DJ was a host the show when the album was played and hasn't already been counted yet...
-			if ($djInfo['programname'] == $show && $djInfo['STdate'] <= $playTime && 
-			    $djInfo['ENdate'] >= $playTime && !in_array($name, array_keys($djs)))
+			if ($djInfo['programname'] == $show && $djInfo['STdate'] <= $playTime['date'] && 
+			    $djInfo['ENdate'] >= $playTime['date'] && !in_array($name, array_keys($djs)))
 			    // Record them as a DJ that played it, with their influence/weight.
 			    $djs[$name] = $djInfo['weight'];
 		    }
@@ -572,9 +573,9 @@ class playlist extends TPS{
         elseif ($rateAmount == 3 || $rateAmount == 2.5)
             return $weightedNumDJs + 1;
         elseif ($rateAmount == 1.5)
-            return $numShow;
-        elseif ($rateAmount == 1 && $weightedNumDJs == 0.5)
-            return 1;
+            return $weightedNumDJs;
+        elseif ($rateAmount == 1 && $weightedNumDJs < 3)
+            return $weightedNumDJs - 1;
         elseif ($rateAmount == 1)
             return $weightedNumDJs - 0.5;
         else
