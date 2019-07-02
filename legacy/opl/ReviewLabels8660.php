@@ -97,7 +97,7 @@ $outline = filter_input(INPUT_GET,'outline',FILTER_SANITIZE_STRING) ?: 'false';
     $subgenres = implode(", ", $label["subgneres"]);
 
     //print out labels
-    echo "<div style=\"font-size: 6px\"; class=\"label\"'>";
+    echo "<div style=\"font-size: 10px\"; class=\"label\"'>";
     echo "<b><u>". $label['artist']. "</u></b> - " . $label['album'] . '<br>'; // Artist - Album
     echo "(" . $label['year'] . ") " . $trimLabel . '<br>';             // (year) RecordLabel
     echo "<b>" . $genre . "</b>: ". $subgenres . '<br>';         //  Genre: subgenres

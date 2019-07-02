@@ -88,7 +88,7 @@ class playlist extends TPS{
         }
 
         $table = 'library';
-        $primaryKey = 'refCode';
+        $primaryKey = 'playlistID';
         $columns = array(
             array( 'db' => 'refCode', 'dt' => 'refCode' ),
             array( 'db' => 'datein', 'dt' => 'datein' ),
