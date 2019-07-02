@@ -109,7 +109,8 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
         });
 
     $app->get('/chart', function () use ($app, $authenticate, $playlist) {
-	$startDate = $date_modify(date("Y-m-d"), "-7 days");
+     $date = new DateTime('-7 d');
+	$startDate = $date->format('Y-m-d H:i:s');
 	$endDate = date("Y-m-d");
 	$charts =  $playlist->getTop40($startDate, $endDate);
     
