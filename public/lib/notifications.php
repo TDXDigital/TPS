@@ -136,7 +136,7 @@ class notification extends station{
     * @abstract If the database has been setup and the notification updates installed, update the manager notification
     *  message to say how many albums have expired on the playlist and are ready to be converted to the library.
     */
-    public function checkConvert() {
+    public function checkConvert($notifyMgmt=TRUE) {
 	// Ensure the database has been setup
 	$setup = FALSE;
 	$stmt = $this->db->query("SHOW TABLES;");
@@ -168,7 +168,9 @@ class notification extends station{
 	    if ($alreadyNotifiedOf != $numExpired) {
 	        $this->db->query("DELETE FROM notification WHERE tag='expired albums';");
 	        $this->db->query("INSERT INTO notification (message, time, tag, path) VALUES ('" .
-				 $numExpired . " expired albums are on the playlist', NOW(), 'expired albums', '/playlist');");
+				 $numExpired . " expired albums are on the playlist', NOW(), 'expired albums', '/playlist?expired=true');");
+	        if (!$notifyMgmt)
+		    $this->db->query("UPDATE notification SET acknowledged=NOW() WHERE notificationid=LAST_INSERT_ID();");
 	    }
 	}
     }

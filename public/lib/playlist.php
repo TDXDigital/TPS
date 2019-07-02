@@ -301,6 +301,8 @@ class playlist extends TPS{
             $this->db->query("UPDATE playlist SET Expire=NOW() WHERE RefCode IN " . $refCodeList . ";");
             $this->db->query("UPDATE library SET playlist_flag='FALSE' WHERE RefCode IN " . $refCodeList . ";");
         }
+	$notification = new \TPS\notification($_SESSION['CALLSIGN']);
+	$notification->checkConvert(FALSE); // Don't notify management if the number of expired albums decreases
     }
 
 
