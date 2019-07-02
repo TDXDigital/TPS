@@ -132,7 +132,30 @@ class notification extends station{
 	$this->db->query("UPDATE notification SET acknowledged=NOW() WHERE notificationid=" . $id .";");
     }
 
-    public function checkConvert() {
+    /*
+    * @abstract If the database has been setup and the notification updates installed, update the manager notification
+    *  message to say how many albums have expired on the playlist and are ready to be converted to the library.
+    */
+    public function checkConvert($notifyMgmt=TRUE) {
+	// Ensure the database has been setup
+	$setup = FALSE;
+	$stmt = $this->db->query("SHOW TABLES;");
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC))
+	    if (array_values($row)[0] == 'notification')
+		$setup = TRUE;
+	if (!$setup)
+	    return;
+
+	// Ensure NOTIFICATION_UPDATE_1 has been installed
+	$updated = FALSE;
+	$stmt = $this->db->query("SHOW COLUMNS FROM notification WHERE Field='path';");
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC))
+	    if ($row['Field'] == 'path')
+		$updated = TRUE;
+	if (!$updated)
+	    return;
+
+	// Update the notification message to match the number of expired albums if it has changed since last time
 	$playlist = new \TPS\playlist();
 	$numExpired = sizeof($playlist->getExpiredAlbums());
 	if ($numExpired > 0) {
@@ -145,7 +168,9 @@ class notification extends station{
 	    if ($alreadyNotifiedOf != $numExpired) {
 	        $this->db->query("DELETE FROM notification WHERE tag='expired albums';");
 	        $this->db->query("INSERT INTO notification (message, time, tag, path) VALUES ('" .
-				 $numExpired . " expired albums are on the playlist', NOW(), 'expired albums', '/playlist');");
+				 $numExpired . " expired albums are on the playlist', NOW(), 'expired albums', '/playlist?expired=true');");
+	        if (!$notifyMgmt)
+		    $this->db->query("UPDATE notification SET acknowledged=NOW() WHERE notificationid=LAST_INSERT_ID();");
 	    }
 	}
     }

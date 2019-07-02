@@ -1,0 +1,18 @@
+{
+    "TPS_Errno": "MGMT-002",
+    "type" : "database",
+    "execute" : "SQL",
+    "requires" : "MGMT-001",
+    "SQL_QRY" : {
+        "TEST": "SELECT name FROM `managementSettings` WHERE `name` = 'hostProbationPeriodMultiplier';",
+        "RESULT" : {
+            "name" : [
+                "hostProbationPeriodMultiplier"
+            ]
+        },
+        "Negate": 0,
+        "createMode": 1,
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "MGMT_SETTINGS_UPDATE_1.sql"
+    }
+}
