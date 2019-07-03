@@ -368,8 +368,7 @@ class playlist extends TPS{
 	$startDate = $startDate < $fourWeekStart ? $startDate : $fourWeekStart;
 
 	$station = new \TPS\Station();
-	$sql = $this->db->query("SELECT library.RefCode, library.artist, library.album,
-                             library.release_date, library.rating, library.Locale, " .
+	$sql = $this->db->query("SELECT library.RefCode, library.artist, library.album, library.release_date, library.rating, library.Locale, " .
 				"library.playlist_flag, playlist.Activate, playlist.Expire, playlist.SmallCode " .
 				"FROM library LEFT JOIN playlist ON library.RefCode=playlist.RefCode " .
 				"WHERE library.RefCode IN (SELECT RefCode FROM playlist WHERE SmallCode IN " .
@@ -411,31 +410,36 @@ class playlist extends TPS{
 	    $playedOnShows = [];
 
 	    foreach ($albumPlays as &$plays) {
+		$show = $plays['programname'];
+		$time = $plays['dateTime'];
+
 		// If this is the album the DJ played...
 		if ($plays['SmallCode'] == $album['SmallCode'] &&
-		   ($plays['dateTime'] >= $album['Activate'] && $plays['dateTime'] <= $album['Expire'] || $album['playlist_flag'] == 'COMPLETE')) {
-		    // Figure out when it was played relative to the $endDate
-		    $daysAgo = date_diff($endDate, $plays['dateTime'])->days;
+		   ($time >= $album['Activate'] && $time <= $album['Expire'] || $album['playlist_flag'] == 'COMPLETE')) {
 
-		    // Increment the approriate week number of plays
-		    if ($daysAgo < 7)
-			$lastWeekPlays += 1;
-		    elseif ($daysAgo < 14)
-			$twoWeekPlays += 1;
-		    elseif ($daysAgo < 21)
-			$threeWeekPlays += 1;
-		    elseif ($daysAgo < 28)
-			$fourWeekPlays += 1;
+		    $playedOnThisShowAlready = in_array($show, array_keys($playedOnShows));
+		    if (!$playedOnThisShowAlready || ($playedOnThisShowAlready && count($playedOnShows[$show]) <= 1)) {
+		        // Figure out when it was played relative to the $endDate
+		        $daysAgo = date_diff($endDate, $plays['dateTime'])->days;
 
-		    if ($daysAgo < 28) {
-		        // Update the numShows property based on the shows weight
-		        $show = $plays['programname'];
-		        $time = $plays['dateTime'];
-			if (in_array($show, array_keys($playedOnShows)))
-			    array_push($playedOnShows[$show], (array)$time);
-			else
-			    $playedOnShows[$show] = [(array)$time];
-			$numShows += $plays['weight'];
+		        // Increment the approriate week number of plays
+		        if ($daysAgo < 7)
+			    $lastWeekPlays += 1;
+		        elseif ($daysAgo < 14)
+			    $twoWeekPlays += 1;
+		        elseif ($daysAgo < 21)
+			    $threeWeekPlays += 1;
+		        elseif ($daysAgo < 28)
+			    $fourWeekPlays += 1;
+
+		        if ($daysAgo < 28) {
+		            // Update the numShows property based on the shows weight
+			    if ($playedOnThisShowAlready)
+			        array_push($playedOnShows[$show], (array)$time);
+			    else
+			        $playedOnShows[$show] = [(array)$time];
+			    $numShows += $plays['weight'];
+			}
 		    }
 		}
 	    }
