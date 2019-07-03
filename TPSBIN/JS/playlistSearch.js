@@ -37,7 +37,7 @@ $(document).ready(function() {
                         }
                     }
         },
-        "rowId": 'playlistID',
+        "rowId": 'ShortCode',
         "columns": [
             {
                 "orderable":      true,
@@ -167,7 +167,7 @@ function rowSelection(playlistTable)
 
 function missingAlbumLink(playlistTable)
 {
-     playlistTable.on( 'click', 'a', function () {
+     playlistTable.on( 'click', '.missingAlbum', function () {
         var id = $(this).closest('tr').attr('id')
 
          $.ajax({

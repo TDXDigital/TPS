@@ -67,6 +67,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $app->render("playlists.twig", $params);
         }
     });
+
     $app->post('/', function() use ($app, $playlist){
         $isXHR = $app->request->isAjax();
         $refCodes = $app->request->post("refCode");
@@ -85,6 +86,17 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $app->redirect("./".array_pop($result));
         }
     });
+
+	$app->get('/expire', function() use ($app, $playlist){
+		//todo - set expired filter
+		$params = array(
+                "title"=>"Playlist",
+            );
+		$app->render("playlists.twig", $params);
+    });
+
+    
+
     $app->get('/display-playlist', $authenticate, function () use ($app) {
 	$filter = $app->request->get("filter");
 	$playlist = new \TPS\playlist;
@@ -92,14 +104,16 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
     });
    $app->get('/lastProg/:id', $authenticate, function($id) use ($app, $playlist){
             $prog = $playlist->getLastProgram($id);
-            // $lastProg["name"] 
-            echo 'Last Program: ' . $prog[0]["programname"] . PHP_EOL .
-                    'Date: ' . $prog[0]["date"];
-            // return json_encode($prog);
+
+            if (array_key_exists(0,$prog))
+                echo 'Last Program: ' . $prog[0]["programname"] . PHP_EOL .'Date: ' . $prog[0]["date"];
+            else
+                echo 'Cannot find last program';
+
         });
 
     $app->get('/chart', function () use ($app, $authenticate, $playlist) {
-     $date = new DateTime('-7 d');
+    $date = new DateTime('-7 d');
 	$startDate = $date->format('Y-m-d H:i:s');
 	$endDate = date("Y-m-d");
 	$charts =  $playlist->getTop40($startDate, $endDate);
@@ -108,10 +122,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
                     "title"=>"Chart",
                     "charts"=>$charts,
                 );
-     // print_r($param);
-     // exit;
      $app->render('chart.twig', $param);
-
     });
 
     $app->post('/chart', function () use ($app, $authenticate, $playlist) {
@@ -122,9 +133,9 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
      $param = array(
                     "title"=>"Chart",
                     "charts"=>$charts,
+                    "startDate"=>$startDate,
+                    "endDate"=>$endDate
                 );
-     // print_r($param);
-     // exit;
      $app->render('chart.twig', $param);
 
     });

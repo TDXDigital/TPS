@@ -69,7 +69,7 @@ class playlist extends TPS{
     }
 
     public function displayTable($filter) {
-        $where = " playlist_flag = 'COMPLETE'";
+        $where = " playlist_flag = 'COMPLETE' AND refCode IN (SELECT refCode from playlist)";
         switch($filter['recommended']) {
             case 'all': $where .= " AND true"; break;
             case 'only': $where .= " AND rating >= 4"; break;
@@ -102,6 +102,8 @@ class playlist extends TPS{
         $library = new \TPS\library();
         foreach($lib_data['data'] as &$album) {
             $refCode = $album['refCode'];
+            if (!array_key_exists(0,$this->getAllByRefCode($refCode)))
+
             $album_playlist_info = array_values($this->getAllByRefCode($refCode))[0];
             $album['playlistID'] = $album_playlist_info['PlaylistId'];
             $album['ShortCode'] = $album_playlist_info['SmallCode'];
@@ -298,7 +300,8 @@ class playlist extends TPS{
             $refCode = [$refCode];
         if (sizeof($refCode) > 0) {
             $refCodeList = "(" . implode(", ", $refCode) . ")";
-            $this->db->query("UPDATE playlist SET Expire=NOW() WHERE RefCode IN " . $refCodeList . ";");
+            // $this->db->query("UPDATE playlist SET Expire=NOW() WHERE RefCode IN " . $refCodeList . ";");
+            $this->db->query("DELETE FROM playlist WHERE RefCode IN " . $refCodeList . ";");
             $this->db->query("UPDATE library SET playlist_flag='FALSE' WHERE RefCode IN " . $refCodeList . ";");
         }
 	$notification = new \TPS\notification($_SESSION['CALLSIGN']);
