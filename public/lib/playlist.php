@@ -347,7 +347,7 @@ class playlist extends TPS{
     * @abstract Return the top 40 ranked albums for the given time period
     * @param string $startDate The starting date of ranking
     * @param string $endDate The ending date of ranking. If the user wants to include the 4th, set to midnight of the 5th.
-    * @return array of dictionaries containing the top 40 albums information (or less if <40 albums played)
+    * @return array of dictionaries containing the top 40 albums information (or less if <40 albums played within the last week)
     */
     public function getTop40($startDate, $endDate) {
         $startDate = new \DateTime($startDate);
@@ -480,16 +480,24 @@ class playlist extends TPS{
 	    $numDJs = $this->getNumDJs($weightedNumDJs, $rateAmount);
 
 	    // Assign totalScore
-	    $noPlays = $lastWeekPlays + $twoWeekPlays + $threeWeekPlays + $fourWeekPlays == 0;
-	    if ($noPlays)
+	    if ($lastWeekPlays == 0)
                 $totalScore = 0;
             else
-                $totalScore = pow($lastWeekPlays + 1, 2) * $numShows * ($lastWeekPlays > 0) * $playlistCode * pow($releaseCode, 2) * $numDJs * $rateAmount + $locationCode + $previousWeeksPlayScore;
+                $totalScore = pow($lastWeekPlays + 1, 2) * $numShows * $playlistCode * pow($releaseCode, 2) * $numDJs * $rateAmount + $locationCode + $previousWeeksPlayScore;
             $album['totalScore'] = $totalScore;
         }
 
-	// Return the top 40 albums (or less if <40 albums in $albumInfo)
+	// Sort the albums by total score
         usort($albumInfo, array($this, 'sortByTotalScore'));
+
+	// Remove albums that have a totalScore of 0
+	for($i = count($albumInfo) - 1; $i >= 0; $i--)
+	    if ($albumInfo[$i]['totalScore'] == 0)
+		array_pop($albumInfo);
+	    else
+		break;
+
+	// Return the top 40 albums (or less if <40 albums played during the last week)
         $top40 = array_slice($albumInfo, 0, 40);
         return $top40;
     }
