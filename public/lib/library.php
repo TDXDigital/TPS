@@ -76,6 +76,32 @@ class library extends station{
     }
 
     /**
+     * @abstract returns genre for a given album
+     * @global mysqli $mysqli
+     * @param type $RefCode Reference Code for Album
+     * @return string of genre
+     */
+    public function getGenreByRefCode($RefCode) {
+	$sql = $this->mysqli->query("SELECT genre FROM library WHERE RefCode=" . $RefCode . ";");
+	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
+	    return $row['genre'];
+	throw new Exception("Error while fetching genre for RefCode " . $RefCode);
+    }
+
+    /**
+     * @abstract returns format for a given album
+     * @global mysqli $mysqli
+     * @param type $RefCode Reference Code for Album
+     * @return string of format
+     */
+    public function getFormatByRefCode($RefCode) {
+	$sql = $this->mysqli->query("SELECT format FROM library WHERE RefCode=" . $RefCode . ";");
+	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
+	    return $row['format'];
+	throw new Exception("Error while fetching genre for RefCode " . $RefCode);
+    }
+
+    /**
      * @abstract returns record labels for a given album
      * @global mysqli $mysqli
      * @param type $RefCode Reference Code for Album

@@ -962,6 +962,35 @@ public function getGenreDividedValidShortCodes($station, $defaultOffsetDate,
             $refcodes = array($refcodes);
         }
         $refcode = NULL;
+	if (is_null($smallCode)) {
+	    $today = date('Y-m-d');
+	    $getCode = function ($genre, $codes){
+                foreach ($codes as $key => $value) {
+                    if($value['Genre'] == $genre){
+                        return array($key, $value);
+                    }
+                }
+                return FALSE;
+            };
+	    $library = new \TPS\library();
+	    $libCodes = $library->listLibraryCodes();
+	    $genre = $library->getGenreByRefCode($refcodes[0]);
+	    $format = $library->getFormatByRefCode($refcodes[0]);
+	    list($genreNum, $genre) = $getCode($genre, $libCodes);
+	    $validRanges = $this->getGenreDividedValidShortCodes($_SESSION['CALLSIGN'], $today);
+	    try{
+                foreach ($validRanges[$genre['Genre']] as $key => &$value) {
+                    if(sizeof($value['shortCodes'])<1)
+                        continue;
+                    if(in_array($format, $value['formats'])){
+                        $smallCode = array_shift($value['shortCodes']);
+                        break;
+                    }
+                }
+            } catch (Exception $ex) {
+                $library->log->error("No Available ShortCodes for library genre ".$genre['Genre']);
+            }
+	}
         $stmt = $this->db->prepare("INSERT INTO playlist (RefCode, Activate, "
             . "Expire, ZoneCode, ZoneNumber, SmallCode) VALUES "
             . "(:refcode, :activate, :expire, :zoneCode, :zoneNumber, "
