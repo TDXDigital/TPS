@@ -450,7 +450,7 @@ class playlist extends TPS{
 		foreach ($playTimes as $playTime)
 		    foreach ($djsByShow as $djInfo) {
 			$name = $djInfo['Alias'];
-			// If this DJ was a host the show when the album was played and hasn't already been counted yet...
+			// If this DJ was a host on the show when the album was played and hasn't already been counted yet...
 			if ($djInfo['programname'] == $show && $djInfo['STdate'] <= $playTime['date'] && 
 			    $djInfo['ENdate'] >= $playTime['date'] && !in_array($name, array_keys($djs)))
 			    // Record them as a DJ that played it, with their influence/weight.
