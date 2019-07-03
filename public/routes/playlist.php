@@ -92,10 +92,12 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
     });
    $app->get('/lastProg/:id', $authenticate, function($id) use ($app, $playlist){
             $prog = $playlist->getLastProgram($id);
-            // $lastProg["name"] 
-            echo 'Last Program: ' . $prog[0]["programname"] . PHP_EOL .
-                    'Date: ' . $prog[0]["date"];
-            // return json_encode($prog);
+
+            if (array_key_exists(0,$prog))
+                echo 'Last Program: ' . $prog[0]["programname"] . PHP_EOL .'Date: ' . $prog[0]["date"];
+            else
+                echo 'Cannot find last program';
+
         });
 
     $app->get('/chart', function () use ($app, $authenticate, $playlist) {
