@@ -347,7 +347,7 @@ class playlist extends TPS{
     * @abstract Return the top 40 ranked albums for the given time period
     * @param string $startDate The starting date of ranking
     * @param string $endDate The ending date of ranking. If the user wants to include the 4th, set to midnight of the 5th.
-    * @return array of dictionaries containing the top 40 albums information (or less if <40 albums played within the last week)
+    * @return array of dictionaries containing the top 40 albums information (or less if <40 albums played within the last week, more if tie for last)
     */
     public function getTop40($startDate, $endDate) {
         $startDate = new \DateTime($startDate);
@@ -501,9 +501,21 @@ class playlist extends TPS{
 	    else
 		break;
 
-	// Return the top 40 albums (or less if <40 albums played during the last week)
-        $top40 = array_slice($albumInfo, 0, 40);
-        return $top40;
+	// Determine max albums to return - based on if the album in last place has the same totalScore as later albums
+	$albumsToReturn = 40;
+	if (count($albumInfo) > $albumsToReturn) {
+	    $totalScoreOfLast = $albumInfo[$albumsToReturn - 1]['totalScore'];
+	    for ($i = $albumsToReturn - 1; $i < count($albumInfo); $i++) {
+		if ($albumInfo[$i]['totalScore'] == $totalScoreOfLast)
+		    $albumsToReturn++;
+		else
+		    break;
+	    }
+	}
+
+	// Return the top albums (less if <40 albums played during the last week, more if tie-breaker needed for last places)
+        $topAlbums = array_slice($albumInfo, 0, $albumsToReturn);
+        return $topAlbums;
     }
 
     /*
