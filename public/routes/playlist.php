@@ -67,6 +67,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $app->render("playlists.twig", $params);
         }
     });
+
     $app->post('/', function() use ($app, $playlist){
         $isXHR = $app->request->isAjax();
         $refCodes = $app->request->post("refCode");
@@ -85,6 +86,17 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $app->redirect("./".array_pop($result));
         }
     });
+
+	$app->get('/expire', function() use ($app, $playlist){
+		//todo - set expired filter
+		$params = array(
+                "title"=>"Playlist",
+            );
+		$app->render("playlists.twig", $params);
+    });
+
+    
+
     $app->get('/display-playlist', $authenticate, function () use ($app) {
 	$filter = $app->request->get("filter");
 	$playlist = new \TPS\playlist;
