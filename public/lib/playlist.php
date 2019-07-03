@@ -453,16 +453,6 @@ class playlist extends TPS{
 	    }
 	    $weightedNumDJs = array_sum($djs);
 
-	    // Assign recentCode
-            if ($lastWeekPlays > 0)
-                $recentCode = 3;
-            elseif ($twoWeekPlays > 0)
-                $recentCode = 1.5;
-	    elseif ($threeWeekPlays > 0)
-                $recentCode = 1.1;
-            else
-                $recentCode = 1;
-
 	    // Assign previousWeeksPlayScore
             if ($twoWeekPlays > 0)
                 $score = 3;
@@ -492,7 +482,7 @@ class playlist extends TPS{
 	    if ($noPlays)
                 $totalScore = 0;
             else
-                $totalScore = pow($lastWeekPlays + 1, 2) * $numShows * $recentCode * $playlistCode * pow($releaseCode, 2) * $numDJs * $rateAmount + $locationCode + $previousWeeksPlayScore;
+                $totalScore = pow($lastWeekPlays + 1, 2) * $numShows * ($lastWeekPlays > 0) * $playlistCode * pow($releaseCode, 2) * $numDJs * $rateAmount + $locationCode + $previousWeeksPlayScore;
             $album['totalScore'] = $totalScore;
         }
 
