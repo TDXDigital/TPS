@@ -46,7 +46,7 @@
                         <input type="text" class="form-control datepicker" required
                                name="startDate" id="startDate" placeholder="2000-01-01"
                                pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
-                               value="{{ post.dateFrom | date_modify('-7 day')|date('Y-m-d') }}">
+                               value="{{ startDate?? startDate | date_modify('-7 day')|date('Y-m-d') }}">
                     </div>
                 </fieldset>
             </div>
@@ -57,7 +57,7 @@
                         <input type="text" class="form-control datepicker" required
                                name="endDate" id="endDate" placeholder="2000-01-02"
                                pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
-                                value="{{ 'now'|date('Y-m-d') }}">
+                                value="{{ endDate |date('Y-m-d') }}">
                     </div>
                 </fieldset>
           	</div>

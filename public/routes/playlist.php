@@ -101,7 +101,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
         });
 
     $app->get('/chart', function () use ($app, $authenticate, $playlist) {
-     $date = new DateTime('-7 d');
+    $date = new DateTime('-7 d');
 	$startDate = $date->format('Y-m-d H:i:s');
 	$endDate = date("Y-m-d");
 	$charts =  $playlist->getTop40($startDate, $endDate);
@@ -110,10 +110,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
                     "title"=>"Chart",
                     "charts"=>$charts,
                 );
-     // print_r($param);
-     // exit;
      $app->render('chart.twig', $param);
-
     });
 
     $app->post('/chart', function () use ($app, $authenticate, $playlist) {
@@ -124,9 +121,9 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
      $param = array(
                     "title"=>"Chart",
                     "charts"=>$charts,
+                    "startDate"=>$startDate,
+                    "endDate"=>$endDate
                 );
-     // print_r($param);
-     // exit;
      $app->render('chart.twig', $param);
 
     });
