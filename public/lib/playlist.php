@@ -625,12 +625,16 @@ class playlist extends TPS{
     * @param string $color The color associated with the table
     * @return string The html code for the albums table
     */
+// "<img class='star' style='width: 12px; vertical-align:baseline;' src='../../../images/recommended.png' />"
     public function createPDFTable($albums, $color) {
-	$html = "<table cellspacing='0' cellpadding='2' class='{$color}-table'><tr><th>#</th><th>Artist</th><th>Album</th><th>Subgenres</th><th>Hometowns</th><th>Date Added</th><th>Recommended</th></tr>";
+	$html = "<table cellspacing='0' cellpadding='2' class='{$color}-table'><tr><th>#</th><th>Artist</th><th>Album</th><th>Subgenres</th><th>Hometowns</th><th>Date Added</th></tr>";
         foreach ($albums as $album) {
             $html .= "<tr><td class='centered'>"  . $album['SmallCode'] . "</td>" .
                      "<td>" . $album['library']['artist'] . "</td>" .
-                     "<td>" . $album['library']['album'] . "</td>";
+            	     "<td>" . $album['library']['album'];
+	    if ($album['library']['rating'] >= 4)
+		$html .= "   <img class='star' style='width: 12px; vertical-align:baseline;' src='../../../images/recommended.png' />";
+	    $html .= "</td>";
 
             $html .= "<td>";
             foreach ($album['library']['subgenres'] as $subgenre)
@@ -642,15 +646,7 @@ class playlist extends TPS{
                 $html .= "-" . $hometown . "<br/>";
             $html .= "</td>";
 
-            $html .= "<td class='centered'>" . substr($album['Activate'], 0, 10) . "</td>";
-            $rating = $album['library']['rating'];
-            if (is_null($rating) || $rating == 0)
-                $recommended = "N/A";
-            elseif ($rating < 4)
-                $recommended = "No";
-            else
-                $recommended = "Yes";
-            $html .= "<td class='centered'>" . $recommended . "</td></tr>";
+            $html .= "<td class='centered'>" . substr($album['Activate'], 0, 10) . "</td></tr>";
         }
         $html .= "</table>";
 	return $html;

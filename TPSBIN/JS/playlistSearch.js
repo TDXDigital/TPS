@@ -53,7 +53,7 @@ $(document).ready(function() {
             },
             {
                 "orderable":      false,
-                "data":           "album",
+                "data":           {"album":"album", "rating":"rating"},
                 "defaultContent": "",
             },
             {
@@ -64,11 +64,6 @@ $(document).ready(function() {
             {
                 "orderable":      false,
                 "data":           "hometowns",
-                "defaultContent": "",
-            },
-            {
-                "orderable":      false,
-                "data":           "rating",
                 "defaultContent": "",
             },
             {
@@ -91,7 +86,6 @@ $(document).ready(function() {
 
         {
         "render": function (data, type, row) {
-            
             var id = data.ShortCode;
 
             if(data.ShortCode.length == 3){
@@ -109,6 +103,15 @@ $(document).ready(function() {
         },
 	    {
 		"render": function(data, type, row) {
+			field = data['album'];
+			if (data['rating'] >= 4)
+			    field += '  <img class="star" style="width: 12px; vertical-align:baseline;" src="../../images/recommended.png" />';
+			return field;
+		},
+			"targets" : 2
+	    },
+	    {
+		"render": function(data, type, row) {
 			return cellBulletPoints(data);
 		},
 			"targets" : 3
@@ -121,20 +124,9 @@ $(document).ready(function() {
 	    },
 	    {
 		"render": function(data, type, row) {
-			if (data == 0 || data == null)
-			    return '';
-			tag = '<img class="star" style="width: 25px;" src="../../images/';
-			if (data < 4)
-			    tag += 'not_';
-			return tag + 'recommended.png" />';
-		},
-			"targets" : 5
-	    },
-	    {
-		"render": function(data, type, row) {
 			return '<a href="./' + data + '"><i class="fa fa-edit"></i></a>';
 		},
-			"targets" : 8
+			"targets" : 7
 	    },
 	    { className: "centeredTD", targets: 5}
 	],
