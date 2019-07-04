@@ -262,7 +262,6 @@
 			       {% if album.rating in [4, 5] %} checked="checked" {% endif %} 
 			       value="1" />
 		    </div>
-                    {% if album.status is null %}
                     <div class="col-lg-3">
                         <input id="printCheckbox" type="checkbox" data-label-prepend="Print" class="style3" name="print" value="1" />
                     </div>
@@ -271,18 +270,11 @@
 			       name="cancon" value="0" onclick="toggleCancon()"
 			       {% if album.cancon %} checked="checked" {% endif %} />
                     </div>
+                    {% if album.status is null %}
                     <div class="col-lg-3">
                         <input id='playlistCheckbox' type="checkbox" data-label-prepend="PL" class="style3" name="playlistBox" value="1"/>
                     </div>
                     {% else %}
-                    <div class="col-lg-3">
-                        <input type="checkbox" id="printCheckbox" data-label-prepend="Print" class="style3" name="print" value="1" />
-                    </div>
-                    <div class="col-lg-3">
-                        <input id='canconCheckbox' type="checkbox" data-label-prepend="Cancon" class="style3" 
-			       name="cancon" value="0" onclick="toggleCancon()" 
-			       {% if album.cancon %} checked="checked" {% endif %} />
-                    </div>
                     <div class="col-lg-3">
                         <!-- Single button -->
                         <div class="btn-group">
