@@ -296,4 +296,23 @@ class program extends station{
         else
             return false;
     }
+
+    public function createNewProgram($callsign, $progname, $length, $syndicateSource, $host, $genre, $weight)
+    {
+
+
+        $insert_program = $this->mysqli->prepare("insert into program (programname, callsign, length, syndicatesource, genre, weight) values (?,?,?,?,?,?)");
+        $insert_program->bind_param('ssissi',$progname,$callsign,$length,$syndicateSource,$genre, $weight);
+        if!($insert_program->execute())
+            return false;
+        $insert_program->close();
+
+        $performs = "insert into performs (callsign, programname, Alias) values (?,?,?)";
+        $insert_performs = $this->mysqli->prepare($performs);
+        $insert_performs->bind_param('sss',$callsign,$progname,$host);
+        if(!$insert_performs->execute())
+            return false;
+        $insert_performs->close();
+        return true;   
+    }
 }

@@ -923,20 +923,16 @@ class station extends TPS{
         }
     }
 
-    public function getStations()
+    public function getHosts()
     {
-        $callsql="SELECT callsign, stationname from `station` order by callsign";
-
-        $con = $this->mysqli->prepare("SELECT callsign, stationname from `station` order by callsign");
-        $con->bind_result($callsign, $name);
+        $con = $this->mysqli->prepare("SELECT alias, djname from `dj` order by djname");
+        $con->bind_result($alias, $name);
         $result = array();
 
         if($con->execute())
         {
             while($con->fetch()){
-                 array_push($result, array(
-                    'name'=>$name,'callsign'=>$callsign
-                ));
+                $result[$alias]=$name;
             }
             $con->close();
             return $result;
@@ -945,4 +941,5 @@ class station extends TPS{
             return false;
     
     }
+    
 }

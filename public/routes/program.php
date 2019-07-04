@@ -90,17 +90,42 @@ $app->group('/programs', $authenticate, function () use ($app,$authenticate){
   $app->get('/new', function() use ($app, $authenticate){
 
     $station = new \TPS\station($_SESSION['CALLSIGN']);
-    $stations = $station->getStations();
     $program = new \TPS\program($station);
+
+    $stations = $station->getStations();
+    $hosts = $station->getHosts();
 
     $programGenre = $program->getProgramGenre();
     $params = array(
             "title"=>"New Program",
             "sessionStation" => $_SESSION['CALLSIGN'],
             "station"=>$stations,
+            "hosts"=>$hosts,
             "genre"=>$programGenre
         );
          $app->render("programNew.twig", $params);
+    });
+
+
+  // Create new program
+    $app->post('/create', function() use ($app, $authenticate){
+
+        $station = new \TPS\station($_SESSION['CALLSIGN']);
+        $stations = $station->getStations();
+        $program = new \TPS\program($station);
+
+        $callsign = $station->getCallsign();
+        $progname = $app->request->post('progName');
+        $stationName = $app->request->post('station');
+        $length = $app->request->post('length');
+        $syndicate = $app->request->post('syndicate');
+        $host = $app->request->post('host');
+        $genre = $app->request->post('genre');
+        $weight = $app->request->post('weight');
+       
+        $program -> createNewProgram($stationName, $progname, $length, $syndicate, $host, $genre, $weight);
+
+        echo 'done';
     });
 
 
