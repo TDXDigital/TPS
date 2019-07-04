@@ -195,6 +195,15 @@ class library extends station{
                     "21"=>"Hard Rock",
                     )
                 ),
+            "3" => array(
+                "Title"=>"Electronic",
+                "Genre"=>"EL",
+                "PlaylistDuration"=>array(
+                    "unit"=>"month",
+                    "value"=>6,
+                ),
+                "SubGenres" => array()
+                ),
             "4" => array(
                 "Title"=>"Hip-hop/Rap",
                 "Genre"=>"HH",

@@ -983,13 +983,17 @@ public function getGenreDividedValidShortCodes($station, $defaultOffsetDate,
         }
         return $result;
     }
-    
-    public function create($refcodes, $startDate, $endDate,
+
+    /*
+    * @abstract Add an album onto the playlist when given the RefCode, start, and end dates
+    * @param int $refcode RefCode of the album
+    * @param string $startDate Activate date of the album on the playlist
+    * @param string $endDate Expire date of the album on the playlist
+    * @return playlist id of the newly-added album or an error message
+    */
+    public function create($refcode, $startDate, $endDate,
         $zoneCode=Null, $zoneNumber=Null, $smallCode=NULL){
-        if(!is_array($refcodes)){
-            $refcodes = array($refcodes);
-        }
-        $refcode = NULL;
+	// Get next available smallCode
 	if (is_null($smallCode)) {
 	    $today = date('Y-m-d');
 	    $getCode = function ($genre, $codes){
@@ -1002,8 +1006,8 @@ public function getGenreDividedValidShortCodes($station, $defaultOffsetDate,
             };
 	    $library = new \TPS\library();
 	    $libCodes = $library->listLibraryCodes();
-	    $genre = $library->getGenreByRefCode($refcodes[0]);
-	    $format = $library->getFormatByRefCode($refcodes[0]);
+	    $genre = $library->getGenreByRefCode($refcode);
+	    $format = $library->getFormatByRefCode($refcode);
 	    list($genreNum, $genre) = $getCode($genre, $libCodes);
 	    $validRanges = $this->getGenreDividedValidShortCodes($_SESSION['CALLSIGN'], $today);
 	    try{
@@ -1019,6 +1023,8 @@ public function getGenreDividedValidShortCodes($station, $defaultOffsetDate,
                 $library->log->error("No Available ShortCodes for library genre ".$genre['Genre']);
             }
 	}
+
+	// Add to playlist
         $stmt = $this->db->prepare("INSERT INTO playlist (RefCode, Activate, "
             . "Expire, ZoneCode, ZoneNumber, SmallCode) VALUES "
             . "(:refcode, :activate, :expire, :zoneCode, :zoneNumber, "
@@ -1029,17 +1035,13 @@ public function getGenreDividedValidShortCodes($station, $defaultOffsetDate,
         $stmt->bindParam(":smallCode", $smallCode, \PDO::PARAM_INT);
         $stmt->bindParam(":zoneCode", $zoneCode);
         $stmt->bindParam(":zoneNumber", $zoneNumber);
-        $ids = [];
-        foreach($refcodes as $refcode){
-            $result = $stmt->execute();
-            if(!$result){
-                $ids[$refcode] = $stmt->errorInfo();
-            }
-            else{
-                $ids[$refcode] = $this->db->lastInsertId();
-            }
-        }
-        return $ids;
+	if (!$stmt->execute()) {
+	    $id = $stmt->errorInfo();
+	} else {
+	    $id = $this->db->lastInsertId();
+	    $this->db->query("UPDATE library SET playlist_flag='COMPLETE' WHERE RefCode=" . $refcode . ";");
+	}
+	return $id;
     }
     
     public function change($playlistIds, $startDate, $endDate,
