@@ -315,4 +315,25 @@ class program extends station{
         $insert_performs->close();
         return true;   
     }
+
+    /*
+    * @abstract Updates the program and performs tables
+    * @param int $programID Unique program id number
+    * @param string $callsign Callsign of program
+    * @param string $programName Name of program
+    * @param bool $active Status of program - active/not-active
+    * @param int $length Length of program in minutes
+    * @param string $syndicateSource Syndicate source
+    * @param string $genre Genre of program
+    * @param int $hitLimit
+    * @param string $displayOrder Display order
+    * @param int $theme Theme number
+    * @param float $weight Weight of the program
+    * @param array $hosts Associative array of each host with their start and end dates
+    */
+    public function updateProgram($programID, $callsign, $programName, $active=1, $length=NULL, $syndicateSource=NULL, $genre=NULL, $hitLimit=0, $displayOrder='desc',
+				  $theme=8, $weight=1, $hosts=[]) {
+
+
+    }
 }
