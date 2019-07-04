@@ -302,7 +302,7 @@ class program extends station{
 
 
         $insert_program = $this->mysqli->prepare("insert into program (programname, callsign, length, syndicatesource, genre, weight) values (?,?,?,?,?,?)");
-        $insert_program->bind_param('ssissi',$progname,$callsign,$length,$syndicateSource,$genre, $weight);
+        $insert_program->bind_param('ssissd',$progname,$callsign,$length,$syndicateSource,$genre, $weight);
         if(!$insert_program->execute())
             return false;
         $insert_program->close();
