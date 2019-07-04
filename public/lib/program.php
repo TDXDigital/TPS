@@ -51,6 +51,7 @@ class program extends station{
     protected $displayOrder = false;
     protected $reviewable = null;
     protected $lastReview = null;
+    protected $weight = null;
 
     private $data = array();
     /**
@@ -89,7 +90,7 @@ class program extends station{
             return False;
         }
         $con = $this->mysqli->prepare(
-                "SELECT programname, length, syndicatesource, genre, active, Airtime, CCX, PLX, HitLimit, SponsId, displayorder, Theme, Display_Order, Reviewable, last_review FROM program WHERE ProgramID=? and callsign=?"
+                "SELECT programname, length, syndicatesource, genre, active, Airtime, CCX, PLX, HitLimit, SponsId, displayorder, Theme, Display_Order, Reviewable, last_review, weight FROM program WHERE ProgramID=? and callsign=?"
             );
         if($this->mysqli->error){
             die($this->mysqli->error);
@@ -102,7 +103,7 @@ class program extends station{
                     $this->govReqOverride, $this->playlistOverride,
                     $this->hitLimit, $this->sponsor, $this->displayOrder,
                     $this->theme, $this->displayOrder, $this->reviewable,
-                    $this->lastReview
+                    $this->lastReview, $this->weight
                     );
             $con->execute();
             $con->fetch();
@@ -151,7 +152,7 @@ class program extends station{
         return array(
             "callsign" => $this->callsign,
             "name" => $this->name,
-            "djs" => $this->djs,
+            "djs" => self::getDjByProgramName($this->name),
             "genre" => $this->genre,
             "length" => $this->length,
             "syndicateSource" => $this->syndicateSource,
@@ -166,6 +167,7 @@ class program extends station{
             "displayOrder" => $this->displayOrder,
             "reviewable" => $this->reviewable,
             "lastReview" => $this->lastReview,
+            "weight" => $this->weight
         );
     }
 
@@ -297,17 +299,17 @@ class program extends station{
             return false;
     }
 
-    public function createNewProgram($callsign, $progname, $length, $syndicateSource, $host, $genre, $weight)
+    public function createNewProgram($callsign, $progname, $length, $syndicateSource, $host, $genre, $weight, $active)
     {
 
 
-        $insert_program = $this->mysqli->prepare("insert into program (programname, callsign, length, syndicatesource, genre, weight) values (?,?,?,?,?,?)");
-        $insert_program->bind_param('ssissd',$progname,$callsign,$length,$syndicateSource,$genre, $weight);
+        $insert_program = $this->mysqli->prepare("REPLACE into program (programname, callsign, length, syndicatesource, genre, weight, active) values (?,?,?,?,?,?,?)");
+        $insert_program->bind_param('ssissdi',$progname,$callsign,$length,$syndicateSource,$genre, $weight,$active);
         if(!$insert_program->execute())
             return false;
         $insert_program->close();
 
-        $performs = "insert into performs (callsign, programname, Alias) values (?,?,?)";
+        $performs = "REPLACE into performs (callsign, programname, Alias) values (?,?,?)";
         $insert_performs = $this->mysqli->prepare($performs);
         $insert_performs->bind_param('sss',$callsign,$progname,$host);
         if(!$insert_performs->execute())
@@ -335,5 +337,105 @@ class program extends station{
 				  $theme=8, $weight=1, $hosts=[]) {
 
 
+    }
+
+
+    public function getTableFilter($filter)
+    {
+         switch($filter["status"])
+        {   
+            case 'all': $where = " true"; break;
+            case 'accept': $where = " status = 1"; break;
+            case 'reject': $where = " status = 0"; break;
+            case 'na': $where = " status = -1"; break;
+        }
+        switch($filter["date"])
+        {   
+            case 'all': $where .= " AND true"; break;
+            case 'new_recive': $where .= " AND TIMESTAMPDIFF(MONTH, dateIn, now()) < 6"; break;
+            case 'new_release': $where .= " AND TIMESTAMPDIFF(MONTH, release_date, now()) < 6"; break;
+            case 'old_recive': $where .= " AND TIMESTAMPDIFF(MONTH, dateIn, now()) >= 6"; break;
+            case 'old_release': $where .= " AND TIMESTAMPDIFF(MONTH, release_date, now()) >= 6"; break;
+        }
+        switch($filter["genre"])
+        {
+            case 'all': $where .= " AND true"; break;
+            default: $where .= " AND genre = '". $filter["genre"]."'";
+        }
+        switch($filter["locale"])
+        {
+            case 'all': $where .= " AND true"; break;
+            default: $where .= " AND Locale = '". $filter["locale"]."'";
+        }
+        switch($filter["format"])
+        {
+            case 'all': $where .= " AND true"; break;
+            default: $where .= " AND format = '". $filter["format"]."'";
+        }
+        switch($filter["missing_info"])
+        {
+            case 'all': $where .= " AND true"; break;
+
+            case 'label': $where .= " AND refCode NOT IN (SELECT library_refcode from library_recordlabel)"; break;
+            case 'locale': $where .= " AND locale is null"; break;
+            case 'genre': $where .= " AND Genre is null"; break;
+            case 'rating': $where .= " AND (rating is null OR rating = 0)"; break;
+            case 'rel_date': $where .= " AND (release_date is null OR release_date = '1970-01-01')"; break;
+            case 'status': $where .= " AND status = -1"; break;
+            case 'crtc': $where .= " AND governmentCategory is null"; break;
+        }
+        switch($filter['tag'])
+        {
+            case 'all': $where .= " AND true"; break;
+            default: $where .= " AND RefCode IN (select library_refCode from library_tags where tag_id = (select id from tags where name = '". $filter['tag'] ."'))";
+            // default: $where .= " AND true"; break;
+        }
+        return $where;
+    }
+
+    public function displayTable($filter)
+    {
+        // $where = self::getTableFilter($filter);
+        $where = '';
+        $table = 'program';
+         
+        // Table's primary key
+        $primaryKey = 'programID';         
+        // Array of database columns which should be read and sent back to DataTables.
+        // The `db` parameter represents the column name in the database, while the `dt`
+        // parameter represents the DataTables column identifier. In this case simple
+        // indexes
+        
+        $columns = array(
+            array( 'db' => 'programID',   'dt' => 'programID' ),
+            array( 'db' => 'programname', 'dt' => 'programname' ),
+            array( 'db' => 'length', 'dt' => 'length' ),
+            array( 'db' => 'syndicatesource', 'dt' => 'syndicatesource' ),
+            array( 'db' => 'genre', 'dt' => 'genre' ),
+            array( 'db' => 'active',  'dt' => 'active' ),
+        );
+
+        $prog_data = \SSP::complex($_GET, $this->db, $table, $primaryKey, $columns, null, $where);
+
+        foreach($prog_data['data'] as &$program) {
+            $program['host'] = $this->getDjByProgramName($program['programname']);
+        }
+        return json_encode($prog_data);
+    }
+
+    public function getDjByProgramName($programName)
+    {
+        $con = $this->mysqli->prepare("SELECT djname FROM dj JOIN performs WHERE dj.alias = performs.alias AND programname = ?;");
+        $con->bind_param("s", $programName);
+        $con->bind_result($djName);
+
+        if($con->execute())
+        {
+            $con->fetch();
+            $con->close();
+            return $djName;
+        }
+        else
+            return false;
     }
 }

@@ -1,0 +1,75 @@
+{% extends 'baseAdmin.twig' %}
+
+{% block headScripts %}
+    <style type="text/css">
+        td label {
+           display: block;
+           text-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+    </li>
+    <li class="active">
+        <a href="/programs/search/"><i class="fa fa-tasks"></i>{% if search %}
+        Program</a>
+    </li>
+    <li>
+        <a href="/programs/search/"><i class="fa fa-search"></i> Search</a>
+        {% else %}
+            Program</a>
+        {% endif %}
+    </li>
+</ol>
+{% endblock %}
+{% block content %}
+    {% if flash.error %}
+        <div class="row">
+            <div class="alert alert-danger">
+                <strong>Error</strong> {{flash.error}}
+            </div>
+        </div>
+    {% endif %}
+    {% if flash.success %}
+        <div class="row">
+            <div class="alert alert-success">
+                <strong>Success</strong> {{flash.success}}
+            </div>
+        </div>
+    {% endif %}
+    
+    <hr size="30">
+    
+    <table class='table table-bordered table-hover display' id='data_table'>
+        <thead>
+            <tr>
+                <th>Program Name</th>
+                <th>Edit</th>
+                <th>Genre</th>
+                <th>Length</th>
+                <th>Syndicate</th>
+                <th>Hosts</th>
+                <th>Active</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Program Name</th>
+                <th>Edit</th>
+                <th>Genre</th>
+                <th>Length</th>
+                <th>Syndicate</th>
+                <th>Hosts</th>
+                <th>Active</th>
+            </tr>
+        </tfoot>
+    </table>
+{% endblock %}
+{% block lastScripts %}
+<script src="{{siteUrl}}/TPSBIN/JS/programSearch.js"></script>
+{% endblock %}

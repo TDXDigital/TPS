@@ -8,6 +8,12 @@
 {% block title %}{{title|default('Program')}}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
+    <li>
+        <i class="fa fa-arrow-left"></i>  <a class="back" href="#">Back</a>
+    </li>
+</ol>
+
+<ol class="breadcrumb">
 	<li>
 		<i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
 	</li>
@@ -21,17 +27,14 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-	<form role="form" {% if program.id is null %}
-		  method="POST" action="./create">
-		{% else %}
-			method="POST" action="./{{program.id}}"> <!-- PUT NOT YET SUPPORTED BY BROWSER -->
-			<input type="hidden" value="{{program.id}}" name="name" />
-		{% endif %}
+	<form role="form" method="POST" {% if program.programID is not null %} 
+	action="/programs/create" {% else %} action="./create" {% endif %}>
 		<div class="row">
 			<div class="col-sm-6">
 				<div class="form-group">
 					<label for="programName">Program Name</label>
-					<input type='text' class="form-control" id='progName' name="progName" value="{{progName}}"/>
+					<input type='text' class="form-control" id='progName' name="progName" value="{{program.name}}"
+					{% if program.programID is not null %} readonly {% endif %}/>
 			   </div>
 			</div>
 			<div class="col-sm-3">
@@ -49,7 +52,7 @@
 			<div class="col-sm-3">
 				<div class="form-group">
 					<label for="length">Length (min)</label>
-					<input type='text' class="form-control" id='length' name="length" value="{{length}}"/>
+					<input type='text' class="form-control" id='length' name="length" value="{{program.length}}"/>
 			   </div>
 			</div>
 		</div>
@@ -58,7 +61,7 @@
 			<div class="col-sm-4">
 				<div class="form-group">
 					<label for="syndicate">Sydicate Source</label>
-					<input type='text' class="form-control" id='syndicate' name="syndicate" value="{{syndicate}}"/>
+					<input type='text' class="form-control" id='syndicate' name="syndicate" value="{{program.syndicateSource}}"/>
 			   </div>
 			</div>
 			<div class="col-sm-2">
@@ -66,7 +69,7 @@
 					<label for="host">Host</label>
 					<select class="form-control  chosen-select" id="host" name="host">
 						{% for alias,name in hosts %}
-							<option value='{{alias}}'>
+							<option value='{{alias}}' {% if name == program.djs %} selected {% endif %}>
 								   {{name|default('Unknown Host')}}</option>
 						{% endfor %}
 					</select>
@@ -77,7 +80,7 @@
 					<label for="genre">Genre</label>
 					<select class="form-control  chosen-select" id="genre" name="genre">
 						{% for key,value in genre %}
-							<option value='{{value}}'>
+							<option value='{{value}}' {% if value == program.genre %} selected {% endif %} >
 								   {{value|default('Unknown genre')}}</option>
 						{% endfor %}
 					</select>
@@ -86,10 +89,17 @@
 			<div class="col-sm-2">
 				<div class="form-group">
 					<label for="weight">Weight</label>
-					<input type='text' class="form-control" id='weight' name="weight" value="{{weight ?? 1}}"/>
+					<input type='text' class="form-control" id='weight' name="weight" value="{{program.weight ?? 1}}"/>
 			   </div>
 			</div>
-			<div class="col-sm-2">
+			<div class="col-sm-1">
+				<div class="form-group">
+					<label for="weight">Active</label>
+					<input type='checkbox' class="form-control" id='active' name="active"
+					{% if program.active == 1 %} checked {% endif %}/>
+			   </div>
+			</div>
+			<div class="col-sm-1">
 				<div class="form-group pull-right">
 					{% if program.id is not null %}
 						<input type="hidden" name="_METHOD" value="PUT"/>
@@ -124,5 +134,14 @@
 					}
 				});
 		});
+
+	//back link
+	$(document).ready(function(){
+		$('a.back').click(function(){
+			parent.history.back();
+			return false;
+		});
+	});
+
 	</script>
 {% endblock %}
