@@ -1454,6 +1454,7 @@ class library extends station{
                                 $governmentCategory, $schedule, $note="", $accepted=1, $variousartists=False,
                                 $datein=null, $release_date=null, $print=1, $rating=null, $tags=null, $hometowns=[],
 				$subgenres=[]){
+	$this->formatArtistName($artist);
         if(is_null($datein)){
             $datein = date("Y-m-d");
         }
@@ -1563,5 +1564,28 @@ class library extends station{
             }
         }
         return $id_last;
+    }
+
+    /*
+    * @abstract When given an artist name, format it by placing 'The', 'A', and 'An' at the end of the name, preceeded by a comma
+    * @param string $name Name of the artist
+    * @return N/A $name is passed by reference
+    */
+    public function formatArtistName(&$name) {
+	$words = explode(" ", $name);
+	if (count($words) > 1) {
+	    $firstWord = strtoupper($words[0]);
+	    $secondLastWord = $words[count($words) - 2];
+	    $lastWord = strtoupper($words[count($words) - 1]);
+
+	    $magicWords = ['THE', 'AN', 'A'];
+	    $alreadyFormated = substr($secondLastWord, -1) == ',' && in_array($lastWord, $magicWords);
+	    if (!$alreadyFormated && in_array($firstWord, $magicWords)) {
+		$newFormat = array_slice($words, 1);
+		array_push($newFormat, $words[0]); // Move first word to the end
+		$newFormat[count($words) - 2] .= ','; // Add comma to second last word
+		$name = join(" ", $newFormat); // Update the artist name reference
+	    }
+	}
     }
 }
