@@ -24,7 +24,13 @@
  * THE SOFTWARE.
  */
 
-// Review(s)
+
+
+
+$app->get('/programs', function () use ($app) {
+    $app->redirect('./programs/');
+});
+
 $app->group('/programs', $authenticate, function () use ($app,$authenticate){
     $app->group('/list',$authenticate($app,2),
             function () use ($app,$authenticate){
@@ -50,6 +56,7 @@ $app->group('/programs', $authenticate, function () use ($app,$authenticate){
             var_dump($params);
             #$app->render('notSupported.twig',$params);
         });
+
         $app->get('/:station/all',$authenticate($app,2),
                 function ($callsign) use ($app,$authenticate){
             $station = new \TPS\station($callsign);
@@ -79,4 +86,22 @@ $app->group('/programs', $authenticate, function () use ($app,$authenticate){
             //$app->render('notSupported.twig',$params);
         });
     });
+
+  $app->get('/new', function() use ($app, $authenticate){
+
+    $station = new \TPS\station($_SESSION['CALLSIGN']);
+    $stations = $station->getStations();
+    $program = new \TPS\program($station);
+
+    $programGenre = $program->getProgramGenre();
+    $params = array(
+            "title"=>"New Program",
+            "sessionStation" => $_SESSION['CALLSIGN'],
+            "station"=>$stations,
+            "genre"=>$programGenre
+        );
+         $app->render("programNew.twig", $params);
+    });
+
+
 });

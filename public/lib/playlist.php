@@ -343,6 +343,34 @@ class playlist extends TPS{
         $this->db->query("UPDATE library SET missing=0 WHERE RefCode=" . $refCode . ";");
     }
 
+/*
+    public function getProgramForChart($startDate, $endDate)
+    {
+        $this->mysqli;
+        $result = array();
+
+        if($stmt = $this->mysqli->prepare("SELECT callsign, programname, date, starttime, endtime  FROM Episode where date between ? and ?")){
+            $stmt->bind_param('ss',$startDate, $endDate);
+            $stmt->execute();
+            $stmt->bind_result($callsign, $programname, $date, $starttime, $endtime);
+            while($stmt->fetch()){
+                array_push($result, array(
+                    'callsign'=>$callsign,'programname'=>$programname,
+                    'date'=>$date,'starttime'=>$starttime,'endtime'=>$endtime
+                ));
+            }
+            $stmt->close();
+        }
+        else{
+            //$result=["error"=>$mysqli->error];
+            error_log($this->mysqli->error);
+            return FALSE;
+        }
+        return $result;
+    }
+
+*/
+
     /*
     * @abstract Return the top 40 ranked albums for the given time period
     * @param string $startDate The starting date of ranking

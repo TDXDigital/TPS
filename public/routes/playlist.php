@@ -136,7 +136,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
     $startDate = $app->request->post("startDate");
     $endDate = $app->request->post("endDate");
     $charts =  $playlist->getTop40($startDate, $endDate);
-    
+    // $program = $playlist->getProgramForChart($startDate, $endDate);
      $param = array(
                     "title"=>"Chart",
                     "charts"=>$charts,

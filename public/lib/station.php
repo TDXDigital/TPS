@@ -922,4 +922,27 @@ class station extends TPS{
             return $error_msg;
         }
     }
+
+    public function getStations()
+    {
+        $callsql="SELECT callsign, stationname from `station` order by callsign";
+
+        $con = $this->mysqli->prepare("SELECT callsign, stationname from `station` order by callsign");
+        $con->bind_result($callsign, $name);
+        $result = array();
+
+        if($con->execute())
+        {
+            while($con->fetch()){
+                 array_push($result, array(
+                    'name'=>$name,'callsign'=>$callsign
+                ));
+            }
+            $con->close();
+            return $result;
+        }
+        else
+            return false;
+    
+    }
 }

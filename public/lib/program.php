@@ -278,4 +278,22 @@ class program extends station{
         }
         else{return false;}
     }
+
+    public function getProgramGenre()
+    {
+        $con = $this->mysqli->prepare("SELECT genreid from `genre` order by genreid asc");
+        $con->bind_result($genreid);
+        $result = array();
+
+        if($con->execute())
+        {
+            while($con->fetch()){
+                array_push($result, $genreid);
+            }
+            $con->close();
+            return $result;
+        }
+        else
+            return false;
+    }
 }
