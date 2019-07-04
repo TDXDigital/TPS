@@ -83,7 +83,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             standardResult::created($app, $result, NULL);
         }
         else{
-            $app->redirect("./".array_pop($result));
+            $app->redirect("./".$result);
         }
     });
 
