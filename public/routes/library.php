@@ -691,37 +691,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 	    if($rating == "None")
 		$rating = 'NULL';
 
-            if($playlist===FALSE){
-                // check if entry exists in playlist table
-
-                // if so, report error
-
-                // else lleave set to FALSE
-                $playlist=2;
-            }
-            else{
-                if($playlist=="FALSE"){
-                    $playlist=2;
-                }
-                elseif($playlist=="PENDING"){
-                    $playlist=1;
-                }
-                else{
-                    $playlist=3;
-                }
-                /*if(!$accepted){
-                    $playlist = 2;
-                }
-                else{
-                    // if not set to 'PENDING'
-                    $playlist = 1;
-
-                    // if so set to 'COMPLETE'
-                    // this should no happen unless changing back to already set value??
-                }*/
-            }
             if(!$stmt3 = $mysqli->prepare("UPDATE library SET datein=?, artist=?, album=?, variousartists=?,
-                format=?,genre=?,status=?,Locale=?,CanCon=?,release_date=?,year=?,note=?,playlist_flag=?,
+                format=?,genre=?,status=?,Locale=?,CanCon=?,release_date=?,year=?,note=?,
                 governmentCategory=?,scheduleCode=?, rating=? WHERE RefCode=?")){
                 header("location: ./?q=new&e=".$mysqli->errno."&s=3&m=".$mysqli->error);
             }
@@ -732,7 +703,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 $year = NULL;
             }
             if(!$stmt3->bind_param(
-                    "sssissisisssissii",
+                    "sssissisisssssii",
                     $datein,
                     $artist,
                     $album,
@@ -745,7 +716,6 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     $release_date,
                     $year,
                     $note,
-                    $playlist,
                     $governmentCategory,
                     $schedule,
 		    $rating,
