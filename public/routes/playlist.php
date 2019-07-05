@@ -58,7 +58,8 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
         		$result[$key]['library']['hometowns'] = $library->getHometownsByRefCode($value['RefCode']);
             }
             $params = array(
-                "title"=>"Playlist",
+		"area"=>"Playlist",
+                "title"=>"Search",
                 "playlists"=>$result,
                 "page"=>$page,
                 "pages"=>$count,
@@ -126,6 +127,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
 	$charts =  $playlist->getTop40($startDate, $endDate);
     
      $param = array(
+		    "area"=>"Playlist",
                     "title"=>"Chart",
                     "charts"=>$charts,
                 );

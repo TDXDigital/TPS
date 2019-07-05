@@ -22,6 +22,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             "labels"=>\TPS\label::nameSearch("%",False),
             "format"=>$library->getMediaFormats(),
             "scheduleBlock"=>$library->getScheduleBlocks(),
+	    "area"=>"Library",
             "title"=>"Receiving",
         );
         if(isset($_SESSION['PRINTID'])){
