@@ -1,0 +1,15 @@
+{
+    "TPS_Errno": "STAT-003",
+    "type" : "database",
+    "execute" : "SQL",
+    "SQL_QRY" : {
+        "TEST": "SHOW COLUMNS FROM `station` WHERE Field = 'hostProbationPeriodDays';",
+        "RESULT" : {
+            "Field" : [
+                "hostProbationPeriodDays"
+            ]
+        },
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "STATION_UPDATE_3.sql"
+    }
+}

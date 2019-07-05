@@ -300,6 +300,24 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div id="host_probation_days_group" class="form-group input-group">
+                        <label class="input-group-addon" for="host_probation_days_field">Host Probation Days</label>
+                        <input name="host_probation_days" id="host_probation_days_field" type="number" min="0" required 
+                               value="{{station.hostProbationDays}}"
+                               placeholder="eg. 0 or 60" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div id="host_probation_weight_group" class="form-group input-group">
+                        <label class="input-group-addon" for="host_probation_weight_field">Host Probation Weight Multiplier</label>
+                        <input name="host_probation_weight" id="host_probation_weight_field" type="number" step="any" min="0" max="1" required 
+                               value="{{station.hostProbationWeight}}"
+                               placeholder="eg. 0, 0.5, 1" class="form-control">
+                    </div>
+                </div>               
+            </div>
         </div>
     </div>
     <hr>

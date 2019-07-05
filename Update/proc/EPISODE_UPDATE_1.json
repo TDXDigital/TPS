@@ -1,0 +1,18 @@
+{
+    "TPS_Errno" : "EPIS-001",
+    "type" : "database",
+    "execute" : "SQL",
+    "description" : "Adds ability to update program names",
+    "SQL_QRY" : {
+        "TEST" : "SELECT UPDATE_RULE FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS WHERE TABLE_NAME='episode' AND CONSTRAINT_NAME='Program' AND UPDATE_RULE='CASCADE';",
+        "RESULT" : {
+	    "UPDATE_RULE" : [
+		"CASCADE"
+	    ]
+	},
+	"Negate": 0,
+	"createMode" : 1,
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "EPISODE_UPDATE_1.sql"
+    }
+}

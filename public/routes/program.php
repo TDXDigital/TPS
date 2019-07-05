@@ -96,6 +96,7 @@ $app->group('/programs', $authenticate, function () use ($app,$authenticate){
     $hosts = $station->getHosts();
     $programGenre = $program->getProgramGenre();
     $params = array(
+	    "area"=>"Programs",
             "title"=>"New Program",
             "sessionStation" => $_SESSION['CALLSIGN'],
             "station"=>$stations,
@@ -132,7 +133,7 @@ $app->group('/programs', $authenticate, function () use ($app,$authenticate){
     $app->get('/search', function() use ($app, $authenticate){
         $params = array(
             "area" => "Programs",
-            "title" => "Search Program",
+            "title" => "Search",
         );
         $app->render('programSearch.twig',$params);
     });

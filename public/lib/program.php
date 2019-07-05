@@ -355,10 +355,8 @@ class program extends station{
 	    $oldName = $row['programname'];
 	$stmt->close();
 
-	// Determine if the program name is being changed...
-	if ($programName == $oldName) {
-	    $nameToDelete = $programName;
-	} else {
+	// If the program name is being changed...
+	if ($programName != $oldName) {
 	    // Ensure the new name isn't already taken by another program
 	    $programNameLower = strtolower($programName);
 	    $stmt = $this->mysqli->query("SELECT programname FROM program WHERE LOWER(programname)='$programNameLower' AND callsign='$callsign'");
@@ -367,7 +365,6 @@ class program extends station{
 		return 'Name unavailable';
 	    }
 	    $stmt->close();
-	    $nameToDelete = $oldName;
 	}
 
 	// Update the `program` table

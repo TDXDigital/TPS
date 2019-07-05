@@ -58,7 +58,8 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
         		$result[$key]['library']['hometowns'] = $library->getHometownsByRefCode($value['RefCode']);
             }
             $params = array(
-                "title"=>"Playlist",
+		"area"=>"Playlist",
+                "title"=>"Search",
                 "playlists"=>$result,
                 "page"=>$page,
                 "pages"=>$count,
@@ -126,6 +127,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
 	$charts =  $playlist->getTop40($startDate, $endDate);
     
      $param = array(
+		    "area"=>"Playlist",
                     "title"=>"Chart",
                     "charts"=>$charts,
                 );
@@ -673,9 +675,25 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             foreach ($result as $key => $value) {
                 $lib = $library->getAlbumByRefcode($value['RefCode']);
                 $result[$key]["library"] = $lib;
+
+		// If no expire date assigned
+		if (!array_key_exists('Expire', $result[$key])) {
+		     // Assign one based on the library code, or default to 6 months.
+		    $libraryCode = $library->getLibraryCodeByRefCode($value['RefCode']);
+		    preg_match("/[0-9]*/", $libraryCode, $matches);
+		    $genreNum = $matches[0];
+		    if ($genreNum != "") {
+		        $playlistDuration = $library->listLibraryCodes()[$genreNum]['PlaylistDuration'];
+		        $expire = date('Y-m-d', strtotime("+" . $playlistDuration['value'] . " " . $playlistDuration['unit']));
+		    } else {
+    		        $expire = date('Y-m-d', strtotime("+6 months"));
+		    }
+		    $result[$key]["Expire"] = $expire;
+		}
             }
             $params = array(
-                "title"=>"Playlist",
+		"area"=>"Playlist",
+                "title"=>"New",
                 "playlists"=>$result,
             );
             $app->render("playlist.twig", $params);
