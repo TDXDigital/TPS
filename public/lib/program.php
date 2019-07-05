@@ -299,8 +299,6 @@ class program extends station{
 
     public function createNewProgram($callsign, $progname, $length, $syndicateSource, $host, $genre, $weight)
     {
-
-
         $insert_program = $this->mysqli->prepare("insert into program (programname, callsign, length, syndicatesource, genre, weight) values (?,?,?,?,?,?)");
         $insert_program->bind_param('ssissd',$progname,$callsign,$length,$syndicateSource,$genre, $weight);
         if(!$insert_program->execute())
@@ -317,23 +315,74 @@ class program extends station{
     }
 
     /*
-    * @abstract Updates the program and performs tables
-    * @param int $programID Unique program id number
-    * @param string $callsign Callsign of program
-    * @param string $programName Name of program
-    * @param bool $active Status of program - active/not-active
-    * @param int $length Length of program in minutes
-    * @param string $syndicateSource Syndicate source
-    * @param string $genre Genre of program
-    * @param int $hitLimit
-    * @param string $displayOrder Display order
-    * @param int $theme Theme number
-    * @param float $weight Weight of the program
-    * @param array $hosts Associative array of each host with their start and end dates
+    * @abstract Replaces each string passed in with the mysqli_real_escape_string'd version
+    * @param array $strings Array of strings to sanitize
+    * @return N/A
     */
-    public function updateProgram($programID, $callsign, $programName, $active=1, $length=NULL, $syndicateSource=NULL, $genre=NULL, $hitLimit=0, $displayOrder='desc',
-				  $theme=8, $weight=1, $hosts=[]) {
+    public function sanitizeStrings(&$strings) {
+	foreach ($strings as &$str)
+	    $str = mysqli_real_escape_string($this->mysqli, $str);
+    }
 
+    /*
+    * @abstract Updates the program and performs tables to match the passed-in information
+    * @param int    $programID       Unique program id number
+    * @param string $callsign        Callsign of program
+    * @param string $programName     Name of program
+    * @param bool   $active          Status of program - active/inactive
+    * @param int    $length          Length of program in minutes
+    * @param string $syndicateSource Syndicate source
+    * @param string $genre           Genre of program
+    * @param int    $hitLimit
+    * @param string $displayOrderStr Display order ('desc')
+    * @param int    $displayOrderNum Display order (0/1 - Title,Artist,Album or Artist,Album,Title
+    * @param int    $theme           Theme number
+    * @param float  $weight          Weight of the program
+    * @param array  $hosts           Array of associative arrays for each host [['Alias'=><alias>, 'STdate'=><startDate>, 'ENdate'=><endDate>], ...]
+    * @return N/A or a string stating the program name wanting to be change to is unavailable ('Name unavailable')
+    */
+    public function updateProgram($programID, $callsign, $programName, $active, $length, $syndicateSource, $genre, $hitLimit, $displayOrderStr,
+				  $displayOrderNum, $theme, $weight, $hosts) {
+	// Sanitize input strings
+	$strings = [$callsign, $programName, $syndicateSource, $genre, $displayOrderStr];
+	$this->sanitizeStrings($strings);
+
+	// Get the program name that was listed before this update started
+	$stmt = $this->mysqli->query("SELECT programname FROM program WHERE ProgramID=$programID");
+	while($row = $stmt->fetch_array(MYSQLI_ASSOC))
+	    $oldName = $row['programname'];
+	$stmt->close();
+
+	// Determine if the program name is being changed...
+	if ($programName == $oldName) {
+	    $nameToDelete = $programName;
+	} else {
+	    // Ensure the new name isn't already taken by another program
+	    $programNameLower = strtolower($programName);
+	    $stmt = $this->mysqli->query("SELECT programname FROM program WHERE LOWER(programname)='$programNameLower' AND callsign='$callsign'");
+	    if ($stmt->num_rows > 0) {
+	 	$stmt->close();
+		return 'Name unavailable';
+	    }
+	    $stmt->close();
+	    $nameToDelete = $oldName;
+	}
+
+	// Update the `program` table
+	$this->mysqli->query("UPDATE program SET programname='$programName', length=$length, syndicatesource='$syndicateSource', genre='$genre', " .
+			         "active=$active, HitLimit=$hitLimit, displayorder='$displayOrderStr', Theme=$theme, Display_Order=$displayOrderNum, " .
+			         "weight=$weight WHERE ProgramID=$programID;");
+
+	// Delete the old hosts info from the `performs` table
+	$this->mysqli->query("DELETE FROM performs WHERE callsign='$callsign' AND programname='$programName';");
+
+	// Add the updated hosts info into the `performs` table
+	foreach ($hosts as $i => $host) {
+	    $strings = [$host['Alias'], $host['STdate'], $host['ENdate']];
+	    $this->sanitizeStrings($strings);
+	    $this->mysqli->query("INSERT INTO performs (callsign, programname, Alias, STdate, ENdate) VALUES ('$callsign', '$programName', '" . 
+				 $host['Alias'] . "', '" . $host['STdate'] . "', '" . $host['ENdate'] . "');");
+	}
 
     }
 }
