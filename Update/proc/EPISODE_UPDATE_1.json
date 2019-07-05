@@ -4,7 +4,7 @@
     "execute" : "SQL",
     "description" : "Adds ability to update program names",
     "SQL_QRY" : {
-        "TEST" : "SELECT UPDATE_RULE FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS WHERE TABLE_NAME='episode' AND CONSTRAINT_NAME='Program';",
+        "TEST" : "SELECT UPDATE_RULE FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS WHERE TABLE_NAME='episode' AND CONSTRAINT_NAME='Program' AND UPDATE_RULE='CASCADE';",
         "RESULT" : {
 	    "UPDATE_RULE" : [
 		"CASCADE"
