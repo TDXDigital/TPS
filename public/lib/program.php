@@ -388,63 +388,9 @@ class program extends station{
 
     }
 
-
-    public function getTableFilter($filter)
-    {
-         switch($filter["status"])
-        {   
-            case 'all': $where = " true"; break;
-            case 'accept': $where = " status = 1"; break;
-            case 'reject': $where = " status = 0"; break;
-            case 'na': $where = " status = -1"; break;
-        }
-        switch($filter["date"])
-        {   
-            case 'all': $where .= " AND true"; break;
-            case 'new_recive': $where .= " AND TIMESTAMPDIFF(MONTH, dateIn, now()) < 6"; break;
-            case 'new_release': $where .= " AND TIMESTAMPDIFF(MONTH, release_date, now()) < 6"; break;
-            case 'old_recive': $where .= " AND TIMESTAMPDIFF(MONTH, dateIn, now()) >= 6"; break;
-            case 'old_release': $where .= " AND TIMESTAMPDIFF(MONTH, release_date, now()) >= 6"; break;
-        }
-        switch($filter["genre"])
-        {
-            case 'all': $where .= " AND true"; break;
-            default: $where .= " AND genre = '". $filter["genre"]."'";
-        }
-        switch($filter["locale"])
-        {
-            case 'all': $where .= " AND true"; break;
-            default: $where .= " AND Locale = '". $filter["locale"]."'";
-        }
-        switch($filter["format"])
-        {
-            case 'all': $where .= " AND true"; break;
-            default: $where .= " AND format = '". $filter["format"]."'";
-        }
-        switch($filter["missing_info"])
-        {
-            case 'all': $where .= " AND true"; break;
-
-            case 'label': $where .= " AND refCode NOT IN (SELECT library_refcode from library_recordlabel)"; break;
-            case 'locale': $where .= " AND locale is null"; break;
-            case 'genre': $where .= " AND Genre is null"; break;
-            case 'rating': $where .= " AND (rating is null OR rating = 0)"; break;
-            case 'rel_date': $where .= " AND (release_date is null OR release_date = '1970-01-01')"; break;
-            case 'status': $where .= " AND status = -1"; break;
-            case 'crtc': $where .= " AND governmentCategory is null"; break;
-        }
-        switch($filter['tag'])
-        {
-            case 'all': $where .= " AND true"; break;
-            default: $where .= " AND RefCode IN (select library_refCode from library_tags where tag_id = (select id from tags where name = '". $filter['tag'] ."'))";
-            // default: $where .= " AND true"; break;
-        }
-        return $where;
-    }
-
     public function displayTable($filter)
     {
-        // $where = self::getTableFilter($filter);
+        
         $where = '';
         $table = 'program';
          
