@@ -199,7 +199,8 @@ class station extends TPS{
                 . "ST_DefaultSort,ST_PLLG,ST_ForceComposer,ST_ForceArtist,"
                 . "ST_ForceAlbum,ST_ColorFail,ST_ColorPass,ST_PLRG,"
                 . "ST_DispCount,ST_ColorNote,managerphone,ST_ADSH,ST_PSAH,"
-                . "timezone FROM station where callsign=? order by callsign "
+                . "timezone, hostProbationPeriodDays, hostProbationWeightMultiplier "
+		. "FROM station where callsign=? order by callsign "
                 . "limit ?,?;")){
             $con->bind_param('sii',$callsign,$page,$maxResult);
             if($con->execute()){
@@ -207,7 +208,8 @@ class station extends TPS{
                       $website, $address, $boothphone, $directorphone,
                       $DefaultSort, $PLLG, $ForceComposer, $ForceArtist,
                       $ForceAlbum, $ColorFail, $ColorPass, $PLRG, $DispCount,
-                      $ColorNote, $ManagerPhone, $ADSH, $PSAH, $timezone
+                      $ColorNote, $ManagerPhone, $ADSH, $PSAH, $timezone,
+		      $hostProbationDays, $hostProbationWeight
                     );
                 if($con->num_rows>1){
                     trigger_error(
@@ -240,6 +242,8 @@ class station extends TPS{
                         "perHourTraffic"=>$ADSH,
                         "perHourPSAs"=>$PSAH,
                         "timezone"=>$timezone,
+			"hostProbationDays"=>$hostProbationDays,
+			"hostProbationWeight"=>$hostProbationWeight
                     );
                 }
                 return $result;
@@ -437,6 +441,38 @@ class station extends TPS{
         $con->bind_param('ss',$tz,$this->callsign);
         if($con->execute()){
             $this->stationTimeZone = $tz;
+            return true;
+        }
+        else{return false;}
+    }
+
+    /*
+    * @abstract Changest station's host probation period days
+    * @param int $days The number of days
+    * @return boolean
+    */
+    public function setHostProbationDays($days) {
+        $con = $this->mysqli->prepare(
+                "Update station SET hostProbationPeriodDays=? where callsign=?");
+        $con->bind_param('is',$days,$this->callsign);
+        if($con->execute()){
+            $this->hostProbationDays = $days;
+            return true;
+        }
+        else{return false;}
+    }
+
+    /*
+    * @abstract Changest station's host probation weight multiplier
+    * @param int $days The new weight
+    * @return boolean
+    */
+    public function setHostProbationWeight($weight) {
+        $con = $this->mysqli->prepare(
+                "Update station SET hostProbationWeightMultiplier=? where callsign=?");
+        $con->bind_param('ds',$weight,$this->callsign);
+        if($con->execute()){
+            $this->hostProbationWeight = $weight;
             return true;
         }
         else{return false;}
@@ -941,5 +977,4 @@ class station extends TPS{
             return false;
     
     }
-    
 }

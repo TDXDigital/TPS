@@ -94,6 +94,8 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
             $perHourTraffic = $app->request->put('perHourTraffic');
             $perHourPSAs = $app->request->put('perHourPSAs');
             $timezone = $app->request->put('timezone');
+	    $hostProbationDays = $app->request->put('host_probation_days');
+	    $hostProbationWeight = $app->request->put('host_probation_weight');
             
             if($brand!=$stn['name']){
                 $station->setStationName($brand);
@@ -148,6 +150,10 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
             }
 	    if($timezone!=$stn['timezone'])
 		$station->setStationTimeZone($timezone);
+	    if($hostProbationDays!=$stn['hostProbationDays'])
+		$station->setHostProbationDays($hostProbationDays);
+	    if($hostProbationWeight!=$stn['hostProbationWeight'])
+		$station->setHostProbationWeight($hostProbationWeight);
             $app->flash('success',"$callsign updated succesfully");
             $app->redirect("./$callsign");
         }
