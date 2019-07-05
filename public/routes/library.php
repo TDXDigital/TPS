@@ -52,7 +52,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $label_size = filter_input(INPUT_POST, "Label_Size")? : 1;
         $locale = filter_input(INPUT_POST, "locale")? :"international";
         $release_date = filter_input(INPUT_POST,'rel_date')?:NULL;
-        $tags = filter_input(INPUT_POST, "tag", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
+        $tags = filter_input(INPUT_POST, "tag", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:[];
         $note = filter_input(INPUT_POST, "notes")?:NULL;
 
         $replacePatterns = array(
