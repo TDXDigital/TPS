@@ -94,7 +94,6 @@ $app->group('/programs', $authenticate, function () use ($app,$authenticate){
 
     $stations = $station->getStations();
     $hosts = $station->getHosts();
-
     $programGenre = $program->getProgramGenre();
     $params = array(
             "title"=>"New Program",
@@ -122,11 +121,53 @@ $app->group('/programs', $authenticate, function () use ($app,$authenticate){
         $host = $app->request->post('host');
         $genre = $app->request->post('genre');
         $weight = $app->request->post('weight');
+        $active = $app->request->post('active')!==null? 1:0;
        
-        $program -> createNewProgram($stationName, $progname, $length, $syndicate, $host, $genre, $weight);
+        $program -> createNewProgram($stationName, $progname, $length, $syndicate, $host, $genre, $weight, $active);
 
-        echo 'done';
+        $app->redirect('./search');
+    });
+
+    //  program search
+    $app->get('/search', function() use ($app, $authenticate){
+        $params = array(
+            "area" => "Programs",
+            "title" => "Search Program",
+        );
+        $app->render('programSearch.twig',$params);
+    });
+
+    // program search table
+    $app->get('/display', $authenticate, function () use ($app){
+        $station = new \TPS\station($_SESSION['CALLSIGN']);
+        $stations = $station->getStations();
+        $program = new \TPS\program($station);
+        $filter = $app->request->get("filter");
+        echo $program -> displayTable($filter);
+    });
+
+     $app->get('/edit/:id', $authenticate, function ($id) use ($app){
+           
+        $station = new \TPS\station($_SESSION['CALLSIGN']);
+        $stations = $station->getStations();
+        $hosts = $station->getHosts();
+        $program = new \TPS\program($station, $id);
+        $programToEdit = $program->getValues();
+        $programGenre = $program->getProgramGenre();
+        // print_r($programToEdit);
+        // exit;
+        $params = array(
+            "title"=>"Edit Program",
+            "sessionStation" => $_SESSION['CALLSIGN'],
+            "station"=>$stations,
+            "hosts"=>$hosts,
+            "program"=>$programToEdit,
+            "genre"=>$programGenre
+        );
+            $app->render('programNew.twig', $params);
     });
 
 
-});
+
+
+}); 

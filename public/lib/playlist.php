@@ -103,8 +103,7 @@ class playlist extends TPS{
         foreach($lib_data['data'] as &$album) {
             $refCode = $album['refCode'];
             if (!array_key_exists(0,$this->getAllByRefCode($refCode)))
-
-            $album_playlist_info = array_values($this->getAllByRefCode($refCode))[0];
+                $album_playlist_info = array_values($this->getAllByRefCode($refCode))[0];
             $album['playlistID'] = $album_playlist_info['PlaylistId'];
             $album['ShortCode'] = $album_playlist_info['SmallCode'];
             $album['addDate'] = substr($album_playlist_info['Activate'], 0, 10);
