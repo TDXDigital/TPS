@@ -20,7 +20,23 @@ class reviews extends station{
     }
     
     protected $error;
-    
+
+
+    /*
+    * @abstract Returns an array of review ids for a given album
+    * @author Derek Melchin
+    * @param int $refCode RefCode of the album
+    * @return array List of review ids
+    */
+    public function getReviewIdsByRefCode($refCode) {
+	$ids = [];
+	$stmt = $this->mysqli->query("SELECT id FROM review WHERE RefCode=$refCode AND approved=1;");
+	while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
+	    array_push($ids, $row['id']);
+	$stmt->close();
+	return $ids;
+   }
+
     /**
      * 
      * @abstract returns an array of Albums
