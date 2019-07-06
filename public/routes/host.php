@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * The MIT License
  *
  * Copyright 2015 James Oliver <support@ckxu.com>.
@@ -23,35 +23,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-//function autoload_class_multiple_directory($class_name) 
-//{
-//
-//    # List all the class directories in the array.
-//    $array_paths = glob("/*", GLOB_ONLYDIR);
-//
-//    foreach($array_paths as $path)
-//    {
-//        $file = sprintf('%s/_include_.php', $path, $class_name);
-//        if(is_file($file)) 
-//        {
-//            include_once $file;
-//        } 
-//
-//    }
-//}
-#spl_autoload_register();#'autoload_class_multiple_directory');
 
-#load page groups
-require_once 'environment.php';
-require_once 'notification.php';
-require_once 'library.php';
-require_once 'reviews.php';
-require_once 'station.php';
-require_once 'program.php';
-require_once 'episode.php';
-require_once 'label.php';
-require_once 'playlist.php';
-require_once 'host.php';
-#load api last;
-require_once 'api.php';
 
+
+
+$app->get('/host', function () use ($app) {
+    $app->redirect('./host/');
+});
+
+$app->group('/host', $authenticate, function () use ($app,$authenticate){
+
+  $app->get('/new', function() use ($app, $authenticate){
+    $params = array(
+	    "area"=>"host",
+            "title"=>"New Host",
+        );
+         $app->render("hostNew.twig", $params);
+    });
+
+
+  $app->post('/create', function() use ($app, $authenticate){
+
+    // $station = new \TPS\station($_SESSION['CALLSIGN']);
+    $host = new \TPS\host($_SESSION['CALLSIGN']);
+
+    $djname = $app->request->post('hostName');
+    $alias = $app->request->post('alias');
+    $years = $app->request->post('JoinedYear');
+    $weight = $app->request->post('weight');
+    $active = $app->request->post('active')!==null? 1:0;
+   
+   $host -> createHost($alias, $djname, $active, $years, $weight);
+    echo 'Done';
+    });
+
+}); 

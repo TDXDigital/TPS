@@ -26,7 +26,7 @@
 
 namespace TPS;
 
-require_once "tps.php";
+require_once 'station.php';
 /**
  * Genre handles communications with the database
  * for retrieving 
@@ -38,17 +38,18 @@ class host extends station{
         parent::__construct($callsign);
     }
     
-    public function create($alias, $djname, $active, $years, $emailBlock=NULL,
+    public function createHost($alias, $djname, $active, $years, $weight=1, $emailBlock=NULL,
             $memberRef=NULL, $GUID=NULL){
         try {
             $stmt = $this->db->prepare("INSERT INTO dj (Alias, djname, active,"
-                    . " years, email_block, member_ref, GUID"
-                    . ") VALUES (:alias, :name, :active, :years,"
+                    . " years, weight, email_block, member_ref, GUID"
+                    . ") VALUES (:alias, :djname, :active, :weight, :years,"
                     . " :emailBlock, :memberRef, :guid)");
             $stmt->bindParam(":alias", $alias, \PDO::PARAM_STR);
             //$stmt->bindParam(":station", $this->callsign, \PDO::PARAM_STR);
             $stmt->bindParam(":djname", $djname);
             $stmt->bindParam(":active", $active);
+            $stmt->bindParam(":weight", $weight);
             $stmt->bindParam(":years", $years);
             $stmt->bindParam(":emailBlock", $emailBlock);
             $stmt->bindParam(":memberRef", $member_ref);

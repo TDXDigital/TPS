@@ -1,0 +1,108 @@
+{% extends 'baseAdmin.twig' %}
+{% block headScripts %}
+	<link href="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.css"
+		  rel="stylesheet" type="text/css"/>
+	<link href="{{siteUrl}}/js/chosen.min.css" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% set firstStation = station|first %}
+{% block title %}{{title|default('Host')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-arrow-left"></i>  <a class="back" href="#">Back</a>
+    </li>
+</ol>
+
+<ol class="breadcrumb">
+	<li>
+		<i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+	</li>
+	<li class="active">
+		<i class="fa fa-fw fa-group"></i> <a href="/">Host</a>
+	</li>
+	<li class="active">
+		<a href="/host/new"><i class="fa fa-plus-square-o"></i> New Host</a>
+	</li>
+</ol>
+{% endblock %}
+{% block content %}
+<div class="container">
+	<form role="form" method="POST" {% if host.alias is not null %} 
+	action="/host/create" {% else %} action="./create" {% endif %}>
+		<div class="row">
+			<div class="col-sm-5">
+				<div class="form-group">
+					<label for="programName">Host Name</label>
+					<input type='text' class="form-control" id='hostName' name="hostName" value="{{host.name}}"
+					{% if program.programID is not null %} readonly {% endif %}/>
+			   </div>
+			</div>
+			<div class="col-sm-5">
+				<div class="form-group">
+					<label for="programName">On-Air Name (Optional)</label>
+					<input type='text' class="form-control" id='alias' name="alias" value="{{host.alias}}"
+					{% if program.programID is not null %} readonly {% endif %}/>
+			   </div>
+			</div>
+			
+			<div class="col-sm-2">
+				<div class="form-group">
+					<label for="length">Year Joined</label>
+					<input type='text' class="form-control" id='JoinedYear' name="JoinedYear" value="{{host.year}}"/>
+			   </div>
+			</div>
+		</div>
+		 <div class="row">
+		 
+			
+			<div class="col-sm-1">
+				<div class="form-group">
+					<label for="weight">Weight</label>
+					<input type='text' class="form-control" id='weight' name="weight" value="{{host.weight ?? 1}}"/>
+			   </div>
+			</div>
+			<div class="col-sm-1">
+				<div class="form-group">
+					<label for="weight">Active</label>
+					<input type='checkbox' class="form-control" id='active' name="active"
+					{% if host.active == 1 %} checked {% endif %}/>
+			   </div>
+			</div>
+			<div class="col-sm-9">
+			</div>
+			<div class="col-sm-1">
+				<div class="form-group pull-right">
+					{% if program.id is not null %}
+						<input type="hidden" name="_METHOD" value="PUT"/>
+					{% endif %}
+					<button id="submit" type="submit" class="btn btn-success pull-down ">Submit</button>
+				<!--<button type="reset" class="btn btn-warning">Reset</button>-->
+				</div>
+			</div>
+
+		</div>
+	</form>
+</div>
+{% endblock %}
+{% block lastScripts %}
+	<script src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
+	<script src="{{siteUrl}}/js/chosen.jquery.min.js"></script>
+	<script>
+
+
+$(document).ready(function(){
+		$('.pull-down').each(function() {
+			$(this).css('margin-top', $(this).parent().height()-$(this).height())
+		});
+	});
+
+	//back link
+	$(document).ready(function(){
+		$('a.back').click(function(){
+			parent.history.back();
+			return false;
+		});
+	});
+
+	</script>
+{% endblock %}
