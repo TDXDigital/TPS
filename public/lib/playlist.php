@@ -932,7 +932,7 @@ public function getGenreDividedValidShortCodes($station, $defaultOffsetDate,
         $param = NULL;
         $stmt = $this->db->prepare(
             "SELECT * FROM playlist"
-            . " WHERE RefCode=:param");
+            . " WHERE RefCode=:param ORDER BY Activate DESC LIMIT 1");
         $stmt->bindParam(":param", $param, \PDO::PARAM_STR);
         $result = array();
         foreach($params as $param){
@@ -992,6 +992,12 @@ public function getGenreDividedValidShortCodes($station, $defaultOffsetDate,
     */
     public function create($refcode, $startDate, $endDate,
         $zoneCode=Null, $zoneNumber=Null, $smallCode=NULL){
+	// If the album is already on the playlist
+	$stmt = $this->db->query("SELECT * FROM library WHERE RefCode=$refcode AND playlist_flag='COMPLETE';");
+	if (count($stmt->fetchAll()) > 0)
+	    // Remove it from the playlist so we can re-add it
+	    $this->moveAlbumToLibrary($refcode);
+
 	// Get next available smallCode
 	if (is_null($smallCode)) {
 	    $today = date('Y-m-d');
