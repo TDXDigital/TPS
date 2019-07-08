@@ -33,7 +33,7 @@
 			<div class="col-sm-5">
 				<div class="form-group">
 					<label for="programName">Host Name</label>
-					<input type='text' class="form-control" id='hostName' name="hostName" value="{{host.name}}"
+					<input type='text' class="form-control" id='hostName' name="hostName" value="{{host.djname}}"
 					{% if program.programID is not null %} readonly {% endif %}/>
 			   </div>
 			</div>
@@ -48,7 +48,7 @@
 			<div class="col-sm-2">
 				<div class="form-group">
 					<label for="length">Year Joined</label>
-					<input type='text' class="form-control" id='JoinedYear' name="JoinedYear" value="{{host.year}}"/>
+					<input type='text' class="form-control" id='JoinedYear' name="JoinedYear" value="{{host.years}}"/>
 			   </div>
 			</div>
 		</div>
