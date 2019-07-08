@@ -298,8 +298,14 @@ class playlist extends TPS{
         if (!is_array($refCode))
             $refCode = [$refCode];
         if (sizeof($refCode) > 0) {
+	    $playlistIds = [];
+	    foreach ($refCode as $ref) {
+		$stmt = $this->db->query("SELECT PlaylistId FROM playlist WHERE RefCode={$ref} ORDER BY Expire DESC LIMIT 1;");
+		array_push($playlistIds, $stmt->fetch(\PDO::FETCH_ASSOC)['PlaylistId']);
+	    }
             $refCodeList = "(" . implode(", ", $refCode) . ")";
-            $this->db->query("UPDATE playlist SET Expire=NOW() WHERE RefCode IN " . $refCodeList . ";");
+	    $playlistIdList = "(" . implode(", ", $playlistIds) . ")";
+            $this->db->query("UPDATE playlist SET Expire=NOW() WHERE PlaylistID IN " . $playlistIdList . ";");
             $this->db->query("UPDATE library SET playlist_flag='FALSE' WHERE RefCode IN " . $refCodeList . ";");
         }
 	$notification = new \TPS\notification($_SESSION['CALLSIGN']);
@@ -930,9 +936,18 @@ public function getGenreDividedValidShortCodes($station, $defaultOffsetDate,
             $params = array($refCodes);
         }
         $param = NULL;
+
+	$refCodeList = "(" . implode(", ", $params) . ")";
+	$stmt = $this->db->query(
+	    "SELECT RefCode FROM library WHERE playlist_flag='COMPLETE'"
+	    . " AND RefCode IN ({$refCodeList});");
+	$params = [];
+	while ($row = $stmt->fetch(\PDO::FETCH_ASSOC))
+	    array_push($params, $row['RefCode']);
+
         $stmt = $this->db->prepare(
             "SELECT * FROM playlist"
-            . " WHERE RefCode=:param ORDER BY Activate DESC LIMIT 1");
+            . " WHERE RefCode=:param ORDER BY Expire DESC LIMIT 1");
         $stmt->bindParam(":param", $param, \PDO::PARAM_STR);
         $result = array();
         foreach($params as $param){
