@@ -282,8 +282,10 @@ class playlist extends TPS{
     * @return Array of associate arrays which contain the information of each album
     */
     public function getExpiredAlbums() {
-        $sql = $this->db->query("SELECT * FROM library WHERE playlist_flag='COMPLETE' AND " .
-				"RefCode IN (SELECT RefCode FROM playlist WHERE Expire < now());");
+        $sql = $this->db->query("SELECT * FROM library WHERE playlist_flag='COMPLETE' AND RefCode IN " .
+				"(SELECT p.RefCode FROM playlist AS p INNER JOIN " .
+				"(SELECT RefCode, PlaylistId FROM playlist ORDER BY Expire DESC LIMIT 1) AS p2 " .
+				"ON p.PlaylistId=p2.PlaylistId WHERE p.Expire < NOW());");
         $expiredAlbums = [];
         while ($row = $sql->fetch(\PDO::FETCH_ASSOC))
             array_push($expiredAlbums, $row);
