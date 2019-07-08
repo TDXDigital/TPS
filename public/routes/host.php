@@ -53,8 +53,42 @@ $app->group('/host', $authenticate, function () use ($app,$authenticate){
     $weight = $app->request->post('weight');
     $active = $app->request->post('active')!==null? 1:0;
    
-   $host -> createHost($alias, $djname, $active, $years, $weight);
-    echo 'Done';
+    $host -> createHost($alias, $djname, $active, $years, $weight);
+    $app->redirect('./search');
+    
     });
+
+    $app->get('/search', function() use ($app, $authenticate){
+         $params = array(
+        "area"=>"host",
+            "title"=>"Search Host",
+        );
+        $app->render("hostSearch.twig", $params);
+    });
+
+     // Host search table
+    $app->get('/display', $authenticate, function () use ($app){
+        $host = new \TPS\host($_SESSION['CALLSIGN']);
+        $filter = $app->request->get("filter");
+        echo $host -> displayTable($filter);
+    });
+
+     $app->get('/edit/:alias', $authenticate, function ($alias) use ($app){
+           
+
+        $host = new \TPS\host($_SESSION['CALLSIGN']);
+       
+        $host = new \TPS\host($_SESSION['CALLSIGN']);
+        $hostToEdit = $host->get($alias);
+        // print_r($hostToEdit);
+        // exit;
+        $params = array(
+            "title"=>"Edit Host",
+            "host"=>$hostToEdit,
+        );
+        $app->render('hostNew.twig', $params);
+    });
+
+
 
 }); 

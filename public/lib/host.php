@@ -41,7 +41,7 @@ class host extends station{
     public function createHost($alias, $djname, $active, $years, $weight=1, $emailBlock=NULL,
             $memberRef=NULL, $GUID=NULL){
         try {
-            $stmt = $this->db->prepare("INSERT INTO dj (Alias, djname, active,"
+            $stmt = $this->db->prepare("REPLACE INTO dj (Alias, djname, active,"
                     . " years, weight, email_block, member_ref, GUID"
                     . ") VALUES (:alias, :djname, :active, :weight, :years,"
                     . " :emailBlock, :memberRef, :guid)");
@@ -180,60 +180,28 @@ class host extends station{
         return $result;
     }
     
-    public function get($id){
-        $stmt = $this->db->prepare(
-                "SELECT genreid, cancon, playlist, canconperc, playlistperc,"
-                . " UID, CCType, PlType, femcon, femconPerc, FcType,"
-                . " colorPrimary, Station, (SELECT count(programname)"
-                . " FROM program WHERE program.genre=genre.genreid AND"
-                . " program.active='1' AND LOWER(program.callsign) = "
-                . "LOWER(genre.Station)) AS PGM_Count, (SELECT count(*)"
-                . " FROM program where program.active='1' AND "
-                . "LOWER(program.callsign) = LOWER(genre.Station)) AS Total"
-                . ", (SELECT PGM_Count / Total) AS Percent FROM genre"
-                . " WHERE LOWER(station) = LOWER(:callsign) "
-                . "and genreId = :id order by "
-                . "genreid asc");
-        if(!$stmt){
-            $error = $this->db->errorInfo();
+
+    //retrn the dj info
+    public function get($alias){
+        $result = array();
+        $con = $this->mysqli->prepare(
+                "SELECT Alias, djname, active, years, weight FROM dj"
+                . " WHERE alias = ?");
+        if(!$con){
+            $error = $this->myslqi->errorInfo();
             throw new \Exception($error[2]);
         }
-        $stmt->bindParam(":callsign", $this->callsign, \PDO::PARAM_STR);
-        $stmt->bindParam(":id", $id , \PDO::PARAM_INT);
-        $stmt->execute();
-        $result = array();
-        while(list($genreId, $govRec, $playlist, $govRecPerc, 
-                $playlistPerc, $UID, $CcType, $PlType, $femcon, $femconPerc,
-                $femconType, $colorPrimary, $station,
-                $activePrograms, $totalPrograms, $percentPrograms) = 
-                $stmt->fetch( \PDO::FETCH_NUM )){
-            $result[$genreId] = array(
-                "governmentRequirements" => array(
-                    "type" => $CcType,
-                    "numeric" => $govRec,
-                    "percentage" => $govRecPerc,
-                ),
-                "playlistRequirements" => array(
-                    "type" => $PlType,
-                    "numeric" => $playlist,
-                    "percentage" => $playlistPerc,
-                ),
-                "femconRequirements" => array(
-                    "type" => $femconType,
-                    "numeric" => $femcon,
-                    "percentage" => $femconPerc,
-                ),
-                "statistics" => array(
-                    "activePrograms" => $activePrograms,
-                    "totalPrograms" => $totalPrograms,
-                    "percentPrograms" => $percentPrograms
-                ),
-                "UID" => $UID,
-                "colorPrimary"=>$colorPrimary,
-                "station" => $station,
-            );
+
+        $con->bind_param("s", $alias);
+        $con->bind_result($alias,$djname,$active,$years,$weight);
+        if(!$con->execute())
+            return false;
+        while($con->fetch()){
+            $result = array(
+                'alias'=>$alias,'djname'=>$djname,'active'=>$active,
+                'years'=>$years,'weight'=>$weight);
         }
-        $stmt = null; #close statement
+        $con->close();
         return $result;
     }
     
@@ -255,5 +223,50 @@ class host extends station{
             }
         }
         return $result;
+    }
+
+     public function displayTable($filter)
+    {
+        
+        $where = '';
+        $table = 'dj';
+         
+        // Table's primary key
+        $primaryKey = 'Alias';         
+        // Array of database columns which should be read and sent back to DataTables.
+        // The `db` parameter represents the column name in the database, while the `dt`
+        // parameter represents the DataTables column identifier. In this case simple
+        // indexes
+        
+        $columns = array(
+            array( 'db' => 'djname',   'dt' => 'djname' ),
+            array( 'db' => 'alias', 'dt' => 'alias' ),
+            array( 'db' => 'active', 'dt' => 'active' ),
+            array( 'db' => 'years', 'dt' => 'years' ),
+            array( 'db' => 'weight', 'dt' => 'weight' ),
+        );
+
+        $prog_data = \SSP::complex($_GET, $this->db, $table, $primaryKey, $columns, null, $where);
+
+        // foreach($prog_data['data'] as &$program) {
+        //     $program['host'] = $this->getDjByProgramName($program['programname']);
+        // }
+        return json_encode($prog_data);
+    }
+
+    public function getDjByProgramName($programName)
+    {
+        $con = $this->mysqli->prepare("SELECT djname FROM dj JOIN performs WHERE dj.alias = performs.alias AND programname = ?;");
+        $con->bind_param("s", $programName);
+        $con->bind_result($djName);
+
+        if($con->execute())
+        {
+            $con->fetch();
+            $con->close();
+            return $djName;
+        }
+        else
+            return false;
     }
 }
