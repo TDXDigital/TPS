@@ -73,6 +73,7 @@
                 <th>Artist</th>
                 <th>Album</th>
                 <th>Score</th>
+                <th>View</th>
             </tr>
         </thead>
         <tfoot>
@@ -81,6 +82,7 @@
                 <th>Artist</th>
                 <th>Album</th>
                 <th>Score</th>
+                <th>View</th>
             </tr>
         </tfoot>
         <tbody>
@@ -91,6 +93,8 @@
                     <td>{{chart.artist}}</td>
                     <td>{{chart.album}}</td>
                     <td>{{chart.totalScore}}</td>
+                    <td><a href='../Reports/p2SongSearch.php?playlist={{chart.SmallCode}}&from={{startDate}}&to={{endDate}}'>
+                    View</a></td>
                 </tr>
             {% endfor %} 
         </tbody>

@@ -129,6 +129,8 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
      $param = array(
 		    "area"=>"Playlist",
                     "title"=>"Chart",
+                    "startDate"=>$startDate,
+                    "endDate"=>$endDate,
                     "charts"=>$charts,
                 );
      $app->render('chart.twig', $param);
