@@ -1,5 +1,5 @@
 {
-    "TPS_Errno": "DBUD-002",
+    "TPS_Errno": "STAT-002",
     "type" : "database",
     "execute" : "SQL",
     "SQL_QRY" : {
@@ -10,6 +10,6 @@
             ]
         },
         "UPDATE_TYPE" : "FILE",
-        "UPDATE" : "LIBRARY_UPDATE_1.sql"
+        "UPDATE" : "STATION_UPDATE_2.sql"
     }
 }

@@ -2,6 +2,7 @@
     "TPS_Errno": "DBUD-008",
     "type" : "database",
     "execute" : "SQL",
+    "requires" : "DBUD-006",
     "description" : "Adds a sender, rating, and ExtChartID to library entries",
     "SQL_QRY" : {
         "TEST": "SHOW COLUMNS FROM `library` WHERE `Field` = 'sender';",
