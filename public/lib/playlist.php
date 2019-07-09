@@ -1057,6 +1057,15 @@ public function getGenreDividedValidShortCodes($station, $defaultOffsetDate,
 	if (is_null($smallCode))
 	    $smallCode = $this->getNextAvailableSmallCode($refcode);
 
+	// If the start date is today
+	$station = new \TPS\station();
+	$serverDateTime = date('Y-m-d H:i:s');
+	$localDateTime = $station->getTimeFromServerTime($serverDateTime);
+	$localDate = substr($localDateTime, 0, 10);
+	if ($startDate == $localDate)
+	    // Set the activate date to be NOW() instead of at the beginning of the day
+	    $startDate = $this->db->query("SELECT NOW() as now")->fetch(\PDO::FETCH_ASSOC)['now'];
+
 	// Add to playlist
         $stmt = $this->db->prepare("INSERT INTO playlist (RefCode, Activate, "
             . "Expire, ZoneCode, ZoneNumber, SmallCode) VALUES "
@@ -1096,3 +1105,4 @@ public function getGenreDividedValidShortCodes($station, $defaultOffsetDate,
     }
     
 }
+
