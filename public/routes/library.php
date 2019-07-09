@@ -682,6 +682,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 	        preg_match("/[0-9]+/", $genre_text, $matches);
 	        $genre_num = $matches[0];
 	    }
+	    $libraryCode = "{$genre_num}-{$RefCode}";
             if(in_array(null, $labelNums, true)||in_array("null", $labelNums, true)){
                 #header("location: ../library/?q=new&e=9999&s=3");
                 $app->flash('error','label is required but was not provided or was invalid. could not recieve album');
@@ -693,7 +694,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 
             if(!$stmt3 = $mysqli->prepare("UPDATE library SET datein=?, artist=?, album=?, variousartists=?,
                 format=?,genre=?,status=?,Locale=?,CanCon=?,release_date=?,year=?,note=?,
-                governmentCategory=?,scheduleCode=?, rating=? WHERE RefCode=?")){
+                governmentCategory=?,scheduleCode=?, rating=?, library_code=? WHERE RefCode=?")){
                 header("location: ./?q=new&e=".$mysqli->errno."&s=3&m=".$mysqli->error);
             }
             if(!is_null($release_date)){
@@ -703,7 +704,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 $year = NULL;
             }
             if(!$stmt3->bind_param(
-                    "sssissisisssssii",
+                    "sssissisisssssisi",
                     $datein,
                     $artist,
                     $album,
@@ -719,6 +720,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     $governmentCategory,
                     $schedule,
 		    $rating,
+		    $libraryCode,
                     $RefCode
                     )){
                 $stmt3->close();
@@ -816,13 +818,22 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     error_log($mysqli->error);
                 }
 
-		// Update library code with potentially-new leading genre number
-		$library_code = "{$genre_num}-{$RefCode}";
-		$mysqli->query("UPDATE library SET library_code='{$library_code}' WHERE RefCode={$RefCode};");
-
 		$library->updateAlbumAttribute("hometown", $hometowns, $RefCode);
 		$library->updateAlbumAttribute("tag", $tags, $RefCode);
 		$library->updateAlbumAttribute("subgenre", $subgenres, $RefCode);
+
+		// If the album is on the playlist
+		$stmt = $mysqli->query("SELECT playlist_flag FROM library WHERE RefCode={$RefCode}");
+		if ($stmt->fetch_array(MYSQLI_ASSOC)['playlist_flag'] == 'COMPLETE') {
+		    // Get the playlist id number
+	            $stmt = $mysqli->query("SELECT PlaylistId FROM playlist WHERE RefCode={$RefCode} ORDER BY Expire LIMIT 1;");
+		    $playlistId = $stmt->fetch_array(MYSQLI_ASSOC)['PlaylistId'];
+
+		    // Update the playlist smallCode
+		    $playlist = new \TPS\playlist();
+	            $smallCode = $playlist->getNextAvailableSmallCode($RefCode);
+		    $mysqli->query("UPDATE playlist SET SmallCode={$smallCode} WHERE PlaylistId={$playlistId}");
+		}
 
                 if(strtolower(substr($artist,-1))!='s'){
                     $s = "s";
