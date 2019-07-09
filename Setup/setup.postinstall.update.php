@@ -24,33 +24,75 @@
  * THE SOFTWARE.
  */
 
-require_once '../Update/update.php';
+//require_once '../Update/update.php';
+include_once "../TPSBIN/functions.php";
+
+define("HOST",$_SESSION['host']);
+define("PASSWORD",$_SESSION['password']);
+define("USER",$_SESSION['user']);
+define("DB",$_SESSION['database']);
 
 $files = \glob("../Update/proc/*.json");
 $updates = array();
 
+function installUpdate($Update_PKG){
+    if($Update_PKG['execute']=='SQL'){
+        if(strtoupper($Update_PKG['SQL_QRY']['UPDATE_TYPE'])==="FILE"){
+            $mysqli = new mysqli(HOST, USER, PASSWORD, DB);
+            $sql_file = $Update_PKG['SQL_QRY']['UPDATE'];
+            if(strtolower(substr($sql_file,-4))==='.sql'){
+                if(!$sql = file_get_contents(__DIR__."/..".DIRECTORY_SEPARATOR.
+                        'Update'.DIRECTORY_SEPARATOR.'proc'.DIRECTORY_SEPARATOR.$sql_file)){
+                    error_log("could not open ".__DIR__."/..".DIRECTORY_SEPARATOR.
+                        'Update'.DIRECTORY_SEPARATOR.'proc'.DIRECTORY_SEPARATOR.$sql_file);
+                    http_response_code(400);
+                    return FALSE;
+                }
+                $mysqli->autocommit(FALSE);
+                $mysqli->begin_transaction();
+                foreach(explode("||",$sql) as $query){
+                    $query = preg_replace('~[\r\n]+~', ' ', $query);
+                    if(!$mysqli->query($query)){
+                        $error = $mysqli->error;
+                        $code = $mysqli->errno;
+                        $mysqli->rollback();
+                        return json_encode(array("Status"=>false,
+                            "Result"=>array("SQL"=>$query,
+                            "ERROR"=>$error,"CODE"=>$code)));
+                    }
+                }
+                $mysqli->commit();
+                $mysqli->autocommit(TRUE);
+                return json_encode(array("Status"=>true,"Result"=>array("")));
+            }
+        }
+    }
+    else{
+        return http_response_code(400);
+    }
+}
+
 foreach ($files as $file) {
     error_log("checking $file", $message_type=LOG_INFO);
     $string = file_get_contents($file);
-    $json_a = json_decode($string, true);
+    $json_a = json_decode($string, true); // The JSON contents of the update file
 
     $key = $json_a['TPS_Errno'];
-    $insertLocationRequired = False;
-    if(key_exists("requires", $json_a)){
-        $insertLocationRequired = array_search($json_a['TPS_Errno'],
-                array_keys($updates));
-    }
-    
-    $keyLocation = array_search($key, array_keys($updates));
-    if($keyLocation){
-     #find key of first update that "requires" this update    
-    }
-    # insert in the earliest required position min(x,y)
-    
-    $inserted = array( 'x' ); // Not necessarily an array
 
-    array_splice( $original, 3, 0, $inserted ); // splice in at position 3
-    // $original is now a b c x d e
+    $placeAt = -1;
+    foreach ($updates as $i=>$update)
+	if (key_exists("requires", $update) && $update["requires"] == $key)
+	    $placeAt = $i;
+
+    if ($placeAt == -1)
+	array_push($updates, $json_a);
+    else
+	array_splice($updates, $placeAt, 0, array($json_a));
 }
 
+foreach ($updates as $update) {
+    error_log("Applying update {$update['TPS_Errno']}", $message_type=LOG_INFO);
+    installUpdate($update, "");
+}
+//$mysqli->close();
 print json_encode(["status"=>"Complete"]);
