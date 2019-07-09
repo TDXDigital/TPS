@@ -92,7 +92,7 @@ $reviews = new \TPS\reviews();
 			"<div class='cd_cover_tile_header'>" . $title . "</div>" .
 			"<div class='cd_cover_tile_body'>";
 	    if (is_array($info))
-		$tile .= implode("", array_map(function($i) {return '-'.$i.'<br />';}, $info));
+		$tile .= implode("", array_map(function($i) {if ($i != "") return '-'.$i.'<br />';}, $info));
 	    else
 		$tile .= $info;
 	    $tile .=    "</div>" .
