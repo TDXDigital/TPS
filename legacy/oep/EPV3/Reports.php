@@ -1,8 +1,11 @@
 <?php
 namespace TPS;
-session_start();
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 include(dirname(__FILE__).DIRECTORY_SEPARATOR.'PHP/php-barcode.php');
-//require_once("../../TPSBIN/db_connect.php");
 require_once("public/lib/libs.php");
 
 class Report extends TPS{
@@ -332,7 +335,10 @@ class Report extends TPS{
 <body style="background-color:white;">
 <?php
 $reportHandler = new \TPS\Report();
-$reportHandler->runReport();
+if(isset($_POST['audit']))
+    $reportHandler->runReport();
+else
+    echo 'something';
 ?>
 </body>
 </html>

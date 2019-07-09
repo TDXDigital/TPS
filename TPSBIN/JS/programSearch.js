@@ -58,6 +58,12 @@ $(document).ready(function() {
         "columnDefs": [
             {
                 "render": function ( data, type, row ) {
+                    return '<a href="/programs/history/' + data + '">'+ data +'</a>';
+                },
+                "targets": 0
+            },
+            {
+                "render": function ( data, type, row ) {
                     return '<button type="button" onclick="location.href=\'/programs/edit/'+data+'\';" class="btn btn-default btn-xs">' +
                         'Edit ' + '<i class="fa fa-edit" aria-hidden="true"></i></button>';
                 },

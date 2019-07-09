@@ -120,9 +120,9 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
 	$charts =  $playlist->getTop40($startDate, $endDate);
     	$app->halt(500, json_encode($charts));
     });
+
     $app->get('/chart', function () use ($app, $authenticate, $playlist) {
-    $date = new DateTime('-7 d');
-	$startDate = $date->format('Y-m-d H:i:s');
+	$startDate = date("Y-m-d", strtotime("-1 week"));
 	$endDate = date("Y-m-d");
 	$charts =  $playlist->getTop40($startDate, $endDate);
     
