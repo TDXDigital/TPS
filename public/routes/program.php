@@ -168,6 +168,10 @@ $app->group('/programs', $authenticate, function () use ($app,$authenticate){
             $app->render('programNew.twig', $params);
     });
 
+    $app->get('/history/:progname', $authenticate, function ($progname) use ($app){
+        $app->redirect('../../legacy/oep/EPV3/Audit.php?programName='.$progname);
+    });
+
 
 
 

@@ -385,6 +385,9 @@ class playlist extends TPS{
     * @return array of dictionaries containing the top 40 albums information (or less if <40 albums played within the last week, more if tie for last)
     */
     public function getTop40($startDate, $endDate) {
+        // echo $startDate;
+        // echo '<br>'.$endDate;
+        // exit;
         $startDate = new \DateTime($startDate);
         $endDate = new \DateTime($endDate);
 
@@ -418,7 +421,6 @@ class playlist extends TPS{
 		$row['Expire'] = $station->getTimeFromServerTime($row['Expire']);
             array_push($albumInfo, $row);
 	}
-
 	$sql = $this->db->query("SELECT song.programname, song.playlistnumber AS SmallCode, song.date, song.time, program.weight " . 
 				"FROM song LEFT JOIN program ON song.programname=program.programname " .
 				"WHERE playlistnumber IS NOT NULL AND date >= '" . $startDate->format('Y-m-d') . "' " .

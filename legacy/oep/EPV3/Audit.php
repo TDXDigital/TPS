@@ -48,25 +48,26 @@
 	</head>
 	<body style="height: inherit;">
 		<div id="content" style="margin: auto; width: 1280px; height: inherit; background-color: white;">
-			<form action="../../../reportInterpreter.php" method="post" target="_blank" accept-charset="utf-8">
+			<form action="../../../reportInterpreter.php" method="post" target="_blank" id="auditReport" accept-charset="utf-8">
 			<div id="logo" style="margin-bottom: 25px;"><img style="display: inline;" src="../../../<?php
                 session_start();
                 echo $_SESSION['logo'];
 				?>" height="50px" alt="logo"/><h1 style="display: inline; text-align: center; width: 100%">
 				Audit Options</h1><br/><hr></div>
+				<input type="hidden" id="audit" name="audit" value="true"/>
 			<div id="options" style="float: left;">
 				<h2>Date Range</h2>
 				<label for="from">From</label>
-				<input type="text" id="from" required name="from" placeholder="Start Date"/>
+				<input type="text" id="from" name="from" placeholder="Start Date"/>
 				<label for="to">To</label>
-				<input type="text" id="to" required name="to" placeholder="To Date"/>
+				<input type="text" id="to" name="to" placeholder="To Date"/>
 			</div>
 			<div id="program" style="float: left; margin-left: 20px;">
 				<h2>Program Options</h2>
 				<label for="callsign">Callsign</label>
-				<input type="text" id="callsign" name="callsign" placeholder=""/>
+				<input type="text" id="callsign" name="callsign" placeholder="" value="<?php echo $_SESSION['CALLSIGN'] ?>"/>
 				<label for="program">Program Name</label>
-				<input type="text" id="program" name="program" placeholder=""/>
+				<input type="text" id="program" name="program" value="<?php echo isset($_GET['programName'])? $_GET['programName']:'' ?>"/>
 			</div>
 			<div id="CustRep" style="margin-top: 100px;">
 				<div id="CRO">
@@ -122,6 +123,5 @@
 				<input id="sub1" value="Submit" type="Submit"/>
 			</div>
 		</form>
-
 	</body>
 </html>
