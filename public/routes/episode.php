@@ -128,7 +128,7 @@ $app->group('/episode', $authenticate($app,[1,2]),
         }
         $params = array(
             'area'=>'Episode',
-            'title'=>'Redirect  '
+            'title'=>'Log Addition'
         );
         if($episodeCheck->getEpisode()['id']){
             $params['episode'] = $episode->getEpisode();
@@ -140,11 +140,24 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $app->response->setStatus(201);
         $isXHR = $app->request->isAjax();
         if(!$isXHR){
-            $app->render("episodeRedirect.twig",$params);
+            $app->render("episodeInsertSong.twig",$params);
+
         }
         else{
             print json_encode($params);
         }
         //var_dump($params);
+    });
+
+
+  // Create new program
+    $app->post('/insertSong', function() use ($app, $authenticate){
+
+
+        $params=array(
+            'area'=>'Episode',
+            'title'=>'Log Addition'
+            );
+        $app->render("episodeInsertSong.twig",$params);
     });
 });

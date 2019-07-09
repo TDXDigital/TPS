@@ -1,0 +1,56 @@
+{% extends 'baseAdmin.twig' %}
+{% block headScripts %}
+{% endblock %}
+
+{% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+    </li>
+    <li class="active">
+        <i class="fa fa-tasks"></i> <a href="/Episode/">Episode</a>
+    </li>
+    <li class="active">
+        <a href="/review/search/album/{{album.RefCode}}"><i class="fa fa-barcode"></i> {{episode.RefCode}}</a>
+    </li>
+</ol>
+{% endblock %}
+{% block content %}
+
+<table class="table">
+	<tr>
+		<td class="col-md-2">SHow Classification: {{episode.type}}</td><td class="col-md-2">Sponsor: {{sponser}}</td> <td class="col-md-2">Ads: </td> <td class="col-md-2">PSA/Promo: </td> <td class="col-md-2">Canadian Content Required: </td> <td class="col-md-2">Playlist Required: </td>
+	</tr>
+
+	<tr></tr>
+
+	<tr style="border-bottom-style:hidden;">
+		<th>Airt Date</th> <th>Airt Time</th> <th>Program</th> <th>Station</th> <th>Description</th><th>Pre-Record</th>
+	</tr>
+	<tr>
+		<td class="col-md-2">{{episode.date}}</td> <td class="col-md-2">{{episode.time}}</td> <td class="col-md-2">{{episode.name}}</td> <td class="col-md-2">{{episode.callsign}}</td> <td class="col-md-2">{{episode.description}}</td> <td class="col-md-2">{{episode.pre-record}}</td>
+	</tr>
+</table>
+<hr>
+<table>
+	<tr>
+		<td class="col-md-3" style="color:green;">Available Friends Ads</td> <td class="col-md-3" style="color:blue;">Required Commercials This Hours</td> <td class="col-md-4" style="color:orange;"> Messages</td> <td class="col-md-2"> Time .. </td>
+	</tr>
+		<td class="col-md-3">ads options</td> <td class="col-md-3">required ads options</td> <td style="font-style: italic; font-size: 80%; color: #eb4b20 " class="col-md-4"><strong>IMPORTANT: When prompted to play required ADs you are <u>ONLY</u> to play the required ADs until they are no longer prompted. Then, and only then are you permitted to play a friend ad <u>IF</u> you have not met your AD requirements</strong></td> <td class="clock col-md-2">clock</td>
+
+</table>
+
+<form action="" method="POST">
+<label>
+
+</form>
+
+
+
+
+
+{% endblock %}
+{% block lastScripts %}
+
+{% endblock %}
