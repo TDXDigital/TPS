@@ -282,8 +282,10 @@ class playlist extends TPS{
     * @return Array of associate arrays which contain the information of each album
     */
     public function getExpiredAlbums() {
-        $sql = $this->db->query("SELECT * FROM library WHERE playlist_flag='COMPLETE' AND " .
-				"RefCode IN (SELECT RefCode FROM playlist WHERE Expire < now());");
+        $sql = $this->db->query("SELECT * FROM library WHERE playlist_flag='COMPLETE' AND RefCode IN " .
+				"(SELECT p.RefCode FROM playlist AS p INNER JOIN " .
+				"(SELECT RefCode, PlaylistId FROM playlist ORDER BY Expire DESC LIMIT 1) AS p2 " .
+				"ON p.PlaylistId=p2.PlaylistId WHERE p.Expire < NOW());");
         $expiredAlbums = [];
         while ($row = $sql->fetch(\PDO::FETCH_ASSOC))
             array_push($expiredAlbums, $row);
@@ -667,6 +669,42 @@ class playlist extends TPS{
     }
 
     /*
+    * @abstract Get the next available playlist smallcode for an album
+    * @param int $refCode The RefCode of the album
+    * @return int/NULL The next available smallcode, or NULL if none available.
+    */
+    public function getNextAvailableSmallCode($refCode) {
+	$today = date('Y-m-d');
+	$getCode = function ($genre, $codes){
+            foreach ($codes as $key => $value) {
+                if($value['Genre'] == $genre){
+                    return array($key, $value);
+                }
+            }
+            return FALSE;
+        };
+	$library = new \TPS\library();
+	$libCodes = $library->listLibraryCodes();
+	$genre = $library->getGenreByRefCode($refCode);
+	$format = $library->getFormatByRefCode($refCode);
+	list($genreNum, $genre) = $getCode($genre, $libCodes);
+	$validRanges = $this->getGenreDividedValidShortCodes($_SESSION['CALLSIGN'], $today);
+	try{
+            foreach ($validRanges[$genre['Genre']] as $key => &$value) {
+                if(sizeof($value['shortCodes'])<1)
+                    continue;
+                if(in_array($format, $value['formats'])){
+                    $smallCode = array_shift($value['shortCodes']);
+                    break;
+                }
+            }
+        } catch (Exception $ex) {
+            $library->log->error("No Available ShortCodes for library genre ".$genre['Genre']);
+        }
+	return $smallCode;
+    }
+
+    /*
     * @abstract Given a list of albums, build and return an html table of the information
     * @param array $albums A list of albums with their information
     * @param string $color The color associated with the table
@@ -1016,35 +1054,8 @@ public function getGenreDividedValidShortCodes($station, $defaultOffsetDate,
 	    $this->moveAlbumToLibrary($refcode);
 
 	// Get next available smallCode
-	if (is_null($smallCode)) {
-	    $today = date('Y-m-d');
-	    $getCode = function ($genre, $codes){
-                foreach ($codes as $key => $value) {
-                    if($value['Genre'] == $genre){
-                        return array($key, $value);
-                    }
-                }
-                return FALSE;
-            };
-	    $library = new \TPS\library();
-	    $libCodes = $library->listLibraryCodes();
-	    $genre = $library->getGenreByRefCode($refcode);
-	    $format = $library->getFormatByRefCode($refcode);
-	    list($genreNum, $genre) = $getCode($genre, $libCodes);
-	    $validRanges = $this->getGenreDividedValidShortCodes($_SESSION['CALLSIGN'], $today);
-	    try{
-                foreach ($validRanges[$genre['Genre']] as $key => &$value) {
-                    if(sizeof($value['shortCodes'])<1)
-                        continue;
-                    if(in_array($format, $value['formats'])){
-                        $smallCode = array_shift($value['shortCodes']);
-                        break;
-                    }
-                }
-            } catch (Exception $ex) {
-                $library->log->error("No Available ShortCodes for library genre ".$genre['Genre']);
-            }
-	}
+	if (is_null($smallCode))
+	    $smallCode = $this->getNextAvailableSmallCode($refcode);
 
 	// Add to playlist
         $stmt = $this->db->prepare("INSERT INTO playlist (RefCode, Activate, "
