@@ -531,8 +531,6 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
                     "today"=>$startDate,
                     "playlists"=>$playlistVals,
                 );
-                // print_r($params);
-                // exit;
                 $app->render("playlistReport.twig", $params);
             }
         });

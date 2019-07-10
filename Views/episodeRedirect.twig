@@ -13,7 +13,7 @@
             </div>
         </div>
     {% endif %}
-    <form action="/episode/insertSong" method="post">
+    <form action="../legacy/oep/p2insertEP.php" method="post">
         <input type="hidden" name="callsign" value="{{episode.callsign}}"/>
         <input type="hidden" name="brType" value="{{episode.type}}"/>
         <input type="hidden" name="program" value="{{episode.name}}"/>

@@ -1006,7 +1006,7 @@ public function getGenreDividedValidShortCodes($station, $defaultOffsetDate,
         }
         $param = NULL;
         $stmt = $this->db->prepare(
-            "SELECT * FROM playlist"
+            "SELECT * FROM library JOIN playlist ON library.refcode = playlist.refcode"
             . " WHERE SmallCode=:param");
         $stmt->bindParam(":param", $param, \PDO::PARAM_STR);
         $result = array();
@@ -1060,6 +1060,7 @@ public function getGenreDividedValidShortCodes($station, $defaultOffsetDate,
 	// If the start date is today
 	$station = new \TPS\station();
 	$serverDateTime = date('Y-m-d H:i:s');
+
 	$localDateTime = $station->getTimeFromServerTime($serverDateTime);
 	$localDate = substr($localDateTime, 0, 10);
 	if ($startDate == $localDate)

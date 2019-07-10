@@ -140,6 +140,7 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $app->response->setStatus(201);
         $isXHR = $app->request->isAjax();
         if(!$isXHR){
+            // $app->render("episodeRedirect.twig",$params);
             $app->render("episodeInsertSong.twig",$params);
 
         }
@@ -152,12 +153,18 @@ $app->group('/episode', $authenticate($app,[1,2]),
 
   // Create new program
     $app->post('/insertSong', function() use ($app, $authenticate){
-
-
         $params=array(
             'area'=>'Episode',
             'title'=>'Log Addition'
             );
         $app->render("episodeInsertSong.twig",$params);
+    });
+
+    $app->post('/searchSong/:playlistId', function($shortCode) use ($app, $authenticate){
+        $playlist = new \TPS\playlist();
+        $albumInfo = $playlist->getAllByShortCode($shortCode);
+        // echo $playlistId;
+        // print_r(reset($albumInfo));
+        echo json_encode(reset($albumInfo));
     });
 });
