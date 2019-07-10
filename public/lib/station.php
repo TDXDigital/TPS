@@ -76,7 +76,11 @@ class station extends TPS{
     * @return string The $serverTime arugement converted to the stations local timezone
     */
     public function getTimeFromServerTime($serverTime) {
+
 	$serverTZCode = strtolower(system('date +"%Z"'));
+
+    echo $serverTime;
+        exit;
 	$serverTZId = \DateTimeZone::listAbbreviations(\DateTimeZone::ALL)[$serverTZCode][0]['timezone_id'];
 	$stmt = $this->mysqli->query("SELECT CONVERT_TZ('" . $serverTime . "','" . $serverTZId . 
 				     "',(SELECT timezone FROM station WHERE callsign='" . $_SESSION['CALLSIGN'] . "')) as time;");
