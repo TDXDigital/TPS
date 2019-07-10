@@ -115,30 +115,32 @@ $reviews = new \TPS\reviews();
 	    if ($i % 3 == 0) {
 		if ($i != 0)
 		    echo "</div>";
-   	        if ($i % 15 == 0) {
-		    echo "<p style='page-break-before: always'></p><div style='height:0.1px'></div>";
-	        }
-		echo "<div class='parent'>";
+   	        if ($i % 24 == 0)
+		    echo "<p style='page-break-before: always'></p><div style='height:0.1px'></div>" .
+			 "<div class='parent' style='margin-top: 0.5in'>";
+	        else
+		    echo "<div class='parent'>";
 	    }
-            echo "<div class=\"label\"";
-	    if ($i % 18 < 3)
-		echo "margin-top:0.5in;";
-	    echo "\">";
-	    $artistAlbumMax = 14;
-            if(strlen($artist)>$artistAlbumMax)
-                $artpost = "...";
-            else
-                $artpost = "";
+            echo "<div class=\"label\">";
 
-            if(strlen($album)>$artistAlbumMax)
-                $albpost = "...";
-            else
-                $albpost = "";
+	    // Adjust $artist and $album so they fit on one line
+	    $artistAlbumMax = 14;
+	    if (strlen($artist) > $artistAlbumMax && strlen($album) > $artistAlbumMax) {
+		$artist = substr($artist, 0, $artistAlbumMax) . "...";
+		$album = substr($album, 0, $artistAlbumMax) . "...";
+	    } else if (strlen($artist) > $artistAlbumMax != strlen($album) > $artistAlbumMax) {
+		$spare = 14 - min(strlen($artist), strlen($album));
+		$newMax = $artistAlbumMax + $spare;
+		if (strlen($artist) > $newMax)
+		    $artist = substr($artist, 0, $newMax) . "...";
+		if (strlen($album) > $newMax)
+		    $album = substr($album, 0, $newMax) . "...";
+	    }
 
             echo "<span>" . $libraryCode . "</span>" .
 		 "<br />" .
-		 "<strong style='float: left; font-size: small'>" . substr($artist,0,$artistAlbumMax) . $artpost . " -</strong>" .
-		 "<i style='float:left; font-size: small;'>&nbsp;" . substr($album,0,$artistAlbumMax) . $albpost."</i>" .
+		 "<strong style='float: left; font-size: small'>" . $artist . " -</strong>" .
+		 "<i style='float:left; font-size: small;'>&nbsp;" . $album ."</i>" .
 		 "<br />" .
 		 "<br />" .
 		 "<u>Labels:</u> " . implode("|", $recordLabelNames) .
