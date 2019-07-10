@@ -85,16 +85,17 @@ else{
     $address = "";
     $mainPhone = $_SESSION['req_phone'];
     $mgrPhone = $_SESSION['mgrPhone'];
+    $timezone = $_SESSION['timezone'];
     $con = $mysqli->prepare(
             "insert into `station` (callsign,stationname,Designation,"
-            . "frequency,website,address,boothphone,directorphone) "
-            . "values ( ?, ?, ?, ?, ?, ?, ?, ?)"
+            . "frequency,website,address,boothphone,directorphone, timezone) "
+            . "values ( ?, ?, ?, ?, ?, ?, ?, ?, ?)"
             );
     if($con===false){
         trigger_error($tps->mysqli->error,E_USER_ERROR);
     }
-    $con->bind_param("ssssssss", $callsign, $name, $designation,
-            $frequency, $website, $address, $mainPhone, $mgrPhone);
+    $con->bind_param("sssssssss", $callsign, $name, $designation,
+            $frequency, $website, $address, $mainPhone, $mgrPhone, $timezone);
     $con->execute();
     if($con === false){
         trigger_error($tps->mysqli->error,E_USER_ERROR);

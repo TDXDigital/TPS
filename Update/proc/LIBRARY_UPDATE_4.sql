@@ -1,3 +1,0 @@
-ALTER TABLE `library` 
-ADD COLUMN `playlist_flag` ENUM('PENDING','FALSE','COMPLETE') NOT NULL DEFAULT 'FALSE' AFTER `note`;
-

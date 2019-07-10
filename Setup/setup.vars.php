@@ -87,6 +87,8 @@ $SECL_Hash_Pass = hash('sha512', $SECL_password . $SALT);
 // Settings
 /* @var $callsign type */
 $callsign = \filter_input(INPUT_POST, 'callsign', \FILTER_SANITIZE_STRING);
+/* @var $timezone type */
+$timezone = \filter_input(INPUT_POST, 'timezone', \FILTER_SANITIZE_STRING);
 /* @var $brand type */
 $brand = \filter_input(INPUT_POST, 'brand', \FILTER_SANITIZE_STRING);
 /* @var $frequency type */
@@ -225,6 +227,7 @@ if(!is_null($callsign)){
         echo "<br>Setting Settings:".$callsign;
     }
     $_SESSION['callsign']=$callsign;
+    $_SESSION['timezone']=$timezone;
     $_SESSION['pd_phone']=$pd_phone;
     $_SESSION['mgr_phone']=$mgr_phone;
     $_SESSION['req_phone']=$req_phone;

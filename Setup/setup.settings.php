@@ -38,7 +38,7 @@
     <div class="panel-body">
         <fieldset>
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-3">
                   <div class="input-group">
                     <span class="input-group-addon">
                         <label for="callsign"><span class="glyphicon glyphicon-flash"></span> Callsign (4 characters)</label>
@@ -53,7 +53,21 @@
                         }
                     ?>/>
                   </div><!-- /input-group -->
-                </div><!-- /.col-lg-6 -->
+                </div><!-- /.col-lg-3 -->
+                <div class="col-lg-3">
+                    <div class="input-group">
+			<span class="input-group-addon">
+                            <label for="timezone"><span class="glyphicon glyphicon-time"></span> Timezone</label>
+			</span>
+                        <select id="timezone" class="form-control" name="timezone">
+			    <?php
+				$timezones = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
+				foreach ($timezones as $timezone)
+				    echo "<option value='$timezone'>$timezone</option>";
+			    ?>
+                        </select>
+                    </div>
+		</div>
                 <div class="col-lg-6">
                   <div class="input-group">
                     <span class="input-group-addon">

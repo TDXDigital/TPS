@@ -72,27 +72,53 @@ function installUpdate($Update_PKG){
     }
 }
 
+$packages = [];
 foreach ($files as $file) {
-    error_log("checking $file", $message_type=LOG_INFO);
+    error_log($file,  $message_type=LOG_INFO);
     $string = file_get_contents($file);
-    $json_a = json_decode($string, true); // The JSON contents of the update file
+    $updatePackage = json_decode($string, true);
+    array_push($packages, $updatePackage);
+}
 
-    $key = $json_a['TPS_Errno'];
+function requires($a, $b) {
+    global $packages;
+    if (key_exists("requires", $a)) {
+	if ($a["requires"] == $b["TPS_Errno"]) {
+	    return TRUE;
+	} else {
+	    // Get the package that $a requires
+	    foreach ($packages as $package)
+		if ($a["requires"] == $package["TPS_Errno"])
+		    // Make a recursive call
+	            return requires($package, $b);
+	    return FALSE;
+	}
+    } else {
+	return FALSE;
+    }
+}
 
+// Sort the updates based requirements
+// For example, if A requires B, place B before A.
+foreach ($packages as $package) {
+    $key = $package['TPS_Errno'];
     $placeAt = -1;
-    foreach ($updates as $i=>$update)
-	if (key_exists("requires", $update) && $update["requires"] == $key)
+    foreach ($updates as $i=>$update) {
+	if (requires($update, $package)) {
 	    $placeAt = $i;
+	    break;
+	}
+    }
 
     if ($placeAt == -1)
-	array_push($updates, $json_a);
+	array_push($updates, $package);
     else
-	array_splice($updates, $placeAt, 0, array($json_a));
+	array_splice($updates, $placeAt, 0, array($package));
 }
 
-foreach ($updates as $update) {
-    error_log("Applying update {$update['TPS_Errno']}", $message_type=LOG_INFO);
+foreach ($updates as $i=>$update) {
+    error_log("Updating: {$update['TPS_Errno']}", $message_type=LOG_INFO);
     installUpdate($update, "");
 }
-//$mysqli->close();
+
 print json_encode(["status"=>"Complete"]);
