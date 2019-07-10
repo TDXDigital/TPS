@@ -241,10 +241,10 @@ class TPS{
             if($this->requirePDO){
                 $mysqli = $pdo;
             }
-            $this->databaseName = 'TPS';
-            $this->databaseHost = 'localhost';
-            // $this->databaseName = DATABASE;
-            // $this->databaseHost = HOST;
+
+            $database = $this->getDatabaseConfig($settingsTarget, $settingsPath);
+            $this->databaseName = $database['DATABASE'];
+            $this->databaseHost = $database['DBHOST'];
 
             $this->mysqli = $mysqli?:$pdo;
             $this->db = $pdo;
