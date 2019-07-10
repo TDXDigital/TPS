@@ -265,6 +265,20 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $app->render('searchLibrary.twig', $params);
         });
     });
+
+    $app->group('/print', $authenticate, function () use ($app, $authenticate) {
+	$app->get('/', $authenticate, function () use ($app) {
+	    $params = array(
+		"area" => "Library",
+		"title" => "Print Labels",
+		"albums" => $_SESSION['PRINTID']
+	    );
+	    //$app->render('notSupported.twig', $params);
+	    //$app->redirect('../../labels/print?type=5160&start=1&outline=false');
+	    $app->redirect('../../labels/print-stickers?type=5160&start=1&outline=false');
+	});
+    });
+
     $app->put('/batch', $authenticate($app, array(2)), function () use ($app){
         $library = new \TPS\library();
         $XHR = $app->request->isAjax();

@@ -274,6 +274,14 @@ $app->get("/labels/print", $authenticate($app,[2]), function() use ($app) {
     require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'legacy/opl/PrintTest.php';
 });
 
+$app->get("/labels/print-stickers", $authenticate($app,[2]), function() use ($app) {
+    require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'legacy/opl/PrintStickers.php';
+});
+
+$app->get("/labels/print-traycards", $authenticate($app,[2]), function() use ($app) {
+    require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'legacy/opl/PrintTrayCards.php';
+});
+
 $app->post("/webhook", function () use ($app){
     require_once dirname(__FILE__).DIRECTORY_SEPARATOR."../lib/std/githubWebHook.php";
 });
