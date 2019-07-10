@@ -1048,7 +1048,8 @@ public function getGenreDividedValidShortCodes($station, $defaultOffsetDate,
     public function create($refcode, $startDate, $endDate,
         $zoneCode=Null, $zoneNumber=Null, $smallCode=NULL){
 	// If the album is already on the playlist
-	$stmt = $this->db->query("SELECT * FROM library WHERE RefCode=$refcode AND playlist_flag='COMPLETE';");
+	$stmt = $this->db->query("SELECT * FROM playlist LEFT JOIN library ON library.refcode = playlist.refcode
+                                WHERE library.RefCode=$refcode AND library.playlist_flag='COMPLETE';");
 	if (count($stmt->fetchAll()) > 0)
 	    // Remove it from the playlist so we can re-add it
 	    $this->moveAlbumToLibrary($refcode);
