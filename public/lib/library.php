@@ -986,7 +986,8 @@ class library extends station{
                 continue;
 
 
-            $tempLabelName = strtoupper($getData[3]);
+	    $labelName = $getData[3];
+            $tempLabelName = strtoupper($labelName);
             if($tempLabelName == 'SR' ||$tempLabelName == 'SELF-RELEASED' ||$tempLabelName == 'S/R' ||$tempLabelName == 'INDEPENDENT')
                 $labelName = 'Self-Released';
 
