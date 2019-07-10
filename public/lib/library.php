@@ -1408,7 +1408,14 @@ class library extends station{
 	return mysqli_real_escape_string($this->mysqli, $val);
     }
 
+    /*
+    * @abstract Add values to the attributes of an album. For example, add 'Good' and 'Mind-blowing' as tags to a given album.
+    * @param string $attName       Name of the attribute you want to add values to
+    * @param array  $attValueList  Values to add to the album for the given attribute
+    * @parar int    $refcode       Refcode of the Album
+    */
     public function addAttributeToAlbum($attName, $attValueList, $refcode) {
+	$attValueList = array_diff($attValueList, ['']); // Remove any blanks
 	if(count($attValueList)>0) {
 	    // Check which {$attName}s are already in the database
 	    $temp = $attValueList;
