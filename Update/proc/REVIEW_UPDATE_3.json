@@ -1,0 +1,18 @@
+{
+    "TPS_Errno": "DBRV-004",
+    "type" : "database",
+    "execute" : "SQL",
+    "requires" : "DBRV-001",
+    "SQL_QRY" : {
+        "TEST": "SHOW COLUMNS FROM `review_tags` WHERE `Field` = 'review_id';",
+        "RESULT" : {
+            "Field" : [
+		"review_id"
+            ]
+        },
+	"Negate" : 0,
+	"createMode" : 1,
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "REVIEW_UPDATE_3.sql"
+    }
+}
