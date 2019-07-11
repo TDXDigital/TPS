@@ -1048,8 +1048,8 @@ public function getGenreDividedValidShortCodes($station, $defaultOffsetDate,
     public function create($refcode, $startDate, $endDate,
         $zoneCode=Null, $zoneNumber=Null, $smallCode=NULL){
 	// If the album is already on the playlist
-	$stmt = $this->db->query("SELECT * FROM playlist LEFT JOIN library ON library.refcode = playlist.refcode
-                                WHERE library.RefCode=$refcode AND library.playlist_flag='COMPLETE';");
+	$stmt = $this->db->query("SELECT * FROM playlist LEFT JOIN library ON library.refcode = playlist.refcode " .
+                                 "WHERE library.RefCode={$refcode} AND library.playlist_flag='COMPLETE';");
 	if (count($stmt->fetchAll()) > 0)
 	    // Remove it from the playlist so we can re-add it
 	    $this->moveAlbumToLibrary($refcode);
@@ -1062,17 +1062,16 @@ public function getGenreDividedValidShortCodes($station, $defaultOffsetDate,
 	$station = new \TPS\station();
 	$serverDateTime = date('Y-m-d H:i:s');
 
-    //$station->getTimeFromServerTime($serverDateTime) function gives error in Windows
-    if(PHP_OS != 'WINNT')
-    {
-        $localDateTime = $station->getTimeFromServerTime($serverDateTime);
-        $localDate = substr($localDateTime, 0, 10);
+        //$station->getTimeFromServerTime($serverDateTime) function gives error in Windows
+        if(PHP_OS != 'WINNT')
+        {
+            $localDateTime = $station->getTimeFromServerTime($serverDateTime);
+            $localDate = substr($localDateTime, 0, 10);
 
-        if ($startDate == $localDate)
-            // Set the activate date to be NOW() instead of at the beginning of the day
-            $startDate = $this->db->query("SELECT NOW() as now")->fetch(\PDO::FETCH_ASSOC)['now'];
-    }
-	
+            if ($startDate == $localDate)
+                // Set the activate date to be NOW() instead of at the beginning of the day
+                $startDate = $this->db->query("SELECT NOW() as now")->fetch(\PDO::FETCH_ASSOC)['now'];
+        }
 
 	// Add to playlist
         $stmt = $this->db->prepare("INSERT INTO playlist (RefCode, Activate, "
