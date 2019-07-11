@@ -167,4 +167,9 @@ $app->group('/episode', $authenticate($app,[1,2]),
         // print_r(reset($albumInfo));
         echo json_encode(reset($albumInfo));
     });
+
+     $app->post('/finalize', function() use ($app, $authenticate){
+        $playlisdId = $app->request->post('playlistNum');
+        print_r($playlisdId);
+    });
 });

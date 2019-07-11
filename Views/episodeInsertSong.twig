@@ -65,6 +65,7 @@
 
 
 <br>
+<form action="/episode/finalize" method="POST">
 <!-- Inserted Song table -->
 	<table class="table" id="songTable">
 		<thead>
@@ -75,7 +76,7 @@
 		<tbody>
 		<tr id=1>
 			<td>
-				<input type="text" class="form-control" name="playlistNum" id="playlistNum" placeholder="">
+				<input type="text" class="form-control" name="playlistNum[]" id="playlistNum" placeholder="">
 			</td>
 			<td>
 				<select name="cat" id="DDLNormal" name="DDLNormal" class="form-control" onchange="CHtype()">
@@ -154,8 +155,7 @@
 			</tr>
         </tfoot>
 	</table>
-
-<form action="" method="POST">
+			<input type="submit" class="btn pull-right" value="Finalize"/>
 
 </form>
 

@@ -1,4 +1,4 @@
-$(document).on('change paste input', "[name=playlistNum]", function(){
+$(document).on('change paste input', "[name='playlistNum[]']", function(){
  
     if($(this).val().length == 4)
     {
@@ -34,7 +34,7 @@ $(document).on('click', '.insertBtn', function(){
 
  		'<tr>' +
 			'<td>' +
-				'<input type="text" class="form-control" name="playlistNum" id="playlistNum" placeholder="">' +
+				'<input type="text" class="form-control" name="playlistNum[]" id="playlistNum" placeholder="">' +
 			'</td>' +
 			'<td>' +
 				'<select name="cat" id="DDLNormal" name="DDLNormal" class="form-control" onchange="CHtype()">' +
@@ -89,7 +89,7 @@ $(document).on('click', '.insertBtn', function(){
 				'<select name="type" id="type" class="form-control">' +
 		           '<option value="NA"> ---</option>' +
 		           '<option value="BACKGROUND">BG</option>' +
-		           '<option value="THEME"> +TH</option>' +
+		           '<option value="THEME"> TH</option>' +
 	       		'</select>' +
 			'</td>' +
 			'<td>' +
