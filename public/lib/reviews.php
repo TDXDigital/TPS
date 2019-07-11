@@ -342,7 +342,7 @@ class reviews extends station{
             $ip=NULL;
         }
        
-        $approved = 1;
+        $approved = NULL;
        
         if(isset($_POST["csvImport"]))
         {
@@ -489,7 +489,7 @@ class reviews extends station{
         $this->sanitizePagination($pagination, $maxResult);
         $reviews = array();
         $selectReviews = "SELECT review.id, review.refcode, library.artist, library.album, review.reviewer, review.ts, review.notes "
-                . "FROM review LEFT JOIN library on review.refcode=library.RefCode where review.approved = 1 order by ts limit ?,?";
+                . "FROM review LEFT JOIN library on review.refcode=library.RefCode where review.approved is null order by ts limit ?,?";
         if($stmt = $this->mysqli->prepare($selectReviews)){
             $stmt->bind_param('ii',$pagination,$maxResult);
             $stmt->bind_result($id,$refcode,$artist,$album,$reviewer,$timestamp,$notes);

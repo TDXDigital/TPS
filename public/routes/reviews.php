@@ -70,8 +70,6 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
             $update = "UPDATE review SET approved=?, femcon=?, reviewer=?,"
             . "hometown=?, subgenre=?, description=?, recommendations=?,"
             . "notes=? where id=?";
-            $albums = array();
-            $params = array();
             if($stmt = $mysqli->prepare($update)){
                 $stmt->bind_param('iissssssi',
                     $approved,$femcon,$reviewer,$hometown,$subgenres,
