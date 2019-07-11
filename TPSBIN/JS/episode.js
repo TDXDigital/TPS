@@ -9,9 +9,9 @@ $(document).on('change paste input', "[name='playlistNum[]']", function(){
             type: 'POST',
             }).done(function(data) {
             	var albumInfo = JSON.parse(data);
-            	input.closest('tr').find("input[name=artist]").val(albumInfo.artist);
+    	    	input.closest('tr').find("input[name=artist]").val(albumInfo.artist);
             	input.closest('tr').find("input[name=album]").val(albumInfo.album);
-            	input.closest('tr').find('input[name=DDLNormal] option[value="'+albumInfo.governmentCategory +'"]')
+            	input.closest('tr').find("[name='cat']").val(albumInfo.governmentCategory) ;
             	if(albumInfo.CanCon == 1)
             		input.closest('tr').find("input[name=cancon]").prop('checked', true);
             	else
@@ -37,7 +37,7 @@ $(document).on('click', '.insertBtn', function(){
 				'<input type="text" class="form-control" name="playlistNum[]" id="playlistNum" placeholder="">' +
 			'</td>' +
 			'<td>' +
-				'<select name="cat" id="DDLNormal" name="DDLNormal" class="form-control" onchange="CHtype()">' +
+				'<select name="cat" id="DDLNormal" class="form-control" onchange="CHtype()">' +
 	               '<option value="53"> 53, Sponsored Promotion</option>' +
 	               '<OPTION value="52"> 52, Sponsor Indentification</OPTION>' +
 	               '<OPTION VALUE="51"> 51, Commercial</OPTION>' +
