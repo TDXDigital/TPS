@@ -4,7 +4,7 @@
     "execute" : "SQL",
     "description" : "Makes format required",
     "SQL_QRY" : {
-        "TEST" : "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA='TPS' AND TABLE_NAME='library' AND IS_NULLABLE='NO' AND COLUMN_NAME='format'",
+        "TEST" : "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_NAME='library' AND IS_NULLABLE='NO' AND COLUMN_NAME='format'",
         "RESULT" : {
             "COLUMN_NAME" : [
                 "format"
