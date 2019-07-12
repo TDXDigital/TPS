@@ -66,6 +66,7 @@
 
 <br>
 <form action="/episode/finalize" id="episodeForm" method="POST">
+	<input type="hidden" name="epNum" value="{{episode.id}}">
 <!-- Inserted Song table -->
 	<table class="table" id="songTable">
 		<thead>
@@ -76,6 +77,7 @@
 		<tbody>
 		<tr id=1>
 			<td>
+				<input type="hidden" name="row[]" value="1">
 				<input type="text" class="form-control playlistNum" name="playlistNum[1]" id="playlistNum" placeholder="">
 			</td>
 			<td>

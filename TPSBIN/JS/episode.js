@@ -43,6 +43,7 @@ $(document).on('click', '.insertBtn', function(){
 
  		'<tr id="' + ++rowid +'">' +
 			'<td>' +
+			'<input type="hidden" name="row[]" value="'+ rowid +'">' +
 				'<input type="text" class="form-control playlistNum" name="playlistNum['+ rowid +']" id="playlistNum" placeholder="">' +
 			'</td>' +
 			'<td>' +

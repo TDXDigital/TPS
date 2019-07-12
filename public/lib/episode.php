@@ -281,6 +281,93 @@ class episode extends program{
             return false;
         }
     }
+
+
+    public static function getEpisodeByEpNum($epNum)
+    {
+        $tmpstn = new station($_SESSION['CALLSIGN']);
+        $stmt = $tmpstn->mysqli->prepare("SELECT "
+                . "callsign, programname, date, starttime, type, "
+                . "prerecorddate, description, IP_Created, totalspokentime, "
+                . "`Lock`, EndStamp, LastAccess, endtime, EpNum FROM episode "
+                . "WHERE `EpNum`=?");
+        $stmt->bind_param("s",$epNum);
+        if($stmt === false){
+            $tmpstn->log->error($tmpstn->mysqli->error,"getEpisodeByEpNum");
+        }
+         $stmt->bind_result($callsign, $name, $date,
+                $time, $type, $recordDate,
+                $description, $originIP, $totalSpokenTime,
+                $locked, $finalizedTimestamp,
+                $lastAccessTimestamp, $endTime,
+                $EpisodeID);
+           
+        if($stmt->execute()){
+            //$stmt->store_result();
+            if($stmt->num_rows > 1){
+                throw new \Exception(
+                        "Too episode many results, non unique results");
+            }
+            $stmt->fetch();
+            // @todo return result in array
+            // @todo implement updateEpisode public function
+        }
+        else{
+            $this->log->error($this->mysqli->errno);
+        }
+        $stmt->close();
+
+
+        return array(
+            "id" => $EpisodeID,
+            "name" => $name,
+            "date" => $date,
+            "time" => $time,
+            "type" => $type,
+            "endTime" => $endTime,
+            "callsign" => $callsign,
+            "recordDate" => $recordDate,
+            "description" => $description,
+            "totalSpokenTime" => $totalSpokenTime,
+        );
+    }
+
+
+    //Everything is array except epNum
+    public static function insertSongs($row, $epNum, $title, $album, $composer, $time, $artist, $cancon, $playlistNumber, $type, $category, $hit, $inst, $note=null, $spoken=null, $AdViolationFlag=null)
+    {
+
+        $tmpstn = new station($_SESSION['CALLSIGN']);
+        $episode = self::getEpisodeByEpNum($epNum);
+
+        $stmt = $tmpstn->mysqli->prepare("INSERT INTO `song` 
+                                        (callsign, programname, date, starttime,
+                                        instrumental, time, title, album, composer, 
+                                        note, spoken, artist, cancon, 
+                                        playlistnumber, type, AdViolationFlag, category,hit) VALUES 
+                                        (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+
+         foreach ($row as $key => $value)
+        {
+            //if checkbox is checked, set value 1, 0 otherwise
+            $cancon[$value] = array_key_exists($value, $cancon)? $cancon[$value]: 0;
+            $hit[$value] = array_key_exists($value, $hit)? $hit[$value]: 0;
+            $inst[$value] = array_key_exists($value, $inst)? $inst[$value]: 0;
+            
+            $stmt->bind_param("ssssisssssssiisiii",
+                                $episode['callsign'], $episode['name'], $episode['date'], $episode['time'],
+                                $inst[$value], $time[$value], $title[$value], $album[$value], $composer[$value],
+                                $note, $spoken, $artist[$value], $cancon[$value], 
+                                $playlistNumber[$value], $type[$value], $AdViolationFlag, $category[$value], $hit[$value]);
+
+            if(!$stmt->execute())
+                $this->log->error($this->mysqli->errno);
+        }
+         $stmt->close();
+    }
+
+
 }
 
 class episodeType{
