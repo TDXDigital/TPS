@@ -170,6 +170,42 @@ $app->group('/episode', $authenticate($app,[1,2]),
 
      $app->post('/finalize', function() use ($app, $authenticate){
         $playlisdId = $app->request->post('playlistNum');
+        $cat = $app->request->post('cat');
+        $time = $app->request->post('time');
+        $title = $app->request->post('title');
+        $artist = $app->request->post('artist');
+        $album = $app->request->post('album');
+        $composer = $app->request->post('composer');
+        $cancon = $app->request->post('cancon');
+        $hit = $app->request->post('hit');
+        $instrumental = $app->request->post('instrumental');
+        $type = $app->request->post('type');
+        $lang = $app->request->post('lang');
+        $allVals = $app->request->post('allVals');
+
+        echo'PlaylistId: ';
         print_r($playlisdId);
+        echo'<br> category: ';
+        print_r($cat);
+        echo'<br> time: ';
+        print_r($time);
+        echo'<br> title: ';
+        print_r($title);
+        echo'<br> artist: ';
+        print_r($artist);
+        echo'<br> album: ';
+        print_r($album);
+        echo'<br> composer: ';
+        print_r($composer);
+        echo'<br> cancon ';
+        print_r($cancon);
+        echo'<br> hit: ';
+        print_r($hit);
+        echo'<br> inst: ';
+        print_r($instrumental);
+        echo'<br> type: ';
+        print_r($type);
+        echo'<br> la ng: ';
+        print_r($lang);
     });
 });
