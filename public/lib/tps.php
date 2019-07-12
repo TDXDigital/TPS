@@ -39,6 +39,16 @@ class TPS{
     private $databaseName;
     private $databaseHost;
 
+    /*
+    * @abstract Replaces each string passed in with the mysqli_real_escape_string'd version
+    * @param array $strings Array of strings to sanitize
+    * @return N/A
+    */
+    public function sanitizeStrings(&$strings) {
+	foreach ($strings as &$str)
+	    $str = mysqli_real_escape_string($this->mysqli, $str);
+    }
+
     /**
      * Return an array with connection information for a specified server
      * @access private

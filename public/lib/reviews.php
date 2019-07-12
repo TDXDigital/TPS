@@ -319,6 +319,60 @@ class reviews extends station{
         return $albums;
     }
 
+    /*
+    * @author Derek Melchin
+    * @abstract Add album review attributes to a review in the database. Things like tags, hometowns, subgenres, labels)
+    * @param string $attNAme      The name of the album attribute you are adding
+    * @param array  $attValueList List of values to add to the attribute
+    * @param int    $reviewID     ID number of the review in the database
+    * @param string $idCol        The name of the id column for the attribute in the database on table {$attName}
+    * @param string $nameCol      The name of the name column for the attribute in the database on table {$attName}
+    */
+    public function applyReviewAttributes($attName, $attValueList, $reviewID, $idCol='id', $nameCol='name') {
+	// Sanitize input strings
+	$strings = [$attName, $idCol, $nameCol];
+	$this->sanitizeStrings($strings);
+	$this->sanitizeStrings($attValueList);
+
+	// If the review was submitted with {$attName}
+	if (count($attValueList) > 0) {
+	    // Make an associative array with the {$attNAme} name as the key and the id as the value
+	    // If a {$attNAme} doesn't have an id, leave it's value in the array as null
+	    $valueListStr = "('" . implode("', '", $attValueList) . "')"; 
+	    $stmt = $this->mysqli->query("SELECT * FROM $attName WHERE name IN $valueListStr;");
+	    $attDict = array_fill_keys($attValueList, NULL);
+	    while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
+		if (in_array($row[$nameCol], $attValueList))
+		    $attDict[$row[$nameCol]] = $row[$idCol];
+
+	    // Foreach {$attName} that doesn't have an id, insert it into the {$attName} table and
+	    // add the assigned database id to the associative array
+	    $valuesToAdd = array_keys($attDict, NULL);
+	    if (count($valuesToAdd) > 0) {
+	        $valuesToAddStr = "('" . implode("'), ('", $valuesToAdd) . "')";
+	        $this->mysqli->query("INSERT INTO $attName (name) VALUES $valuesToAddStr;");
+	        $insertID = $this->mysqli->query("SELECT LAST_INSERT_ID() as id")->fetch_array(MYSQLI_ASSOC)['id'];
+	        foreach ($attDict as $name => &$id)
+		    if (is_null($id)) {
+		        $id = $insertID;
+			$insertID++;
+		    }
+	    }
+
+	    // Insert all of the {$attName} ids and $reviewID combos submitted in the review to the 
+	    // review_${attName} table
+	    $values = '';
+	    $elementNum = 0;
+	    foreach ($attDict as $attID) {
+		if ($elementNum != 0)
+		   $values .= ", ";
+		$values .= "($reviewID, $attID)";
+		$elementNum++;
+	    }
+	    $this->mysqli->query("INSERT IGNORE INTO review_$attName VALUES $values;");
+	}
+    }
+
     /**
      * @author James Oliver <support@ckxu.com>
      * @abstract expects post to contain 'description', 'femcon'\
@@ -341,15 +395,14 @@ class reviews extends station{
         else{
             $ip=NULL;
         }
-       
-        $approved = NULL;
-       
+
         if(isset($_POST["csvImport"]))
         {
             $description = $_POST['description'];
             $notes =  $_POST['notes'];
             $reviewer = $_POST['reviewer'];
             $recommend = $_POST['recommend'];
+	    $approved = 1;
         }
         else
         {
@@ -357,23 +410,28 @@ class reviews extends station{
             $notes = $app->request()->post('notes');
             $reviewer = $app->request()->post('reviewer');
             $subgenres = $app->request()->post('subgenres');
-            $hometown = $app->request()->post('hometown');
-            $hometown = $app->request()->post('label');
-            $tag = $app->request()->post('tag');
+            $hometowns = $app->request()->post('hometown');
+            $labels = $app->request()->post('label');
+            $tags = $app->request()->post('tag');
             $recommend = $app->request()->post('recommend');
-
-
-            //$library = new \TPS\library();
-
-            //$library->updateAlbumAttribute("hometown", $hometown, $RefCode);
-            //$library->updateAlbumAttribute("tag", $tag, $RefCode);
-            //$library->updateAlbumAttribute("subgenre", $subgenres, $RefCode);    
+            $approved = NULL;
         }
         $newReviewSql = "INSERT IGNORE INTO review (RefCode,reviewer, approved,ip,description,recommendations,notes) "
-                . "VALUES (?,?,?,?,?,?,?)";
+                      . "VALUES (?,?,?,?,?,?,?)";
         if($stmt = $this->mysqli->prepare($newReviewSql)){
             $stmt->bind_param('isissss',$RefCode,$reviewer,$approved,$ip,$description,$recommend,$notes);
             if($stmt->execute()){
+		if(!isset($_POST["csvImport"])) {
+		    // Get the review ID
+		    $reviewID = $this->mysqli->query("SELECT LAST_INSERT_ID() as id;")->fetch_array(MYSQLI_ASSOC)['id'];
+
+		    // Apply all of the review attribute values that are given in the review GUI
+		    $this->applyReviewAttributes('subgenres', $subgenres, $reviewID);
+		    $this->applyReviewAttributes('hometowns', $hometowns, $reviewID);
+		    $this->applyReviewAttributes('recordlabel', $labels, $reviewID, 'LabelNumber', 'Name');
+		    $this->applyReviewAttributes('tags', $tags, $reviewID);
+		}
+
                 $app->flash('success',"Review submitted for album #$RefCode");
                 return TRUE;
             }
