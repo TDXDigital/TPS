@@ -356,15 +356,18 @@ class reviews extends station{
             $description = $app->request()->post('description');
             $notes = $app->request()->post('notes');
             $reviewer = $app->request()->post('reviewer');
-            $hometown = $app->request()->post('hometown');
             $subgenres = $app->request()->post('subgenres');
-            $recommend = $app->request()->post('recommend');
+            $hometown = $app->request()->post('hometown');
+            $hometown = $app->request()->post('label');
             $tag = $app->request()->post('tag');
-            $library = new \TPS\library();
+            $recommend = $app->request()->post('recommend');
 
-            $library->updateAlbumAttribute("hometown", $hometown, $RefCode);
-            $library->updateAlbumAttribute("tag", $tag, $RefCode);
-            $library->updateAlbumAttribute("subgenre", $subgenres, $RefCode);    
+
+            //$library = new \TPS\library();
+
+            //$library->updateAlbumAttribute("hometown", $hometown, $RefCode);
+            //$library->updateAlbumAttribute("tag", $tag, $RefCode);
+            //$library->updateAlbumAttribute("subgenre", $subgenres, $RefCode);    
         }
         $newReviewSql = "INSERT IGNORE INTO review (RefCode,reviewer, approved,ip,description,recommendations,notes) "
                 . "VALUES (?,?,?,?,?,?,?)";
