@@ -1246,16 +1246,7 @@ class library extends station{
 			"library.CanCon, " .
 			"library.datein, " .
 			"library.playlist_flag, " .
-			"library.genre, " .
-			"review.reviewer, " .
-			"review.ts, " .
-			"review.approved, " .
-			"review.femcon, " .
-			"review.hometown, " .
-			"review.subgenre, " .
-			"review.description, " .
-			"review.recommendations, " .
-			"review.id " .
+			"library.genre " .
 		"FROM " .
 			"library " .
 			"left join review on library.RefCode = review.RefCode " .
@@ -1268,8 +1259,7 @@ class library extends station{
         if($stmt = $this->mysqli->prepare($selectAlbum)){
             $stmt->bind_param('si',$term,$maxResult);
             $stmt->execute();
-            $stmt->bind_result($RefCode,$hasWebsite,$reviewed,$locale,$variousArtists,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre,
-                    $reviewer,$timestamp,$approved,$femcon,$hometown,$subgenre,$description,$recommends,$reviewID);
+            $stmt->bind_result($RefCode,$hasWebsite,$reviewed,$locale,$variousArtists,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre);
             while($stmt->fetch()){
                 $params['album'] = array( // this is ok as if the review ID is null there will also be no other entries as ID is a PK
                         "RefCode"=>$RefCode,
