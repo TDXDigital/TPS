@@ -303,7 +303,7 @@ class label extends TPS{
         }
         $stmt = $self->mysqli->prepare(
                 "SELECT LabelNumber, Name, name_alias_duplicate "
-                . "from recordlabel where LOWER(`Name`) like LOWER(?)"
+                . "from recordlabel where confirmed=1 AND LOWER(`Name`) like LOWER(?)"
                 );
         $stmt->bind_param("s",$name);
         $stmt->execute();

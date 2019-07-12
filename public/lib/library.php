@@ -499,7 +499,7 @@ class library extends station{
      * @return array
      */
     public function getSubgenres() {
-	$sql = $this->mysqli->query("SELECT name FROM subgenres ORDER BY name");
+	$sql = $this->mysqli->query("SELECT name FROM subgenres WHERE confirmed=1 ORDER BY name");
 	$subgenres = [];
 	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
 	    array_push($subgenres, $row['name']);
@@ -525,7 +525,7 @@ class library extends station{
      * @return array
      */
     public function getHometowns() {
-	$sql = $this->mysqli->query("SELECT name FROM hometowns ORDER BY name");
+	$sql = $this->mysqli->query("SELECT name FROM hometowns WHERE confirmed=1 ORDER BY name");
 	$hometowns = [];
 	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
 	    array_push($hometowns, $row['name']);
@@ -551,7 +551,7 @@ class library extends station{
      * @return array
      */
     public function getTags() {
-	$sql = $this->mysqli->query("SELECT name FROM tags ORDER BY name");
+	$sql = $this->mysqli->query("SELECT name FROM tags WHERE confirmed=1 ORDER BY name");
 	$tags = [];
 	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
         {

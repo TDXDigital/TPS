@@ -349,8 +349,8 @@ class reviews extends station{
 	    // add the assigned database id to the associative array
 	    $valuesToAdd = array_keys($attDict, NULL);
 	    if (count($valuesToAdd) > 0) {
-	        $valuesToAddStr = "('" . implode("'), ('", $valuesToAdd) . "')";
-	        $this->mysqli->query("INSERT INTO $attName (name) VALUES $valuesToAddStr;");
+	        $valuesToAddStr = "('" . implode("', 0), ('", $valuesToAdd) . "', 0)";
+	        $this->mysqli->query("INSERT INTO $attName (name, confirmed) VALUES $valuesToAddStr;");
 	        $insertID = $this->mysqli->query("SELECT LAST_INSERT_ID() as id")->fetch_array(MYSQLI_ASSOC)['id'];
 	        foreach ($attDict as $name => &$id)
 		    if (is_null($id)) {
