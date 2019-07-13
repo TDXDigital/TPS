@@ -95,7 +95,7 @@ method="POST" action="./{{review.ReviewID}}" > <!-- PUT NOT YET SUPPORTED BY BRO
         </div>
         <div class="form-group">
             <label>Labels</label>
-            {% for label in album.labels %}
+            {% for label in album.appliedLabels %}
             <p class="form-control-static">- {{label}}</p>
             {% endfor %}
         </div>

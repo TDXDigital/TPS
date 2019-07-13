@@ -598,7 +598,59 @@ class reviews extends station{
             return $count;
         }
     }
-    
+
+    /*
+    * @abstract Fetches the subgenres applied to an album on a review
+    * @param int $id The review id number
+    * @return Array of subgenres applied to an album on the review
+    */
+    public function getSubgenresByReviewID($id) {
+	$stmt = $this->mysqli->query("SELECT name FROM subgenres WHERE id IN (SELECT subgenre_id FROM review_subgenres WHERE review_id=$id)");
+	$results = [];
+	while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
+	    array_push($results, $row['name']);
+	return $results;
+    }
+
+    /*
+    * @abstract Fetches the hometowns applied to an album on a review
+    * @param int $id The review id number
+    * @return Array of howetowns applied to an album on the review
+    */
+    public function getHometownsByReviewID($id) {
+	$stmt = $this->mysqli->query("SELECT name FROM hometowns WHERE id IN (SELECT hometown_id FROM review_hometowns WHERE review_id=$id)");
+	$results = [];
+	while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
+	    array_push($results, $row['name']);
+	return $results;
+    }
+
+    /*
+    * @abstract Fetches the tags applied to an album on a review
+    * @param int $id The review id number
+    * @return Array of tags applied to an album on the review
+    */
+    public function getTagsByReviewID($id) {
+	$stmt = $this->mysqli->query("SELECT name FROM tags WHERE id IN (SELECT tag_id FROM review_tags WHERE review_id=$id)");
+	$results = [];
+	while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
+	    array_push($results, $row['name']);
+	return $results;
+    }
+
+    /*
+    * @abstract Fetches the record labels applied to an album on a review
+    * @param int $id The review id number
+    * @return Array of record labels applied to an album on the review
+    */
+    public function getRecordLabelsByReviewID($id) {
+	$stmt = $this->mysqli->query("SELECT Name FROM recordlabel WHERE LabelNumber IN (SELECT recordlabel_LabelNumber FROM review_recordlabel WHERE review_id=$id)");
+	$results = [];
+	while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
+	    array_push($results, $row['Name']);
+	return $results;
+    }
+
     /**
      * 
      * @global \TPS\type $mysqli
@@ -607,12 +659,35 @@ class reviews extends station{
     public function getAlbumAndReview($id){
         $maxResult = 100;
         $params = array();
-        $selectAlbum = "Select library.RefCode, if(band_websites.ID is NULL,'No','Yes') as hasWebsite, "
-                . "if(review.id is NULL,0,1) as reviewed, library.Locale, library.variousartists, library.format, library.year, library.album, "
-                . "library.artist, library.CanCon, library.datein, library.playlist_flag, library.genre, "
-                . "review.reviewer, review.ts, review.approved, review.femcon, review.hometown, review.subgenre, review.description, review.recommendations, review.id, review.notes "
-                . "from review left join library on library.RefCode = review.RefCode left join band_websites on library.RefCode=band_websites.ID where "
-                . "review.id = ?;";
+        $selectAlbum = 
+		"Select "
+			. "library.RefCode, "
+			. "if(band_websites.ID is NULL,'No','Yes') as hasWebsite, "
+                	. "if(review.id is NULL,0,1) as reviewed, "
+			. "library.Locale, "
+			. "library.variousartists, "
+			. "library.format, "
+			. "library.year, "
+			. "library.album, "
+                	. "library.artist, "
+			. "library.CanCon, "
+			. "library.datein, "
+			. "library.playlist_flag, "
+			. "library.genre, "
+                	. "review.reviewer, "
+			. "review.ts, "
+			. "review.approved, "
+			. "review.femcon, "
+			. "review.description, "
+			. "review.recommendations, "
+			. "review.id, "
+			. "review.notes "
+                . "from "
+			. "review "
+			. "left join library on library.RefCode = review.RefCode "
+			. "left join band_websites on library.RefCode=band_websites.ID "
+		. "where "
+                	. "review.id = ?;";
         $selectWebsites = "Select band_websites.URL, band_websites.Service, band_websites.date_available, band_websites.date_discontinue"
                 . " from band_websites where band_websites.ID=?;";
         
@@ -620,16 +695,14 @@ class reviews extends station{
             $stmt->bind_param('i',$id);
             $stmt->execute();
             $stmt->bind_result($RefCode,$hasWebsite,$reviewed,$locale,$variousArtists,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre,
-                    $reviewer,$timestamp,$approved,$femcon,$hometown,$subgenre,$description,$recommends,$reviewID,$notes);
+                    $reviewer,$timestamp,$approved,$femcon,$description,$recommends,$reviewID,$notes);
             while($stmt->fetch()){
                 $params['review'] = array(
                     "reviewer" => $reviewer,
                     "approved" => $approved,
                     "femcon" => $femcon,
                     "timestamp" => $timestamp,
-                    "subGenre" => $subgenre,
                     "description" => $description,
-                    "hometown" => $hometown,
                     "recommends" => $recommends,
                     "ReviewID" => $reviewID,
                     "notes"=>$notes,

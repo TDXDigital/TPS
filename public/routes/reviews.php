@@ -111,10 +111,12 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
         $review['hometowns'] = $library->getHometowns();
         $review['subgenres'] = $library->getSubgenres();
         $review['labels'] = \TPS\label::nameSearch("%",False);
-        $review['album']['subgenres'] = $library->getSubgenresByRefCode($refCode);
-        $review['album']['hometowns'] = $library->getHometownsByRefCode($refCode);
-        $review['album']['tags'] = $library->getTagsByRefCode($refCode);
-        $review['album']['labels'] = array_map(function($label) {return $label['Name'];}, $library->getLabelsByRefCode($refCode));
+
+        $review['album']['subgenres'] = $reviews->getSubgenresByReviewID($id);
+        $review['album']['hometowns'] = $reviews->getHometownsByReviewID($id);
+        $review['album']['tags'] = $reviews->getTagsByReviewID($id);
+        $review['album']['labels'] = $reviews->getRecordLabelsByReviewID($id);
+        $review['album']['appliedLabels'] = array_map(function($label) {return $label['Name'];}, $library->getLabelsByRefCode($refCode));
 
         $app->render('review.twig',$review);
     });
