@@ -16,7 +16,12 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
     $app->get('/complete' ,$authenticate , function () use ($app){
 
         $reviews = new \TPS\reviews();
+	$station = new \TPS\station();
         $review = $reviews->getPendingReviews();
+	// Convert timestamps to station time zone
+	foreach ($review as &$rev)
+	    $rev['timestamp'] = $station->getTimeFromServerTime($rev['timestamp']);
+
         $params = array(
             "area" => "Reviews",
             "title" => "Pending Approval",
