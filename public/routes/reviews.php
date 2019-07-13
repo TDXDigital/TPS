@@ -59,12 +59,15 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
             $description = $app->request()->post('description');
             $notes = $app->request()->post('notes');
             $reviewer = $app->request()->post('reviewer');
-            $hometown = $app->request()->post('hometown');
             $subgenres = $app->request()->post('subgenres');
+            $hometowns = $app->request()->post('hometown');
+	    $labels = $app->request()->post('label');
+	    $tags = $app->request()->post('tag');
             $recommend = $app->request()->post('recommend');
             $femcon = $app->request()->post('femcon');
             $approved = $app->request()->post('accepted');
             $id_post = $app->request()->post('id');
+
             if($id_post != $id){
                 $app->halt(400);
             }
@@ -73,12 +76,10 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
             }
             global $mysqli;
             $update = "UPDATE review SET approved=?, femcon=?, reviewer=?,"
-            . "hometown=?, subgenre=?, description=?, recommendations=?,"
-            . "notes=? where id=?";
+            . "description=?, recommendations=?, notes=? where id=?";
             if($stmt = $mysqli->prepare($update)){
-                $stmt->bind_param('iissssssi',
-                    $approved,$femcon,$reviewer,$hometown,$subgenres,
-                    $description,$recommend,$notes,$id);
+                $stmt->bind_param('iissssi',
+                    $approved,$femcon,$reviewer,$description,$recommend,$notes,$id);
                 if($stmt->execute()){
                     $stmt->close();
                     $app->flash('success',"$id updated succesfully");
