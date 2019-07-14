@@ -206,6 +206,7 @@ class TPS{
                 }
                 $databaseHost = $database['DBHOST'];
                 $databaseName = $database['DATABASE'];
+                
                 if($this->requirePDO){
                     $this->db = new \PDO(
                             "mysql:host=$databaseHost;dbname=$databaseName",

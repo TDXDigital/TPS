@@ -62,7 +62,9 @@ $outline = filter_input(INPUT_GET,'outline',FILTER_SANITIZE_STRING) ?: 'false';
     $review = new \TPS\reviews();
     $genrelist = $library ->getLibraryGenres();
     $reviews = $review->getPrintLables();
+
     foreach ($reviews as $id ) {
+
     //get all album info and trim them
       $label = $review->getFullReview($id);
 

@@ -189,19 +189,20 @@ class reviews extends station{
     }
     
     public function getFullReview($term){
+
         $params = array();
         $maxResult = 100;
         $select = "Select library.RefCode, "
                 . "if(review.id is NULL,0,1) as reviewed, library.Locale, library.variousartists, library.format, library.year, library.album, "
                 . "library.artist, library.CanCon, library.datein, library.playlist_flag, library.genre, "
-                . "review.reviewer, review.ts, review.approved, review.femcon, review.hometown, review.subgenre, review.description, review.recommendations, review.id, "
+                . "review.reviewer, review.ts, review.approved, review.femcon, review.description, review.recommendations, review.id, "
                 . "review.notes from library left join review on library.RefCode = review.RefCode where "
                 . "review.id = ? order by library.datein asc limit ?;";
         if($stmt = $this->mysqli->prepare($select)){
             $stmt->bind_param('si',$term,$maxResult);
             $stmt->execute();
             $stmt->bind_result($RefCode,$reviewed,$locale,$variousArtists,$format,$year,$album,$artist,$canCon,$datein,$playlist_flag,$genre,
-                    $reviewer,$timestamp,$approved,$femcon,$hometown,$subgenre,$description,$recommends,$reviewID,$notes);
+                    $reviewer,$timestamp,$approved,$femcon,$description,$recommends,$reviewID,$notes);
             while($stmt->fetch()){
                 $params = array(
                         "RefCode"=>$RefCode,
