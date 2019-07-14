@@ -34,6 +34,7 @@ if(isset($_SESSION["DBHOST"])){
         }
     });
 }
+
 require_once 'routes'.DIRECTORY_SEPARATOR.'system.php';
 
 /*$app->get('/', $authenticate($app), function() use ($app){

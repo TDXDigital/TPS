@@ -107,6 +107,7 @@ class program extends station{
                     );
             $con->execute();
             $con->fetch();
+            echo 'name: '. $this->callsign.'<br>';
             return True;
         }
         else{

@@ -255,6 +255,7 @@
                         $stmt2->execute();
                         $stmt2->bind_result($stn_callsign);
                         $stmt2->fetch();
+
                         if(!is_null($stn_callsign)){
                             $_SESSION['CALLSIGN'] = $stn_callsign;
                         }

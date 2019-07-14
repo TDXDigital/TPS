@@ -133,6 +133,7 @@ class station extends TPS{
 
     public function setupParams($callsign){
         $callsign = strtoupper($callsign);
+        $this->callsign = $callsign;
         $this->setStation($callsign);
         $stations = $this->getStation($callsign);
         try {

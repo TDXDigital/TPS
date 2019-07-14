@@ -140,6 +140,7 @@ $app->post("/login", function () use ($app) {
 
     $stations = $log->getStations();
     $defaultStation = key($stations);
+
     foreach($dbxml->SERVER as $server):
         if((string)$server->ID==$databaseID):
             if((string)$server->AUTH == strtoupper("LDAP")){
@@ -237,6 +238,7 @@ $app->post("/login", function () use ($app) {
             }
         endif;
     endforeach;
+
     $duration = $log->timerDuration();
     if (count($errors) > 0) {
         $errors['srvId']=$databaseID;

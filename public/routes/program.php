@@ -149,14 +149,22 @@ $app->group('/programs', $authenticate, function () use ($app,$authenticate){
 
      $app->get('/edit/:id', $authenticate, function ($id) use ($app){
            
+
+
+           // echo 'callsign: '. $_SESSION['CALLSIGN'];
+        print_r($_SESSION);
+        // print_r($programToEdit);
+        exit;
+
+
         $station = new \TPS\station($_SESSION['CALLSIGN']);
         $stations = $station->getStations();
         $hosts = $station->getHosts();
         $program = new \TPS\program($station, $id);
         $programToEdit = $program->getValues();
         $programGenre = $program->getProgramGenre();
-        // print_r($programToEdit);
-        // exit;
+
+        
         $params = array(
             "title"=>"Edit Program",
             "sessionStation" => $_SESSION['CALLSIGN'],
@@ -165,6 +173,7 @@ $app->group('/programs', $authenticate, function () use ($app,$authenticate){
             "program"=>$programToEdit,
             "genre"=>$programGenre
         );
+
             $app->render('programNew.twig', $params);
     });
 

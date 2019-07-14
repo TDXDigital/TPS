@@ -140,8 +140,8 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $app->response->setStatus(201);
         $isXHR = $app->request->isAjax();
         if(!$isXHR){
-            // $app->render("episodeRedirect.twig",$params);
-            $app->render("episodeInsertSong.twig",$params);
+            $app->render("episodeRedirect.twig",$params);
+            // $app->render("episodeInsertSong.twig",$params);
 
         }
         else{
