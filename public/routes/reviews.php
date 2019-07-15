@@ -59,12 +59,12 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
             $description = $app->request()->post('description');
             $notes = $app->request()->post('notes');
             $reviewer = $app->request()->post('reviewer');
-            $subgenres = $app->request()->post('subgenres');
-            $hometowns = $app->request()->post('hometown');
-	    $labels = $app->request()->post('label');
-	    $tags = $app->request()->post('tag');
+            $subgenres = $app->request()->post('subgenres')?:[];
+            $hometowns = $app->request()->post('hometown')?:[];
+	    $labels = $app->request()->post('label')?:[];
+	    $tags = $app->request()->post('tag')?:[];
             $recommend = $app->request()->post('recommend');
-            $femcon = $app->request()->post('femcon');
+            $femcon = in_array('FemCon', $tags);
             $approved = $app->request()->post('accepted');
             $id_post = $app->request()->post('id');
 

@@ -391,28 +391,35 @@ class reviews extends station{
 	$this->applyReviewAttributes($attName, $attValueList, $reviewID, $idCol, $nameCol);
 
 	// Remove any dangling rows from the {$attName} table
+	$attNameSingular = substr($attName, -1) == 's' ? substr($attName, 0, -1) : $attName;
 	$stmt = $this->mysqli->query(
-		  "SELECT "
-			. "a.$idCol AS id, "
-			. "COALESCE(b.numOccur, 0) AS numOccur "
-		. "FROM "
-			. "$attName a "
-			. "LEFT JOIN ("
-				. "SELECT "
-					. "$attName_$idCol, "
-					. "COUNT(*) AS numOccur "
-				. "FROM "
-					. "review_$attName "
-				. "GROUP BY "
-					. "$attName_$idCol "
-			. ") b ON a.id = b.$attName_$idCol "
-		. "WHERE confirmed=0 AND numOccur=0;"
+                  "SELECT "
+                        . "a.$idCol AS id, "
+                        . "COALESCE(b.numOccur, 0) AS numOccur "
+                . "FROM "
+                        . "$attName a "
+                        . "LEFT JOIN ("
+                                . "SELECT "
+                                        . $attNameSingular . "_$idCol, "
+                                        . "COUNT(*) AS numOccur "
+                                . "FROM "
+                                        . "review_$attName "
+                                . "GROUP BY "
+                                        . $attNameSingular . "_$idCol "
+                        . ") b ON a.$idCol = b." . $attNameSingular . "_$idCol "
+                . "WHERE confirmed=0 "
+		. "ORDER BY numOccur ASC;"
 	);
 	$idsToDelete = [];
 	while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
-	    array_push($idsToDelete, $row['id']);
-	if (count($idsToDelete) > 0)
+	    if ($row['numOccur'] == 0)
+	    	array_push($idsToDelete, $row['id']);
+	    else
+		break;
+	if (count($idsToDelete) > 0) {
+	    $idsToDelete = "(" . implode(", ", $idsToDelete) . ")";
 	    $this->mysqli->query("DELETE FROM $attName WHERE $idCol IN $idsToDelete;");
+	}
     }
 
     /**
