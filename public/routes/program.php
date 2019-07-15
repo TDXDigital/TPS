@@ -90,7 +90,11 @@ $app->group('/programs', $authenticate, function () use ($app,$authenticate){
   $app->get('/new', function() use ($app, $authenticate){
 
     $station = new \TPS\station($_SESSION['CALLSIGN']);
-    $program = new \TPS\program($station);
+    $program = new \TPS\program($station,180);
+
+
+    $program->getRequirement();
+
 
     $stations = $station->getStations();
     $hosts = $station->getHosts();

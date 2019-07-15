@@ -107,7 +107,6 @@ class program extends station{
                     );
             $con->execute();
             $con->fetch();
-            echo 'name: '. $this->callsign.'<br>';
             return True;
         }
         else{
@@ -430,5 +429,88 @@ class program extends station{
         }
         else
             return false;
+    }
+    public function getRequirement()
+    {
+
+        $result = array();
+        $result2 = array();
+        //move db operation from legacy/oep/p2insertEP.php
+
+        $SQLProg = "SELECT `genre`.*, `program`.length from `genre`, `program` where `program`.programname=\"" .
+            addslashes($this->name) . "\" and `program`.callsign=\"" . addslashes($this->callsign) .
+            "\" and `program`.genre=`genre`.genreid";
+        if(!($result = $this->mysqli->query($SQLProg))){
+            echo "Program Error 001 " . $this->mysqli->error;
+        }
+        if(!($Requirements = $result->fetch_array(MYSQLI_ASSOC))){
+            echo "Program Error 002 " . $this->mysqli->error;
+        }
+        $SQL2PR = "SELECT * from `program` where programname=\"" . addslashes($this->name) .
+            "\" and callsign=\"" . addslashes($this->callsign) . "\" ";
+        if(!($result2 = $this->mysqli->query($SQL2PR))){
+            echo "Program Error 003 " . $this->mysqli->error;
+        }
+        if(!($Req2 = $result2->fetch_array(MYSQLI_ASSOC))){
+            echo "Program Error 004 " . $this->mysqli->error;
+        }
+
+        if($Req2['CCX']!='-1'){
+            $CC = ceil($Req2['CCX'] * $Requirements['length'] / 60);
+        }
+        else{
+            $CC = ceil($Requirements['cancon'] * $Requirements['length'] / 60);
+        }
+        if($Req2['PLX']!='-1'){
+            $PL = ceil($Req2['PLX'] * $Requirements['length'] / 60);
+        }
+        else{
+            $PL = ceil($Requirements['playlist'] * $Requirements['length'] / 60);
+        }
+
+        //$PL = ceil($Requirements['playlist'] * $Requirements['length'] / 60);
+        $CLA = $Requirements['genreid'];
+        if(!isset($CLA)){
+            $CC = "0";
+            $PL = "0";
+            $CLA = "Not Set";
+        }
+
+       $query_settings = "select callsign,"
+                . "stationname, ST_DefaultSort,ST_PLLG,ST_ForceComposer,"
+                . "ST_ForceArtist, ST_ForceAlbum,ST_ColorFail,ST_ColorPass"
+                . ", ST_PLRG, ST_DispCount, ST_ColorNote,ST_ADSH, ST_PSAH,"
+                . "timezone from station where callsign=?";
+        if($setting_stmt = $this->mysqli->prepare($query_settings)){
+            $setting_stmt->bind_param("s",$this->callsign);
+            $setting_stmt->execute();
+            $setting_stmt->bind_result($SETTINGS['callsign'],$SETTINGS['stationname']
+                    ,$SETTINGS['ST_DefaultSort'],$SETTINGS['ST_PLLG'],$SETTINGS['ST_ForceComposer'],
+                    $SETTINGS['ST_ForceArtist'],$SETTINGS['ST_ForceAlbum'],$SETTINGS['ST_ColorFail'],
+                    $SETTINGS['ST_ColorPass'],$SETTINGS['ST_PLRG'],$SETTINGS['ST_DispCount'],
+                    $SETTINGS['ST_ColorNote'],$SETTINGS['ST_ADSH'],$SETTINGS['ST_PSAH'],
+                    $SETTINGS['timezone']);
+            $setting_stmt->fetch();
+            $setting_stmt->close();
+        }
+        else{
+            error_log("could not query settings: $query_settings due to ".$this->mysqli->error);
+            if($DEBUG){
+                echo "<br> Settings Failed with $query_settings on ".$this->mysqli->error."<br>";
+            }
+        }
+        // date_default_timezone_set($SETTINGS['timezone']);
+
+
+        $req = array();
+        $req['ads'] = ceil(($Requirements['length']*$SETTINGS['ST_ADSH'])/60);
+        $req['psa'] = ceil(($Requirements['length']*$SETTINGS['ST_PSAH'])/60);
+        print_r($req);
+
+        exit;
+
+
+        return $CLA;
+
     }
 }
