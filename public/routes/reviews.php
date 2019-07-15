@@ -92,6 +92,12 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
                     if($approved){
                         $reviews->setPrintLabel($id);
 			$reviews->confirmAttributes($id);
+			$refCode = $mysqli->query("SELECT RefCode FROM review WHERE id=$id")->fetch_array(MYSQLI_ASSOC)['RefCode'];
+			$library = new \TPS\library();
+			$library->updateAlbumAttribute('hometowns', $hometowns, $refCode);
+			$library->updateAlbumAttribute('subgenres', $subgenres, $refCode);
+			$library->updateAlbumAttribute('tags', $tags, $refCode);
+			$library->updateAlbumAttribute('recordlabel', $labels, $refCode, 'LabelNumber', 'Name');
                     }
                     else{
                         $reviews->clearPrintLabel($id);

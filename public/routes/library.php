@@ -832,9 +832,9 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                     error_log($mysqli->error);
                 }
 
-		$library->updateAlbumAttribute("hometown", $hometowns, $RefCode);
-		$library->updateAlbumAttribute("tag", $tags, $RefCode);
-		$library->updateAlbumAttribute("subgenre", $subgenres, $RefCode);
+		$library->updateAlbumAttribute("hometowns", $hometowns, $RefCode);
+		$library->updateAlbumAttribute("tags", $tags, $RefCode);
+		$library->updateAlbumAttribute("subgenres", $subgenres, $RefCode);
 
 		// If the album is on the playlist
 		$stmt = $mysqli->query("SELECT playlist_flag FROM library WHERE RefCode={$RefCode}");
