@@ -1346,18 +1346,19 @@ class library extends station{
     }
 
 
-    public function updateAlbumAttribute($attName, $attValueList, $RefCode) {
-	if(!is_null($attValueList)) {
+    public function updateAlbumAttribute($attName, $attValueList, $RefCode, $idCol='id', $nameCol='name') {
+	$attNameSingular = substr($attName, -1) == 's' ? substr($attName, 0, -1) : $attName;
+	if(!is_null($attValueList) && count($attValueList) > 0) {
 	    // Check which {$attName}s are already in the database & get their ids
-	    $sql=$this->mysqli->query("SELECT * FROM {$attName}s WHERE name IN ('" . implode("', '", $attValueList) . "')");
+	    $sql=$this->mysqli->query("SELECT * FROM {$attName} WHERE name IN ('" . implode("', '", $attValueList) . "')");
 	    $results = [];
 	    while($row = $sql->fetch_array(MYSQLI_ASSOC))
 	        array_push($results, $row);
 	    $ids = array_fill(0, sizeof($attValueList), NULL); // Parallel array of db id for each {$attName}
 	    $in_db = [];
 	    foreach($results as $result) {
-	        $ids[array_search($result['name'], $attValueList)] = $result['id'];
-		array_push($in_db, $result['name']);
+	        $ids[array_search($result[$nameCol], $attValueList)] = $result[$idCol];
+		array_push($in_db, $result[$nameCol]);
 	    }
 
 	    // Determine which {$attName}s need to be added to the `{$attName}s` table
@@ -1366,7 +1367,7 @@ class library extends station{
 	    // Insert all {$attName}s into the ${attName}s table that aren't already in there
 	    if(sizeof($to_add_to_db) > 0) {
 		// Insert new {$attName}s into `{$attName}s` table
-	    	$this->mysqli->query("INSERT INTO {$attName}s (name) VALUES ('" . implode("'), ('", $to_add_to_db) . "')");
+	    	$this->mysqli->query("INSERT INTO {$attName} (name) VALUES ('" . implode("'), ('", $to_add_to_db) . "')");
 
 	        // Complete the list of {$attName} id's for this album
 	        $sql = $this->mysqli->query("SELECT LAST_INSERT_ID()");
@@ -1378,59 +1379,59 @@ class library extends station{
 
 	    // Determine which ${attName}s have been added to the album in the UI
 	    $add_to_album = [];
-	    $sql = $this->mysqli->query("SELECT name FROM {$attName}s WHERE id IN (SELECT {$attName}_id FROM library_{$attName}s WHERE library_RefCode={$RefCode})");
+	    $sql = $this->mysqli->query("SELECT {$nameCol} FROM {$attName} WHERE {$idCol} IN (SELECT {$attNameSingular}_{$idCol} FROM library_{$attName} WHERE library_RefCode={$RefCode})");
 	    $in_db_for_this_album = [];
 	    while($row = $sql->fetch_array(MYSQLI_ASSOC))
-		array_push($in_db_for_this_album, $row['name']);
+		array_push($in_db_for_this_album, $row[$nameCol]);
 	    $added_in_ui = array_diff($attValueList, $in_db_for_this_album);
 
 	    if(sizeof($added_in_ui)>0) {
 	        // Determine database ids for the added {$attName}s in the UI
-	        $sql = $this->mysqli->query("SELECT id FROM {$attName}s WHERE name IN ('" . implode("', '", $added_in_ui) . "')");
+	        $sql = $this->mysqli->query("SELECT $idCol FROM {$attName} WHERE $nameCol IN ('" . implode("', '", $added_in_ui) . "')");
 	        $ids_of_added_in_ui = [];
 		while($row = $sql->fetch_array(MYSQLI_ASSOC))
-		    array_push($ids_of_added_in_ui, $row['id']);
+		    array_push($ids_of_added_in_ui, $row[$idCol]);
 
 		// Insert new library/{$attName} combos into intermediary table
 	        $values = "";
 	        foreach($ids_of_added_in_ui as $id)
 	            $values = $values . "(" . $RefCode  .  ", " . $id  . "), ";
 	        $values = substr($values, 0, strlen($values)-2); // Remove trailing comma
-	        $this->mysqli->query("INSERT INTO library_{$attName}s (library_RefCode, {$attName}_id) VALUES " . $values);
+	        $this->mysqli->query("INSERT INTO library_{$attName} (library_RefCode, {$attNameSingular}_{$idCol}) VALUES " . $values);
 	    }
 	}
 
 	// Determine which {$attName}s have been removed from the album in the UI
-	$sql=$this->mysqli->query("SELECT * FROM {$attName}s WHERE id IN (SELECT {$attName}_id FROM library_{$attName}s WHERE library_RefCode={$RefCode})");
+	$sql=$this->mysqli->query("SELECT * FROM {$attName} WHERE {$idCol} IN (SELECT {$attNameSingular}_{$idCol} FROM library_{$attName} WHERE library_RefCode={$RefCode})");
 	$assigned_in_db = [];
 	while($row = $sql->fetch_array(MYSQLI_ASSOC))
-	    $assigned_in_db[$row['id']] = $row['name'];
+	    $assigned_in_db[$row[$idCol]] = $row[$nameCol];
 	$to_remove_from_int_table = is_null($attValueList) ? $assigned_in_db : array_diff($assigned_in_db, $attValueList);
 
 	// Remove {$attName}s from album if needed
 	if(sizeof($to_remove_from_int_table) > 0) {
 	    // Delete {$attName} from intermediary table if user removed them in the UI
-	    $this->mysqli->query("DELETE FROM library_{$attName}s WHERE library_RefCode={$RefCode} " .
-	  	                 "AND {$attName}_id IN (" . implode(", ", array_keys($to_remove_from_int_table)) . ")");
+	    $this->mysqli->query("DELETE FROM library_{$attName} WHERE library_RefCode={$RefCode} " .
+	  	                 "AND {$attNameSingular}_{$idCol} IN (" . implode(", ", array_keys($to_remove_from_int_table)) . ")");
 	}
 
 	// Get all of the {$attNames}s being used by albums
-	$sql = $this->mysqli->query("SELECT {$attName}s.id FROM {$attName}s RIGHT JOIN library_{$attName}s " .
-				        "ON library_{$attName}s.{$attName}_id={$attName}s.id GROUP BY {$attName}s.id");
+	$sql = $this->mysqli->query("SELECT {$attName}.{$idCol} FROM {$attName} RIGHT JOIN library_{$attName} " .
+				        "ON library_{$attName}.{$attNameSingular}_{$idCol}={$attName}.{$idCol} GROUP BY {$attName}.{$idCol}");
 	$ids_being_used = [];
 	while($row = $sql->fetch_array(MYSQLI_ASSOC))
-	    array_push($ids_being_used, $row['id']);
+	    array_push($ids_being_used, $row[$idCol]);
 
 	// Get all the {$attName}s in the database
-	$sql = $this->mysqli->query("SELECT id FROM {$attName}s");
+	$sql = $this->mysqli->query("SELECT {$idCol} FROM {$attName}");
 	$all = [];
 	while($row = $sql->fetch_array(MYSQLI_ASSOC))
-	    array_push($all, $row['id']);
+	    array_push($all, $row[$idCol]);
 
 	// Delete any dangling {$attName}s from `{$attName}s` table if no albums use it anymore
 	$to_delete = array_diff($all, $ids_being_used);
 	if(sizeof($to_delete)>0)
-	    $this->mysqli->query("DELETE FROM {$attName}s WHERE id IN (" . implode(", ", $to_delete) . ")");
+	    $this->mysqli->query("DELETE FROM {$attName} WHERE {$idCol} IN (" . implode(", ", $to_delete) . ")");
     }
 
     public function mysql_escape($val) {
