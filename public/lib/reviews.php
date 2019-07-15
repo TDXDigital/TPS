@@ -374,6 +374,47 @@ class reviews extends station{
 	}
     }
 
+    /*
+    * @author Derek Melchin
+    * @abstract Update the attributes applied to an album in a review submission (tags, subgenres, recordlabels, hometowns)
+    * @param string $attName      The name of the attribute to update
+    * @param array  $attValueList The list of values to assign to the attribute
+    * @param int    $reviewID     The id of the review you are updating
+    * @param string $idCol        The name of the id column in the {$attName} table of the attribute you're editing
+    * @param string $nameCol      The name of the 'name' column in the {$attName} table of the attribute you're editing
+    */
+    public function updateAttribute($attName, $attValueList, $reviewID, $idCol='id', $nameCol='name') {
+	// Delete all rows in the review_{$attName} intermediary table with a review_id of $reviewID
+	$this->mysqli->query("DELETE FROM review_$attName WHERE review_id=$reviewID;");
+
+	// Apply review attributes
+	$this->applyReviewAttributes($attName, $attValueList, $reviewID, $idCol, $nameCol);
+
+	// Remove any dangling rows from the {$attName} table
+	$stmt = $this->mysqli->query(
+		  "SELECT "
+			. "a.$idCol AS id, "
+			. "COALESCE(b.numOccur, 0) AS numOccur "
+		. "FROM "
+			. "$attName a "
+			. "LEFT JOIN ("
+				. "SELECT "
+					. "$attName_$idCol, "
+					. "COUNT(*) AS numOccur "
+				. "FROM "
+					. "review_$attName "
+				. "GROUP BY "
+					. "$attName_$idCol "
+			. ") b ON a.id = b.$attName_$idCol "
+		. "WHERE confirmed=0 AND numOccur=0;"
+	);
+	$idsToDelete = [];
+	while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
+	    array_push($idsToDelete, $row['id']);
+	if (count($idsToDelete) > 0)
+	    $this->mysqli->query("DELETE FROM $attName WHERE $idCol IN $idsToDelete;");
+    }
+
     /**
      * @author James Oliver <support@ckxu.com>
      * @abstract expects post to contain 'description', 'femcon'\

@@ -101,6 +101,24 @@ class library extends station{
 	throw new Exception("Error while fetching genre for RefCode " . $RefCode);
     }
 
+    /*
+    * @author Derek Melchin
+    * @abstract Return all recordlabels
+    * @param bool $includeUnconfirmed Whether or not to include unconfirmed albums in the return
+    * @return array Array of all recordlabels used in the system
+    */
+    public function getLabels($includeUnconfirmed=False) {
+	if ($includeUnconfirmed)
+	    $where = "";
+	else
+	    $where = " WHERE confirmed=1 ";
+	$sql = $this->mysqli->query("SELECT * FROM recordlabel $where ORDER BY Name");
+	$labels = [];
+	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
+	    array_push($labels, $row);
+	return $labels;
+    }
+
     /**
      * @abstract returns record labels for a given album
      * @global mysqli $mysqli
@@ -496,10 +514,15 @@ class library extends station{
     /**
      * @abstract return all the subgenres ever used on albums
      * @global mysqli $mysqli
+     * @param  bool   $includeUnconfirmed Whether or not to include rows that aren't confirmed yet
      * @return array
      */
-    public function getSubgenres() {
-	$sql = $this->mysqli->query("SELECT name FROM subgenres WHERE confirmed=1 ORDER BY name");
+    public function getSubgenres($includeUnconfirmed=False) {
+	if ($includeUnconfirmed)
+	    $where = "";
+	else
+	    $where = "WHERE confirmed=1";
+	$sql = $this->mysqli->query("SELECT name FROM subgenres " . $where . " ORDER BY name");
 	$subgenres = [];
 	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
 	    array_push($subgenres, $row['name']);
@@ -522,10 +545,15 @@ class library extends station{
     /**
      * @abstract return all the hometowns ever used on albums
      * @global mysqli $mysqli
+     * @param  bool   $includeUnconfirmed Whether or not to include rows that aren't confirmed yet
      * @return array
      */
-    public function getHometowns() {
-	$sql = $this->mysqli->query("SELECT name FROM hometowns WHERE confirmed=1 ORDER BY name");
+    public function getHometowns($includeUnconfirmed=False) {
+	if ($includeUnconfirmed)
+	    $where = "";
+	else
+	    $where = "WHERE confirmed=1";
+	$sql = $this->mysqli->query("SELECT name FROM hometowns " . $where . " ORDER BY name");
 	$hometowns = [];
 	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
 	    array_push($hometowns, $row['name']);
@@ -548,10 +576,15 @@ class library extends station{
     /**
      * @abstract return all the tags ever used on albums
      * @global mysqli $mysqli
+     * @param  bool   $includeUnconfirmed Whether or not to include rows that aren't confirmed yet
      * @return array
      */
-    public function getTags() {
-	$sql = $this->mysqli->query("SELECT name FROM tags WHERE confirmed=1 ORDER BY name");
+    public function getTags($includeUnconfirmed=False) {
+	if ($includeUnconfirmed)
+	    $where = "";
+	else
+	    $where = "WHERE confirmed=1";
+	$sql = $this->mysqli->query("SELECT name FROM tags " . $where . " ORDER BY name");
 	$tags = [];
 	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
         {

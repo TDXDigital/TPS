@@ -82,9 +82,16 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
                     $approved,$femcon,$reviewer,$description,$recommend,$notes,$id);
                 if($stmt->execute()){
                     $stmt->close();
+
+		    $reviews->updateAttribute('hometowns', $hometowns, $id);
+		    $reviews->updateAttribute('subgenres', $subgenres, $id);
+		    $reviews->updateAttribute('tags', $tags, $id);
+		    $reviews->updateAttribute('recordlabel', $labels, $id, 'LabelNumber', 'Name');
+
                     $app->flash('success',"$id updated succesfully");
                     if($approved){
                         $reviews->setPrintLabel($id);
+//			$reviews->confirmAttributes($id);
                     }
                     else{
                         $reviews->clearPrintLabel($id);
@@ -113,10 +120,10 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
         $refCode = $review['album']['RefCode'];
         $review["title"] = "Edit";
         $review["area"] = "Reviews";
-        $review['tags'] = $library->getTags();
-        $review['hometowns'] = $library->getHometowns();
-        $review['subgenres'] = $library->getSubgenres();
-        $review['labels'] = \TPS\label::nameSearch("%",False);
+        $review['tags'] = $library->getTags(True);
+        $review['hometowns'] = $library->getHometowns(True);
+        $review['subgenres'] = $library->getSubgenres(True);
+        $review['labels'] = array_map(function($label) {return $label['Name'];}, $library->getLabels(True));
 
         $review['album']['subgenres'] = $reviews->getSubgenresByReviewID($id);
         $review['album']['hometowns'] = $reviews->getHometownsByReviewID($id);
