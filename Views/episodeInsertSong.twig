@@ -39,7 +39,7 @@
 <!-- Episode Info -->
 <table class="table">
 	<tr>
-		<td class="col-md-2">SHow Classification: {{episode.type}}</td><td class="col-md-2">Sponsor: {{sponser}}</td> <td class="col-md-2 bg-warning">Ads: </td> <td class="col-md-2 bg-warning">PSA/Promo: </td> <td class="col-md-2 bg-success">Canadian Content Required: </td> <td class="col-md-2 bg-success">Playlist Required: </td>
+		<td class="col-md-2">SHow Classification: {{req.cla}}</td><td class="col-md-2">Sponsor: {{req.sponsor}}</td> <td class="col-md-2 bg-warning">Ads: 0/{{req.ads}}</td> <td class="col-md-2 bg-warning">PSA/Promo: 0/{{req.psa}}</td> <td class="col-md-2 bg-success">Canadian Content Required: /{{req.cancon}}</td> <td class="col-md-2 bg-success">Playlist Required: /{{req.playlist}}</td>
 	</tr>
 
 	<tr></tr>
@@ -56,9 +56,14 @@
 <!--  Ads / Commercials / Message-->
 <table>
 	<tr>
-		<td class="col-md-3" style="color:green;">Available Friends Ads</td> <td class="col-md-3" style="color:blue;">Required Commercials This Hours</td> <td class="col-md-4" style="color:orange;"> Messages</td> <td class="col-md-2"> Time .. </td>
+		<td class="col-md-3" style="color:green;">Available Friends Ads </td>
+		<td class="col-md-3" style="color:blue;">Required Commercials This Hours </td> 
+		<td class="col-md-4" style="color:orange;"> Messages</td> <td class="col-md-2"> Time .. </td>
 	</tr>
-		<td class="col-md-3">ads options</td> <td class="col-md-3">required ads options</td> <td style="font-style: italic; font-size: 80%; color: #eb4b20 " class="col-md-4"><strong>IMPORTANT: When prompted to play required ADs you are <u>ONLY</u> to play the required ADs until they are no longer prompted. Then, and only then are you permitted to play a friend ad <u>IF</u> you have not met your AD requirements</strong></td> <td class="clock col-md-2">clock</td>
+		<td class="col-md-3"><select name="adbox" id="friends" onchange="CHAVF()"> {{ads.ADOPT | raw}}</select></td>
+		<td class="col-md-3"><select name="rqAds">{{ads.REQAD | raw}}</select></td> 
+		<td style="font-style: italic; font-size: 80%; color: #eb4b20 " class="col-md-4"><strong>IMPORTANT: When prompted to play required ADs you are <u>ONLY</u> to play the required ADs until they are no longer prompted. Then, and only then are you permitted to play a friend ad <u>IF</u> you have not met your AD requirements</strong></td>
+		<td class="clock col-md-2">clock</td>
 </table>
 
 <hr>

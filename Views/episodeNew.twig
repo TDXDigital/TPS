@@ -26,6 +26,7 @@
             method="POST" action="./{{episode.id}}"> <!-- PUT NOT YET SUPPORTED BY BROWSER -->
             <input type="hidden" value="{{episode.id}}" name="id" />
         {% endif %}
+        <input type="hidden" value="{{legacy}}" name="legacy" />
         <div class="row">
             <div class="col-sm-2">
                 <div class="form-group">

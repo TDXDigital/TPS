@@ -430,6 +430,8 @@ class program extends station{
         else
             return false;
     }
+
+    //Moved backend functions from /legacy/oep/p2insertEP
     public function getRequirement()
     {
 
@@ -501,16 +503,37 @@ class program extends station{
         }
         // date_default_timezone_set($SETTINGS['timezone']);
 
-
         $req = array();
+        if($Requirements['CCType']=='0')
+            $req['cancon'] = floatval($Requirements['canconperc'])*100 . "%";
+        else
+            $req['cancon'] = $CC;
+
+        if($Requirements['PlType']=='0')
+            $req['playlist'] = floatval($Requirements['playlistperc'])*100 . "%";
+        else
+            $req['playlist'] = $PL;
+
+        if(isset($Req2['SponsId'])){
+            $SPONS_SQL = " select * from adverts where AdId='".$Req2['SponsId']."' ";
+            $SPONSRES = $mysqli->query($SPONS_SQL);
+            $SPONS = $SPONSRES->fetch_array(MYSQLI_ASSOC);
+            $req['spons'] = $SPONS; // used for getAdOptions function in episode
+            $req['sponsor'] = $SPONS['AdName'];
+        }
+        else{
+            $req['sponsor'] = 'None';
+            $req['spons'] = NULL; // used for getAdOptions function in episode
+        }
+
+
+
         $req['ads'] = ceil(($Requirements['length']*$SETTINGS['ST_ADSH'])/60);
         $req['psa'] = ceil(($Requirements['length']*$SETTINGS['ST_PSAH'])/60);
-        print_r($req);
-
-        exit;
-
-
-        return $CLA;
+        $req['cla'] = $CLA; 
+        return $req;
 
     }
+
+
 }
