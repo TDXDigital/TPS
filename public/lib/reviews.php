@@ -223,8 +223,6 @@ class reviews extends station{
                             "timestamp"=>$timestamp,
                             "approved"=>$approved,
                             "femcon"=>$femcon,
-                            "hometown"=>$hometown,
-                            "subgenre"=>$subgenre,
                             "description"=>$description,
                             "recommendations"=>$recommends,
                             "notes"=>$notes,

@@ -126,8 +126,10 @@ $reviews = new \TPS\reviews();
 	    $recommendations = "";
 	    $descriptions = [];
 	    $notes = [];
-	    foreach ($reviewIds as $reviewId) {
+	    foreach ($reviewIds as $i=>$reviewId) {
 		$fullReview = $reviews->getFullReview($reviewId);
+		if ($i != 0)
+		    $recommendations .= ", ";
 		$recommendations .= $fullReview['review']['recommendations'];
 		array_push($descriptions, $fullReview['review']['description']);
 		array_push($notes, $fullReview['review']['notes']);
@@ -196,7 +198,7 @@ $reviews = new \TPS\reviews();
 			buildTile('Tags', $tags) .
 		 "</div>" .
 		 "<div class='cd_cover_row'>" .
-			buildTile('Description', $descriptions) .
+			buildTile('Descriptions', $descriptions) .
 		 "</div>" .
 		 "<div class='cd_cover_row'>" .
 			buildTile('Notes', $notes) .
