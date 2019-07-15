@@ -91,7 +91,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
                     $app->flash('success',"$id updated succesfully");
                     if($approved){
                         $reviews->setPrintLabel($id);
-//			$reviews->confirmAttributes($id);
+			$reviews->confirmAttributes($id);
                     }
                     else{
                         $reviews->clearPrintLabel($id);

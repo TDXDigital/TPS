@@ -422,6 +422,38 @@ class reviews extends station{
 	}
     }
 
+    /*
+    * @author Derek Melchin
+    * @abstract When attributes (hometowns, tags, labels, and subgenres) are added to an album
+    *  in a review, they are placed in an unconfirmed state if they don't exist in their respective
+    *  tables already from Receiving. Once the TPS manager accepts the review, the attributes need
+    *  to all be converted to a confirmed state. That's what this method does.
+    * @param int $reviewID The review id to confirm the attributes for
+    */
+    public function confirmAttributes($reviewID) {
+	$attributes = ['hometown', 'tag', 'subgenre'];
+	foreach ($attributes as $attribute)
+	    $this->mysqli->query(
+		  "UPDATE {$attribute}s "
+		. "SET confirmed=1 "
+		. "WHERE id IN ("
+			. "SELECT {$attribute}_id "
+			. "FROM review_{$attribute}s "
+			. "WHERE review_id=$reviewID"
+		. ");"
+	    );
+	$this->mysqli->query(
+	      "UPDATE recordlabel "
+	    . "SET confirmed=1 "
+	    . "WHERE LabelNumber IN ("
+		    . "SELECT LabelNumber "
+		    . "FROM review_recordlabel "
+		    . "WHERE review_id=$reviewID"
+	    . ");"
+	);
+    }
+
+
     /**
      * @author James Oliver <support@ckxu.com>
      * @abstract expects post to contain 'description', 'femcon'\
