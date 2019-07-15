@@ -57,7 +57,7 @@ $app->group('/episode', $authenticate($app,[1,2]),
             );
         $callsign = $app->request->get('callsign')?:$_SESSION['CALLSIGN'];
         $format = $app->request->get('format');
-        $station = new \TPS\station();
+        $station = new \TPS\station($callsign);
         $params['stations'] = $station->getStations();
         $genres = array();
         if(is_null($callsign) || !in_array($callsign,$params['stations'])){
@@ -140,8 +140,8 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $app->response->setStatus(201);
         $isXHR = $app->request->isAjax();
         if(!$isXHR){
-            $app->render("episodeRedirect.twig",$params);
-            // $app->render("episodeInsertSong.twig",$params);
+            // $app->render("episodeRedirect.twig",$params);
+            $app->render("episodeInsertSong.twig",$params);
 
         }
         else{

@@ -148,14 +148,6 @@ $app->group('/programs', $authenticate, function () use ($app,$authenticate){
     });
 
      $app->get('/edit/:id', $authenticate, function ($id) use ($app){
-           
-
-
-           // echo 'callsign: '. $_SESSION['CALLSIGN'];
-        print_r($_SESSION);
-        // print_r($programToEdit);
-        exit;
-
 
         $station = new \TPS\station($_SESSION['CALLSIGN']);
         $stations = $station->getStations();
