@@ -490,10 +490,10 @@ class reviews extends station{
             $description = $app->request()->post('description');
             $notes = $app->request()->post('notes');
             $reviewer = $app->request()->post('reviewer');
-            $subgenres = $app->request()->post('subgenres');
-            $hometowns = $app->request()->post('hometown');
-            $labels = $app->request()->post('label');
-            $tags = $app->request()->post('tag');
+            $subgenres = $app->request()->post('subgenres')?:[];
+            $hometowns = $app->request()->post('hometown')?:[];
+            $labels = $app->request()->post('label')?:[];
+            $tags = $app->request()->post('tag')?:[];
             $recommend = $app->request()->post('recommend');
             $approved = NULL;
         }
