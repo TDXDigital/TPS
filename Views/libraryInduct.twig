@@ -614,14 +614,16 @@
     }
 
     function updateRegion() {
-	canconButtonOff = !$("#canconCheckbox").next().attr('class').split(" ").includes('active');
-	if (canconButtonOff || $('#hometown').chosen().val() == null)
-		$('#canconCheckbox').next().find('button').click();
-	else {
-		region = getRegion($('#hometown').chosen().val());
-		if (region == 'International')
-			region = 'Country';
-		$('#locale').val(region);
+	if ($("#canconCheckbox").next().attr('class') != null) {
+		canconButtonOff = !$("#canconCheckbox").next().attr('class').split(" ").includes('active');
+		if (canconButtonOff || $('#hometown').chosen().val() == null)
+			$('#canconCheckbox').next().find('button').click();
+		else {
+			region = getRegion($('#hometown').chosen().val());
+			if (region == 'International')
+				region = 'Country';
+			$('#locale').val(region);
+		}
 	}
     }
 
