@@ -26,7 +26,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             "title"=>"Receiving",
         );
         if(isset($_SESSION['PRINTID'])){
-            $params["PRINTID"]=json_encode($_SESSION['PRINTID']);
+            $params["printQ"]=count($_SESSION['PRINTID']) > 0;
         }
         $app->render('libraryInduct.twig',$params);
     });
@@ -590,7 +590,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             "title"=>"Receiving",
         );
         if(isset($_SESSION['PRINTID'])){
-            $params["PRINTID"]=json_encode($_SESSION['PRINTID']);
+            $params["printQ"]=count($_SESSION['PRINTID']) > 0;
         }
         $app->render('libraryInduct.twig',$params);
     });

@@ -396,13 +396,13 @@
             {% endif %}
             {% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
                 <a href="./print/"><input id="print_btn" class="btn btn-success" onclick="PrintModal();"
-                {% if PRINTID is null %}
+                {% if not printQ %}
                     disabled="disabled"
                 {% endif %}
                     type="button" value="Print Labels"></a>
                 <input id="print_btn" class="btn btn-danger"
                        onclick="ClearPrintQueue();"
-                {% if PRINTID is null %}
+                {% if not printQ %}
                     disabled="disabled"
                 {% endif %}
                     type="button" value="Clear Queue">
@@ -712,9 +712,9 @@
     }
 
     function PrintModal(printer){
-        $("#printModal").modal({
-            show: 'true'
-        });
+//        $("#printModal").modal({
+//            show: 'true'
+//        });
     }
     function edit(id){
         window.open('{{siteUrl}}/library/'+id);
