@@ -275,7 +275,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 	    );
 	    //$app->render('notSupported.twig', $params);
 	    //$app->redirect('../../labels/print?type=5160&start=1&outline=false');
-	    $app->redirect('../../labels/print-stickers?type=5160&start=1&outline=false');
+	    //$app->redirect('../../labels/print-stickers?type=5160&start=1&outline=false');
+	    $app->redirect('../../labels/print-traycards?type=5160&start=1&outline=false');
 	});
     });
 

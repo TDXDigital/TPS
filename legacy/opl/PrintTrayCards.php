@@ -57,29 +57,49 @@ $reviews = new \TPS\reviews();
         background-color: orange;
         text-align: center;
     }
-
-    .cd_cover_row {
-        display: flex;
-        margin-top: 10px;
-        font-size: 9px;
+    .traycard {
+	position: relative;
+	border: 1px dotted black;
+	width: 565px;
+	height: 442px;
+	float: none;
+	margin-left:0.22in;
     }
 
-    .cd_cover_tile {
-        border: 1px solid darkgrey;
-        flex: 1;
-        margin: 0 5px;
+    .left-spine {
+        transform: rotate(270deg);
+        transform-origin: right top;
+        right: 100%;
+        width: 442px;
     }
 
-    .cd_cover_tile_header {
-        color: white;
-        background-color: grey;
-	padding: 1px;
-	font-weight: bold;
+    .right-spine {
+        transform: rotate(90deg);
+        transform-origin: left top;
+        left: 100%;
     }
 
-    .cd_cover_tile_body {
-        text-align: left;
-	margin: 5px;
+    .spine {
+        position: absolute;
+        top: 0;
+	height: 25px;
+        width: 442px;
+	text-align:center;
+	outline: 1px dashed black;
+    }
+
+    .spine div {
+	display: inline-block;
+	text-align: center;
+	width: 48%;
+	margin-top: 3px;
+	font-size: 13px;
+    }
+
+    .traycard-middle {
+	width: 515px;
+	height: 100%;
+	margin-left: 25px;
     }
 
     </style>
@@ -87,124 +107,40 @@ $reviews = new \TPS\reviews();
 <body>
     <div class="no-print">Please use top and bottom margin of 0.5" and 0.0" sides. some printers may vary, adjust as needed</div>
     <?php
-	function buildTile($title, $info) {
-	    $tile = "<div class='cd_cover_tile'>" .
-			"<div class='cd_cover_tile_header'>" . $title . "</div>" .
-			"<div class='cd_cover_tile_body'>";
-	    if (is_array($info))
-		$tile .= implode("", array_map(function($i) {if ($i != "") return '-'.$i.'<br />';}, $info));
-	    else
-		$tile .= $info;
-	    $tile .=    "</div>" .
-		    "</div>";
-	    return $tile;
-	}
-
-        for($i=1;$i<$indent;$i++){
-            echo "<div class=\"label\" style=\"border: 1px dotted black;\"></div>";
-        }
         foreach($_SESSION['PRINTID'] as $i=>$BCD){
             $albums = $library->getAlbumByRefcode($BCD['RefCode'], TRUE);
-            if(sizeof($albums)<1){
+            if(sizeof($albums)<1)
                 continue;
-            }
             $albumArr = $albums[0];
             $RefCode = $albumArr['RefCode'];
             $artist = $albumArr['artist'];
             $album = $albumArr['album'];
-            $genre = $albumArr['genre'];
-            $format = $albumArr['format'];
-            $CanCon = $albumArr['CanCon'];
-            $locale = $albumArr['Locale'];
-	    $hometowns = $library->getHometownsByRefCode($RefCode);
-	    $subgenres = $library->getSubgenresByRefCode($RefCode);
-	    $libraryCode = $library->getLibraryCodeByRefCode($RefCode);
-	    $recordLabels = $library->getLabelsByRefCode($RefCode);
-	    $tags = $library->getTagsByRefCode($RefCode);
 
-	    $reviewIds = $reviews->getReviewIdsByRefCode($RefCode);
-	    $recommendations = "";
-	    $descriptions = [];
-	    $notes = [];
-	    foreach ($reviewIds as $reviewId) {
-		$fullReview = $reviews->getFullReview($reviewId);
-		$recommendations .= $fullReview['review']['recommendations'];
-		array_push($descriptions, $fullReview['review']['description']);
-		array_push($notes, $fullReview['review']['notes']);
-	    }
+	    if (strlen($artist) >= 30)
+		$artist = substr($artist, 0, 28) . "...";
+	    if (strlen($album) >= 30)
+		$album = substr($album, 0, 28) . "...";
 
-	    // Convert the string of recommendations into an array
-	    $recommendations = explode(",", $recommendations);
-	    foreach ($recommendations as &$rec)
-		$rec = trim($rec);
-
-	    $recordLabelNames = array_map(function($label) {return $label['Name'];}, $recordLabels);
-
-            #$library->createBarcode($RefCode);
-
-	    // Determine leading genre number
-	    preg_match("/[0-9]?/", $libraryCode, $matches);
-	    $genreNum = $matches[0];
-	    if($genreNum == '') // No genre assigned yet
-		$genreNum = 'N';
-
-            $padded= join('', array($genreNum, str_pad($BCD['RefCode'], 11 - strlen($genreNum), "0", STR_PAD_LEFT)));
-
-            //echo "<img src='barcode/createBarcode.php?bcd=$BCD'/>";
-            echo "<div class=\"label\" style=\"border: 1px dotted black; width: 418px; height: 436px; float: none; margin-left:0.22in;";
+            echo "<div class=\"traycard\" style=\"border: 1px dotted black; width: 565px; height: 442px; float: none; margin-left:0.22in;";
 	    if ($i % 2 == 0)
 		echo "margin-top:0.5in;";
 	    echo "\">";
-            echo "<span><img style='float:left; margin:0px;' src='../legacy/opl/barcode/barcode.php?bcd=$padded' alt='$padded'/>";
-            if($locale=="Country"){
-                echo "<img style='float: right; margin: 0px;' src='../legacy/opl/maple.gif' alt='CC'/>";
-            }
-            else if ($locale=="Province"){
-                echo "<img style='float: right; margin: 0px;' width='25px' src='../legacy/opl/ab_ttm.png' alt='PRO'/>";
-            }
-            else if ($locale=="Local"){
-                echo "<img style='float: right; margin: 0px;' width='25px' src='../legacy/opl/pointer.png' alt='PRO'/>";
-            }
-            substr("abcdef", -1);
-            if(strlen($artist)>20){
-                $artpost = "...";
-            }
-            else{
-                $artpost = "";
-            }
-            if(strlen($album)>20){
-                $albpost = "...";
-            }
-            else{
-                $albpost = "";
-            }
-            echo "</span>" . 
-		 "<br style='clear: both'>" .
-		 "<strong style='float: left'>" . substr($artist,0,20) . $artpost . "</strong>" .
-		 "<br>" . 
-		 "<i style='float:left; font-size: small;'>" . substr($album,0,20) . $albpost."</i>" .
-		 "<span style='float:right;'>" . $genre . "</span>" . 
-		 "<br style='clear: both'/>" .
-		 "<div class='cd_cover_row'>" .
-			buildTile('Library Code', $libraryCode) .
-			buildTile('Record Labels', $recordLabelNames) .
-			buildTile('Hometowns', $hometowns) .
-		 "</div>" .
-		 "<div class='cd_cover_row'>" .
-			buildTile('Subgenres', $subgenres) .
-			buildTile('RIYL', $recommendations) .
-			buildTile('Tags', $tags) .
-		 "</div>" .
-		 "<div class='cd_cover_row'>" .
-			buildTile('Description', $descriptions) .
-		 "</div>" .
-		 "<div class='cd_cover_row'>" .
-			buildTile('Notes', $notes) .
-		 "</div>" .
-		 "</div>";
-	    if ($i % 2 == 1) {
+	    // Left spine
+	    echo "<span class='spine left-spine'><div>$artist</div><span> - </span><div>$album</div></span>";
+
+	    // Middle section
+	    echo "<div class='traycard-middle'>"
+			. "<div style='margin-top: 20px; text-align:center;font-size:32px;'>$artist</div>"
+			. "<div style='text-align:center;font-size:20px;'>$album</div>"
+		. "</div>";
+
+	    // Right spine
+	    echo "<span class='spine right-spine'><div>$artist</div><span> - </span><div>$album</div></span>";
+
+	    echo "</div>";
+
+	    if ($i % 2 == 1)
 		echo "<p style='page-break-before: always'></p><div style='height:0.1px'></div>";
-	    }
         }
     ?>
 <div class="page-break"></div>
