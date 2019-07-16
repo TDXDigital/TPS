@@ -39,7 +39,12 @@
 <!-- Episode Info -->
 <table class="table">
 	<tr>
-		<td class="col-md-2">SHow Classification: {{req.cla}}</td><td class="col-md-2">Sponsor: {{req.sponsor}}</td> <td class="col-md-2 bg-warning">Ads: 0/{{req.ads}}</td> <td class="col-md-2 bg-warning">PSA/Promo: 0/{{req.psa}}</td> <td class="col-md-2 bg-success">Canadian Content Required: /{{req.cancon}}</td> <td class="col-md-2 bg-success">Playlist Required: /{{req.playlist}}</td>
+		<td class="col-md-2">SHow Classification: {{req.cla}}</td>
+		<td class="col-md-2">Sponsor: {{req.sponsor}}</td> 
+		<td class="col-md-2 bg-warning">Ads: <span id='adCount'>0</span>/{{req.ads}}</td> 
+		<td class="col-md-2 bg-warning">PSA/Promo: <span id='psaCount'>0</span>/{{req.psa}}</td> 
+		<td class="col-md-2 bg-success">Canadian Content Required: /{{req.cancon}}</td> 
+		<td class="col-md-2 bg-success">Playlist Required: /{{req.playlist}}</td>
 	</tr>
 
 	<tr></tr>
