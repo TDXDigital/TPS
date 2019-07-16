@@ -139,8 +139,8 @@ $reviews = new \TPS\reviews();
 			. "<div style='margin-top: 20px; text-align:center;font-size:32px;'>$artist</div>"
 			. "<div style='text-align:center;font-size:20px;'>$album</div>"
 			. "<div class='tracklist'>";
-	    foreach ($tracklist as $i => $track)
-		echo           "<div>" . ($i + 1) . " - " . $track . "</div>";
+	    foreach ($tracklist as $j => $track)
+		echo           "<div>" . ($j + 1) . " - " . $track . "</div>";
 	    echo          "</div>"
 		. "</div>";
 
