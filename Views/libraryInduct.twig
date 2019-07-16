@@ -251,6 +251,12 @@
                                class="form-control" name="notes" placeholder="optional"/>
                     </div>
                 </div>
+                <div class="col-md-12">
+                    <div id="ind_group" class="form-group input-group">
+                        <label for="tracklist" class="input-group-addon">Tracklist</label>
+                        <textarea id="tracklist" class="form-control" name="tracklist" rows=4 placeholder="Optional &#10;To add: One track per line. Start line with dash. End line with Enter.&#10;-Track 1"></textarea>
+                    </div>
+                </div>
                 <div class="col-lg-3">
                     <input type="checkbox" id="va_checkbox"
                            {% if album.variousartists == 1 %} checked="checked" {% endif %}
