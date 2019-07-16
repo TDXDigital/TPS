@@ -254,7 +254,13 @@
                 <div class="col-md-12">
                     <div id="ind_group" class="form-group input-group">
                         <label for="tracklist" class="input-group-addon">Tracklist</label>
-                        <textarea id="tracklist" class="form-control" name="tracklist" rows=4 placeholder="Optional &#10;To add: One track per line. Start line with dash. End line with Enter.&#10;-Track 1"></textarea>
+                        <textarea id="tracklist" class="form-control" name="tracklist" rows=4 
+				  placeholder="Optional &#10;To add: One track per line. Start line with dash. End line with Enter.&#10;-Track 1">
+{% if album.tracklist is not null %}
+{% for track in album.tracklist %}
+-{{track}}
+{% endfor %}
+{% endif %}</textarea>
                     </div>
                 </div>
                 <div class="col-lg-3">

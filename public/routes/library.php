@@ -38,8 +38,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $album = filter_input(INPUT_POST,"album");
         $genre = filter_input(INPUT_POST,"genre")?:NULL;
         $datein = filter_input(INPUT_POST, "indate")?:NULL;
-        $subgenres = filter_input(INPUT_POST, "subgenres", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
-        $hometowns = filter_input(INPUT_POST, "hometown", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
+        $subgenres = filter_input(INPUT_POST, "subgenres", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:[];
+        $hometowns = filter_input(INPUT_POST, "hometown", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:[];
         $rec_labels = filter_input(INPUT_POST, "label", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:[];
         $format = filter_input(INPUT_POST, "format")?:NULL;
 	$rating = filter_input(INPUT_POST, "rating")?:NULL;
@@ -54,6 +54,14 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $release_date = filter_input(INPUT_POST,'rel_date')?:NULL;
         $tags = filter_input(INPUT_POST, "tag", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:[];
         $note = filter_input(INPUT_POST, "notes")?:NULL;
+        $tracklist = filter_input(INPUT_POST, "tracklist")?:"";
+
+	// Parse $tracklist into an array of tracks
+	$tracklist = explode("\r\n", $tracklist);
+	foreach ($tracklist as &$track)
+	    if (strlen($track) > 0 && $track[0] == '-')
+		$track = substr($track, 1);
+	$tracklist = array_diff($tracklist, [""]);
 
         $replacePatterns = array(
             ["$2, $1","/^\\s*?((?i)the)(?<=(?i)the)\\s+([[:print:]]{3,})/"],
@@ -153,7 +161,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 
         $result = $library->createAlbum($artist, $album, $format, $genre, $genre_num, $labelNums, $locale, $CanCon, $playlist,
             $governmentCategory, $schedule,$note, $accepted, $variousartists, $datein, $release_date, $print,
-	    $rating, $tags, $hometowns, $subgenres);
+	    $rating, $tags, $hometowns, $subgenres, $tracklist);
 
         if(is_string($result)){
             $app->flash('error',$mysqli->error);
@@ -554,6 +562,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $album['tags'] = $library->getTagsByRefCode($RefCode);
         $album['cancon'] = $library->getCanconByRefCode($RefCode);
         $album['variousArtists'] = $library->getVariousArtistsByRefCode($RefCode);
+	$album['tracklist'] = $library->getTracklistByRefCode($RefCode);
 
         $params = array(
             "album"=>$album,
@@ -584,8 +593,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $album = filter_input(INPUT_POST,"album");
             $genre = filter_input(INPUT_POST,"genre")?:NULL;
             $datein = filter_input(INPUT_POST, "indate")?:NULL;
-            $subgenres = filter_input(INPUT_POST, "subgenres", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
-            $hometowns = filter_input(INPUT_POST, "hometown", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
+            $subgenres = filter_input(INPUT_POST, "subgenres", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:[];
+            $hometowns = filter_input(INPUT_POST, "hometown", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:[];
             $rec_labels = filter_input(INPUT_POST, "label", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:[];
             $format = filter_input(INPUT_POST, "format")?:NULL;
 	    $rating = filter_input(INPUT_POST, "rating")?:NULL;
@@ -597,8 +606,17 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $label_size = filter_input(INPUT_POST, "Label_Size")? : 1;
             $locale = filter_input(INPUT_POST, "locale")? :"international";
             $release_date = filter_input(INPUT_POST,'rel_date')?:NULL;
-            $tags = filter_input(INPUT_POST, "tag", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:NULL;
+            $tags = filter_input(INPUT_POST, "tag", FILTER_DEFAULT, FILTER_REQUIRE_ARRAY)?:[];
     	    $note = filter_input(INPUT_POST, "notes")?:NULL;
+            $tracklist = filter_input(INPUT_POST, "tracklist")?:"";
+
+	    // Parse $tracklist into an array of tracks
+	    $tracklist = explode("\r\n", $tracklist);
+	    foreach ($tracklist as &$track)
+	        if (strlen($track) > 0 && $track[0] == '-')
+		    $track = substr($track, 1);
+	    $tracklist = array_diff($tracklist, [""]);
+
 
             if($locale=="International"){
                 $CanCon=0;
@@ -836,6 +854,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 		$library->updateAlbumAttribute("hometowns", $hometowns, $RefCode);
 		$library->updateAlbumAttribute("tags", $tags, $RefCode);
 		$library->updateAlbumAttribute("subgenres", $subgenres, $RefCode);
+
+		$library->updateTracklist($tracklist, $RefCode);
 
 		// If the album is on the playlist
 		$stmt = $mysqli->query("SELECT playlist_flag FROM library WHERE RefCode={$RefCode}");

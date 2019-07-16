@@ -1490,7 +1490,7 @@ class library extends station{
     public function createAlbum($artist, $album, $format, $genre, $genre_num, $labelNums, $locale, $CanCon, $playlist,
                                 $governmentCategory, $schedule, $note="", $accepted=1, $variousartists=False,
                                 $datein=null, $release_date=null, $print=1, $rating=null, $tags=[], $hometowns=[],
-				$subgenres=[]){
+				$subgenres=[], $tracklist=[]){
 	$this->formatArtistName($artist);
         if(is_null($datein)){
             $datein = date("Y-m-d");
@@ -1590,6 +1590,8 @@ class library extends station{
 	    $this->addAttributeToAlbum("tag", $tags, $id_last);
 	    $this->addAttributeToAlbum("subgenre", $subgenres, $id_last);
 
+	    $this->addTracklist($tracklist, $id_last);
+
             if(strtolower(substr($artist,-1))!='s'){
                 $s = "s";
             }
@@ -1601,6 +1603,60 @@ class library extends station{
             }
         }
         return $id_last;
+    }
+    /*
+    * @author Derek Melchin
+    * @abstract Add a tracklist to an album
+    * @param array $tracklist List of track names for the album
+    * @param int   $RefCode   Reference code of the album
+    */
+    public function getTracklistByRefCode($RefCode) {
+	$stmt = $this->mysqli->query("SELECT trackName FROM tracklists WHERE library_RefCode=$RefCode ORDER BY trackNum ASC;");
+	$tracks = [];
+	while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
+	    array_push($tracks, $row['trackName']);
+	return $tracks;
+    }
+
+    /*
+    * @author Derek Melchin
+    * @abstract Add a tracklist to an album
+    * @param array $tracklist List of track names for the album
+    * @param int   $RefCode   Reference code of the album
+    */
+    public function addTracklist($tracklist, $RefCode) {
+	if (count($tracklist) == 0)
+	    return;
+
+	// Sanitize strings to prevent SQL injection
+	$this->sanitizeStrings($tracklist);
+
+	// Create insertion rows string
+	$values = "";
+	foreach ($tracklist as $i => $trackName) {
+	    if ($i > 0)
+		$values .= ",";
+	    $values .= "($RefCode, " . ($i + 1) . ", '$trackName')";
+	}
+
+	// Insert tracklist into database
+	$this->mysqli->query(
+		  "INSERT INTO tracklists "
+			. "(library_RefCode, trackNum, trackName) "
+		. "VALUES "
+			. "$values;"
+	);
+    }
+
+    /*
+    * @author Derek Melchin
+    * @abstract Updates the tracklist of an album
+    * @param array $tracklist List of track names for the album
+    * @param int   $RefCode   Reference code of the album
+    */
+    public function updateTracklist($tracklist, $RefCode) {
+	$this->mysqli->query("DELETE FROM tracklists WHERE library_RefCode=$RefCode");
+	$this->addTracklist($tracklist, $RefCode);
     }
 
     /*
