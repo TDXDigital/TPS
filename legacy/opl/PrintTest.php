@@ -126,9 +126,9 @@ $reviews = new \TPS\reviews();
 	    $recommendations = "";
 	    $descriptions = [];
 	    $notes = [];
-	    foreach ($reviewIds as $i=>$reviewId) {
+	    foreach ($reviewIds as $j=>$reviewId) {
 		$fullReview = $reviews->getFullReview($reviewId);
-		if ($i != 0)
+		if ($j != 0)
 		    $recommendations .= ", ";
 		$recommendations .= $fullReview['review']['recommendations'];
 		array_push($descriptions, $fullReview['review']['description']);

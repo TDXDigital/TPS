@@ -276,15 +276,27 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 
     $app->group('/print', $authenticate, function () use ($app, $authenticate) {
 	$app->get('/', $authenticate, function () use ($app) {
+	    $library = new \TPS\library();
+	    $albums = [];
+	    foreach ($_SESSION['PRINTID'] as $RefCode)
+		array_push($albums, $library->getAlbumByRefCode($RefCode["RefCode"])[0]);
+
 	    $params = array(
 		"area" => "Library",
 		"title" => "Print Labels",
-		"albums" => $_SESSION['PRINTID']
+		"albums" => $albums
 	    );
-	    //$app->render('notSupported.twig', $params);
-	    //$app->redirect('../../labels/print?type=5160&start=1&outline=false');
-	    //$app->redirect('../../labels/print-stickers?type=5160&start=1&outline=false');
-	    $app->redirect('../../labels/print-traycards?type=5160&start=1&outline=false');
+
+	    $app->render('libraryPrint.twig', $params);
+	});
+
+	$app->delete('/:position', $authenticate, function($position) use ($app) {
+	    unset($_SESSION['PRINTID'][$position]);
+	    $_SESSION['PRINTID'] = array_values($_SESSION['PRINTID']);
+	});
+
+	$app->get('/clear', $authenticate, function() use ($app) {
+	    $_SESSION['PRINTID'] = [];
 	});
     });
 

@@ -272,15 +272,15 @@ $app->get("/logout", function () use ($app) {
     $app->render('basic.twig',array('statusCode'=>'Logout','title'=>'Logout', 'message'=>'You have been logged out'));
 });
 
-$app->get("/labels/print", $authenticate($app,[2]), function() use ($app) {
+$app->get("/labels/print-cover", $authenticate($app,[2]), function() use ($app) {
     require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'legacy/opl/PrintTest.php';
 });
 
-$app->get("/labels/print-stickers", $authenticate($app,[2]), function() use ($app) {
+$app->get("/labels/print-library-label", $authenticate($app,[2]), function() use ($app) {
     require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'legacy/opl/PrintStickers.php';
 });
 
-$app->get("/labels/print-traycards", $authenticate($app,[2]), function() use ($app) {
+$app->get("/labels/print-traycard", $authenticate($app,[2]), function() use ($app) {
     require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'legacy/opl/PrintTrayCards.php';
 });
 
