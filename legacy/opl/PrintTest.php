@@ -121,11 +121,11 @@ $reviews = new \TPS\reviews();
 	    $libraryCode = $library->getLibraryCodeByRefCode($RefCode);
 	    $recordLabels = $library->getLabelsByRefCode($RefCode);
 	    $tags = $library->getTagsByRefCode($RefCode);
+	    $notes = [$library->getNoteByRefCode($RefCode)];
 
 	    $reviewIds = $reviews->getReviewIdsByRefCode($RefCode);
 	    $recommendations = "";
 	    $descriptions = [];
-	    $notes = [];
 	    foreach ($reviewIds as $j=>$reviewId) {
 		$fullReview = $reviews->getFullReview($reviewId);
 		if ($j != 0)
