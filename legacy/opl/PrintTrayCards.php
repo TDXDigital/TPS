@@ -102,11 +102,16 @@ $reviews = new \TPS\reviews();
 	margin-left: 25px;
     }
 
+    .tracklist {
+	padding: 30px 0 0 50px;
+    }
+
     </style>
 </head>
 <body>
     <div class="no-print">Please use top and bottom margin of 0.5" and 0.0" sides. some printers may vary, adjust as needed</div>
     <?php
+	$library = new \TPS\library();
         foreach($_SESSION['PRINTID'] as $i=>$BCD){
             $albums = $library->getAlbumByRefcode($BCD['RefCode'], TRUE);
             if(sizeof($albums)<1)
@@ -115,6 +120,7 @@ $reviews = new \TPS\reviews();
             $RefCode = $albumArr['RefCode'];
             $artist = $albumArr['artist'];
             $album = $albumArr['album'];
+	    $tracklist = $library->getTracklistByRefCode($RefCode);
 
 	    if (strlen($artist) >= 30)
 		$artist = substr($artist, 0, 28) . "...";
@@ -132,6 +138,10 @@ $reviews = new \TPS\reviews();
 	    echo "<div class='traycard-middle'>"
 			. "<div style='margin-top: 20px; text-align:center;font-size:32px;'>$artist</div>"
 			. "<div style='text-align:center;font-size:20px;'>$album</div>"
+			. "<div class='tracklist'>";
+	    foreach ($tracklist as $i => $track)
+		echo           "<div>" . ($i + 1) . " - " . $track . "</div>";
+	    echo          "</div>"
 		. "</div>";
 
 	    // Right spine
