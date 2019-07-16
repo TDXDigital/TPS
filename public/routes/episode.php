@@ -84,6 +84,7 @@ $app->group('/episode', $authenticate($app,[1,2]),
         sort($genres);
         $params['genres'] = $genres;
         $params['program'] = $temp;
+        $params['legacy'] = $app->request->get('legacy')??'false';
         $isXHR = $app->request->isAjax();
         if($isXHR){
             print json_encode($params);
@@ -112,10 +113,15 @@ $app->group('/episode', $authenticate($app,[1,2]),
 
         $station = new \TPS\station($callsign);
         $program = new \TPS\program($station, $programID);
+        $req = $program->getRequirement();
+       
         $episode = new \TPS\episode($program, NULL, $airDate, $airTime,
                 $description, $type, $recordDate);
         $episodeCheck = new \TPS\episode($program, NULL, $airDate, $airTime,
                 $description, $type, $recordDate);
+
+         $ads = $episode->getAdOptions($req['spons']);
+         
         if( $type == 2){
             while($episodeCheck->getEpisode()["id"] != Null){
                 $airTime = date("H:i",
@@ -126,9 +132,12 @@ $app->group('/episode', $authenticate($app,[1,2]),
             $episode = new \TPS\episode($program, NULL, $airDate, $airTime,
                     $description, $type, $recordDate);
         }
+
         $params = array(
             'area'=>'Episode',
-            'title'=>'Log Addition'
+            'title'=>'Log Addition',
+            'req' => $req,
+            'ads' => $ads
         );
         if($episodeCheck->getEpisode()['id']){
             $params['episode'] = $episode->getEpisode();
@@ -140,8 +149,10 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $app->response->setStatus(201);
         $isXHR = $app->request->isAjax();
         if(!$isXHR){
-            // $app->render("episodeRedirect.twig",$params);
-            $app->render("episodeInsertSong.twig",$params);
+            if($app->request->post('legacy')=='true')
+                $app->render("episodeRedirect.twig",$params);
+            else
+                $app->render("episodeInsertSong.twig",$params);
 
         }
         else{
@@ -153,10 +164,12 @@ $app->group('/episode', $authenticate($app,[1,2]),
 
   // Create new program
     $app->post('/insertSong', function() use ($app, $authenticate){
+ 
         $params=array(
             'area'=>'Episode',
             'title'=>'Log Addition'
             );
+
         $app->render("episodeInsertSong.twig",$params);
     });
 

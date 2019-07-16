@@ -368,6 +368,117 @@ class episode extends program{
     }
 
 
+    public function getAdOptions($SPONS)
+    {
+        $REQAD_SQL = "SELECT adverts.*,adrotation.* FROM adrotation,addays,adverts WHERE '".
+        date('H:i:s')."' BETWEEN adrotation.startTime AND adrotation.endTime AND addays.AdIdRef=".
+        "adrotation.RotationNum AND adrotation.AdId=adverts.AdId AND addays.Day='".date('l').
+        "' AND adverts.active='1' AND '".date('Y-m-d')."' BETWEEN adverts.StartDate AND ".
+        "adverts.EndDate";
+        $RQADSIDS = array();
+        $REQAD = "";
+        if(!$READS = $this->mysqli->query($REQAD_SQL))
+        {
+            $REQAD .= "<option value='-1'>ERROR - AdRotation</option>";
+        }
+        else if(mysqli_num_rows($READS)==0){
+            $REQAD .= "<option value='-1'>No Paid Commercials</option>";
+        }
+        else if(!isset($SPONS)){
+            while($PdAds=$READS->fetch_array(MYSQLI_ASSOC)){
+                if($PdAds['Limit'] == NULL || $PdAds['Playcount'] < $PdAds['Limit']){
+                                // Check BlockLimit (BLIM)
+                    $CHECKBLIM = "SELECT count(song.songid) FROM adrotation,song WHERE adrotation.AdId='".
+                    addslashes($PdAds['AdId'])."' AND song.title='".addslashes($PdAds['AdName']).
+                    "' and song.date='".addslashes($this->date)."' and song.time BETWEEN '".
+                    addslashes($PdAds['startTime'])."' AND '".addslashes($PdAds['endTime'])."' ";
+                    $BL_lim_R = $this->mysqli->query($CHECKBLIM);
+                    $BL_lim = $BL_lim_R->fetch_array(MYSQLI_ASSOC);
+                    if($this->mysqli->errno){
+                        $REQAD .= "<option value='-3'>ERROR SQL</option>";
+                    }
+                    if($BL_lim['count(song.songid)']<$PdAds['BlockLimit']){
+                                    //echo "<option value='-2'>BL_Lim:".$BL_lim['count(song.songid)']."</option>";
+                        $REQAD .= "<option value='".$PdAds['AdId']."'>".$PdAds['AdName']."</option>";
+                        array_push($RQADSIDS,$PdAds['AdId']);
+                        array_push($ADIDS,$PdAds['AdId']);
+                        $SQL_PL_AD = "INSERT INTO promptlog (EpNum,AdNum) VALUES (".
+                        addslashes($ep_num).",".addslashes($PdAds['AdId']).")";
+                        if(!$this->mysqli->query($SQL_PL_AD)){
+                            $REQAD .= "<!-- ERROR: " . $this->mysqli->error . "-->";
+                            error_log("TPS Error; Line 963: Could not perform SQL Query - ".$this->mysqli->error);
+                        }
+                        else{
+                            $REQAD .= "<!-- Inserted into Log -->";
+                        }
+                    }
+                }
+            }
+        }
+        if(sizeof($RQADSIDS)>0){
+            if($REQAD!=""&&!isset($SPONS)){
+
+            }
+            else if(isset($SPONS)){
+                $REQAD = "<option>Sponsored Program</option>";
+            }
+            else{
+                $REQAD = "<option>No Required Ads [E3]</option>";
+            }
+        }
+        else{
+            $REQAD = "<option>No Required Ads</option>";
+        }
+
+        // Friends Ads
+        $ADOPT="";
+        if(sizeof($RQADSIDS) > 0 && !isset($SPONS)){
+            $ADOPT .= "<option>Paid Ad Required this hour [".sizeof($RQADSIDS)."]</option>";
+        }
+        else
+        {
+            if(isset($SPONS)){
+                $ADOPT .= "<option value='".$SPONS['AdId']."'>".$SPONS['AdName']."</option>";
+                array_push($ADIDS,$avadi['AdId']);
+            }
+            else{
+                        //$selcom51 is origin
+                $minplaysql51 = "select MIN(Playcount) from adverts where Category='51' ".
+                "and Active='1' and Friend='1' and '".$this->mysqli->real_escape_string($this->date).
+                "' between StartDate and EndDate";
+                $advertResult = $this->mysqli->query($minplaysql51);
+                if(!$minplay51Array = $advertResult->fetch_array(MYSQLI_ASSOC)){
+                    $selcom51 = "select * from adverts where Category='51' and '".
+                    $this->mysqli->real_escape_string($this->date)."' between StartDate and EndDate";
+                }
+                else{
+                    $minplay51 = $minplay51Array['MIN(Playcount)'];
+                    $selcom51 = "select * from adverts where Category='51' and '" .
+                    addslashes($this->date) . "' between StartDate and EndDate and Friend='1' ".
+                    "and Active='1' and Playcount='".$minplay51."' ";
+                }
+                $selspon = "select MIN(Playcount) from adverts where Category!='51' and '" .
+                addslashes($this->date) . "' between EndDate and StartDate ";
+                if($comsav = $this->mysqli->query($selcom51)){
+                    $ADOPT = "";
+                    while($avadi = $comsav->fetch_array(MYSQLI_ASSOC)){
+                        $ADOPT .= "<option value=\"" . $avadi['AdId'] . "\">" . $avadi['AdName'] . "</option>";
+                        array_push($ADIDS,$avadi['AdId']);
+                    }
+                }
+                else{
+                    $ADOPT = "<option value=\"-1\">ERROR - SQL Command</option>";
+                }
+            }
+        }
+        $result = array();
+        $result['REQAD'] = $REQAD;
+        $result['ADOPT'] = $ADOPT;
+        return $result; 
+
+    }
+
+
 }
 
 class episodeType{
@@ -442,4 +553,5 @@ class episodes extends station{
         }
         return $results;
     }
+
 }

@@ -15,7 +15,7 @@ $(document).on('change paste input', ".playlistNum", function(){
 
     	    	input.closest('tr').find("input[name='artist["+ rowId +"]']").val(albumInfo.artist);
             	input.closest('tr').find("input[name='album["+ rowId +"]']").val(albumInfo.album);
-            	input.closest('tr').find("[name='cat["+ rowId +"]']").val(albumInfo.governmentCategory) ;
+            	input.closest('tr').find("[name='cat["+ rowId +"]']").val(albumInfo.governmentCategory);
             	if(albumInfo.CanCon == 1)
             		input.closest('tr').find("input[name='cancon["+ rowId +"]']").prop('checked', true);
             	else
@@ -33,6 +33,23 @@ $(document).on('click', '.insertBtn', function(){
  	$(this).removeClass('btn-success insertBtn');
  	$(this).addClass('btn-danger rmvBtn');
  	$(this).on('click', removeRow);
+
+ 	var catValue = $(this).closest('tr').find("[name='cat["+ rowid +"]']").val();
+
+ 	// if it's AD, increase the Ad count
+ 	if(catValue == 51)
+ 		$('#adCount').text(parseInt($('#adCount').text()) + 1);
+
+ 	// if it's Promo increase PSA count
+ 	if(catValue == 45)
+ 		$('#psaCount').text(parseInt($('#psaCount').text()) + 1);
+ 	// if it's PSA, increase PSA count
+ 	if(catValue == 11 || catValue == 12)
+ 		if($(this).closest('tr').find("input[name='artist["+ rowid +"]']").val().toUpperCase().indexOf("STATION PSA")>=0||
+ 			$(this).closest('tr').find("input[name='title["+ rowid +"]']").val().toUpperCase().indexOf("PSA")>=0)
+ 			$('#psaCount').text(parseInt($('#psaCount').text()) + 1);
+
+ 	// append table row
  	$(this).closest('tr').find('td').each(function(){
  		// alert($(this).find('input, select').val());
  		$(this).find('input,select,option').attr("readonly", true);
@@ -121,7 +138,27 @@ $(document).on('click', '.insertBtn', function(){
 
 function removeRow(event)
 {
-	// event.stopImmediatePropagation();
+	//First, enable select option and checkbox to get values
+	$(this).closest('tr').find("[type='checkbox']").attr("disabled", false);
+	$(this).closest('tr').find('select,option').attr("disabled", false);
+
+	var rowid = $(this).closest('tr').attr('id');
+	var catValue = $(this).closest('tr').find("[name='cat["+ rowid +"]']").val();
+
+	// if it's AD, decrease the Ad count
+ 	if(catValue == 51)
+ 		$('#adCount').text(parseInt($('#adCount').text()) - 1);
+ 	// if it's Promo decrease PSA count
+ 	if(catValue == 45)
+ 		$('#psaCount').text(parseInt($('#psaCount').text()) - 1);
+ 	// if it's PSA, decrease PSA count
+ 	if(catValue == 11 || catValue == 12)
+ 		if($(this).closest('tr').find("input[name='artist["+ rowid +"]']").val().toUpperCase().indexOf("STATION PSA")>=0||
+ 			$(this).closest('tr').find("input[name='title["+ rowid +"]']").val().toUpperCase().indexOf("PSA")>=0)
+ 			$('#psaCount').text(parseInt($('#psaCount').text()) - 1);
+
+
+ 	// event.stopImmediatePropagation();
 	$(this).closest ('tr').remove();
 }
 
