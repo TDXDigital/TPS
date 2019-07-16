@@ -1600,7 +1600,7 @@ class library extends station{
                 $s="";
             }
             if($print==1){
-                $_SESSION['PRINTID'][]=$id_last;
+                $_SESSION['PRINTID'][]=["RefCode"=>$id_last];
             }
         }
         return $id_last;
