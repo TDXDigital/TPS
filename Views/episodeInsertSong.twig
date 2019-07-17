@@ -81,7 +81,7 @@
 	<table class="table" id="songTable" >
 		<thead>
 		<tr>
-			 <th style="width: 6%">Playlist/<br>Ad ID</th> <th>Category</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th> <th>Composer</th> <th>CC</th> <th>Hit</th> <th>Ins</th> <th style="width: 7%">Type</th> <th>Language</th><th></th>
+			 <th style="width: 6%">Playlist/<br>Ad ID</th> <th>Category <input type="button" class="btn btn-sm" value="Define" onclick="return popitup('../legacy/help/definetype.html')"/> </th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th> <th>Composer</th> <th>CC</th> <th>Hit</th> <th>Ins</th> <th style="width: 7%">Type</th> <th>Language</th><th></th><th></th>
 		</tr>
 		</thead>
 		<tbody>
@@ -91,6 +91,9 @@
 				<input type="text" class="form-control input-sm playlistNum" name="playlistNum[1]" id="playlistNum" placeholder="">
 			</td>
 			<td>
+				
+
+
 				<select name="cat[1]" id="DDLNormal" class="form-control input-sm chtype">
 	               <option value="53">53, Sponsored Promotion</option>
 	               <OPTION value="52">52, Sponsor Indentification</OPTION>
@@ -160,6 +163,9 @@
 	          	</datalist>
 			</td>
 			<td>
+				<input type="button" value="Notes" class="btn btn-sm" name="NButton" onclick="GetNotes();" />
+			</td>
+			<td>
 				<input id="insertSong" type="button" class="btn btn-success insertBtn" value="Insert"/>
 			</td>
 		</tr>
@@ -167,7 +173,7 @@
 
 		<tfoot>
             <tr>
-			 <th style="width: 6%">Playlist/<br>Ad ID</th> <th>Category</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th> <th>Composer</th> <th>CC</th> <th>Hit</th> <th>Ins</th> <th style="width: 7%">Type</th> <th>Language</th><th></th>
+			 <th style="width: 6%">Playlist/<br>Ad ID</th> <th>Category <input type="button" class="btn btn-sm" value="Define" onclick="return popitup('../legacy/help/definetype.html')"/></th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th> <th>Composer</th> <th>CC</th> <th>Hit</th> <th>Ins</th> <th style="width: 7%">Type</th> <th>Language</th><th></th>
 			</tr>
         </tfoot>
 	</table>

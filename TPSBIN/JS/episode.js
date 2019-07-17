@@ -50,8 +50,6 @@ $(document).on('click', '.insertBtn', function(){
 			row.find("input[name='instrumental["+ rowid +"]']").show();
 			row.find("select[name='type["+ rowid +"]']").show();
 			row.find("input[name='lang["+ rowid +"]']").show();
-
-
 			row.find("div[name='commercial["+ rowid +"]']").hide();
 
  	}
@@ -61,9 +59,17 @@ $(document).on('click', '.insertBtn', function(){
  		$('#psaCount').text(parseInt($('#psaCount').text()) + 1);
  	// if it's PSA, increase PSA count
  	if(catValue == 11 || catValue == 12)
+	{	row.find("input[name='composer["+ rowid +"]']").show();
+		row.find("input[name='cancon["+ rowid +"]']").show();
+		row.find("input[name='hit["+ rowid +"]']").show();
+		row.find("input[name='instrumental["+ rowid +"]']").show();
+		row.find("select[name='type["+ rowid +"]']").show();
+		row.find("input[name='lang["+ rowid +"]']").show();
+		
  		if($(this).closest('tr').find("input[name='artist["+ rowid +"]']").val().toUpperCase().indexOf("STATION PSA")>=0||
  			$(this).closest('tr').find("input[name='title["+ rowid +"]']").val().toUpperCase().indexOf("PSA")>=0)
  			$('#psaCount').text(parseInt($('#psaCount').text()) + 1);
+ 	}
 
  	// append table row
  	$(this).closest('tr').find('td').each(function(){
@@ -145,6 +151,9 @@ $(document).on('click', '.insertBtn', function(){
 	           		'<option value="English">' +
 	           		'<option value="French">' +
 	          	'</datalist>' +
+			'</td>' +
+			'<td>' +
+				'<input type="button" value="Notes" class="btn btn-sm" name="NButton" onclick="GetNotes();" />' +
 			'</td>' +
 			'<td>' +
 				'<input id="insertSong" type="button" class="btn btn-success insertBtn" value="Insert"/>' +
@@ -339,3 +348,17 @@ function asd(){
 			$("#InputSponsor").hide();
 		}
 	}
+function popitup(url) {
+    //opens a new window of size 500x300 (portorate for category listing)
+	newwindow=window.open(url,'name','height=500,width=300');
+	if (window.focus) {newwindow.focus()}
+		return false;
+}
+
+function GetNotes() {
+    var NOTE = prompt("Short Notes Regarding current song (90 char max)");
+    if (NOTE != null && NOTE != '') {
+        document.getElementById('NF1').value = NOTE;
+    }
+    $("NoteField").SlideDown();
+}

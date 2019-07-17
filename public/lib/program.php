@@ -531,6 +531,8 @@ class program extends station{
         $req['ads'] = ceil(($Requirements['length']*$SETTINGS['ST_ADSH'])/60);
         $req['psa'] = ceil(($Requirements['length']*$SETTINGS['ST_PSAH'])/60);
         $req['cla'] = $CLA; 
+        // print_r($Requirements);
+        // exit;
         return $req;
 
     }
