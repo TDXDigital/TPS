@@ -1,4 +1,4 @@
- var rowid = 1;
+var rowid = 1;
 
 $(document).on('change paste input', ".playlistNum", function(){
  
@@ -35,10 +35,26 @@ $(document).on('click', '.insertBtn', function(){
  	$(this).on('click', removeRow);
 
  	var catValue = $(this).closest('tr').find("[name='cat["+ rowid +"]']").val();
-
+ 	var row = $(this).closest('tr');
  	// if it's AD, increase the Ad count
  	if(catValue == 51)
+ 	{
  		$('#adCount').text(parseInt($('#adCount').text()) + 1);
+
+			row.find("input[name='title["+ rowid +"]']").val(row.find("div[name='commercial["+ rowid +"]'] option:selected").text()).show();
+			row.find("input[name='artist["+ rowid +"]']").val('CKXU').show();
+			row.find("input[name='album["+ rowid +"]']").val('Advertisement').show();
+			row.find("input[name='composer["+ rowid +"]']").show();
+			row.find("input[name='cancon["+ rowid +"]']").show();
+			row.find("input[name='hit["+ rowid +"]']").show();
+			row.find("input[name='instrumental["+ rowid +"]']").show();
+			row.find("select[name='type["+ rowid +"]']").show();
+			row.find("input[name='lang["+ rowid +"]']").show();
+
+
+			row.find("div[name='commercial["+ rowid +"]']").hide();
+
+ 	}
 
  	// if it's Promo increase PSA count
  	if(catValue == 45)
@@ -64,7 +80,7 @@ $(document).on('click', '.insertBtn', function(){
 				'<input type="text" class="form-control playlistNum" name="playlistNum['+ rowid +']" id="playlistNum" placeholder="">' +
 			'</td>' +
 			'<td>' +
-				'<select name="cat['+ rowid +']" id="DDLNormal" class="form-control" onchange="CHtype()">' +
+				'<select name="cat['+ rowid +']" id="DDLNormal" class="form-control chtype" onchange="CHtype()">' +
 	               '<option value="53"> 53, Sponsored Promotion</option>' +
 	               '<OPTION value="52"> 52, Sponsor Indentification</OPTION>' +
 	               '<OPTION VALUE="51"> 51, Commercial</OPTION>' +
@@ -94,6 +110,9 @@ $(document).on('click', '.insertBtn', function(){
 			'</td>' +
 			'<td>' +
 				'<input class="form-control" type="text" name="title['+ rowid +']" placeholder="Title">' + 
+				'<div name="commercial['+ rowid +']" style="display: none">'+
+					'<span><b>All Commercials: </b></span>' + commercialOption +
+				'</div>'+
 			'</td>' +
 			'<td>' +
 				'<input class="form-control" name="artist['+ rowid +']" id="artist"  type="text" placeholder="Artist">' +
@@ -193,3 +212,109 @@ $(document).on('submit','#episodeForm',function(){
 }).get();
 
 });
+
+
+$(document).on('change', '.chtype', function(e){
+
+	var catNum = $(this).val();
+	var row = $(this).closest('tr');
+	var rowid = row.attr('id');
+
+	switch(catNum)
+	{
+		case '51':
+			row.find("input[name='playlistNum["+ rowid +"]']").attr("placeholder", "Ad ID");
+			row.find("input[name='title["+ rowid +"]']").hide();
+			row.find("input[name='artist["+ rowid +"]']").hide();
+			row.find("input[name='album["+ rowid +"]']").hide();
+			row.find("input[name='composer["+ rowid +"]']").hide();
+			row.find("input[name='cancon["+ rowid +"]']").hide();
+			row.find("input[name='hit["+ rowid +"]']").hide();
+			row.find("input[name='instrumental["+ rowid +"]']").hide();
+			row.find("select[name='type["+ rowid +"]']").hide();
+			row.find("input[name='lang["+ rowid +"]']").hide();
+			row.find("div[name='commercial["+ rowid +"]']").show();
+			break;
+
+		case '12':
+		
+	}
+
+
+
+});
+
+$(document).on('change', '.adch', function(e){
+	// alert($(this).val());
+	var row = $(this).closest('tr');
+	var rowid = row.attr('id');
+	row.find("input[name='playlistNum["+ rowid +"]']").val($(this).val());
+});
+
+function asd(){
+
+	alert($(this).val());
+		if(document.getElementById("DDLNormal").options[document.getElementById("DDLNormal").selectedIndex].value==51){
+			$("#inputdiv").hide();
+			$("#processing").hide();
+			document.getElementById("DDLAdvert").options[document.getElementById("DDLNormal").selectedIndex].selected = true;
+			$("#InputAdvert").show();
+			document.getElementById("AdNum").value = document.getElementById("ADLis").options[document.getElementById("ADLis").selectedIndex].value;
+			document.getElementById("plhead").style.display="inline";
+			document.getElementById("spokenc").style.display="none";
+			document.getElementById("plbody").style.display="inline";
+			document.getElementById("spokcon").style.display="none";
+			//document.getElementById("Spokcon").required="true";
+
+			document.getElementById("title001").value="";
+			document.getElementById("artin").disabled=false;
+			document.getElementById("albin").disabled=false;
+			document.getElementById("ccin").disabled=false;
+			document.getElementById("hitin").disabled=false;
+			document.getElementById("insin").disabled=false;
+		}
+		else if(document.getElementById("DDLNormal").options[document.getElementById("DDLNormal").selectedIndex].value==12 || document.getElementById("DDLNormal").options[document.getElementById("DDLNormal").selectedIndex].value==11){
+
+			document.getElementById("plhead").style.display="none";
+			document.getElementById("spokenc").style.display="inline";
+			document.getElementById("plbody").style.display="none";
+			document.getElementById("spokcon").style.display="inline";
+			//document.getElementById("Spokcon").required="true";
+
+			//document.getElementById("title001").value="";//Spoken Word / News / ID
+			document.getElementById("data1").style.display="inline";
+			document.getElementById("data1").disabled=false;
+			document.getElementById("title001").style.display="none";
+			document.getElementById("title001").disabled="true";
+			//alert("TRIGGERED");
+			//document.getElementById("artin").disabled="true";
+			//document.getElementById("albin").disabled="true";
+			//document.getElementById("ccin").disabled="true";
+			//document.getElementById("hitin").disabled="true";
+			//document.getElementById("insin").disabled="true";
+		}
+		else if(document.getElementById("DDLNormal").options[document.getElementById("DDLNormal").selectedIndex].value!=12 || document.getElementById("DDLNormal").options[document.getElementById("DDLNormal").selectedIndex].value!=11){
+
+			document.getElementById("plhead").style.display="inline";
+			document.getElementById("spokenc").style.display="none";
+			document.getElementById("plbody").style.display="inline";
+			document.getElementById("spokcon").style.display="none";
+			//document.getElementById("Spokcon").required="true";
+
+			//document.getElementById("title001").value="";
+			document.getElementById("artin").disabled=false;
+			document.getElementById("albin").disabled=false;
+			document.getElementById("ccin").disabled=false;
+			document.getElementById("hitin").disabled=false;
+			document.getElementById("insin").disabled=false;
+
+			document.getElementById("data1").style.display="none";
+			document.getElementById("data1").disabled="true";
+			document.getElementById("title001").style.display="inline";
+			document.getElementById("title001").disabled=false;
+		}
+		else{
+			$("#InputAdvert").hide();
+			$("#InputSponsor").hide();
+		}
+	}
