@@ -370,12 +370,14 @@ class episode extends program{
 
     public function getAdOptions($SPONS)
     {
+
         $REQAD_SQL = "SELECT adverts.*,adrotation.* FROM adrotation,addays,adverts WHERE '".
         date('H:i:s')."' BETWEEN adrotation.startTime AND adrotation.endTime AND addays.AdIdRef=".
         "adrotation.RotationNum AND adrotation.AdId=adverts.AdId AND addays.Day='".date('l').
         "' AND adverts.active='1' AND '".date('Y-m-d')."' BETWEEN adverts.StartDate AND ".
         "adverts.EndDate";
         $RQADSIDS = array();
+        $ADIDS = array();
         $REQAD = "";
         if(!$READS = $this->mysqli->query($REQAD_SQL))
         {
@@ -474,10 +476,99 @@ class episode extends program{
         $result = array();
         $result['REQAD'] = $REQAD;
         $result['ADOPT'] = $ADOPT;
+        $result['ADIDS'] = $ADIDS;
+        $result['RQADSIDS'] = $RQADSIDS;
         return $result; 
 
     }
 
+    public function getAllCommercials($ads)
+    {
+        $ADIDS = $ads['ADIDS'];
+        $RQADSIDS = $ads['RQADSIDS'];
+        $output = "";
+       //<input type="text" name="title" id="title001" size="33" required="true" maxlength="45">
+        $output .= "<select id=\"ADLis\" name=\"title\" onChange=\"ADCH()\" class=\"adch\" >";
+            $SLADS = "select * from adverts where Category='51' and '" .
+                addslashes($this->date) . "' between StartDate and EndDate and Active='1' ".
+                "order by AdName";
+            if(!$SRZ = $this->mysqli->query($SLADS)){
+                $output .= "<option value='0'>NO ADS AVAILABLE</option>";
+            }
+            else{
+                $ADGR_AVAIL = array();
+                $ADGR_REQUI = array();
+                $ADGR_INVAL = array();
+                while($ADZL = $SRZ->fetch_array(MYSQLI_ASSOC)){
+                    $AVAIL=FALSE;
+                    $REQUIRE=FALSE;
+                    $TEMP = "<option value=\"" . $ADZL['AdId'] . "\" ";
+                    if(in_array((int)$ADZL['AdId'], $ADIDS)){
+                        $AVAIL = TRUE;
+                        $TEMP .= " style=\"background-color:green; color:white\" ";
+                    }
+                    else if((int)in_array($ADZL['AdId'], $RQADSIDS)){
+                        $REQUIRE = TRUE;
+                        $TEMP .= " style=\"background-color:blue; color:white\" ";
+                    }
+                    $TEMP .= " >". $ADZL['AdName'] ."</option>";
+
+                    if($REQUIRE){
+                        array_push($ADGR_REQUI,$TEMP);
+                        $output .= "<!-- Entered Require -->";
+                    }
+                    elseif($AVAIL){
+                        array_push($ADGR_AVAIL,$TEMP);
+                    }
+                    else{
+                        array_push($ADGR_INVAL,$TEMP);
+                    }
+                }
+            }
+        $output .= "<optgroup label=\"Required Advertisements";
+            if(empty($ADGR_REQUI)){
+                if(sizeof($ADGR_REQUI)<sizeof($RQADSIDS)){
+                    $output .= " (DIFF-OVERRIDE) [".sizeof($ADGR_REQUI)."/".sizeof($RQADSIDS)."]\">";
+                    $output .= $REQAD;
+                    error_log("TPS Error, Could not account for required Adverts, possible code error values ".var_dump($RQADSIDS)." ");
+                }
+                else{
+                    $output .= " (None) [".sizeof($ADGR_REQUI)."/".sizeof($RQADSIDS)."]\">";
+                }
+            }
+            else{
+                $output .= "\">";
+                foreach ($ADGR_REQUI as $opt){
+                    $output .= $opt;
+                }
+            }
+        $output .= "</optgroup>";
+        $output .= "<optgroup label=\"Available Advertisements";
+            if(empty($ADGR_AVAIL)){
+                $output .= " (None)\">";
+            }
+            else{
+                $output .= "\">";
+                foreach ($ADGR_AVAIL as $opt){
+                    $output .= $opt;
+                }
+            }
+        $output .= "</optgroup>";
+        $output .= "<optgroup label=\"Invalid Advertisements";
+            if(empty($ADGR_INVAL)){
+                $output .= " (None)\">";
+            }
+            else{
+                $output .= "\">";
+                foreach ($ADGR_INVAL as $opt){
+                    $output .= $opt;
+                }
+            }
+        $output .= "</optgroup>";
+        $output .= "</select>";
+
+        return $output;
+    }
 
 }
 

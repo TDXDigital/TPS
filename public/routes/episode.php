@@ -120,7 +120,8 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $episodeCheck = new \TPS\episode($program, NULL, $airDate, $airTime,
                 $description, $type, $recordDate);
 
-         $ads = $episode->getAdOptions($req['spons']);
+        $ads = $episode->getAdOptions($req['spons']);
+        $commercials =  $episode->getAllCommercials($ads);
          
         if( $type == 2){
             while($episodeCheck->getEpisode()["id"] != Null){
@@ -132,12 +133,12 @@ $app->group('/episode', $authenticate($app,[1,2]),
             $episode = new \TPS\episode($program, NULL, $airDate, $airTime,
                     $description, $type, $recordDate);
         }
-
         $params = array(
             'area'=>'Episode',
             'title'=>'Log Addition',
             'req' => $req,
-            'ads' => $ads
+            'ads' => $ads,
+            'commercial' => $commercials
         );
         if($episodeCheck->getEpisode()['id']){
             $params['episode'] = $episode->getEpisode();

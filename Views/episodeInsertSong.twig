@@ -81,7 +81,7 @@
 	<table class="table" id="songTable">
 		<thead>
 		<tr>
-			 <th style="width: 6%">Playlist</th> <th>Category</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th> <th>Composer</th> <th>CC</th> <th>Hit</th> <th>Ins</th> <th style="width: 7%">Type</th> <th>Language</th><th></th>
+			 <th style="width: 6%">Playlist/<br>Ad ID</th> <th>Category</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th> <th>Composer</th> <th>CC</th> <th>Hit</th> <th>Ins</th> <th style="width: 7%">Type</th> <th>Language</th><th></th>
 		</tr>
 		</thead>
 		<tbody>
@@ -91,7 +91,7 @@
 				<input type="text" class="form-control playlistNum" name="playlistNum[1]" id="playlistNum" placeholder="">
 			</td>
 			<td>
-				<select name="cat[1]" id="DDLNormal" class="form-control" onchange="CHtype()">
+				<select name="cat[1]" id="DDLNormal" class="form-control chtype" onchange="CHtype()">
 	               <option value="53">53, Sponsored Promotion</option>
 	               <OPTION value="52">52, Sponsor Indentification</OPTION>
 	               <OPTION VALUE="51">51, Commercial</OPTION>
@@ -123,6 +123,9 @@
 			</td>
 			<td>
 				<input class="form-control" name="title[1]" type="text" placeholder="Title"> 
+				<div name="commercial[1]" style="display: none">
+					<span><b>All Commercials: </b></span>{{commercial|raw}}
+				</div>
 			</td>
 			<td>
 				<input class="form-control" name="artist[1]" id="artist" type="text" placeholder="Artist">
@@ -164,7 +167,7 @@
 
 		<tfoot>
             <tr>
-			 <th style="width: 6%">Playlist</th> <th>Category</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th> <th>Composer</th> <th>CC</th> <th>Hit</th> <th>Ins</th> <th style="width: 7%">Type</th> <th>Language</th><th></th>
+			 <th style="width: 6%">Playlist/<br>Ad ID</th> <th>Category</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th> <th>Composer</th> <th>CC</th> <th>Hit</th> <th>Ins</th> <th style="width: 7%">Type</th> <th>Language</th><th></th>
 			</tr>
         </tfoot>
 	</table>
@@ -178,6 +181,7 @@
 
 {% endblock %}
 {% block lastScripts %}
+<script>var commercialOption = ('{{commercial|raw}}')</script>
 <script src="{{siteUrl}}/TPSBIN/JS/episode.js"></script>
 
 {% endblock %}
