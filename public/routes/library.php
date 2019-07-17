@@ -413,7 +413,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $genres = $library->getLibraryGenres();
             $params=array(
                 'area'=>'Library',
-                'title'=>'Bulk Import',
+                'title'=>'Batch Entry',
                 'max_input_vars'=> $max_input_vars
             );
             if(!strtolower($json) == "json" || $ajax){
