@@ -1156,6 +1156,13 @@ class library extends station{
                 $playlist_flag = 'False';
             }
 
+	    $variousArtists = False;
+	    $artist = $getData[1];
+	    if ($artist == 'V/A') {
+		$artist = '~Various Artists~';
+		$variousArtists = True;
+	    }
+
             $tags = [];
             if($getData[11] == 'o')
                 array_push($tags, 'FemCon');
@@ -1167,8 +1174,8 @@ class library extends station{
 
             $format = $getData[12] == ''? 'CD':$getData[12];
             $subgenres = $getData[7] == ''? [] : explode('/', $getData[7]);
-            $result = self::createAlbum($getData[1], $getData[2], $format, $genreKey, $genre_num, $labels, 
-                $locale, $canCon, $playlist_flag, $null, $null, $note, $accept, false,
+            $result = self::createAlbum($artist, $getData[2], $format, $genreKey, $genre_num, $labels, 
+                $locale, $canCon, $playlist_flag, $null, $null, $note, $accept, $variousArtists,
                 $dateIn, $dateRel, 1, $rating, $tags, $hometowns, $subgenres);
 
             if($playlist_flag == 'Complete' && $playlistid != $null)
@@ -1541,7 +1548,7 @@ class library extends station{
             $playlist,
             $governmentCategory,
             $schedule,
-	        $rating,
+	    $rating,
             $library_code
         )){
             $stmt3->close();
