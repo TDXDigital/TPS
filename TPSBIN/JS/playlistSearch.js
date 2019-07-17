@@ -81,6 +81,11 @@ $(document).ready(function() {
                 "data":           "playlistID",
                 "defaultContent": "",
             },
+            {
+                "orderable":      false,
+                "data":           "tags",
+                "defaultContent": "",
+            },
         ],
 	"columnDefs": [
 
@@ -124,6 +129,13 @@ $(document).ready(function() {
 			return '<a href="./' + data + '"><i class="fa fa-edit"></i></a>';
 		},
 			"targets" : 7
+	    },
+	    {
+		"render": function(data, type, row) {
+			return cellBulletPoints(data);
+		},
+			"targets" : 8,
+			"visible": false
 	    },
 	    { className: "centeredTD", targets: [0, 5, 6, 7]}
 	],
