@@ -26,7 +26,7 @@
 $(document).ready(function() {
     var playlistTable = $('#playlist_table').DataTable({
         "processing": true,
-        "serverSide": true,
+        "serverSide": false,
         "ajax": {
             "url": "/playlist/display-playlist", 
             "data": function(d) {
@@ -88,14 +88,11 @@ $(document).ready(function() {
         "render": function (data, type, row) {
             var id = data.ShortCode;
 
-            if(data.ShortCode.length == 3){
-                id = "0" + data.ShortCode;
-            }
+            if(id.length < 4)
+                id = '0'.repeat(4 - id.length) + id;
             if(data.missing == 1)
-            {
                 return '<input type="checkbox" name="bulkEditId[]" style="visibility:hidden" value="'+data.refCode+'"/>' + 
                 '<a href="#" class="missingAlbum">'+ id.toString() +'</a>';
-            }
             else   
                 return '<input type="checkbox" name="bulkEditId[]" style="visibility:hidden" value="'+data.refCode+'"/>' + id.toString();
         },
@@ -128,7 +125,7 @@ $(document).ready(function() {
 		},
 			"targets" : 7
 	    },
-	    { className: "centeredTD", targets: 5}
+	    { className: "centeredTD", targets: [0, 5, 6, 7]}
 	],
     });
 
