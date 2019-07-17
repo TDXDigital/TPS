@@ -12,10 +12,10 @@ $(document).on('change paste input', ".playlistNum", function(){
             }).done(function(data) {
             	var albumInfo = JSON.parse(data);
             	var rowId = input.closest('tr').attr('id');
-
     	    	input.closest('tr').find("input[name='artist["+ rowId +"]']").val(albumInfo.artist);
             	input.closest('tr').find("input[name='album["+ rowId +"]']").val(albumInfo.album);
-            	input.closest('tr').find("[name='cat["+ rowId +"]']").val(albumInfo.governmentCategory);
+            	if(albumInfo.governmentCategory != undefined)
+            		input.closest('tr').find("[name='cat["+ rowId +"]']").val(albumInfo.governmentCategory);
             	if(albumInfo.CanCon == 1)
             		input.closest('tr').find("input[name='cancon["+ rowId +"]']").prop('checked', true);
             	else
@@ -77,10 +77,10 @@ $(document).on('click', '.insertBtn', function(){
  		'<tr id="' + ++rowid +'">' +
 			'<td>' +
 			'<input type="hidden" name="row[]" value="'+ rowid +'">' +
-				'<input type="text" class="form-control playlistNum" name="playlistNum['+ rowid +']" id="playlistNum" placeholder="">' +
+				'<input type="text" class="form-control input-sm playlistNum" name="playlistNum['+ rowid +']" id="playlistNum" placeholder="">' +
 			'</td>' +
 			'<td>' +
-				'<select name="cat['+ rowid +']" id="DDLNormal" class="form-control chtype" onchange="CHtype()">' +
+				'<select name="cat['+ rowid +']" id="DDLNormal" class="form-control input-sm chtype" onchange="CHtype()">' +
 	               '<option value="53"> 53, Sponsored Promotion</option>' +
 	               '<OPTION value="52"> 52, Sponsor Indentification</OPTION>' +
 	               '<OPTION VALUE="51"> 51, Commercial</OPTION>' +
@@ -106,22 +106,22 @@ $(document).on('click', '.insertBtn', function(){
                	'</select>' +
 			'</td>' +
 			'<td>' +
-				'<input type="time" class="form-control" name="time['+ rowid +']" placeholder="">' +
+				'<input type="time" class="form-control input-sm" name="time['+ rowid +']" placeholder="">' +
 			'</td>' +
 			'<td>' +
-				'<input class="form-control" type="text" name="title['+ rowid +']" placeholder="Title">' + 
+				'<input class="form-control input-sm" type="text" name="title['+ rowid +']" placeholder="Title">' + 
 				'<div name="commercial['+ rowid +']" style="display: none">'+
-					'<span><b>All Commercials: </b></span>' + commercialOption +
+					commercialOption +
 				'</div>'+
 			'</td>' +
 			'<td>' +
-				'<input class="form-control" name="artist['+ rowid +']" id="artist"  type="text" placeholder="Artist">' +
+				'<input class="form-control input-sm" name="artist['+ rowid +']" id="artist"  type="text" placeholder="Artist">' +
 			'</td>' +
 			'<td>' +
-				'<input class="form-control" id="album" name="album['+ rowid +']" type="text" placeholder="Album">' +
+				'<input class="form-control input-sm" id="album" name="album['+ rowid +']" type="text" placeholder="Album">' +
 			'</td>' +
 			'<td>' +
-				'<input class="form-control" id="album" name="composer['+ rowid +']" type="text" placeholder="Composer">' +
+				'<input class="form-control input-sm" id="album" name="composer['+ rowid +']" type="text" placeholder="Composer">' +
 			'</td>' +
 			'<td>' +
 				'<input type="checkbox" id="ccin" name="cancon['+ rowid +']" value="1"/>' +
@@ -133,14 +133,14 @@ $(document).on('click', '.insertBtn', function(){
 				'<input type="checkbox" id="insin" name="instrumental['+ rowid +']" value="1"/>' +	
 			'</td>' +
 			'<td>' +
-				'<select name="type['+ rowid +']" id="type" class="form-control">' +
+				'<select name="type['+ rowid +']" id="type" class="form-control input-sm">' +
 		           '<option value="NA"> ---</option>' +
 		           '<option value="BACKGROUND">BG</option>' +
 		           '<option value="THEME"> TH</option>' +
 	       		'</select>' +
 			'</td>' +
 			'<td>' +
-				'<input list="lang" name="lang['+ rowid +']" required value="English" size="10" maxlength="40" class="form-control"/>' +
+				'<input list="lang" name="lang['+ rowid +']" required value="English" size="10" maxlength="40" class="form-control input-sm"/>' +
 	           	'<datalist id="lang">' +
 	           		'<option value="English">' +
 	           		'<option value="French">' +
@@ -236,8 +236,29 @@ $(document).on('change', '.chtype', function(e){
 			row.find("div[name='commercial["+ rowid +"]']").show();
 			break;
 
+		case '11':
 		case '12':
-		
+			row.find("input[name='title["+ rowid +"]']").val('Spoken Word / Talk');
+			row.find("input[name='composer["+ rowid +"]']").hide();
+			row.find("input[name='cancon["+ rowid +"]']").hide();
+			row.find("input[name='hit["+ rowid +"]']").hide();
+			row.find("input[name='instrumental["+ rowid +"]']").hide();
+			row.find("select[name='type["+ rowid +"]']").hide();
+			row.find("input[name='lang["+ rowid +"]']").hide();
+			break;
+		default:
+			row.find("input[name='playlistNum["+ rowid +"]']").attr("placeholder", "");
+			row.find("input[name='title["+ rowid +"]']").val('').show();
+			row.find("input[name='artist["+ rowid +"]']").show();
+			row.find("input[name='album["+ rowid +"]']").show();
+			row.find("input[name='composer["+ rowid +"]']").show();
+			row.find("input[name='cancon["+ rowid +"]']").show();
+			row.find("input[name='hit["+ rowid +"]']").show();
+			row.find("input[name='instrumental["+ rowid +"]']").show();
+			row.find("select[name='type["+ rowid +"]']").show();
+			row.find("input[name='lang["+ rowid +"]']").show();
+			row.find("div[name='commercial["+ rowid +"]']").hide();
+
 	}
 
 
