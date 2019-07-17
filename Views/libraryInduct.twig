@@ -590,9 +590,11 @@
 	    $('#canconCheckbox').next().find('button').click();
     }
 
-    function getRegion(hometowns) {
+    function getRegion(hometowns, flip=false) {
 	currSelect = $('#locale').prop('selectedIndex');
 	canconButtonOn = !$("#canconCheckbox").next().attr('class').split(" ").includes('active');
+	if (flip)
+		canconButtonOn = !canconButtonOn;
 	regionNum = canconButtonOn ? Math.max(currSelect, canconButtonOn) : 0;
 	if (hometowns != null) {
 		regionNum = Math.max(...hometowns.map(function(location) {
@@ -627,12 +629,13 @@
 
     function updateRegion() {
 	if ($("#canconCheckbox").next().attr('class') != null) {
-		canconButtonOff = !$("#canconCheckbox").next().attr('class').split(" ").includes('active');
-		if (canconButtonOff || $('#hometown').chosen().val() == null)
+		var canconButtonOff = !$("#canconCheckbox").next().attr('class').split(" ").includes('active');
+		if (!canconButtonOff && $('#hometown').chosen().val() == null ||
+		    canconButtonOff && getRegion($('#hometown').chosen().val(), true) != 'International')
 			$('#canconCheckbox').next().find('button').click();
 		else {
-			region = getRegion($('#hometown').chosen().val());
-			if (region == 'International')
+			region = getRegion($('#hometown').chosen().val(), true);
+			if (region == 'International' && !canconButtonOff)
 				region = 'Country';
 			$('#locale').val(region);
 		}
@@ -645,7 +648,6 @@
 	if (buttonOn && region == "International")
 		region = "Country";
 	$('#locale').val(region); 
-
     }
 
     function updateVACheckbox() {
