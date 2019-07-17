@@ -710,11 +710,10 @@ class playlist extends TPS{
     * @param string $color The color associated with the table
     * @return string The html code for the albums table
     */
-// "<img class='star' style='width: 12px; vertical-align:baseline;' src='../../../images/recommended.png' />"
     public function createPDFTable($albums, $color) {
 	$html = "<table cellspacing='0' cellpadding='2' class='{$color}-table'><tr><th>#</th><th>Artist</th><th>Album</th><th>Subgenres</th><th>Hometowns</th><th>Date Added</th></tr>";
         foreach ($albums as $album) {
-            $html .= "<tr><td class='centered'>"  . $album['SmallCode'] . "</td>" .
+            $html .= "<tr><td class='centered'>"  . str_pad(strval($album['SmallCode']), 4, '0', STR_PAD_LEFT) . "</td>" .
                      "<td>" . $album['library']['artist'] . "</td>" .
             	     "<td>" . $album['library']['album'];
 	    if ($album['library']['rating'] >= 4)

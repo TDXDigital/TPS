@@ -1065,9 +1065,13 @@ class library extends station{
             $dateRel = $getData[4] == '?'||''? $null:strtotime($getData[4]);
             $dateRel = date("Y-m-d", $dateRel);
             
-            $canCon = 0;
+            $canCon = $getData[21];
             $rating = substr_count($getData[10], "*");
             $note = substr($getData[13], 0,119);
+
+	    $missing = False;
+	    if (strpos(strtolower($note), 'missing from playlist') !== False)
+		$missing = True;
 
             $locale = 'International';
             switch($getData[22])
@@ -1176,7 +1180,7 @@ class library extends station{
             $subgenres = $getData[7] == ''? [] : explode('/', $getData[7]);
             $result = self::createAlbum($artist, $getData[2], $format, $genreKey, $genre_num, $labels, 
                 $locale, $canCon, $playlist_flag, $null, $null, $note, $accept, $variousArtists,
-                $dateIn, $dateRel, 1, $rating, $tags, $hometowns, $subgenres);
+                $dateIn, $dateRel, 1, $rating, $tags, $hometowns, $subgenres, [], $missing);
 
             if($playlist_flag == 'Complete' && $playlistid != $null)
             {
@@ -1512,15 +1516,15 @@ class library extends station{
     public function createAlbum($artist, $album, $format, $genre, $genre_num, $labelNums, $locale, $CanCon, $playlist,
                                 $governmentCategory, $schedule, $note="", $accepted=1, $variousartists=False,
                                 $datein=null, $release_date=null, $print=1, $rating=null, $tags=[], $hometowns=[],
-				$subgenres=[], $tracklist=[]){
+				$subgenres=[], $tracklist=[], $missing=True){
 	$this->formatArtistName($artist);
         if(is_null($datein)){
             $datein = date("Y-m-d");
         }
         if(!$stmt3 = $this->mysqli->prepare("REPLACE INTO library(datein,artist,album,variousartists,
             format,genre,status,Locale,CanCon,release_date,year,note,playlist_flag,
-            governmentCategory,scheduleCode, rating, library_code)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
+            governmentCategory,scheduleCode, rating, library_code, missing)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")){
             $stmt3->close();
             header("location: ./?q=new&e=".$stmt3->errno."&s=3&m=".$stmt3->error);
         }
@@ -1532,7 +1536,7 @@ class library extends station{
         }
         $library_code = 0;
         if(!$stmt3->bind_param(
-            "sssissisissssssii",
+            "sssissisissssssiii",
             $datein,
             $artist,
             $album,
@@ -1549,7 +1553,8 @@ class library extends station{
             $governmentCategory,
             $schedule,
 	    $rating,
-            $library_code
+            $library_code,
+	    $missing
         )){
             $stmt3->close();
             return $this->mysqli->error;
