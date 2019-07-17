@@ -76,11 +76,25 @@ class library extends station{
     }
 
     /**
+     * @author Derek Melchin 
+     * @abstract Returns library note for a given album
+     * @global mysqli $mysqli
+     * @param type $RefCode Reference Code for Album
+     * @return string of notes
+     */
+    public function getNoteByRefCode($RefCode) {
+	$sql = $this->mysqli->query("SELECT note FROM library WHERE RefCode=" . $RefCode . ";");
+	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
+	    return $row['note'];
+	throw new Exception("Error while fetching note for RefCode " . $RefCode);
+    }
+    /**
      * @abstract returns genre for a given album
      * @global mysqli $mysqli
      * @param type $RefCode Reference Code for Album
      * @return string of genre
      */
+
     public function getGenreByRefCode($RefCode) {
 	$sql = $this->mysqli->query("SELECT genre FROM library WHERE RefCode=" . $RefCode . ";");
 	while ($row = $sql->fetch_array(MYSQLI_ASSOC))
