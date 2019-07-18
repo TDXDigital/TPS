@@ -26,7 +26,7 @@
 $(document).ready(function() {
     var playlistTable = $('#playlist_table').DataTable({
         "processing": true,
-        "serverSide": false,
+        "serverSide": true,
         "ajax": {
             "url": "/playlist/display-playlist", 
             "data": function(d) {
@@ -123,6 +123,12 @@ $(document).ready(function() {
 			return cellBulletPoints(data);
 		},
 			"targets" : 4
+	    },
+	    {
+		"render": function(data, type, row) {
+			return data.substring(0, 10);
+		},
+			"targets" : [5,6]
 	    },
 	    {
 		"render": function(data, type, row) {

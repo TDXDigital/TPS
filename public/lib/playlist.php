@@ -69,7 +69,7 @@ class playlist extends TPS{
     }
 
     public function displayTable($filter) {
-        $where = " playlist_flag = 'COMPLETE' AND refCode IN (SELECT refCode from playlist)";
+        $where = " playlist_flag = 'COMPLETE'";
         switch($filter['recommended']) {
             case 'all': $where .= " AND true"; break;
             case 'only': $where .= " AND rating >= 4"; break;
@@ -77,42 +77,50 @@ class playlist extends TPS{
         }
         switch($filter['expiry']) {
             case 'all': $where .= " AND true"; break;
-            case 'active': $where .= " AND RefCode = (SELECT RefCode from playlist 
-            WHERE now() <= expire AND library.RefCode = playlist.RefCode) "; break;
-            case 'expired' : $where .= " AND RefCode = (SELECT RefCode from playlist 
-            WHERE now() > expire AND library.RefCode = playlist.RefCode) "; break;
+            case 'active': $where .= " AND NOW() <= Expire"; break;
+            case 'expired' : $where .= " AND NOW() > Expire"; break;
         }
         switch($filter['missing']) {
             case 'all': $where .= " AND true"; break;
             case 'missing': $where .= " AND missing = 1"; break;
         }
 
-        $table = 'library';
-        $primaryKey = 'RefCode';
+        $table = 'library l left join playlist p on l.refCode=p.refCode';//"leftjoin('library', 'library.refCode', '=', 'playlist.refCode')";//(library l left join playlist p on l.refCode=p.refCode)';
+        $primaryKey = 'PlaylistId';
         $columns = array(
+            array( 'db' => 'SmallCode', 'dt' => 'ShortCode' ),
+            array( 'db' => 'artist',  'dt' => 'artist' ),
+            array( 'db' => 'album',   'dt' => 'album' ),
+            array( 'db' => 'Activate', 'dt' => 'addDate' ),
+            array( 'db' => 'Expire', 'dt' => 'endDate' ),
+            array( 'db' => 'rating',   'dt' => 'rating' ),
+            array( 'db' => 'missing',   'dt' => 'missing' ),
+            array( 'db' => 'PlaylistId',   'dt' => 'playlistID' ),
+
+/*
             array( 'db' => 'refCode', 'dt' => 'refCode' ),
             array( 'db' => 'datein', 'dt' => 'datein' ),
             array( 'db' => 'artist',  'dt' => 'artist' ),
             array( 'db' => 'album',   'dt' => 'album' ),
             array( 'db' => 'rating',   'dt' => 'rating' ),
             array( 'db' => 'missing',   'dt' => 'missing' ),
+*/
         );
         $lib_data = \SSP::complex($_GET, $this->db, $table, $primaryKey, $columns, null, $where);
 
         $library = new \TPS\library();
         foreach($lib_data['data'] as &$album) {
-            $refCode = $album['refCode'];
-            if (!array_key_exists(0,$this->getAllByRefCode($refCode)))
-                $album_playlist_info = array_values($this->getAllByRefCode($refCode))[0];
-            $album['playlistID'] = $album_playlist_info['PlaylistId'];
-            $album['ShortCode'] = $album_playlist_info['SmallCode'];
-            $album['addDate'] = substr($album_playlist_info['Activate'], 0, 10);
-            $album['endDate'] = substr($album_playlist_info['Expire'], 0, 10);
+	    $refCode = $this->getRefCodeByPlaylistID((int)$album['playlistID']);
             $album['subgenres'] = $library->getSubgenresByRefCode($refCode);
             $album['hometowns'] = $library->getHometownsByRefCode($refCode);
 	    $album['tags'] = $library->getTagsByRefCode($refCode);
         }
+
         return json_encode($lib_data);
+    }
+
+    public function getRefCodeByPlaylistID($playlistID) {
+	return $this->db->query("SELECT refCode FROM playlist WHERE PlaylistId=$playlistID;")->fetch(\PDO::FETCH_ASSOC)['refCode'];
     }
 
     public function getRangeGaps($list, $start=FALSE){

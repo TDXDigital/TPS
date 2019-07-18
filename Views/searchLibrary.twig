@@ -97,22 +97,6 @@
                 </select>
             </div>
         </div>
-
-        <div class="col-xs-2">
-          <div class="form-group input-group">
-                <label for="filter_location" class="input-group-addon">Location&nbsp;</label>
-                <select class="form-control table_filter" id="filter_location">
-                    <option value="all">All</option>
-                    <option value="Local">Local</option>
-                    <option value="Country">Country</option>
-                    <option value="State">State</option>
-                    <option value="Province">Province</option>
-                    <option value="Country">Country</option>
-                    <option value="International">International</option>
-                </select>
-            </div>
-        </div>
-        <div class="row"></div>
         <div class="col-xs-2">
             <div class="form-group input-group">
                 <label for="filter_format" class="input-group-addon">Format</label>
@@ -125,6 +109,8 @@
                 </select>
             </div>
         </div>
+
+        <div class="row"></div>
 
         <div class="col-xs-2">
           <div class="form-group input-group">
@@ -143,14 +129,16 @@
             </div>
         </div>
         <div class="col-xs-2">
-            <div class="form-group input-group">
-                <label for="filter_tag" class="input-group-addon">Tag</label>
-                <select class="form-control table_filter" id="filter_tag">
+          <div class="form-group input-group">
+                <label for="filter_location" class="input-group-addon">Location&nbsp;</label>
+                <select class="form-control table_filter" id="filter_location">
                     <option value="all">All</option>
-                    {% for key,value in tag %}
-                        <option value='{{value}}'
-                                >{{value|default('Unknown tag')}}</option>
-                    {% endfor %}
+                    <option value="Local">Local</option>
+                    <option value="Country">Country</option>
+                    <option value="State">State</option>
+                    <option value="Province">Province</option>
+                    <option value="Country">Country</option>
+                    <option value="International">International</option>
                 </select>
             </div>
         </div>
@@ -162,6 +150,18 @@
                     {% for key,value in hometowns %}
                         <option value='{{value}}'
                                 >{{value|default('Unknown hometown')}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-xs-2">
+            <div class="form-group input-group">
+                <label for="filter_tag" class="input-group-addon">Tag</label>
+                <select class="form-control table_filter" id="filter_tag">
+                    <option value="all">All</option>
+                    {% for key,value in tag %}
+                        <option value='{{value}}'
+                                >{{value|default('Unknown tag')}}</option>
                     {% endfor %}
                 </select>
             </div>
