@@ -190,7 +190,9 @@ $(document).ready(function() {
                         locale: $('#filter_location').val(),
                         format: $('#filter_format').val(),
                         missing_info: $('#missing_info').val(),
-                        tag: $('#filter_tag').val()
+                        tag: $('#filter_tag').val(),
+			hometown: $('#filter_hometown').val(),
+			subgenre: $('#filter_subgenre').val()
                         }
                  }
         },

@@ -218,6 +218,8 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             $genres = $library->getLibraryGenres();
             $formats = $library->getMediaFormats();
             $tag = $library->getTags();
+	    $hometowns = $library->getHometowns();
+	    $subgenres = $library->getSubgenres();
             $params = array(
                 "area"=>"Library",
                 "albums"=>$result,
@@ -229,7 +231,9 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
                 "sortColumn"=>$sortCol,
                 "format"=>$formats,
                 "genres"=>$genres,
-                "tag"=>$tag
+                "tag"=>$tag,
+		"hometowns"=>$hometowns,
+		"subgenres"=>$subgenres
             );
             $isXHR = $app->request->isAjax();
             if($isXHR || $format=="json"){
