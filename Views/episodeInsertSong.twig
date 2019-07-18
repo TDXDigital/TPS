@@ -157,7 +157,7 @@
 		          	</datalist>
 		        </div>
 		    </div>
-		    
+
 	        <div id="adPart" style="display: none">
 				<div class="col-md-3">
 					<label for="commercial">All Commercials</label>
@@ -182,10 +182,12 @@
 	</div>
 
 <br>
+<hr>
+<div style="background-color: #F5F5F5;">
 <form action="/episode/finalize" id="episodeForm" method="POST">
 	<input type="hidden" name="epNum" value="{{episode.id}}">
 	<table class="table" id="songTable" >
-		<thead>
+		<thead class="thead-dark">
 		<tr>
 			 <th style="width: 6%">Playlist/<br>Ad ID</th> <th>Category</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th> <th>Composer</th> <th>CC</th> <th>Hit</th> <th>Ins</th> <th style="width: 7%">Type</th> <th>Language</th><th></th><th></th>
 		</tr>
@@ -285,7 +287,7 @@
 </form>
 
 
-
+</div>
 
 
 {% endblock %}

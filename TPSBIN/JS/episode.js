@@ -101,13 +101,13 @@ $(document).on('click', '.insertBtn', function(){
 				'</div>'+
 			'</td>' +
 			'<td>' +
-				'<input class="form-control readonly  input-sm" name="artist['+ rowid +']" id="artist"  type="text" placeholder="Artist" value="'+ inputVal.find("input[name='artist']").val()+'">' +
+				'<input class="form-control input-sm" readonly name="artist['+ rowid +']" id="artist"  type="text" placeholder="Artist" value="'+ inputVal.find("input[name='artist']").val()+'">' +
 			'</td>' +
 			'<td>' +
-				'<input class="form-control readonly input-sm" id="album" name="album['+ rowid +']" type="text" placeholder="Album" value="'+ inputVal.find("input[name='album']").val()+'">' +
+				'<input class="form-control input-sm" readonly id="album" name="album['+ rowid +']" type="text" placeholder="Album" value="'+ inputVal.find("input[name='album']").val()+'">' +
 			'</td>' +
 			'<td>' +
-				'<input class="form-control readonly input-sm" id="album" name="composer['+ rowid +']" type="text" placeholder="Composer" value="'+ inputVal.find("input[name='composer']").val()+'">' +
+				'<input class="form-control input-sm" readonly id="album" name="composer['+ rowid +']" type="text" placeholder="Composer" value="'+ inputVal.find("input[name='composer']").val()+'">' +
 			'</td>' +
 			'<td>' +
 				'<input type="checkbox" disabled id="ccin" name="cancon['+ rowid +']" ' + canConChecked +' value="1"/>' +
@@ -133,6 +133,7 @@ $(document).on('click', '.insertBtn', function(){
 		'</tr>'
 
  		);
+
  	clearInputField(inputVal);
  	$('#adPart').hide();
 	$('#musicPart').show();
