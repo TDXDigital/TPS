@@ -906,7 +906,7 @@ class library extends station{
         switch($filter["missing_info"])
         {
             case 'all': $where .= " AND true"; break;
-
+	    case 'album' : $where .= " AND missing=1"; break;
             case 'label': $where .= " AND refCode NOT IN (SELECT library_refcode from library_recordlabel)"; break;
             case 'locale': $where .= " AND locale is null"; break;
             case 'genre': $where .= " AND Genre is null"; break;
@@ -919,7 +919,16 @@ class library extends station{
         {
             case 'all': $where .= " AND true"; break;
             default: $where .= " AND RefCode IN (select library_refCode from library_tags where tag_id = (select id from tags where name = '". $filter['tag'] ."'))";
-            // default: $where .= " AND true"; break;
+        }
+        switch($filter['hometown'])
+        {
+            case 'all': $where .= " AND true"; break;
+            default: $where .= " AND RefCode IN (select library_refCode from library_hometowns where hometown_id = (select id from hometowns where name = '". $filter['hometown'] ."'))";
+        }
+        switch($filter['subgenre'])
+        {
+            case 'all': $where .= " AND true"; break;
+            default: $where .= " AND RefCode IN (select library_refCode from library_subgenres where subgenre_id = (select id from subgenres where name = '". $filter['subgenre'] ."'))";
         }
         return $where;
     }

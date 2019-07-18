@@ -691,7 +691,10 @@
 	if ($('#playlistCheckbox').next().attr('class') == null)
 		return;
 
-	rel_date_arr = $('#reldate').val().split('-');
+	if ($('#reldate').val() == "")
+		rel_date_arr = ["1000", "1", "1"];
+	else
+		rel_date_arr = $('#reldate').val().split('-');
 	in_date_arr = $('#indate').val().split('-');
 
 	rel_date = new Date(rel_date_arr[0], rel_date_arr[1]-1, rel_date_arr[2]);
@@ -705,7 +708,7 @@
 
 	keeping = $('#keepSelect').val() == 1;
 	curr_playlist_val = $('#playlistCheckbox').next().attr('class').split(" ").includes('active');
-	if (months_old <= 6 != curr_playlist_val && keeping || keeping != curr_playlist_val)
+	if (months_old <= 6 != curr_playlist_val && keeping || !keeping && curr_playlist_val)
 		$('#playlistCheckbox').next().find('button').click();
     }
 
