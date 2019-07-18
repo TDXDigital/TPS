@@ -85,7 +85,7 @@ class playlist extends TPS{
             case 'missing': $where .= " AND missing = 1"; break;
         }
 
-        $table = 'library l left join playlist p on l.refCode=p.refCode';//"leftjoin('library', 'library.refCode', '=', 'playlist.refCode')";//(library l left join playlist p on l.refCode=p.refCode)';
+        $table = 'library l left join playlist p on l.refCode=p.refCode';
         $primaryKey = 'PlaylistId';
         $columns = array(
             array( 'db' => 'SmallCode', 'dt' => 'ShortCode' ),
@@ -96,15 +96,6 @@ class playlist extends TPS{
             array( 'db' => 'rating',   'dt' => 'rating' ),
             array( 'db' => 'missing',   'dt' => 'missing' ),
             array( 'db' => 'PlaylistId',   'dt' => 'playlistID' ),
-
-/*
-            array( 'db' => 'refCode', 'dt' => 'refCode' ),
-            array( 'db' => 'datein', 'dt' => 'datein' ),
-            array( 'db' => 'artist',  'dt' => 'artist' ),
-            array( 'db' => 'album',   'dt' => 'album' ),
-            array( 'db' => 'rating',   'dt' => 'rating' ),
-            array( 'db' => 'missing',   'dt' => 'missing' ),
-*/
         );
         $lib_data = \SSP::complex($_GET, $this->db, $table, $primaryKey, $columns, null, $where);
 
