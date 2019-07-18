@@ -199,6 +199,9 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $lang = $app->request->post('lang');
 
 
+        print_r($_POST);
+        exit;
+
         \TPS\episode::insertSongs($row, $epNum, $title, $album, $composer, $time, $artist, $cancon, $playlisdId, $type, $category, $hit, $inst);
 
                 // echo $progName;

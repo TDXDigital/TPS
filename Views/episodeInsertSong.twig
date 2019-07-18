@@ -73,28 +73,16 @@
 
 <hr>
 
-
-<br>
-<form action="/episode/finalize" id="episodeForm" method="POST">
-	<input type="hidden" name="epNum" value="{{episode.id}}">
 <!-- Inserted Song table -->
-	<table class="table" id="songTable" >
-		<thead>
-		<tr>
-			 <th style="width: 6%">Playlist/<br>Ad ID</th> <th>Category <input type="button" class="btn btn-sm" value="Define" onclick="return popitup('../legacy/help/definetype.html')"/> </th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th> <th>Composer</th> <th>CC</th> <th>Hit</th> <th>Ins</th> <th style="width: 7%">Type</th> <th>Language</th><th></th><th></th>
-		</tr>
-		</thead>
-		<tbody>
-		<tr id=1>
-			<td>
-				<input type="hidden" name="row[]" value="1">
-				<input type="text" class="form-control input-sm playlistNum" name="playlistNum[1]" id="playlistNum" placeholder="">
-			</td>
-			<td>
-				
-
-
-				<select name="cat[1]" id="DDLNormal" class="form-control input-sm chtype">
+	<div class="songInputField">
+		<div class="row">
+			<div class="col-md-1">
+				<label for="playlistNum">Playlist ID</label>
+				<input type="text" class="form-control input-sm playlistNum" name="playlistNum" id="playlistNum" placeholder="">
+			</div>
+			<div class="col-md-3">
+				<label for="DDLNormal">Category<input type="button" class="btn btn-xs" value="Define" onclick="return popitup('../legacy/help/definetype.html')"/></label>
+				<select name="cat" id="DDLNormal" class="form-control input-sm chtype">
 	               <option value="53">53, Sponsored Promotion</option>
 	               <OPTION value="52">52, Sponsor Indentification</OPTION>
 	               <OPTION VALUE="51">51, Commercial</OPTION>
@@ -109,12 +97,127 @@
 	               	<option value="33">33, World/International</option>
 	               	<option value="32">32, Folk</option>
 	               	<option value="31">31, Concert</option>
-	               	<!--<option value="3">3, Special Interest</option>-->
 	               	<option value="24">24, Easy Listening</option>
 	               	<option value="23">23, Acoustic</option>
 	               	<option value="22">22, Country</option>
 	               	<option value="21">21, Pop, Rock and Dance</option>
-	               	<!--<option value="2" selected="True">2, Popular Music</option>-->
+	               <option value="12">12, PSA/Spoken Word Other</option>
+	               <OPTION VALUE="11">11, News</option>
+	               	<OPTION VALUE="" selected></option>
+               	</select>
+            </div>
+
+            <div class="col-md-2">
+            	<label for="time">Time:</label>
+				<input type="time" name="time" class="form-control input-sm" id="time" placeholder="">
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div id="musicPart">
+				<div class="col-md-2">
+					<label for="title">Title</label>
+					<input class="form-control input-sm" name="title" type="text" placeholder="Title"> 
+					<div name="commercial" style="display: none">
+						{{commercial|raw}}
+					</div>
+				</div>
+
+				<div class="col-md-2">
+					<label for="artist">artist</label>
+					<input class="form-control input-sm" name="artist" id="artist" type="text" placeholder="Artist">
+				</div>
+				<div class="col-md-2">
+					<label for="album">album</label>
+					<input class="form-control input-sm" name="album" id="album" type="text" placeholder="Album">
+				</div>
+				<div class="col-md-2">
+					<label for="composer">Composer</label>
+					<input class="form-control input-sm" name="composer" id="composer" type="text" placeholder="Composer">
+				</div>
+				<div class="col-md-1">
+						<label for="ccin">CC <br><input type="checkbox" id="ccin" name="cancon" value="1"/></label>
+						<label for="hitin">Hit <br><input type="checkbox" id="hitin" name="hit" value="1"/></label>
+						<label for="insin">Ins <br><input type="checkbox" id="insin" name="instrumental" value="1"/></label>
+				</div>
+				<div class="col-md-1">	
+					<label for="type">Type</label>
+					<select name="type" id="type" class="form-control input-sm">
+			           <option value="NA">---</option>
+			           <option value="BACKGROUND">BG</option>
+			           <option value="THEME">TH</option>
+		       		</select>
+		       	</div>
+		       	<div class="col-md-1">
+		       		<label for="lang">Language</label>
+					<input list="lang" name="lang" required value="English" size="10" maxlength="40" class="form-control input-sm"/>
+		           	<datalist id="lang">
+		           		<option value="English">
+		           		<option value="French">
+		          	</datalist>
+		        </div>
+		    </div>
+		    
+	        <div id="adPart" style="display: none">
+				<div class="col-md-3">
+					<label for="commercial">All Commercials</label>
+					<div name="commercial" id="commercial">
+							{{commercial|raw}}
+					</div>	
+				</div>
+				<div class="col-md-8"></div>
+			</div>
+
+			 <div class="col-md-1">
+	        	<input id="insertSong" type="button" class="btn btn-success insertBtn" value="Insert"/>
+	        </div>
+
+		</div>
+
+	       
+
+
+
+		
+	</div>
+
+<br>
+<form action="/episode/finalize" id="episodeForm" method="POST">
+	<input type="hidden" name="epNum" value="{{episode.id}}">
+	<table class="table" id="songTable" >
+		<thead>
+		<tr>
+			 <th style="width: 6%">Playlist/<br>Ad ID</th> <th>Category</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th> <th>Composer</th> <th>CC</th> <th>Hit</th> <th>Ins</th> <th style="width: 7%">Type</th> <th>Language</th><th></th><th></th>
+		</tr>
+		</thead>
+		<tbody>
+			<tr></tr>
+			<!--
+		<tr id=1>
+			<td>
+				<input type="hidden" name="row[]" value="1">
+				<input type="text" class="form-control input-sm playlistNum" name="playlistNum[1]" id="playlistNum" placeholder="">
+			</td>
+			<td>
+				 <select name="cat[1]" id="DDLNormal" class="form-control input-sm chtype">
+	               <option value="53">53, Sponsored Promotion</option>
+	               <OPTION value="52">52, Sponsor Indentification</OPTION>
+	               <OPTION VALUE="51">51, Commercial</OPTION>
+	               <option value="45">45, Show Promo</option>
+	               <option value="44">44, Programmer/Show ID</option>
+	               <option value="43">43, Musical Station ID</option>
+	               <option value="42">42, Tech Test</option>
+	               <option value="41">41, Themes</option>
+	               	<option value="36">36, Experimental</option>
+	               	<option value="35">35, NonClassical Religious</option>
+	               	<option value="34">34, Jazz and Blues</option>
+	               	<option value="33">33, World/International</option>
+	               	<option value="32">32, Folk</option>
+	               	<option value="31">31, Concert</option>
+	               	<option value="24">24, Easy Listening</option>
+	               	<option value="23">23, Acoustic</option>
+	               	<option value="22">22, Country</option>
+	               	<option value="21">21, Pop, Rock and Dance</option>
 	               <option value="12">12, PSA/Spoken Word Other</option>
 	               <OPTION VALUE="11">11, News</option>
 	               	<OPTION VALUE=""></option>
@@ -168,12 +271,12 @@
 			<td>
 				<input id="insertSong" type="button" class="btn btn-success insertBtn" value="Insert"/>
 			</td>
-		</tr>
+		</tr> -->
 		</tbody>
 
 		<tfoot>
             <tr>
-			 <th style="width: 6%">Playlist/<br>Ad ID</th> <th>Category <input type="button" class="btn btn-sm" value="Define" onclick="return popitup('../legacy/help/definetype.html')"/></th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th> <th>Composer</th> <th>CC</th> <th>Hit</th> <th>Ins</th> <th style="width: 7%">Type</th> <th>Language</th><th></th>
+			 <th style="width: 6%">Playlist/<br>Ad ID</th> <th>Category</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th> <th>Composer</th> <th>CC</th> <th>Hit</th> <th>Ins</th> <th style="width: 7%">Type</th> <th>Language</th><th></th>
 			</tr>
         </tfoot>
 	</table>
