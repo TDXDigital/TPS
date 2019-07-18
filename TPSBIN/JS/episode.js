@@ -29,7 +29,13 @@ $(document).on('change paste input', ".playlistNum", function(){
     }
 
 });
-
+function setAdVal()
+{
+	var inputfield = $('.songInputField');
+	inputfield.find("input[name='title']").val(inputfield.find("div[name='commercial'] option:selected").text());
+	inputfield.find("input[name='artist']").val('CKXU');
+	inputfield.find("input[name='album']").val('Advertisement');
+}
 //for insert song button listner 
 $(document).on('click', '.insertBtn', function(){
  	// $(this).prop('value', 'Delete');
@@ -42,38 +48,22 @@ $(document).on('click', '.insertBtn', function(){
  	var canConChecked = inputVal.find("input[name='cancon']").is(':checked')?'checked':'';
  	var hitChecked = inputVal.find("input[name='hit']").is(':checked')?'checked':'';
  	var instChecked = inputVal.find("input[name='instrumental']").is(':checked')?'checked':'';
- 	var catValue = $(this).closest('tr').find("[name='cat']").val();
-
+ 	var catValue = inputVal.find("[name='cat']").val();
  	// if it's AD, increase the Ad count
  	if(catValue == 51)
  	{
  		$('#adCount').text(parseInt($('#adCount').text()) + 1);
-
-			row.find("input[name='title["+ rowid +"]']").val(row.find("div[name='commercial["+ rowid +"]'] option:selected").text()).show();
-			row.find("input[name='artist["+ rowid +"]']").val('CKXU').show();
-			row.find("input[name='album["+ rowid +"]']").val('Advertisement').show();
-			row.find("input[name='composer["+ rowid +"]']").show();
-			row.find("input[name='cancon["+ rowid +"]']").show();
-			row.find("input[name='hit["+ rowid +"]']").show();
-			row.find("input[name='instrumental["+ rowid +"]']").show();
-			row.find("select[name='type["+ rowid +"]']").show();
-			row.find("input[name='lang["+ rowid +"]']").show();
-			row.find("div[name='commercial["+ rowid +"]']").hide();
+		setAdVal();
 
  	}
 
  	// if it's Promo increase PSA count
  	if(catValue == 45)
  		$('#psaCount').text(parseInt($('#psaCount').text()) + 1);
+
  	// if it's PSA, increase PSA count
  	if(catValue == 11 || catValue == 12)
-	{	row.find("input[name='composer["+ rowid +"]']").show();
-		row.find("input[name='cancon["+ rowid +"]']").show();
-		row.find("input[name='hit["+ rowid +"]']").show();
-		row.find("input[name='instrumental["+ rowid +"]']").show();
-		row.find("select[name='type["+ rowid +"]']").show();
-		row.find("input[name='lang["+ rowid +"]']").show();
-		
+	{	
  		if($(this).closest('tr').find("input[name='artist["+ rowid +"]']").val().toUpperCase().indexOf("STATION PSA")>=0||
  			$(this).closest('tr').find("input[name='title["+ rowid +"]']").val().toUpperCase().indexOf("PSA")>=0)
  			$('#psaCount').text(parseInt($('#psaCount').text()) + 1);
@@ -134,16 +124,18 @@ $(document).on('click', '.insertBtn', function(){
 
  		);
 
- 	clearInputField(inputVal);
+ 	clearInputField();
  	$('#adPart').hide();
 	$('#musicPart').show();
 	$('.songInputField').find("label[for='playlistNum']").text('Playlist ID');
 });
 
-function clearInputField(inputfield){
+function clearInputField(){
+	var inputfield =  $('.songInputField');
 	inputfield.find("input[type='text']").val('');
 	inputfield.find("input[type='checkbox']").prop('checked', false);
 	inputfield.find("select").val('');
+	inputfield.find("[name='type']").val('NA');
 }
 
 //event for remove button from the song table
@@ -205,7 +197,6 @@ $(document).on('submit','#episodeForm',function(){
 
 
 $(document).on('change', '.chtype', function(e){
-
 	var catNum = $(this).val();
 	var row = $(this).closest('tr');
 	var rowid = row.attr('id');
@@ -224,6 +215,9 @@ $(document).on('change', '.chtype', function(e){
 			// row.find("select[name='type["+ rowid +"]']").hide();
 			// row.find("input[name='lang["+ rowid +"]']").hide();
 			// row.find("div[name='commercial["+ rowid +"]']").show();
+			// clearInputField();
+			clearInputField();
+			$('.songInputField').find("[name='cat']").val('51');
 			$('#musicPart').hide();
 			$('#adPart').show();
 			$('.songInputField').find("label[for='playlistNum']").text('Ad ID');

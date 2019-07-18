@@ -489,7 +489,7 @@ class episode extends program{
         $output = "";
        //<input type="text" name="title" id="title001" size="33" required="true" maxlength="45">
         $output .= "<select id=\"ADLis\" name=\"title\" class=\"adch form-control\" >";
-        $output .= "<option value=\"\" disabled selected>Select Commercial option</option>";
+        // $output .= "<option value=\"\" disabled selected>Select Commercial option</option>";
 
             $SLADS = "select * from adverts where Category='51' and '" .
                 addslashes($this->date) . "' between StartDate and EndDate and Active='1' ".
