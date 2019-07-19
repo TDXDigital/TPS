@@ -82,7 +82,46 @@ class playlist extends TPS{
         }
         switch($filter['missing']) {
             case 'all': $where .= " AND true"; break;
-            case 'missing': $where .= " AND missing = 1"; break;
+            case 'missing': $where .= " AND missing=1"; break;
+        }
+        switch($filter['subgenre']) {
+            case 'all': $where .= " AND true"; break;
+            default: $where .= " AND PlaylistId IN ("
+				    . "SELECT p.PlaylistId "
+				    . "FROM playlist p "
+				    . "LEFT JOIN library l ON p.refCode=l.refCode "
+				    . "WHERE l.refCode IN ("
+					    . "select library_refCode from library_subgenres where subgenre_id = ("
+						    . "select id from subgenres where name = '" . $filter['subgenre'] . "'"
+					    . ")"
+				    . ")"
+				. ")"; break;
+	}
+        switch($filter['hometown']) {
+            case 'all': $where .= " AND true"; break;
+            default: $where .= " AND PlaylistId IN ("
+				    . "SELECT p.PlaylistId "
+				    . "FROM playlist p "
+				    . "LEFT JOIN library l ON p.refCode=l.refCode "
+				    . "WHERE l.refCode IN ("
+					    . "select library_refCode from library_hometowns where hometown_id = ("
+						    . "select id from hometowns where name = '" . $filter['hometown'] . "'"
+					    . ")"
+				    . ")"
+				. ")"; break;
+        }
+        switch($filter['tag']) {
+            case 'all': $where .= " AND true"; break;
+            default: $where .= " AND PlaylistId IN ("
+				    . "SELECT p.PlaylistId "
+				    . "FROM playlist p "
+				    . "LEFT JOIN library l ON p.refCode=l.refCode "
+				    . "WHERE l.refCode IN ("
+					    . "select library_refCode from library_tags where tag_id = ("
+						    . "select id from tags where name = '" . $filter['tag'] . "'"
+					    . ")"
+				    . ")"
+				. ")"; break;
         }
 
         $table = 'library l left join playlist p on l.refCode=p.refCode';
@@ -95,7 +134,7 @@ class playlist extends TPS{
             array( 'db' => 'Expire', 'dt' => 'endDate' ),
             array( 'db' => 'rating',   'dt' => 'rating' ),
             array( 'db' => 'missing',   'dt' => 'missing' ),
-            array( 'db' => 'PlaylistId',   'dt' => 'playlistID' ),
+            array( 'db' => 'PlaylistId',   'dt' => 'playlistID' )
         );
         $lib_data = \SSP::complex($_GET, $this->db, $table, $primaryKey, $columns, null, $where);
 

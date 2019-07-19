@@ -33,7 +33,10 @@ $(document).ready(function() {
                     d.filter = {
                         recommended: $('#filter_recommended').val(),
                         expiry : $('#filter_expiry').val(),
-                        missing: $('#filter_missing').val()            
+                        missing: $('#filter_missing').val(),
+                        subgenre: $('#filter_subgenre').val(),
+                        hometown: $('#filter_hometown').val(),
+                        tag: $('#filter_tag').val()
                         }
                     }
         },

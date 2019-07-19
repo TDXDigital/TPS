@@ -64,6 +64,9 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
                 "page"=>$page,
                 "pages"=>$count,
                 "limit"=>$limit,
+		"subgenres"=>$library->getSubgenres(),
+		"hometowns"=>$library->getHometowns(),
+		"tags"=>$library->getTags()
             );
             $app->render("playlists.twig", $params);
         }
