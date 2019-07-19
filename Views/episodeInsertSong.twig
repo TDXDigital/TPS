@@ -76,10 +76,6 @@
 <!-- Inserted Song table -->
 	<div class="songInputField">
 		<div class="row">
-			<div class="col-md-1">
-				<label for="playlistNum">Playlist ID</label>
-				<input type="text" class="form-control input-sm playlistNum" name="playlistNum" id="playlistNum" placeholder="">
-			</div>
 			<div class="col-md-3">
 				<label for="DDLNormal">Category<input type="button" class="btn btn-xs" value="Define" onclick="return popitup('../legacy/help/definetype.html')"/></label>
 				<select name="cat" id="DDLNormal" class="form-control input-sm chtype">
@@ -106,10 +102,14 @@
 	               	<OPTION VALUE="" selected disabled></option>
                	</select>
             </div>
+            <div class="col-md-1">
+				<label for="playlistNum">Playlist ID</label>
+				<input type="text" class="form-control input-sm playlistNum" name="playlistNum" id="playlistNum" placeholder="">
+			</div>
 
             <div class="col-md-2">
             	<label for="time">Time:</label>
-				<input type="time" name="time" class="form-control input-sm" id="time" placeholder="">
+				<input type="time" name="time" class="form-control input-sm" value="{{episode.time|date('H:i')}}" id="time" placeholder="">
 			</div>
 		</div>
 		<br>
@@ -164,6 +164,20 @@
 					<div name="commercial" id="commercial">
 							{{commercial|raw}}
 					</div>	
+				</div>
+				<div class="col-md-8"></div>
+			</div>
+
+			<div id="psaPart" style="display: none">
+				<div class="col-md-3">
+					<label for="psaTitle">Title</label>
+					<input list="spoken" name="psaTitle" id="psaTitle" size="25" required class="form-control input-sm"  maxlength="90" value="Spoken Word / Talk"/>
+                   <datalist id="spoken">
+                   		<option value="Spoken Word / Talk">
+                   		<option value="PSA / Promo">
+                   		<option value="News">
+                   		<option value="Verbal Station ID">
+                   </datalist>		
 				</div>
 				<div class="col-md-8"></div>
 			</div>
