@@ -1,9 +1,13 @@
 var rowid = 0;
 
 $(document).on('change paste input', ".playlistNum", function(){
- 
+
     if($(this).val().length == 4)
     {
+
+    	if($('.songInputField').find("label[for='playlistNum']").text() != 'Playlist ID')
+		return false;
+
     	var playlistNum = $(this).val();
     	var input = $(this);
     	$('#adPart').hide();
@@ -29,53 +33,59 @@ $(document).on('change paste input', ".playlistNum", function(){
     }
 
 });
+function setAdVal()
+{
+	var inputfield = $('.songInputField');
+	inputfield.find("input[name='title']").val(inputfield.find("div[name='commercial'] option:selected").text());
+	inputfield.find("input[name='artist']").val('CKXU');
+	inputfield.find("input[name='album']").val('Advertisement');
+}
 
+function setPsaVal()
+{	
+	var inputfield = $('.songInputField');
+	inputfield.find("input[name='title']").val(inputfield.find("input[name='psaTitle']").val());
+
+	//calculate minutes and return it
+	var startPsaTime = inputfield.find("input[name='time']").val();
+	var endPsaTime = new Date(1900,0,1,startPsaTime.split(":")[0],startPsaTime.split(":")[1]);
+	var MinuteToAdd = inputfield.find("input[name='playlistNum']").val();
+	inputfield.find("input[name='playlistNum']").val('NA');
+	endPsaTime.setMinutes(parseInt(endPsaTime.getMinutes()) + parseInt(MinuteToAdd));
+	inputfield.find("input[name='time']").val(("0" + endPsaTime.getHours()).slice(-2) + ':' + ("0" + endPsaTime.getMinutes()).slice(-2)) ;
+	return startPsaTime + ' ~ ' + ("0" + endPsaTime.getHours()).slice(-2) + ':' + ("0" + endPsaTime.getMinutes()).slice(-2);
+}
 //for insert song button listner 
 $(document).on('click', '.insertBtn', function(){
- 	// $(this).prop('value', 'Delete');
- 	// $(this).removeClass('btn-success insertBtn');
- 	// $(this).addClass('btn-danger rmvBtn');
- 	// $(this).on('click', removeRow);
- 	// var row = $(this).closest('tr');
-
  	var inputVal = $(this).closest('.songInputField');
+ 	var catValue = inputVal.find("[name='cat']").val();
+ 	if(catValue == null || catValue == '')
+ 	{
+ 		$('#catSelection').addClass('has-error has-feedback');
+ 		return false;
+ 	}
+
  	var canConChecked = inputVal.find("input[name='cancon']").is(':checked')?'checked':'';
  	var hitChecked = inputVal.find("input[name='hit']").is(':checked')?'checked':'';
  	var instChecked = inputVal.find("input[name='instrumental']").is(':checked')?'checked':'';
- 	var catValue = $(this).closest('tr').find("[name='cat']").val();
-
+ 	var time = inputVal.find("input[name='time']").val();
  	// if it's AD, increase the Ad count
  	if(catValue == 51)
  	{
  		$('#adCount').text(parseInt($('#adCount').text()) + 1);
-
-			row.find("input[name='title["+ rowid +"]']").val(row.find("div[name='commercial["+ rowid +"]'] option:selected").text()).show();
-			row.find("input[name='artist["+ rowid +"]']").val('CKXU').show();
-			row.find("input[name='album["+ rowid +"]']").val('Advertisement').show();
-			row.find("input[name='composer["+ rowid +"]']").show();
-			row.find("input[name='cancon["+ rowid +"]']").show();
-			row.find("input[name='hit["+ rowid +"]']").show();
-			row.find("input[name='instrumental["+ rowid +"]']").show();
-			row.find("select[name='type["+ rowid +"]']").show();
-			row.find("input[name='lang["+ rowid +"]']").show();
-			row.find("div[name='commercial["+ rowid +"]']").hide();
-
+		setAdVal();
  	}
 
  	// if it's Promo increase PSA count
  	if(catValue == 45)
  		$('#psaCount').text(parseInt($('#psaCount').text()) + 1);
+
  	// if it's PSA, increase PSA count
  	if(catValue == 11 || catValue == 12)
-	{	row.find("input[name='composer["+ rowid +"]']").show();
-		row.find("input[name='cancon["+ rowid +"]']").show();
-		row.find("input[name='hit["+ rowid +"]']").show();
-		row.find("input[name='instrumental["+ rowid +"]']").show();
-		row.find("select[name='type["+ rowid +"]']").show();
-		row.find("input[name='lang["+ rowid +"]']").show();
-		
- 		if($(this).closest('tr').find("input[name='artist["+ rowid +"]']").val().toUpperCase().indexOf("STATION PSA")>=0||
- 			$(this).closest('tr').find("input[name='title["+ rowid +"]']").val().toUpperCase().indexOf("PSA")>=0)
+	{
+		time = setPsaVal(); 	
+ 		if(inputVal.find("input[name='artist']").val().toUpperCase().indexOf("STATION PSA")>=0||
+ 			inputVal.find("input[name='title']").val().toUpperCase().indexOf("PSA")>=0)
  			$('#psaCount').text(parseInt($('#psaCount').text()) + 1);
  	}
 
@@ -92,7 +102,7 @@ $(document).on('click', '.insertBtn', function(){
 				'<input type="text" readonly  class="form-control input-sm" name="cat['+ rowid +']" placeholder="" value="'+ inputVal.find("select[name='cat']").val()+'">' +
 			'</td>' +
 			'<td>' +
-				'<input type="text" readonly class="form-control input-sm" name="time['+ rowid +']" placeholder="" value="'+ inputVal.find("input[name='time']").val()+'">' +
+				'<input type="text" readonly class="form-control input-sm" name="time['+ rowid +']" placeholder="" value="'+ time +'">' +
 			'</td>' +
 			'<td>' +
 				'<input class="form-control input-sm" type="text" readonly  name="title['+ rowid +']" placeholder="Title" value="'+ inputVal.find("input[name='title']").val()+'">' + 
@@ -101,13 +111,13 @@ $(document).on('click', '.insertBtn', function(){
 				'</div>'+
 			'</td>' +
 			'<td>' +
-				'<input class="form-control readonly  input-sm" name="artist['+ rowid +']" id="artist"  type="text" placeholder="Artist" value="'+ inputVal.find("input[name='artist']").val()+'">' +
+				'<input class="form-control input-sm" readonly name="artist['+ rowid +']" id="artist"  type="text" placeholder="Artist" value="'+ inputVal.find("input[name='artist']").val()+'">' +
 			'</td>' +
 			'<td>' +
-				'<input class="form-control readonly input-sm" id="album" name="album['+ rowid +']" type="text" placeholder="Album" value="'+ inputVal.find("input[name='album']").val()+'">' +
+				'<input class="form-control input-sm" readonly id="album" name="album['+ rowid +']" type="text" placeholder="Album" value="'+ inputVal.find("input[name='album']").val()+'">' +
 			'</td>' +
 			'<td>' +
-				'<input class="form-control readonly input-sm" id="album" name="composer['+ rowid +']" type="text" placeholder="Composer" value="'+ inputVal.find("input[name='composer']").val()+'">' +
+				'<input class="form-control input-sm" readonly id="album" name="composer['+ rowid +']" type="text" placeholder="Composer" value="'+ inputVal.find("input[name='composer']").val()+'">' +
 			'</td>' +
 			'<td>' +
 				'<input type="checkbox" disabled id="ccin" name="cancon['+ rowid +']" ' + canConChecked +' value="1"/>' +
@@ -125,7 +135,10 @@ $(document).on('click', '.insertBtn', function(){
 				'<input type="text" readonly class="form-control input-sm" name="lang['+ rowid +']" placeholder="" value="'+ inputVal.find("input[name='lang']").val()+'">' +
 			'</td>' +
 			'<td>' +
-				'<input type="button" value="Notes" class="btn btn-sm" name="NButton" onclick="GetNotes();" />' +
+				'<input type="hidden" class="form-control input-sm" name="note['+ rowid +']" placeholder="" value="">' +
+			'</td>' +
+			'<td>' +
+				'<input type="button" value="Notes" class="btn btn-sm" name="NButton" onclick="GetNotes('+ rowid +');" />' +
 			'</td>' +
 			'<td>' +
 				'<input id="insertSong" type="button" class="btn btn-danger rmvBtn" value="Remove"/>' +
@@ -133,16 +146,17 @@ $(document).on('click', '.insertBtn', function(){
 		'</tr>'
 
  		);
- 	clearInputField(inputVal);
- 	$('#adPart').hide();
-	$('#musicPart').show();
-	$('.songInputField').find("label[for='playlistNum']").text('Playlist ID');
+
+ 	clearInputField();
+	// $('.songInputField').find("label[for='playlistNum']").text('Playlist ID');
 });
 
-function clearInputField(inputfield){
+function clearInputField(){
+	var inputfield =  $('.songInputField');
 	inputfield.find("input[type='text']").val('');
 	inputfield.find("input[type='checkbox']").prop('checked', false);
-	inputfield.find("select").val('');
+	// inputfield.find("select").val('');
+	inputfield.find("[name='type']").val('NA');
 }
 
 //event for remove button from the song table
@@ -204,6 +218,7 @@ $(document).on('submit','#episodeForm',function(){
 
 
 $(document).on('change', '.chtype', function(e){
+	$('#catSelection').removeClass('has-error has-feedback');
 
 	var catNum = $(this).val();
 	var row = $(this).closest('tr');
@@ -212,45 +227,25 @@ $(document).on('change', '.chtype', function(e){
 	switch(catNum)
 	{
 		case '51':
-			// row.find("input[name='playlistNum["+ rowid +"]']").attr("placeholder", "Ad ID");
-			// row.find("input[name='title["+ rowid +"]']").hide();
-			// row.find("input[name='artist["+ rowid +"]']").hide();
-			// row.find("input[name='album["+ rowid +"]']").hide();
-			// row.find("input[name='composer["+ rowid +"]']").hide();
-			// row.find("input[name='cancon["+ rowid +"]']").hide();
-			// row.find("input[name='hit["+ rowid +"]']").hide();
-			// row.find("input[name='instrumental["+ rowid +"]']").hide();
-			// row.find("select[name='type["+ rowid +"]']").hide();
-			// row.find("input[name='lang["+ rowid +"]']").hide();
-			// row.find("div[name='commercial["+ rowid +"]']").show();
+			clearInputField();
+			$('.songInputField').find("[name='cat']").val('51');
 			$('#musicPart').hide();
+			$('#psaPart').hide();
 			$('#adPart').show();
 			$('.songInputField').find("label[for='playlistNum']").text('Ad ID');
 			break;
 
 		case '11':
 		case '12':
-			row.find("input[name='title["+ rowid +"]']").val('Spoken Word / Talk');
-			row.find("input[name='composer["+ rowid +"]']").hide();
-			row.find("input[name='cancon["+ rowid +"]']").hide();
-			row.find("input[name='hit["+ rowid +"]']").hide();
-			row.find("input[name='instrumental["+ rowid +"]']").hide();
-			row.find("select[name='type["+ rowid +"]']").hide();
-			row.find("input[name='lang["+ rowid +"]']").hide();
+			clearInputField();
+			$('.songInputField').find("label[for='playlistNum']").text('Minutes');
+			$('#musicPart').hide();
+			$('#adPart').hide();
+			$('#psaPart').show();
 			break;
 		default:
-			// row.find("input[name='playlistNum["+ rowid +"]']").attr("placeholder", "");
-			// row.find("input[name='title["+ rowid +"]']").val('').show();
-			// row.find("input[name='artist["+ rowid +"]']").show();
-			// row.find("input[name='album["+ rowid +"]']").show();
-			// row.find("input[name='composer["+ rowid +"]']").show();
-			// row.find("input[name='cancon["+ rowid +"]']").show();
-			// row.find("input[name='hit["+ rowid +"]']").show();
-			// row.find("input[name='instrumental["+ rowid +"]']").show();
-			// row.find("select[name='type["+ rowid +"]']").show();
-			// row.find("input[name='lang["+ rowid +"]']").show();
-			// row.find("div[name='commercial["+ rowid +"]']").hide();
 			$('#adPart').hide();
+			$('#psaPart').hide();
 			$('#musicPart').show();
 			$('.songInputField').find("label[for='playlistNum']").text('Playlist ID');
 
@@ -271,10 +266,101 @@ function popitup(url) {
 		return false;
 }
 
-function GetNotes() {
-    var NOTE = prompt("Short Notes Regarding current song (90 char max)");
+function GetNotes(rowId) {
+    var NOTE = prompt("Short Notes Regarding current song (90 char max)", $('#songTable').find("input[name='note["+ rowId +"]']").val());
     if (NOTE != null && NOTE != '') {
-        document.getElementById('NF1').value = NOTE;
+
+        $('#songTable').find("input[name='note["+ rowId +"]']").val(NOTE);
     }
-    $("NoteField").SlideDown();
+    // $("NoteField").slideDown();
 }
+
+
+
+
+
+
+
+// Drawing Clock functions //
+
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var radius = canvas.height / 2;
+ctx.translate(radius, radius);
+radius = radius * 0.90
+setInterval(drawClock, 1000);
+
+function drawClock() {
+  drawFace(ctx, radius);
+  drawNumbers(ctx, radius);
+  drawTime(ctx, radius);
+}
+
+function drawFace(ctx, radius) {
+  var grad;
+  ctx.beginPath();
+  ctx.arc(0, 0, radius, 0, 2*Math.PI);
+  ctx.fillStyle = 'white';
+  ctx.fill();
+  grad = ctx.createRadialGradient(0,0,radius*0.95, 0,0,radius*1.05);
+  grad.addColorStop(0, '#333');
+  grad.addColorStop(0.5, 'white');
+  grad.addColorStop(1, '#333');
+  ctx.strokeStyle = grad;
+  ctx.lineWidth = radius*0.1;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(0, 0, radius*0.1, 0, 2*Math.PI);
+  ctx.fillStyle = '#333';
+  ctx.fill();
+}
+
+function drawNumbers(ctx, radius) {
+  var ang;
+  var num;
+  ctx.font = radius*0.15 + "px arial";
+  ctx.textBaseline="middle";
+  ctx.textAlign="center";
+  for(num = 1; num < 13; num++){
+    ang = num * Math.PI / 6;
+    ctx.rotate(ang);
+    ctx.translate(0, -radius*0.85);
+    ctx.rotate(-ang);
+    ctx.fillText(num.toString(), 0, 0);
+    ctx.rotate(ang);
+    ctx.translate(0, radius*0.85);
+    ctx.rotate(-ang);
+  }
+}
+
+function drawTime(ctx, radius){
+    var now = new Date();
+    var hour = now.getHours();
+    var minute = now.getMinutes();
+    var second = now.getSeconds();
+    //hour
+    hour=hour%12;
+    hour=(hour*Math.PI/6)+
+    (minute*Math.PI/(6*60))+
+    (second*Math.PI/(360*60));
+    drawHand(ctx, hour, radius*0.5, radius*0.07);
+    //minute
+    minute=(minute*Math.PI/30)+(second*Math.PI/(30*60));
+    drawHand(ctx, minute, radius*0.8, radius*0.07);
+    // second
+    second=(second*Math.PI/30);
+    drawHand(ctx, second, radius*0.9, radius*0.02);
+}
+
+function drawHand(ctx, pos, length, width) {
+    ctx.beginPath();
+    ctx.lineWidth = width;
+    ctx.lineCap = "round";
+    ctx.moveTo(0,0);
+    ctx.rotate(pos);
+    ctx.lineTo(0, -length);
+    ctx.stroke();
+    ctx.rotate(-pos);
+}
+
+// Drawing Clock functions done //

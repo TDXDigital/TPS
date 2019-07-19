@@ -50,10 +50,10 @@
 	<tr></tr>
 
 	<tr style="border-bottom-style:hidden;">
-		<th>Air Date</th> <th>Air Time</th> <th>Program</th> <th>Station</th> <th>Description</th><th>Pre-Record</th>
+		<th>Air Date</th> <th>Air Time</th> <th>Program</th> <th>Station</th> <th>Description</th><th>Type</th>
 	</tr>
 	<tr>
-		<td class="col-md-2">{{episode.date}}</td> <td class="col-md-2">{{episode.time}}</td> <td class="col-md-2">{{episode.name}}</td> <td class="col-md-2">{{episode.callsign}}</td> <td class="col-md-2">{{episode.description}}</td> <td class="col-md-2">{{episode.pre-record}}</td>
+		<td class="col-md-2">{{episode.date}}</td> <td class="col-md-2">{{episode.time}}</td> <td class="col-md-2">{{episode.name}}</td> <td class="col-md-2">{{episode.callsign}}</td> <td class="col-md-2">{{episode.description}}</td> <td class="col-md-2">{{episode.type == 0 ? 'Live': episode.pre-type == 1 ? 'Pre-Record' : 'Timeless' }}</td>
 	</tr>
 </table>
 
@@ -63,12 +63,16 @@
 	<tr>
 		<td class="col-md-3" style="color:green;">Available Friends Ads </td>
 		<td class="col-md-3" style="color:blue;">Required Commercials This Hours </td> 
-		<td class="col-md-4" style="color:orange;"> Messages</td> <td class="col-md-2"> Time .. </td>
+		<td class="col-md-4" style="color:orange;"> Messages</td> <td class="col-md-2"></td>
 	</tr>
 		<td class="col-md-3"><select name="adbox" id="friends" onchange="CHAVF()" class="form-control"> {{ads.ADOPT | raw}}</select></td>
 		<td class="col-md-3"><select name="rqAds" class="form-control">{{ads.REQAD | raw}}</select></td> 
 		<td style="font-style: italic; font-size: 80%; color: #eb4b20 " class="col-md-4"><strong>IMPORTANT: When prompted to play required ADs you are <u>ONLY</u> to play the required ADs until they are no longer prompted. Then, and only then are you permitted to play a friend ad <u>IF</u> you have not met your AD requirements</strong></td>
-		<td class="clock col-md-2">clock</td>
+		<td class="clock col-md-2">  
+			<canvas id="canvas" style="background-color:#ffff">
+			</canvas>
+
+		</td>
 </table>
 
 <hr>
@@ -76,11 +80,7 @@
 <!-- Inserted Song table -->
 	<div class="songInputField">
 		<div class="row">
-			<div class="col-md-1">
-				<label for="playlistNum">Playlist ID</label>
-				<input type="text" class="form-control input-sm playlistNum" name="playlistNum" id="playlistNum" placeholder="">
-			</div>
-			<div class="col-md-3">
+			<div class="col-md-3" id="catSelection" >
 				<label for="DDLNormal">Category<input type="button" class="btn btn-xs" value="Define" onclick="return popitup('../legacy/help/definetype.html')"/></label>
 				<select name="cat" id="DDLNormal" class="form-control input-sm chtype">
 	               <option value="53">53, Sponsored Promotion</option>
@@ -103,13 +103,17 @@
 	               	<option value="21">21, Pop, Rock and Dance</option>
 	               <option value="12">12, PSA/Spoken Word Other</option>
 	               <OPTION VALUE="11">11, News</option>
-	               	<OPTION VALUE="" selected></option>
+	               	<OPTION VALUE="" selected disabled>Choose Category</option>
                	</select>
             </div>
+            <div class="col-md-1">
+				<label for="playlistNum">Playlist ID</label>
+				<input type="text" class="form-control input-sm playlistNum" name="playlistNum" id="playlistNum" placeholder="">
+			</div>
 
             <div class="col-md-2">
             	<label for="time">Time:</label>
-				<input type="time" name="time" class="form-control input-sm" id="time" placeholder="">
+				<input type="time" name="time" class="form-control input-sm" value="{{episode.time|date('H:i')}}" id="time" placeholder="">
 			</div>
 		</div>
 		<br>
@@ -118,9 +122,6 @@
 				<div class="col-md-2">
 					<label for="title">Title</label>
 					<input class="form-control input-sm" name="title" type="text" placeholder="Title"> 
-					<div name="commercial" style="display: none">
-						{{commercial|raw}}
-					</div>
 				</div>
 
 				<div class="col-md-2">
@@ -157,13 +158,27 @@
 		          	</datalist>
 		        </div>
 		    </div>
-		    
+
 	        <div id="adPart" style="display: none">
 				<div class="col-md-3">
 					<label for="commercial">All Commercials</label>
 					<div name="commercial" id="commercial">
 							{{commercial|raw}}
 					</div>	
+				</div>
+				<div class="col-md-8"></div>
+			</div>
+
+			<div id="psaPart" style="display: none">
+				<div class="col-md-3">
+					<label for="psaTitle">Title</label>
+					<input list="spoken" name="psaTitle" id="psaTitle" size="25" required class="form-control input-sm"  maxlength="90" value="Spoken Word / Talk"/>
+                   <datalist id="spoken">
+                   		<option value="Spoken Word / Talk">
+                   		<option value="PSA / Promo">
+                   		<option value="News">
+                   		<option value="Verbal Station ID">
+                   </datalist>		
 				</div>
 				<div class="col-md-8"></div>
 			</div>
@@ -182,10 +197,12 @@
 	</div>
 
 <br>
+<hr>
+<div style="background-color: #F5F5F5;">
 <form action="/episode/finalize" id="episodeForm" method="POST">
 	<input type="hidden" name="epNum" value="{{episode.id}}">
 	<table class="table" id="songTable" >
-		<thead>
+		<thead class="thead-dark">
 		<tr>
 			 <th style="width: 6%">Playlist/<br>Ad ID</th> <th>Category</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th> <th>Composer</th> <th>CC</th> <th>Hit</th> <th>Ins</th> <th style="width: 7%">Type</th> <th>Language</th><th></th><th></th>
 		</tr>
@@ -276,7 +293,7 @@
 
 		<tfoot>
             <tr>
-			 <th style="width: 6%">Playlist/<br>Ad ID</th> <th>Category</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th> <th>Composer</th> <th>CC</th> <th>Hit</th> <th>Ins</th> <th style="width: 7%">Type</th> <th>Language</th><th></th>
+			 <th style="width: 6%">Playlist/<br>Ad ID</th> <th>Category</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th> <th>Composer</th> <th>CC</th> <th>Hit</th> <th>Ins</th> <th style="width: 7%">Type</th> <th>Language</th><th></th><th></th><th>
 			</tr>
         </tfoot>
 	</table>
@@ -285,7 +302,7 @@
 </form>
 
 
-
+</div>
 
 
 {% endblock %}
