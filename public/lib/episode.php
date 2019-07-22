@@ -334,7 +334,7 @@ class episode extends program{
 
 
     //Everything is array except epNum
-    public static function insertSongs($row, $epNum, $title, $album, $composer, $time, $artist, $cancon, $playlistNumber, $type, $category, $hit, $inst, $note=null, $spoken=null, $AdViolationFlag=null)
+    public static function insertSongs($row, $epNum, $title, $album, $composer, $time, $artist, $cancon, $playlistNumber, $type, $category, $hit, $inst, $lang, $note=null, $spoken=null, $AdViolationFlag=null)
     {
 
         $tmpstn = new station($_SESSION['CALLSIGN']);
@@ -348,6 +348,7 @@ class episode extends program{
                                         (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
         $songs = array();
+
          foreach ($row as $key => $value)
         {
             //if checkbox is checked, set value 1, 0 otherwise
@@ -377,6 +378,9 @@ class episode extends program{
             $songs[$key]["type"] = $type[$value];
             $songs[$key]["category"] = $category[$value];
             $songs[$key]["hit"] = $hit[$value];
+            $songs[$key]["time"] = $time[$value];
+            $songs[$key]["lang"] = $lang[$value];
+
         }
          $stmt->close();
          return $songs;

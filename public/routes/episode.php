@@ -199,9 +199,12 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $lang = $app->request->post('lang');
         $note = $app->request->post('note');
 
-        $songs = \TPS\episode::insertSongs($row, $epNum, $title, $album, $composer, $time, $artist, $cancon, $playlisdId, $type, $category, $hit, $inst, $note);
+        $songs = \TPS\episode::insertSongs($row, $epNum, $title, $album, $composer, $time, $artist, $cancon, $playlisdId, $type, $category, $hit, $inst, $lang, $note);
         $params = array();
         $params["songs"] = $songs;
+        $params["title"] = 'View Program Log';
+        $params["episode"] = \TPS\episode::getEpisodeByEpNum($epNum);
+
         $app->render("episodeLog.twig",$params);
     });
 });

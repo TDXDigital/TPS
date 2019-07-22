@@ -12,7 +12,7 @@
         <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
     </li>
     <li class="active">
-        <i class="fa fa-tasks"></i> <a href="/">Program</a>
+        <i class="fa fa-tasks"></i> <a href="/">Episode</a>
     </li>
     <li class="active">
         <a href="/episode/new"><i class="fa fa-plus-square-o"></i>Episode Log</a>
@@ -20,11 +20,21 @@
 </ol>
 {% endblock %}
 {% block content %}
+    <table class="table">
+        <tr style="border-bottom-style:hidden;">
+            <th>Air Date</th> <th>Air Time</th> <th>Program</th> <th>Station</th> <th>Description</th><th>Type</th>
+        </tr>
+        <tr>
+            <td class="col-md-2">{{episode.date}}</td> <td class="col-md-2">{{episode.time}}</td> <td class="col-md-2">{{episode.name}}</td> <td class="col-md-2">{{episode.callsign}}</td> <td class="col-md-2">{{episode.description}}</td> <td class="col-md-2">{{episode.type == 0 ? 'Live': episode.pre-type == 1 ? 'Pre-Record' : 'Timeless' }}</td>
+        </tr>
+    </table>
+
+    <hr>
     
     <table class="table" id="songTable" >
         <thead class="thead-dark">
         <tr>
-             <th>Category</th><th>Title</th><th>Artist</th><th>Album</th>
+             <th>Category</th><th>Playlist</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th><th>CC</th><th>Hit</th><th>Ins</th><th>Language</th>
         </tr>
         </thead>
         <tbody>
@@ -32,16 +42,22 @@
                 <tr>
                    
                     <td>{{song.category}}</td>
+                    <td>{{song.playlistNumber}}</td>
+                    <td>{{song.time}}</td>
                     <td>{{song.title}}</td>
                     <td>{{song.artist}}</td>
                     <td>{{song.album}}</td>
+                    <td>{{song.cancon}}</td>
+                    <td>{{song.hit}}</td>
+                    <td>{{song.inst}}</td>
+                    <td>{{song.lang}}</td>
                 </tr>
             {% endfor %} 
         </tbody>
 
         <tfoot>
             <tr>
-                <th>Category</th><th>Title</th><th>Artist</th><th>Album</th>
+                <th>Category</th><th>Playlist</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th><th>CC</th><th>Hit</th><th>Ins</th><th>Language</th>
             </tr>
         </tfoot>
     </table>
