@@ -34,17 +34,21 @@ $app->get('/host', function () use ($app) {
 $app->group('/host', $authenticate, function () use ($app,$authenticate){
 
   $app->get('/new', function() use ($app, $authenticate){
-    $params = array(
-	    "area"=>"host",
-            "title"=>"New Host",
-        );
+	$callsign = $_SESSION['CALLSIGN'];
+	$station = new \TPS\station();
+	$station = $station->getStation($callsign);
+	$probationDays = $station[$callsign]['hostProbationDays'];
+	$probationEnds = date('Y-m-d', strtotime("+{$probationDays} days"));
+        $params = array(
+	    "area"=>"Host",
+            "title"=>"New",
+	    "host"=>['probationEnds'=>$probationEnds]
+         );
          $app->render("hostNew.twig", $params);
     });
 
 
   $app->post('/create', function() use ($app, $authenticate){
-
-    // $station = new \TPS\station($_SESSION['CALLSIGN']);
     $host = new \TPS\host($_SESSION['CALLSIGN']);
 
     $djname = $app->request->post('hostName');
@@ -52,16 +56,17 @@ $app->group('/host', $authenticate, function () use ($app,$authenticate){
     $years = $app->request->post('JoinedYear');
     $weight = $app->request->post('weight');
     $active = $app->request->post('active')!==null? 1:0;
+    $probEndDate = $app->request->post('probEndDate') ?: date('Y-m-d');
    
-    $host -> createHost($alias, $djname, $active, $years, $weight);
+    $host -> createHost($alias, $djname, $active, $years, $weight, NULL, NULL, NULL, $probEndDate);
     $app->redirect('./search');
     
     });
 
     $app->get('/search', function() use ($app, $authenticate){
          $params = array(
-        "area"=>"host",
-            "title"=>"Search Host",
+            "area"=>"Host",
+            "title"=>"Search",
         );
         $app->render("hostSearch.twig", $params);
     });
@@ -74,16 +79,11 @@ $app->group('/host', $authenticate, function () use ($app,$authenticate){
     });
 
      $app->get('/edit/:alias', $authenticate, function ($alias) use ($app){
-           
-
-        $host = new \TPS\host($_SESSION['CALLSIGN']);
-       
         $host = new \TPS\host($_SESSION['CALLSIGN']);
         $hostToEdit = $host->get($alias);
-        // print_r($hostToEdit);
-        // exit;
         $params = array(
-            "title"=>"Edit Host",
+	    "area"=>"Host",
+            "title"=>"Edit",
             "host"=>$hostToEdit,
         );
         $app->render('hostNew.twig', $params);

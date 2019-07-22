@@ -3,6 +3,7 @@
 	<link href="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.css"
 		  rel="stylesheet" type="text/css"/>
 	<link href="{{siteUrl}}/js/chosen.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" href="{{siteUrl}}/js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>
 {% endblock %}
 {% set firstStation = station|first %}
 {% block title %}{{title|default('Host')}}{% endblock %}
@@ -63,9 +64,15 @@
 				<div class="form-group">
 					<label for="weight">Active</label>
 					<input type='checkbox' class="form-control" id='active' name="active"
-					{% if host.active == 1 %} checked {% endif %}/>
+					{% if host.active is null or host.active == 1 %} checked {% endif %}/>
 			   </div>
 			</div>
+			<div class="col-lg-3">
+                            <div id='ind_group' class="form-group input-group">
+                                <label for="probEndDate">Probation Ends</label>
+                                <input id="probEndDate" type="text" autocomplete="off" class="form-control" value="{{host.probationEnds|date("Y-m-d")}}" name="probEndDate" />
+                            </div>
+                        </div>
 			<div class="col-sm-9">
 			</div>
 			<div class="col-sm-1">
@@ -92,6 +99,12 @@ $(document).ready(function(){
 		$('.pull-down').each(function() {
 			$(this).css('margin-top', $(this).parent().height()-$(this).height())
 		});
+
+	        $.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
+                $( "#probEndDate" ).datepicker({
+                    changeMonth: true,
+                    changeYear: true
+                });
 	});
 
 	//back link
