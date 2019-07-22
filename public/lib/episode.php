@@ -347,24 +347,39 @@ class episode extends program{
                                         playlistnumber, type, AdViolationFlag, category,hit) VALUES 
                                         (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
-
+        $songs = array();
          foreach ($row as $key => $value)
         {
             //if checkbox is checked, set value 1, 0 otherwise
             $cancon[$value] = array_key_exists($value, $cancon)? $cancon[$value]: 0;
             $hit[$value] = array_key_exists($value, $hit)? $hit[$value]: 0;
             $inst[$value] = array_key_exists($value, $inst)? $inst[$value]: 0;
-            
-            $stmt->bind_param("ssssisssssssiisiii",
-                                $episode['callsign'], $episode['name'], $episode['date'], $episode['time'],
-                                $inst[$value], $time[$value], $title[$value], $album[$value], $composer[$value],
-                                $note, $spoken, $artist[$value], $cancon[$value], 
+
+            if(strpos($time[$value], '~'))
+                $time[$value] = substr($time[$value], 0, strpos($time[$value], '~'));
+
+            $param = array( $episode['callsign'], $episode['name'], $episode['date'], $episode['time'],
+                            $inst[$value], $time[$value], $title[$value], $album[$value], $composer[$value],
+                                $note[$value], $spoken, $artist[$value], $cancon[$value], 
                                 $playlistNumber[$value], $type[$value], $AdViolationFlag, $category[$value], $hit[$value]);
 
+            $stmt->bind_param("ssssisssssssiisiii", ...$param);
             if(!$stmt->execute())
                 $this->log->error($this->mysqli->errno);
+
+            $songs[$key]["title"] = $title[$value];
+            $songs[$key]["album"] = $album[$value];
+            $songs[$key]["artist"] = $artist[$value];
+            $songs[$key]["inst"] = $inst[$value];
+            $songs[$key]["composer"] = $composer[$value];
+            $songs[$key]["playlistNumber"] = $playlistNumber[$value];
+            $songs[$key]["cancon"] = $cancon[$value];
+            $songs[$key]["type"] = $type[$value];
+            $songs[$key]["category"] = $category[$value];
+            $songs[$key]["hit"] = $hit[$value];
         }
          $stmt->close();
+         return $songs;
     }
 
 

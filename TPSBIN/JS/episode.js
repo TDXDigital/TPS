@@ -18,7 +18,6 @@ $(document).on('change paste input', ".playlistNum", function(){
             type: 'POST',
             }).done(function(data) {
             	var albumInfo = JSON.parse(data);
-            	// var rowId = input.closest('tr').attr('id');
     	    	input.closest('.songInputField').find("input[name='artist']").val(albumInfo.artist);
             	input.closest('.songInputField').find("input[name='album']").val(albumInfo.album);
             	if(albumInfo.governmentCategory != undefined)
@@ -106,9 +105,6 @@ $(document).on('click', '.insertBtn', function(){
 			'</td>' +
 			'<td>' +
 				'<input class="form-control input-sm" type="text" readonly  name="title['+ rowid +']" placeholder="Title" value="'+ inputVal.find("input[name='title']").val()+'">' + 
-				'<div name="commercial['+ rowid +']" style="display: none">'+
-					commercialOption +
-				'</div>'+
 			'</td>' +
 			'<td>' +
 				'<input class="form-control input-sm" readonly name="artist['+ rowid +']" id="artist"  type="text" placeholder="Artist" value="'+ inputVal.find("input[name='artist']").val()+'">' +

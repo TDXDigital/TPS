@@ -197,37 +197,11 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $inst = $app->request->post('instrumental')?? array();
         $type = $app->request->post('type');
         $lang = $app->request->post('lang');
+        $note = $app->request->post('note');
 
-
-        print_r($_POST);
-        exit;
-
-        \TPS\episode::insertSongs($row, $epNum, $title, $album, $composer, $time, $artist, $cancon, $playlisdId, $type, $category, $hit, $inst);
-
-                // echo $progName;
-        // echo'row: ';
-        // print_r($row);
-        // echo'<br> category: ';
-        // print_r($cat);
-        // echo'<br> time: ';
-        // print_r($time);
-        // echo'<br> title: ';
-        // print_r($title);
-        // echo'<br> artist: ';
-        // print_r($artist);
-        // echo'<br> album: ';
-        // print_r($album);
-        // echo'<br> composer: ';
-        // print_r($composer);
-        // echo'<br> cancon ';
-        // print_r($cancon);
-        // echo'<br> hit: ';
-        // print_r($hit);
-        // echo'<br> inst: ';
-        // print_r($instrumental);
-        // echo'<br> type: ';
-        // print_r($type);
-        // echo'<br> la ng: ';
-        // print_r($lang);
+        $songs = \TPS\episode::insertSongs($row, $epNum, $title, $album, $composer, $time, $artist, $cancon, $playlisdId, $type, $category, $hit, $inst, $note);
+        $params = array();
+        $params["songs"] = $songs;
+        $app->render("episodeLog.twig",$params);
     });
 });

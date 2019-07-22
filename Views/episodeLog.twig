@@ -1,0 +1,54 @@
+{% extends 'baseAdmin.twig' %}
+{% block headScripts %}
+    <link href="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.css"
+          rel="stylesheet" type="text/css"/>
+    <link href="{{siteUrl}}/js/chosen.min.css" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% set firstStation = station|first %}
+{% block title %}{{title|default('Episode')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+    </li>
+    <li class="active">
+        <i class="fa fa-tasks"></i> <a href="/">Program</a>
+    </li>
+    <li class="active">
+        <a href="/episode/new"><i class="fa fa-plus-square-o"></i>Episode Log</a>
+    </li>
+</ol>
+{% endblock %}
+{% block content %}
+    
+    <table class="table" id="songTable" >
+        <thead class="thead-dark">
+        <tr>
+             <th>Category</th><th>Title</th><th>Artist</th><th>Album</th>
+        </tr>
+        </thead>
+        <tbody>
+             {% for song in songs %}
+                <tr>
+                   
+                    <td>{{song.category}}</td>
+                    <td>{{song.title}}</td>
+                    <td>{{song.artist}}</td>
+                    <td>{{song.album}}</td>
+                </tr>
+            {% endfor %} 
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <th>Category</th><th>Title</th><th>Artist</th><th>Album</th>
+            </tr>
+        </tfoot>
+    </table>
+
+{% endblock %}
+{% block lastScripts %}
+    <script src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
+    <script src="{{siteUrl}}/js/chosen.jquery.min.js"></script>
+   
+{% endblock %}
