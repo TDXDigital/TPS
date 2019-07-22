@@ -181,7 +181,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
     $app->get('/display', $authenticate, function () use ($app){
         $library = new \TPS\library();
         $filter = $app->request->get("filter");
-        echo $library -> displayTable($filter);
+        echo $library -> displayTable($filter, $app);
     });
     $app->post('/import', $authenticate, function () use ($app){
          if(isset($_POST["Import"])){   

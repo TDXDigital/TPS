@@ -652,14 +652,14 @@
 
     function updateVACheckbox() {
 	on = $("#va_checkbox").next().attr('class').split(" ").includes('active');
-	if ($('#art_field').val() == '~Various Artists~' != on)
+	if ($('#art_field').val() == 'V/A' != on)
 		$('#va_checkbox').next().find('button').click();
     }
 
     function toggleVA() {
 	variousArtists = !$("#va_checkbox").next().attr('class').split(" ").includes('active');
 	if (variousArtists)
-		$('#art_field').val("~Various Artists~");
+		$('#art_field').val("V/A");
 	else
 		$('#art_field').val("");
     }
@@ -899,8 +899,8 @@
     }
 
     function SetVariousArtists(){
-        $("#art_field").val("~Various Artists~");
-        $("#va_checkbox label").eq(0).button('toggle');  //.prop("checked",true);
+        $("#art_field").val("V/A");
+        $("#va_checkbox label").eq(0).button('toggle');
     }
 
     function catch_enter (event){

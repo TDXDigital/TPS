@@ -39,14 +39,13 @@ class host extends station{
     }
     
     public function createHost($alias, $djname, $active, $years, $weight=1, $emailBlock=NULL,
-            $memberRef=NULL, $GUID=NULL){
+            $memberRef=NULL, $GUID=NULL, $probEndDate){
         try {
             $stmt = $this->db->prepare("REPLACE INTO dj (Alias, djname, active,"
-                    . " years, weight, email_block, member_ref, GUID"
-                    . ") VALUES (:alias, :djname, :active, :weight, :years,"
-                    . " :emailBlock, :memberRef, :guid)");
+                    . " years, weight, email_block, member_ref, GUID, probation_ends"
+                    . ") VALUES (:alias, :djname, :active, :years, :weight,"
+                    . " :emailBlock, :memberRef, :guid, :probEndDate)");
             $stmt->bindParam(":alias", $alias, \PDO::PARAM_STR);
-            //$stmt->bindParam(":station", $this->callsign, \PDO::PARAM_STR);
             $stmt->bindParam(":djname", $djname);
             $stmt->bindParam(":active", $active);
             $stmt->bindParam(":weight", $weight);
@@ -54,18 +53,9 @@ class host extends station{
             $stmt->bindParam(":emailBlock", $emailBlock);
             $stmt->bindParam(":memberRef", $member_ref);
             $stmt->bindParam(":guid", $GUID);
+            $stmt->bindParam(":probEndDate", $probEndDate);
             
-            $stmt->execute(); 
-            //$id = $this->db->lastInsertId();
-            /*$genre = FALSE;
-            $query = $this->db->prepare("SELECT genreid FROM genre WHERE UID=? or genreid=?");
-            $query->execute(array($id,$name));
-            $genre = $query->fetchColumn();
-            if(!$genre){
-                throw new \Exception("Genre Not Created");
-            }
-            $stmt = null;
-            return $genre;*/
+            $stmt->execute();
             return TRUE;
 
         } catch (PDOException $exc) {
@@ -185,7 +175,7 @@ class host extends station{
     public function get($alias){
         $result = array();
         $con = $this->mysqli->prepare(
-                "SELECT Alias, djname, active, years, weight FROM dj"
+                "SELECT Alias, djname, active, years, weight, probation_ends FROM dj"
                 . " WHERE alias = ?");
         if(!$con){
             $error = $this->myslqi->errorInfo();
@@ -193,13 +183,13 @@ class host extends station{
         }
 
         $con->bind_param("s", $alias);
-        $con->bind_result($alias,$djname,$active,$years,$weight);
+        $con->bind_result($alias,$djname,$active,$years,$weight,$probEnds);
         if(!$con->execute())
             return false;
         while($con->fetch()){
             $result = array(
                 'alias'=>$alias,'djname'=>$djname,'active'=>$active,
-                'years'=>$years,'weight'=>$weight);
+                'years'=>$years,'weight'=>$weight, 'probationEnds'=>$probEnds);
         }
         $con->close();
         return $result;

@@ -3,6 +3,7 @@
 	<link href="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.css"
 		  rel="stylesheet" type="text/css"/>
 	<link href="{{siteUrl}}/js/chosen.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" href="{{siteUrl}}/js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>
 {% endblock %}
 {% set firstStation = station|first %}
 {% block title %}{{title|default('Host')}}{% endblock %}
@@ -54,17 +55,29 @@
 		</div>
 		 <div class="row">
 			<div class="col-sm-1">
-				<div class="form-group">
-					<label for="weight">Weight</label>
-					<input type='text' class="form-control" id='weight' name="weight" value="{{host.weight ?? 1}}"/>
-			   </div>
+			    <div class="form-group">
+				<label for="weight">Active</label>
+				<input type='checkbox' class="form-control" id='active' name="active"
+				{% if host.active is null or host.active == 1 %} checked {% endif %}/>
+			    </div>
 			</div>
+			<div class="col-lg-4">
+                            <div class="form-group">
+                                <label for="probEndDate">Probation Ends</label>
+                                <input id="probEndDate" type="text" autocomplete="off" class="form-control" value="{{host.probationEnds|date("Y-m-d")}}" onchange="updateAdjWeight()" name="probEndDate" />
+                            </div>
+                        </div>
 			<div class="col-sm-1">
-				<div class="form-group">
-					<label for="weight">Active</label>
-					<input type='checkbox' class="form-control" id='active' name="active"
-					{% if host.active == 1 %} checked {% endif %}/>
-			   </div>
+			    <div class="form-group">
+				<label for="weight">Weight</label>
+				<input type='text' class="form-control" id='weight' name="weight" onkeyup="updateAdjWeight()" value="{{host.weight ?? 1}}"/>
+			    </div>
+			</div>
+			<div class="col-sm-2">
+			    <div class="form-group">
+				<label for="adj-weight">Adj. Weight</label>
+				<input type='text' class="form-control" id='adj-weight' name="adj-weight" disabled value=""/>
+			    </div>
 			</div>
 			<div class="col-sm-9">
 			</div>
@@ -87,11 +100,33 @@
 	<script src="{{siteUrl}}/js/chosen.jquery.min.js"></script>
 	<script>
 
+    function updateAdjWeight() {
+	probEndDateArray = $('#probEndDate').val().split('-');
+	weight = $('#weight').val();
+	
+	currDate = new Date();
+	probEndDate = new Date(
+	    probEndDateArray[0],
+	    probEndDateArray[1]-1,
+	    probEndDateArray[2]
+	);
+
+	onProbation = currDate < probEndDate
+	multiplier = onProbation ? {{ station.probationMultiplier }} : 1;
+	$('#adj-weight').val(weight * multiplier);
+    }
 
 $(document).ready(function(){
+		updateAdjWeight();
 		$('.pull-down').each(function() {
 			$(this).css('margin-top', $(this).parent().height()-$(this).height())
 		});
+
+	        $.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
+                $( "#probEndDate" ).datepicker({
+                    changeMonth: true,
+                    changeYear: true
+                });
 	});
 
 	//back link
