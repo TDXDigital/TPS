@@ -1,0 +1,76 @@
+{% extends 'baseAdmin.twig' %}
+
+{% block headScripts %}
+    <style type="text/css">
+        td label {
+           display: block;
+           text-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+    </li>
+    <li class="active">
+        <a href="/host/search/"><i class="fa fa-tasks"></i>{% if search %}
+        host</a>
+    </li>
+    <li>
+        <a href="/host/search/"><i class="fa fa-search"></i> Search</a>
+        {% else %}
+            host</a>
+        {% endif %}
+    </li>
+</ol>
+{% endblock %}
+{% block content %}
+    {% if flash.error %}
+        <div class="row">
+            <div class="alert alert-danger">
+                <strong>Error</strong> {{flash.error}}
+            </div>
+        </div>
+    {% endif %}
+    {% if flash.success %}
+        <div class="row">
+            <div class="alert alert-success">
+                <strong>Success</strong> {{flash.success}}
+            </div>
+        </div>
+    {% endif %}
+    
+    <hr size="30">
+    
+    <table class='table table-bordered table-hover display' id='data_table'>
+        <thead>
+            <tr>
+                <th>Station</th>
+                <th>Program Name</th>
+                <th>Date</th>
+                <th>PreRecord</th>
+                <th>Air Time</th>
+                <th>Description</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Station</th>
+                <th>Program Name</th>
+                <th>Date</th>
+                <th>PreRecord</th>
+                <th>Air Time</th>
+                <th>Description</th>
+                <th>Edit</th>
+            </tr>
+
+        </tfoot>
+    </table>
+{% endblock %}
+{% block lastScripts %}
+<script src="{{siteUrl}}/TPSBIN/JS/episodeSearch.js"></script>
+{% endblock %}

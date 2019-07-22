@@ -199,12 +199,40 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $lang = $app->request->post('lang');
         $note = $app->request->post('note');
 
-        $songs = \TPS\episode::insertSongs($row, $epNum, $title, $album, $composer, $time, $artist, $cancon, $playlisdId, $type, $category, $hit, $inst, $lang, $note);
+        \TPS\episode::insertSongs($row, $epNum, $title, $album, $composer, $time, $artist, $cancon, $playlisdId, $type, $category, $hit, $inst, $lang, $note);
         $params = array();
-        $params["songs"] = $songs;
+        $params["songs"] = \TPS\episode::getSongByEpNum($epNum);
         $params["title"] = 'View Program Log';
         $params["episode"] = \TPS\episode::getEpisodeByEpNum($epNum);
 
         $app->render("episodeLog.twig",$params);
     });
+
+     // Create new program
+    $app->get('/search', function() use ($app, $authenticate){
+ 
+        $params=array(
+            'area'=>'Episode',
+            'title'=>'Search'
+            );
+        $app->render("episodeSearch.twig",$params);
+    });
+
+    $app->get('/display', $authenticate, function () use ($app){
+        $episodes = new \TPS\episodes($_SESSION['CALLSIGN']);
+        $filter = $app->request->get("filter");
+        echo $episodes -> displayTable($filter);
+    });
+
+
+      $app->get('/edit/:epNum', $authenticate, function ($epNum) use ($app){
+        $params = array(
+            "area"=>"Episode",
+            "title"=>"Edit"
+        );
+        $params["episode"] = \TPS\episode::getEpisodeByEpNum($epNum);
+        $params["songs"] = \TPS\episode::getSongByEpNum($epNum);
+        $app->render('episodeLog.twig', $params);
+    });
+
 });
