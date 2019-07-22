@@ -62,7 +62,7 @@
                  <select class="form-control table_filter" id="filter_expiry">
                     <option value="all">All</option>
                     <option value="active">Active</option>
-                    <option value="expired">Expired</option>
+                    <option value="expired" {% if showExpired %} selected {% endif %}>Expired</option>
               </select>
             </div>
         </div>

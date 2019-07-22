@@ -72,7 +72,7 @@
                                                 'user':{'name':user.name},'time':date('now'),'content':'No Messages', 'path': '#'}] %}
                         {% endif %}
                         {% for message in messages %}
-                        <li class="message-preview" onclick="dismissMessage({{message.id}}})">
+                        <li class="message-preview" onclick="dismissMessage({{message.id}})">
                             <a href="{{message.path}}">
                                 <div class="media">
                                     <span class="pull-left">
