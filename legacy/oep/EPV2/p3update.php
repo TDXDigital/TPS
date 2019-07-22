@@ -6,7 +6,7 @@
         error_reporting(E_ERROR);
     }
 
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
+$con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
@@ -14,7 +14,7 @@ if (!$con){
 	username=' . $_SESSION["username"]);
 }
 else if($con){
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../../login.php');}
+	if(!mysqli_select_db($con, $_SESSION['DBNAME'])){header('Location: ../../login.php');}
 
 	// GLOBAL SETTINGS
 	$SETW = "1350px";
@@ -85,14 +85,14 @@ else if($con){
 		// UPDATE Start Time
 		if($_POST['shstat']!=""){
 			$SQST = "Update `episode` SET starttime=\"".addslashes($_POST['shstart'])."\" where programname=\"" . $SHOW . "\" and date='" . $DATE . "' and starttime='" . $START . "' and callsign='" . $CALL . "'";
-			if(!mysql_query($SQST)){
+			if(!mysqli_query($con, $SQST)){
 				//array_push($ERRLOG,mysql_errno(),mysql_error());
 				echo mysql_error();
 			}
 			else{
 				// UPDATE SONGS ASSOCIATED WITH EPISODE
 				$SQSO = "Update `song` SET starttime=\"".addslashes($_POST['shstart'])."\" where programname=\"" . $SHOW . "\" and date='" . $DATE . "' and starttime='" . $START . "' and callsign='" . $CALL . "'";
-				if(!mysql_query($SQSO)){
+				if(!mysqli_query($con, $SQSO)){
 					//array_push($ERRLOG,mysql_errno(),mysql_error());
 					echo mysql_error();
 				}
@@ -106,14 +106,14 @@ else if($con){
 		// UPDATE Air Date
 		/*if($_POST['NSHN']!=""){
 			$SQSN = "Update Episode SET programname=\"".addslashes($_POST['NSHN'])."\" where programname=\"" . $SHOW . "\" and date='" . $DATE . "' and starttime='" . $START . "' and callsign='" . $CALL . "'";
-			if(!mysql_query($SQSN)){
+			if(!mysqli_query($con, $SQSN)){
 				//array_push($ERRLOG,mysql_errno(),mysql_error());
 				echo mysql_error();
 			}
 			else{
 				// UPDATE SONGS ASSOCIATED WITH EPISODE
 				$SQSH = "Update song SET programname=\"".addslashes($_POST['NSHN'])."\" where programname=\"" . $SHOW . "\" and date='" . $DATE . "' and starttime='" . $START . "' and callsign='" . $CALL . "'";
-				if(!mysql_query($SQSH)){
+				if(!mysqli_query($con, $SQSH)){
 					//array_push($ERRLOG,mysql_errno(),mysql_error());
 					echo mysql_error();
 				}
@@ -129,14 +129,14 @@ else if($con){
 		// UPDATE Air Date
 		if($_POST['shdate']!=""){
 			$SQSD = "Update `episode` SET date=\"".addslashes($_POST['shdate'])."\" where programname=\"" . $SHOW . "\" and date='" . $DATE . "' and starttime='" . $START . "' and callsign='" . $CALL . "'";
-			if(!mysql_query($SQSD)){
+			if(!mysqli_query($con, $SQSD)){
 				//array_push($ERRLOG,mysql_errno(),mysql_error());
 				echo mysql_error();
 			}
 			else{
 				// UPDATE SONGS ASSOCIATED WITH EPISODE
 				$SQOD = "Update `song` SET date=\"".addslashes($_POST['shdate'])."\" where programname=\"" . $SHOW . "\" and date='" . $DATE . "' and starttime='" . $START . "' and callsign='" . $CALL . "'";
-				if(!mysql_query($SQOD)){
+				if(!mysqli_query($con, $SQOD)){
 					//array_push($ERRLOG,mysql_errno(),mysql_error());
 					echo mysql_error();
 				}
@@ -149,14 +149,14 @@ else if($con){
 			// UPDATE Pre-Record Date
 		if($_POST['shprec']!=""){
 			$SQPR = "Update `episode` SET prerecorddate=\"".addslashes($_POST['shprec'])."\" where programname=\"" . $SHOW . "\" and date='" . $DATE . "' and starttime='" . $START . "' and callsign='" . $CALL . "'";
-			if(!mysql_query($SQPR)){
+			if(!mysqli_query($con, $SQPR)){
 				//array_push($ERRLOG,mysql_errno(),mysql_error());
 				echo mysql_error();
 			}
 		}
 		else{
 			$SQPR = "Update `episode` SET prerecorddate=NULL where programname=\"" . $SHOW . "\" and date='" . $DATE . "' and starttime='" . $START . "' and callsign='" . $CALL . "'";
-			if(!mysql_query($SQPR)){
+			if(!mysqli_query($con, $SQPR)){
 				//array_push($ERRLOG,mysql_errno(),mysql_error());
 				echo mysql_error();
 			}
@@ -164,14 +164,14 @@ else if($con){
 			// UPDATE Description
 		if($_POST['shdesc']!=""){
 			$SQDE = "Update `episode` SET description=\"".addslashes($_POST['shdesc'])."\" where programname=\"" . $SHOW . "\" and date='" . $DATE . "' and starttime='" . $START . "' and callsign='" . $CALL . "'";
-			if(!mysql_query($SQDE)){
+			if(!mysqli_query($con, $SQDE)){
 				//array_push($ERRLOG,mysql_errno(),mysql_error());
 				echo mysql_error();
 			}
 		}
 		else{
 			$SQDE = "Update `episode` SET description=NULL where programname=\"" . $SHOW . "\" and date='" . $DATE . "' and starttime='" . $START . "' and callsign='" . $CALL . "'";
-			if(!mysql_query($SQDE)){
+			if(!mysqli_query($con, $SQDE)){
 				//array_push($ERRLOG,mysql_errno(),mysql_error());
 				echo mysql_error();
 			}
@@ -180,11 +180,11 @@ else if($con){
 
 	// Perform Selections
 	$EPISQL = "select * from `episode` where programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and callsign='" . $CALL . "'";
-	if(!$SHOWDATAAR = mysql_query($EPISQL)){
+	if(!$SHOWDATAAR = mysqli_query($con, $EPISQL)){
 		echo "<span>SELECTION ERROR:" . mysql_errno() . " - " . mysql_error() . "</span>";
 	}
 	else{
-		$SHOWDATA = mysql_fetch_array($SHOWDATAAR);
+		$SHOWDATA = mysqli_fetch_array($SHOWDATAAR);
 		$DESC = $SHOWDATA['description'];
 		$PREC = $SHOWDATA['prerecorddate'];
 		if( $SHOWDATA['endtime']==""){
@@ -286,7 +286,7 @@ else if($con){
 		$SQROW .= " , title='".addslashes($TITL[$INDEX])."', artist='".addslashes($ARTI[$INDEX])."', album='".addslashes($ALBU[$INDEX])."', composer='".addslashes($COMP[$INDEX])."' ";
 		$SQROW .= " where songid='".$SNID[$INDEX]."' ";
 
-		if(!mysql_query($SQROW))
+		if(!mysqli_query($con, $SQROW))
 		{
 			echo $SQROW . "<br/>";
 			echo mysql_error();
@@ -295,7 +295,7 @@ else if($con){
 			//echo $SQROW . "<br/>";
 			// UPDATE LANGUAGE
 			$SQLAN = "Update `language` set languageid='".$LANG[$INDEX]."' where songid='".$SNID[$INDEX]."' ";
-			if(!mysql_query($SQLAN)){
+			if(!mysqli_query($con, $SQLAN)){
 				echo mysql_error();
 			}
 		}
@@ -304,26 +304,26 @@ else if($con){
 		$RMQ = "delete from `song` where songid='".$REMO[$ct]."' ";
 		$RML = "delete from `language` where songid='".$REMO[$ct]."' ";
         $RMT = "delete from `trafficaudit` where songid='".$REMO[$ct]."' ";
-		if(!mysql_query($RMQ)){
+		if(!mysqli_query($con, $RMQ)){
 			echo mysql_error();
 		}
 		else{
-			if(!mysql_query($RML)){
+			if(!mysqli_query($con, $RML)){
 				echo mysql_error();
 			}
             else{
                 $adid="select `advertid` from trafficaudit where songid='".$REMO[$ct]."'";
                 //echo $adid;
-                if($RESU_ADID=mysql_query($adid)){
-                    $advert = mysql_fetch_array($RESU_ADID);
+                if($RESU_ADID=mysqli_query($con, $adid)){
+                    $advert = mysqli_fetch_array($RESU_ADID);
                     if(mysql_num_rows($RESU_ADID)>0){
-                        if(!mysql_query("Update `adverts` set Playcount=Playcount-1 where AdId='".$advert['advertid']."'")){
+                        if(!mysqli_query($con, "Update `adverts` set Playcount=Playcount-1 where AdId='".$advert['advertid']."'")){
                             echo mysql_error();
                             error_log(mysql_error());
                             //echo "ERROR";
                         }
                         else{
-                            if(!mysql_query($RMT)){
+                            if(!mysqli_query($con, $RMT)){
                                 echo mysql_error();
                             }
                             else{
@@ -375,8 +375,8 @@ else{
 	<div id="top" style="width: <?php echo $SETW ?>">
 		<table><tr><td style="width: 200px"><span style="font-size: 25px;">Update/Edit Log</span></td><td style="width: 100px"></td><td style="width: 300px"><span>Sponsor:<?php
 			$SELSPON = "SELECT * FROM `program` where programname='".$SHOW."' and callsign='".$CALL."' ";
-			$SEL = mysql_query($SELSPON);
-			$vars = mysql_fetch_array($SEL);
+			$SEL = mysqli_query($con, $SELSPON);
+			$vars = mysqli_fetch_array($SEL);
 			if($vars['SponsId']!="")
 			{
 				echo $vars['SponsId'];
@@ -392,19 +392,19 @@ else{
 			</td><td style=" min-width:'225px'">
 				<?php
 				$getgen = "select * from `genre` where genreid='" . $vars['genre'] . "' ";
-				$reqar = mysql_query($getgen);
-				$req = mysql_fetch_array($reqar);
+				$reqar = mysqli_query($con, $getgen);
+				$req = mysqli_fetch_array($reqar);
 				if($req['CCType']=='0'){
                     $SQL_CC_COUNT = "SELECT 
                     (SELECT count(*) FROM song WHERE callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and category not like '1%' and category not like '4%' and category not like '5%') AS Total,
                     (SELECT count(*) FROM song WHERE callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and category not like '1%' and category not like '4%' and category not like '5%' and cancon='1') AS CC_Num,
                     (SELECT round(((CC_Num / Total)*100),2)) AS Percent";
-                    if(!$CC_PER_RES = mysql_query($SQL_CC_COUNT)){
+                    if(!$CC_PER_RES = mysqli_query($con, $SQL_CC_COUNT)){
                         echo "<span class='ui-state-highlight ui-corner-all'>".mysql_error()."</span>";
                         //break;
                     }
                     else{
-                        $PER_CC = mysql_fetch_array($CC_PER_RES);
+                        $PER_CC = mysqli_fetch_array($CC_PER_RES);
                         echo "<span ";
                         if(floatval($PER_CC['Percent']) < floatval($req['canconperc'])*100){
                             echo "class=\"ui-state-error ui-corner-all\" >";
@@ -427,8 +427,8 @@ else{
 						$CCR = ceil($vars['CCX'] * $vars['length'] / 60);
 					}
                     $SQLCOUNTCC = "Select count(songid) AS EnteredCC from SONG where callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and cancon='1' ";
-				    $resultCC = mysql_query($SQLCOUNTCC);
-                    $CC_VARS = mysql_fetch_array($resultCC);
+				    $resultCC = mysqli_query($con, $SQLCOUNTCC);
+                    $CC_VARS = mysqli_fetch_array($resultCC);
                     echo "<span ";
                     if(floatval($CC_VARS['EnteredCC']) < floatval($CCR)){
                         echo "class=\"ui-state-error ui-corner-all\" >";
@@ -447,12 +447,12 @@ else{
                     (SELECT count(*) FROM song WHERE callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and category not like '1%' and category not like '4%' and category not like '5%') AS Total,
                     (SELECT count(*) FROM song WHERE callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and category not like '1%' and category not like '4%' and category not like '5%' and Playlistnumber IS NOT NULL) AS Count,
                     (SELECT round(((Count / Total)*100),2)) AS Percent";
-                    if(!$PL_PER_RES = mysql_query($SQL_PL_COUNT)){
+                    if(!$PL_PER_RES = mysqli_query($con, $SQL_PL_COUNT)){
                         echo "<span class='ui-state-highlight ui-corner-all'>".mysql_error()."</span>";
                         //break;
                     }
                     else{
-                        $PER_PL = mysql_fetch_array($PL_PER_RES);
+                        $PER_PL = mysqli_fetch_array($PL_PER_RES);
                         echo "<span ";
                         if(floatval($PER_PL['Percent']) < floatval($req['playlistperc'])*100){
                             echo "class=\"ui-state-error ui-corner-all\" >";
@@ -476,8 +476,8 @@ else{
 						}
 
 				    $SQLCOUNTPL = "Select count(songid) AS EnteredPL from `song` where callsign='" . $CALL . "' and programname='" . $SHOW . "' and date='" . $DATE . "' and starttime='" . $START . "' and playlistnumber is not null ";
-				    $resultPL = mysql_query($SQLCOUNTPL);
-                    $PL_VARS = mysql_fetch_array($resultPL);
+				    $resultPL = mysqli_query($con, $SQLCOUNTPL);
+                    $PL_VARS = mysqli_fetch_array($resultPL);
 				    //$PL = mysql_num_rows($resultPL);
 				    echo "<span ";
                     if(floatval($PL_VARS['EnteredPL']) < floatval($PLR)){
@@ -509,8 +509,8 @@ else{
 				<td><input type="hidden" title="Show Name" name="shname" maxlength="90" readonly="true" value="<?php echo $SHOW; ?>"/>
 					<select required title="Show Name" name="NSHN"><?php
 					$SHOWSQL = "SELECT * FROM `program` WHERE active='1' and callsign='".$CALL."' ";
-					$SHOWARRAY = mysql_query($SHOWSQL);
-					while($OPSH = mysql_fetch_array($SHOWARRAY)){
+					$SHOWARRAY = mysqli_query($con, $SHOWSQL);
+					while($OPSH = mysqli_fetch_array($SHOWARRAY)){
 						echo "<option value='".$OPSH['programname'];
 						if(addslashes($OPSH['programname'])==$SHOW){
 							echo "' selected style=\"background-color:darkgreen; color:white;\" ";
@@ -545,11 +545,11 @@ else{
                 else{
                 $Hardware_Query="SELECT hardware.*, device_codes.Manufacturer FROM hardware INNER JOIN device_codes ON hardware.device_code=device_codes.Device WHERE station ='$CALL' and in_service='1' and ipv4_address IS NOT NULL and hardware.room=(SELECT `hardware`.`room` AS `room_ip` FROM hardware WHERE hardware.ipv4_address='".$_SERVER['REMOTE_ADDR']."' and `hardware`.`hardware_type`='1' and `hardware`.`in_service`='1' order by `hardware`.`hardwareid` LIMIT 1) group by hardware.hardwareid order by friendly_name ASC";
                 }
-                if(!$Equipment_List = mysql_query($Hardware_Query)){
+                if(!$Equipment_List = mysqli_query($con, $Hardware_Query)){
                     error_log("Encountered Error: p3update.php, Query HArdware_Query returned invalid result: ".mysql_error());
                 }
                 $BOOTH = 0;
-                while($Equipment_row = mysql_fetch_array($Equipment_List)){
+                while($Equipment_row = mysqli_fetch_array($Equipment_List)){
                     if($Equipment_row['ipv4_address']==$_SERVER['REMOTE_ADDR'] || $_SESSION['access']==2){
 
                         echo "<hr><div id=\"toolbar".$Equipment_row['hardwareid']."\"  style=\"color: white; background:#000; width:100%; display: block\">
@@ -623,14 +623,14 @@ else{
 	//echo $FETSON; // sql qUEREY pRINT oUT
 
 	//echo $FETSON; //DEBUG USE ONLY
-	if(!$SONRES = mysql_query($FETSON))
+	if(!$SONRES = mysqli_query($con, $FETSON))
 	{
 		echo "FETCH ERROR: Could not Fetch Songs performed, Server Returned (".mysql_errno().": ".mysql_error().") <br/><br/>SQL:";
 		echo $FETSON;
 	}
 	else{
 		$CONT = 0;
-		while($SONGS = mysql_fetch_array($SONRES)){
+		while($SONGS = mysqli_fetch_array($SONRES)){
 			echo "<tr id=\"" . $SONGS['songid'];
 			if($CONT%2){
 				echo "\" style=\"background-color: #DAFFFF;";
@@ -947,7 +947,7 @@ else{
                 echo " selected value='NA'>--</option></select> ";
             }
 			echo "</td>";
-			$LANS = mysql_fetch_array(mysql_query("SELECT languageid from `language` where songid=\"" . $SONGS['songid'] . "\" "));
+			$LANS = mysqli_fetch_array(mysqli_query($con, "SELECT languageid from `language` where songid=\"" . $SONGS['songid'] . "\" "));
 			echo "<td><input onchange=\"SetEdit('EDI".$CONT."')\" onclick=\"SetEdit('EDI".$CONT."')\" type=\"text\" name=\"language[]\" value=\"". $LANS['languageid'] . "\" size=\"10\" maxlength=\"40\" /></td>";
 			echo "<td><input type=\"button\" value=\"";
 				if($SONGS['note']!=''){
