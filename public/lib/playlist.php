@@ -141,6 +141,7 @@ class playlist extends TPS{
         $library = new \TPS\library();
         foreach($lib_data['data'] as &$album) {
 	    $refCode = $this->getRefCodeByPlaylistID((int)$album['playlistID']);
+	    $album['refCode'] = $refCode;
             $album['subgenres'] = $library->getSubgenresByRefCode($refCode);
             $album['hometowns'] = $library->getHometownsByRefCode($refCode);
 	    $album['tags'] = $library->getTagsByRefCode($refCode);
