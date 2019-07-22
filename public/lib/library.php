@@ -1169,10 +1169,8 @@ class library extends station{
 
 	    $variousArtists = False;
 	    $artist = $getData[1];
-	    if ($artist == 'V/A') {
-		$artist = '~Various Artists~';
+	    if ($artist == 'V/A')
 		$variousArtists = True;
-	    }
 
             $tags = [];
             if($getData[11] == 'o')
