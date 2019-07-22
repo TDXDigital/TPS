@@ -168,7 +168,7 @@ class notification extends station{
 	    if ($alreadyNotifiedOf != $numExpired) {
 	        $this->db->query("DELETE FROM notification WHERE tag='expired albums';");
 	        $this->db->query("INSERT INTO notification (message, time, tag, path) VALUES ('" .
-				 $numExpired . " expired albums are on the playlist', NOW(), 'expired albums', '/playlist?expired=true');");
+				 $numExpired . " expired albums are on the playlist', NOW(), 'expired albums', '/playlist/?expired=true');");
 	        if (!$notifyMgmt)
 		    $this->db->query("UPDATE notification SET acknowledged=NOW() WHERE notificationid=LAST_INSERT_ID();");
 	    }

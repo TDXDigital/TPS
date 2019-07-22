@@ -66,7 +66,8 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
                 "limit"=>$limit,
 		"subgenres"=>$library->getSubgenres(),
 		"hometowns"=>$library->getHometowns(),
-		"tags"=>$library->getTags()
+		"tags"=>$library->getTags(),
+		"showExpired"=>$app->request->get("expired")=='true'
             );
             $app->render("playlists.twig", $params);
         }
@@ -90,17 +91,6 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             $app->redirect("./".$result);
         }
     });
-
-	$app->get('/expire', function() use ($app, $playlist){
-		//todo - set expired filter
-		$params = array(
-                "title"=>"Playlist",
-            );
-		$app->render("playlists.twig", $params);
-    });
-
-    
-
     $app->get('/display-playlist', $authenticate, function () use ($app) {
 	$filter = $app->request->get("filter");
 	$playlist = new \TPS\playlist;
