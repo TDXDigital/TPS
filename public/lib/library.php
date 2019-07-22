@@ -918,25 +918,25 @@ class library extends station{
         switch($filter['tag'])
         {
             case 'all': $where .= " AND true"; break;
-            default: $where .= " AND RefCode IN (select library_refCode from library_tags where tag_id = (select id from tags where name = '". $filter['tag'] ."'))";
+            default: $where .= " AND RefCode IN (select library_refCode from library_tags where tag_id = (select id from tags where name = ". $this->db->quote($filter['tag']) ."))";
         }
         switch($filter['hometown'])
         {
             case 'all': $where .= " AND true"; break;
-            default: $where .= " AND RefCode IN (select library_refCode from library_hometowns where hometown_id = (select id from hometowns where name = '". $filter['hometown'] ."'))";
+            default: $where .= " AND RefCode IN (select library_refCode from library_hometowns where hometown_id = (select id from hometowns where name = ". $this->db->quote($filter['hometown']) ."))";
         }
         switch($filter['subgenre'])
         {
             case 'all': $where .= " AND true"; break;
-            default: $where .= " AND RefCode IN (select library_refCode from library_subgenres where subgenre_id = (select id from subgenres where name = '". $filter['subgenre'] ."'))";
+            default: $where .= " AND RefCode IN (select library_refCode from library_subgenres where subgenre_id = (select id from subgenres where name = ". $this->db->quote($filter['subgenre']) ."))";
         }
         return $where;
     }
 
-    public function displayTable($filter)
+    public function displayTable($filter, &$app)
     {
         $where = self::getTableFilter($filter);
-        
+
         $table = 'library';
          
         // Table's primary key
@@ -1035,11 +1035,11 @@ class library extends station{
 
         while (($getData = fgetcsv($file, 10000, ",")) !== FALSE)
         {
-            
+            $getData = array_map('trim', $getData); // Trim leading/trailing whitespaces
             if($getData[1]=='' && $getData[2]=='')
                 break;
 
-            if($getData[0] == '' || $getData[1] == '' || $getData[2] == '' || $getData[3] == '')   
+            if($getData[0] == '' || $getData[1] == '' || $getData[2] == '')
                 continue;
 
 
@@ -1063,8 +1063,6 @@ class library extends station{
                 return $this->mysqli->error;
             }
             $labels = \TPS\label::nameSearch($labelName);
-            if(sizeof($labels)==0)
-                continue;
             $labels = array_keys($labels);
             // $labels = $stmt3->insert_id;
             $genreKeys = array_keys(self::getLibraryGenres());
@@ -1186,7 +1184,10 @@ class library extends station{
 	    $hometowns = explode("/", $hometowns);
 
             $format = $getData[12] == ''? 'CD':$getData[12];
+
             $subgenres = $getData[7] == ''? [] : explode('/', $getData[7]);
+	    $subgenres = array_map('trim', $subgenres);
+
             $result = self::createAlbum($artist, $getData[2], $format, $genreKey, $genre_num, $labels, 
                 $locale, $canCon, $playlist_flag, $null, $null, $note, $accept, $variousArtists,
                 $dateIn, $dateRel, 1, $rating, $tags, $hometowns, $subgenres, [], $missing);
@@ -1470,7 +1471,7 @@ class library extends station{
     }
 
     public function mysql_escape($val) {
-	return mysqli_real_escape_string($this->mysqli, $val);
+	return mysqli_real_escape_string($this->mysqli, stripslashes($val));
     }
 
     /*

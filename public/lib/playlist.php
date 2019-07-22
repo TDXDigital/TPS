@@ -92,7 +92,7 @@ class playlist extends TPS{
 				    . "LEFT JOIN library l ON p.refCode=l.refCode "
 				    . "WHERE l.refCode IN ("
 					    . "select library_refCode from library_subgenres where subgenre_id = ("
-						    . "select id from subgenres where name = '" . $filter['subgenre'] . "'"
+						    . "select id from subgenres where name = " . $this->db->quote($filter['subgenre']) . ""
 					    . ")"
 				    . ")"
 				. ")"; break;
@@ -105,7 +105,7 @@ class playlist extends TPS{
 				    . "LEFT JOIN library l ON p.refCode=l.refCode "
 				    . "WHERE l.refCode IN ("
 					    . "select library_refCode from library_hometowns where hometown_id = ("
-						    . "select id from hometowns where name = '" . $filter['hometown'] . "'"
+						    . "select id from hometowns where name = " . $this->db->quote($filter['hometown']) . ""
 					    . ")"
 				    . ")"
 				. ")"; break;
@@ -118,7 +118,7 @@ class playlist extends TPS{
 				    . "LEFT JOIN library l ON p.refCode=l.refCode "
 				    . "WHERE l.refCode IN ("
 					    . "select library_refCode from library_tags where tag_id = ("
-						    . "select id from tags where name = '" . $filter['tag'] . "'"
+						    . "select id from tags where name = " . $this->db->quote($filter['tag']) . ""
 					    . ")"
 				    . ")"
 				. ")"; break;
