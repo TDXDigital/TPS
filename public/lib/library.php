@@ -908,7 +908,7 @@ class library extends station{
             case 'all': $where .= " AND true"; break;
 	    case 'album' : $where .= " AND missing=1"; break;
             case 'label': $where .= " AND refCode NOT IN (SELECT library_refcode from library_recordlabel)"; break;
-            case 'locale': $where .= " AND locale is null"; break;
+            case 'hometown': $where .= " AND (SELECT COUNT(*) from library_hometowns WHERE library_refCode=refcode) = 0"; break;
             case 'genre': $where .= " AND Genre is null"; break;
             case 'rating': $where .= " AND (rating is null OR rating = 0)"; break;
             case 'rel_date': $where .= " AND (release_date is null OR release_date = '1970-01-01')"; break;
