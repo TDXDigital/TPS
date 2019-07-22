@@ -39,10 +39,13 @@ $app->group('/host', $authenticate, function () use ($app,$authenticate){
 	$station = $station->getStation($callsign);
 	$probationDays = $station[$callsign]['hostProbationDays'];
 	$probationEnds = date('Y-m-d', strtotime("+{$probationDays} days"));
+	$probationMultiplier = $station[$callsign]['hostProbationWeight'];
+
         $params = array(
 	    "area"=>"Host",
             "title"=>"New",
-	    "host"=>['probationEnds'=>$probationEnds]
+	    "host"=>['probationEnds'=>$probationEnds],
+	    "station"=>['probationMultiplier'=>$probationMultiplier]
          );
          $app->render("hostNew.twig", $params);
     });
@@ -81,10 +84,17 @@ $app->group('/host', $authenticate, function () use ($app,$authenticate){
      $app->get('/edit/:alias', $authenticate, function ($alias) use ($app){
         $host = new \TPS\host($_SESSION['CALLSIGN']);
         $hostToEdit = $host->get($alias);
+
+	$callsign = $_SESSION['CALLSIGN'];
+	$station = new \TPS\station();
+	$station = $station->getStation($callsign);
+	$probationMultiplier = $station[$callsign]['hostProbationWeight'];
+
         $params = array(
 	    "area"=>"Host",
             "title"=>"Edit",
             "host"=>$hostToEdit,
+	    "station"=>['probationMultiplier'=>$probationMultiplier]
         );
         $app->render('hostNew.twig', $params);
     });
