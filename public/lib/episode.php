@@ -97,6 +97,30 @@ class episode extends program{
         }
     }
 
+    //instanciate object by episode number
+    public function setAttributes($epNum)
+    {
+        $this->EpisodeID = $epNum;
+
+        $stmt = $this->mysqli->prepare("SELECT * FROM episode where EpNum = ?");
+        $stmt->bind_param("s", $epNum);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $episode = array();
+        while($row = $result->fetch_assoc()){
+            $episode = $row;
+        }
+        $stmt->free_result();
+        $stmt->close();
+
+        $this->time = $episode["starttime"];
+        $this->date = $episode["date"];
+        $this->description = $episode["description"];
+        $this->type = $episode["Type"];
+        $this->recordDate = $episode["prerecorddate"];
+    }
+
     public function setDescription($description){
         $this->dynamicUpdate('description', $description, "s");
         return $this->getEpisode();

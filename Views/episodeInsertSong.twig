@@ -199,7 +199,7 @@
 <br>
 <hr>
 <div style="background-color: #F5F5F5;">
-<form action="/episode/finalize" id="episodeForm" method="POST">
+<form action="{{ action }}" id="episodeForm" method="POST">
 	<input type="hidden" name="epNum" value="{{episode.id}}">
 	<table class="table" id="songTable" >
 		<thead class="thead-dark">
@@ -209,6 +209,26 @@
 		</thead>
 		<tbody>
 			<tr></tr>
+
+			 {% for song in songs %}
+                <tr>
+                    <td>{{song.playlistnumber}}</td>
+                    <td>{{song.category}}</td>
+                    <td>{{song.time}}</td>
+                    <td>{{song.title}}</td>
+                    <td>{{song.artist}}</td>
+                    <td>{{song.album}}</td>
+                    <td>{{song.composer}}</td>
+                    <td>{{song.cancon}}</td>
+                    <td>{{song.hit}}</td>
+                    <td>{{song.instrumental}}</td>
+                    <td>{{song.type}}</td>
+                    <td>{{song.lang}}</td>
+                    <td>{{song.lang}}</td>
+                </tr>
+            {% endfor %} 
+
+
 		</tbody>
 
 		<tfoot>
@@ -217,9 +237,14 @@
 			</tr>
         </tfoot>
 	</table>
-			<input type="submit" class="btn pull-right" id="finalizeEP" value="Finalize"/>
-
-</form>
+	<div class="pull-right">
+		<button type="button" class="btn btn-info editBtn">
+			      <span class="glyphicon glyphicon-edit"> Edit</span>
+		</button>
+		<input type="submit" class="btn" id="finalizeEP" value="Finalize" />
+		
+	</div>
+		</form>
 
 
 </div>
