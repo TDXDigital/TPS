@@ -248,7 +248,7 @@
                         <label for="notes" class="input-group-addon">Notes</label>
                         <input id="notes" type="text"
                                {% if album.note is not null %} value="{{album.note}}" {% endif %}
-                               class="form-control" name="notes" placeholder="optional"/>
+                               class="form-control" name="notes" placeholder="optional" maxlength="120"/>
                     </div>
                 </div>
                 <div class="col-md-12">
