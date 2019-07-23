@@ -1,4 +1,3 @@
-var rowid = 0;
 
 $(document).on('change paste input', ".playlistNum", function(){
 
@@ -56,6 +55,9 @@ function setPsaVal()
 }
 //for insert song button listner 
 $(document).on('click', '.insertBtn', function(){
+
+	var rowid = getRowId(); 
+
  	var inputVal = $(this).closest('.songInputField');
  	var catValue = inputVal.find("[name='cat']").val();
  	if(catValue == null || catValue == '')
@@ -92,7 +94,7 @@ $(document).on('click', '.insertBtn', function(){
  	// alert(inputVal.find("input[name='time']").val());
  	$('#songTable tbody tr:last').after(
 
- 		'<tr id="' + ++rowid +'">' +
+ 		'<tr id="' + rowid +'">' +
 			'<td>' +
 			'<input type="hidden" name="row[]" value="'+ rowid +'">' +
 				'<input type="text" readonly class="form-control input-sm playlistNum" name="playlistNum['+ rowid +']" id="playlistNum" placeholder="" value="'+ inputVal.find("input[name='playlistNum']").val()+'">' +
@@ -149,6 +151,11 @@ $(document).on('click', '.insertBtn', function(){
 	// $('.songInputField').find("label[for='playlistNum']").text('Playlist ID');
 });
 
+function getRowId()
+{
+	var nextRowId = parseInt($('#songTable tbody tr:last').attr('id')) + 1;
+	return nextRowId;
+}
 function clearInputField(){
 	var inputfield =  $('.songInputField');
 	inputfield.find("input[type='text']").val('');

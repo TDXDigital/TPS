@@ -208,24 +208,60 @@
 		</tr>
 		</thead>
 		<tbody>
-			<tr></tr>
+			<tr id="0"></tr>
 
 			 {% for song in songs %}
-                <tr>
-                    <td>{{song.playlistnumber}}</td>
-                    <td>{{song.category}}</td>
-                    <td>{{song.time}}</td>
-                    <td>{{song.title}}</td>
-                    <td>{{song.artist}}</td>
-                    <td>{{song.album}}</td>
-                    <td>{{song.composer}}</td>
-                    <td>{{song.cancon}}</td>
-                    <td>{{song.hit}}</td>
-                    <td>{{song.instrumental}}</td>
-                    <td>{{song.type}}</td>
-                    <td>{{song.lang}}</td>
-                    <td>{{song.lang}}</td>
-                </tr>
+            <tr id="{{loop.index}}">
+        	<td>
+			<input type="hidden" name="row[]" value="{{loop.index}}">
+				<input type="text" readonly class="form-control input-sm playlistNum" name="playlistNum[{{loop.index}}]" id="playlistNum" placeholder="" value="{{song.playlistnumber}}">
+			</td>
+			<td>
+				<input type="text" readonly  class="form-control input-sm" name="cat[{{loop.index}}]" placeholder="" value="{{song.category}}">
+			</td>
+			<td>
+				<input type="text" readonly class="form-control input-sm" name="time[{{loop.index}}]" placeholder="" 
+				value="{{song.time|date('H:i')}}">
+			</td>
+			<td>
+				<input class="form-control input-sm" type="text" readonly  name="title[{{loop.index}}]" placeholder="Title" value="{{song.title}}"> 
+			</td>
+			<td>
+				<input class="form-control input-sm" readonly name="artist[{{loop.index}}]" id="artist"  type="text" placeholder="Artist" value="{{song.artist}}">
+			</td>
+			<td>
+				<input class="form-control input-sm" readonly id="album" name="album[{{loop.index}}]" type="text" placeholder="Album" value="{{song.album}}">
+			</td>
+			<td>
+				<input class="form-control input-sm" readonly id="album" name="composer[{{loop.index}}]" type="text" placeholder="Composer" value="{{song.composer}}">
+			</td>
+			<td>
+				<input type="checkbox" disabled id="ccin" name="cancon[{{loop.index}}]" {{(song.cancon == 1)? 'checked':''}} value="1"/>
+			</td>
+			<td>
+				<input type="checkbox" disabled id="hitin" name="hit[{{loop.index}}]" {{(song.hit == 1)? 'checked':''}} value="1"/>
+			</td>
+			<td>
+				<input type="checkbox" disabled id="insin" name="instrumental[{{loop.index}}]" {{(song.instrumental == 1)? 'checked':''}} value="1"/>	
+			</td>
+			<td>
+				<input type="text" readonly readonly class="form-control input-sm" name="type[{{loop.index}}]" placeholder="" value="{{song.type}}">
+			</td>
+			<td>
+				<input type="text" readonly class="form-control input-sm" name="lang[{{loop.index}}]" placeholder="" value="{{song.lang}}">
+			</td>
+			<td>
+				<input type="hidden" class="form-control input-sm" name="note[{{loop.index}}]" placeholder="" value="{{song.note}}">
+			</td>
+			<td>
+				<input type="button" value="Notes" class="btn btn-sm {{song.note !=''? 'btn-info':''}}" name="NButton[{{loop.index}}]" onclick="GetNotes({{loop.index}});" />
+			</td>
+			<td>
+				<button type="button" class="btn btn-sm btn-danger rmvBtn">
+				      <span class="glyphicon glyphicon-trash"></span>
+		  		</button>
+			</td>
+        </tr>
             {% endfor %} 
 
 
