@@ -427,9 +427,6 @@ class playlist extends TPS{
     * @return array of dictionaries containing the top 40 albums information (or less if <40 albums played within the last week, more if tie for last)
     */
     public function getTop40($startDate, $endDate) {
-        // echo $startDate;
-        // echo '<br>'.$endDate;
-        // exit;
         $startDate = new \DateTime($startDate);
         $endDate = new \DateTime($endDate);
 
@@ -557,16 +554,15 @@ class playlist extends TPS{
 	    $releaseDate = new \DateTime($album['release_date']);
 	    $releaseCode = $this->getReleaseCode($releaseDate, $endDate);
 
-	    // Assign rateAmount, numDJs, and locationCode
+	    // Assign rateAmount and locationCode
 	    $rateAmount = $this->getRateAmount($album['rating']);
 	    $locationCode = $this->getLocationCode($album['Locale'], $album['SmallCode']);
-	    $numDJs = $this->getNumDJs($weightedNumDJs, $rateAmount);
 
 	    // Assign totalScore
 	    if ($lastWeekPlays == 0)
                 $totalScore = 0;
             else
-                $totalScore = pow($lastWeekPlays + 1, 2) * $numShows * $playlistCode * pow($releaseCode, 2) * $numDJs * $rateAmount + $locationCode + $previousWeeksPlayScore;
+                $totalScore = pow($lastWeekPlays + 1, 2) * $numShows * $playlistCode * pow($releaseCode, 2) * $weightedNumDJs * $rateAmount + $locationCode + $previousWeeksPlayScore;
             $album['totalScore'] = $totalScore;
         }
 
@@ -592,8 +588,19 @@ class playlist extends TPS{
 	    }
 	}
 
-	// Return the top albums (less if <40 albums played during the last week, more if tie-breaker needed for last places)
+	// Slice the top albums (less if <40 albums played during the last week, more if tie-breaker needed for last places)
         $topAlbums = array_slice($albumInfo, 0, $albumsToReturn);
+
+	// Assign a rank to each of the top albums
+	$previousScore = INF;
+	foreach ($topAlbums as $i => &$album) {
+	    if ($album['totalScore'] < $previousScore) {
+		$previousScore = $album['totalScore'];
+		$rank = $i + 1;
+	    }
+	    $album['rank'] = $rank;
+	}
+
         return $topAlbums;
     }
 
@@ -656,27 +663,6 @@ class playlist extends TPS{
             return 2.5;
         elseif ($rating == 5)
             return 3;
-        else
-            return 0;
-   }
-
-    /*
-    * @abstract A helper function to get the number of DJs that played an album taking the rating into account
-    * @param int $weightedNumDJs The weighted number of djs that played the album
-    * @param float $rateAmount The weighted rate amount for the album
-    * @return int The weighted number of DJs that played the album
-    */
-    private function getNumDJs($weightedNumDJs, $rateAmount) {
-        if ($weightedNumDJs == 0)
-            return 0;
-        elseif ($rateAmount == 3 || $rateAmount == 2.5)
-            return $weightedNumDJs + 1;
-        elseif ($rateAmount == 1.5)
-            return $weightedNumDJs;
-        elseif ($rateAmount == 1 && $weightedNumDJs < 3)
-            return $weightedNumDJs - 1;
-        elseif ($rateAmount == 1)
-            return $weightedNumDJs - 0.5;
         else
             return 0;
    }
