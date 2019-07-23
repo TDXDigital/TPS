@@ -166,7 +166,7 @@ $app->group('/episode', $authenticate($app,[1,2]),
     });
 
 
-  // Create new program
+  // Create new playsheet
     $app->post('/insertSong', function() use ($app, $authenticate){
  
         $params=array(
@@ -176,6 +176,7 @@ $app->group('/episode', $authenticate($app,[1,2]),
 
         $app->render("episodeInsertSong.twig",$params);
     });
+
 
     $app->post('/searchSong/:playlistId', function($shortCode) use ($app, $authenticate){
         $playlist = new \TPS\playlist();
@@ -254,6 +255,33 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $params["songs"] = \TPS\episode::getSongByEpNum($epNum);
 
         $app->render('episodeInsertSong.twig', $params);
+    });
+
+
+  $app->post('/update', function() use ($app, $authenticate){
+        $epNum = $app->request->post('epNum');
+        $row = $app->request->post('row');
+        $playlisdId = $app->request->post('playlistNum');
+        $category = $app->request->post('cat');
+        $time = $app->request->post('time');
+        $title = $app->request->post('title');
+        $artist = $app->request->post('artist');
+        $album = $app->request->post('album');
+        $composer = $app->request->post('composer');
+        $cancon = $app->request->post('cancon')?? array();
+        $hit = $app->request->post('hit')?? array();
+        $inst = $app->request->post('instrumental')?? array();
+        $type = $app->request->post('type');
+        $lang = $app->request->post('lang');
+        $note = $app->request->post('note');
+
+        \TPS\episode::updateSongs($row, $epNum, $title, $album, $composer, $time, $artist, $cancon, $playlisdId, $type, $category, $hit, $inst, $lang, $note);
+        $params = array();
+        $params["songs"] = \TPS\episode::getSongByEpNum($epNum);
+        $params["title"] = 'View Program Log';
+        $params["episode"] = \TPS\episode::getEpisodeByEpNum($epNum);
+
+        $app->render("episodeLog.twig",$params);
     });
 
 });

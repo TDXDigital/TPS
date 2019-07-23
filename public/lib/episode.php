@@ -389,8 +389,8 @@ class episode extends program{
                                         (callsign, programname, date, starttime,
                                         instrumental, time, title, album, composer, 
                                         note, spoken, artist, cancon, 
-                                        playlistnumber, type, AdViolationFlag, category,hit) VALUES 
-                                        (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                                        playlistnumber, type, AdViolationFlag, category,hit, language) VALUES 
+                                        (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
         $songs = array();
 
@@ -407,9 +407,9 @@ class episode extends program{
             $param = array( $episode['callsign'], $episode['name'], $episode['date'], $episode['time'],
                             $inst[$value], $time[$value], $title[$value], $album[$value], $composer[$value],
                                 $note[$value], $spoken, $artist[$value], $cancon[$value], 
-                                $playlistNumber[$value], $type[$value], $AdViolationFlag, $category[$value], $hit[$value]);
+                                $playlistNumber[$value], $type[$value], $AdViolationFlag, $category[$value], $hit[$value], $lang[$value]);
 
-            $stmt->bind_param("ssssisssssssiisiii", ...$param);
+            $stmt->bind_param("ssssisssssssiisiiis", ...$param);
             if(!$stmt->execute())
                 $this->log->error($this->mysqli->errno);
 
@@ -429,6 +429,25 @@ class episode extends program{
         }
          $stmt->close();
          return $songs;
+    }
+
+ //Everything is array except epNum
+    public static function updateSongs($row, $epNum, $title, $album, $composer, $time, $artist, $cancon, $playlistNumber, $type, $category, $hit, $inst, $lang, $note=null, $spoken=null, $AdViolationFlag=null)
+    {
+
+        $tmpstn = new station($_SESSION['CALLSIGN']);
+        $episode = self::getEpisodeByEpNum($epNum);
+
+        //first, delete all the songs from the episode
+        $stmt = $tmpstn->mysqli->prepare("DELETE FROM `song` WHERE callsign = ? AND programname = ? AND date = ? AND startTime = ?");
+        $param = array( $episode['callsign'], $episode['name'], $episode['date'], $episode['time']);
+        $stmt->bind_param("ssss", ...$param);
+
+        if(!$stmt->execute())
+            $this->log->error($this->mysqli->errno);
+        else
+            self::insertSongs($row, $epNum, $title, $album, $composer, $time, $artist, $cancon, $playlistNumber, $type, $category, $hit, $inst, $lang, $note);
+        $stmt->close();
     }
 
 
