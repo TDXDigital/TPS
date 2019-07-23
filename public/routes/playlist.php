@@ -105,43 +105,34 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
                 echo 'Cannot find last program';
 
         });
-
-    $app->get('/chart-test', function () use ($app, $authenticate, $playlist) {
-        $date = new DateTime('-7 d');
-	$startDate = $date->format('Y-m-d H:i:s');
-	$endDate = date("Y-m-d");
-	$charts =  $playlist->getTop40($startDate, $endDate);
-    	$app->halt(500, json_encode($charts));
-    });
-
     $app->get('/chart', function () use ($app, $authenticate, $playlist) {
 	$startDate = date("Y-m-d", strtotime("-1 week"));
 	$endDate = date("Y-m-d");
 	$charts =  $playlist->getTop40($startDate, $endDate);
-    
-     $param = array(
-		    "area"=>"Playlist",
-                    "title"=>"Chart",
-                    "startDate"=>$startDate,
-                    "endDate"=>$endDate,
-                    "charts"=>$charts,
-                );
-     $app->render('chart.twig', $param);
+
+        $param = array(
+		"area"=>"Playlist",
+                "title"=>"Chart",
+                "startDate"=>$startDate,
+                "endDate"=>$endDate,
+                "charts"=>$charts,
+        );
+        $app->render('chart.twig', $param);
     });
 
     $app->post('/chart', function () use ($app, $authenticate, $playlist) {
-    $startDate = $app->request->post("startDate");
-    $endDate = $app->request->post("endDate");
-    $charts =  $playlist->getTop40($startDate, $endDate);
-    // $program = $playlist->getProgramForChart($startDate, $endDate);
-     $param = array(
-                    "title"=>"Chart",
-                    "charts"=>$charts,
-                    "startDate"=>$startDate,
-                    "endDate"=>$endDate
-                );
-     $app->render('chart.twig', $param);
+        $startDate = $app->request->post("startDate");
+        $endDate = $app->request->post("endDate");
+        $charts =  $playlist->getTop40($startDate, $endDate);
 
+        $param = array(
+	    "area"=>"Playlist",
+            "title"=>"Chart",
+            "charts"=>$charts,
+            "startDate"=>$startDate,
+            "endDate"=>$endDate
+        );
+        $app->render('chart.twig', $param);
     });
 
 

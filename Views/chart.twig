@@ -85,10 +85,9 @@
                 <th>View</th>
             </tr>
         </tfoot>
-        <tbody>
+        <tbody id='sortable'>
             {% for chart in charts %}
                 <tr>
-                   
                     <td>{{loop.index}}</td>
                     <td>{{chart.artist}}</td>
                     <td>{{chart.album}}</td>
@@ -106,7 +105,77 @@
 <script src="{{siteUrl}}/js/chosen.jquery.min.js"></script>
 <script type="text/javascript" src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
 <script>
+    function fixWidthHelper(e, ui) {
+        ui.children().each(function() {
+            $(this).width($(this).width());
+        });
+        return ui;
+    }
+
+    function isDescending(arr) {
+        return arr.every(function (x, i) {
+            return i === 0 || x <= arr[i - 1];
+        });
+    }
+
+    function highlightTies() {
+	rows = $('#sortable').children();
+	scores = [];
+	for (var i = 0; i < rows.length; i++)
+	    scores.push(parseFloat(rows[i].children[3].innerText));
+	
+	previousScore = null;
+	ties = [];
+	for (var i = 0; i < scores.length; i++) {
+	    if (scores[i] == previousScore) {
+		tie_id = null;
+		for (var j = 0; j < ties.length; j++) {
+		    if (scores[ties[j][0]] == scores[i]) {
+			tie_id = j;
+			break;
+		    }
+		}
+		if (tie_id == null)
+		    ties.push([i-1, i])
+		else
+		    ties[tie_id].push(i)
+	    }
+	    previousScore = scores[i];
+	}
+
+	colors = ['lightgrey', 'darkgrey'];
+	for (var i = 0; i < ties.length; i++)
+	    for (var j = 0; j < ties[i].length; j++)
+		$($('#sortable').children()[ties[i][j]]).css('background-color', colors[i % 2]);
+    }
+
+    function shuffleRanks(start_pos, end_pos) {
+	if (start_pos == end_pos)
+	    return;
+
+	movedDown = start_pos < end_pos;
+	rows = $('#sortable').children();
+	rowMoved = rows[end_pos];
+	rankMoved = parseInt(rowMoved.children[0].innerText);
+	cache = rankMoved;
+	swapped = 0;
+
+	for (var i = start_pos;  movedDown ? i <= end_pos : i >= end_pos; movedDown ? i++ : i--) {
+	    if (swapped == 0) { // The first one that needs to be switched
+		cache = parseInt(rows[i].children[0].innerText);
+		rows[i].children[0].innerText = rankMoved;
+	    } else {
+		temp = cache;
+		cache = parseInt(rows[i].children[0].innerText);
+		rows[i].children[0].innerText = temp;
+	    }
+	    swapped++;
+	}
+    }
+
     $(function() {
+	highlightTies();
+
         // Activate chosen elements
         $(".chosen-select").chosen();
         $( ".datepicker" ).datepicker({
@@ -114,6 +183,33 @@
             showButtonPanel: true,
             dateFormat: "yy-mm-dd"
         });
+
+	// Make table sortable
+	$('#sortable').sortable({
+	    helper: fixWidthHelper,
+	    start: function(event, ui) {
+		var start_pos = ui.item.index();
+		var orig_order = $('#sortable').children();
+		ui.item.data('start_pos', start_pos);
+		ui.item.data('orig_order', orig_order);
+	    },
+	    deactivate: function(event, ui) {
+		var orig_order = ui.item.data('orig_order');
+		var start_pos = ui.item.data('start_pos');
+		var end_pos = ui.item.index();
+		rows = $('#sortable').children();
+		scores = [];
+		for (var i = 0; i < rows.length; i++)
+		    scores.push(parseFloat(rows[i].children[3].innerText));
+		if (isDescending(scores))
+		    shuffleRanks(start_pos, end_pos);
+		else
+		    ui.sender.sortable('cancel');
+	    }
+	});
+
+	$('#sortable').disableSelection();
       });
-	</script>
+
+</script>
 {% endblock %}
