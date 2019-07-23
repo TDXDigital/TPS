@@ -14,7 +14,7 @@ $(document).on('change paste input', ".playlistNum", function(){
 		$('#musicPart').show();
 		$('.songInputField').find("label[for='playlistNum']").text('Playlist ID');
     	$.ajax({
-            url: "./searchSong/" + playlistNum,
+            url: "/episode/searchSong/" + playlistNum,
             type: 'POST',
             }).done(function(data) {
             	var albumInfo = JSON.parse(data);
@@ -134,10 +134,12 @@ $(document).on('click', '.insertBtn', function(){
 				'<input type="hidden" class="form-control input-sm" name="note['+ rowid +']" placeholder="" value="">' +
 			'</td>' +
 			'<td>' +
-				'<input type="button" value="Notes" class="btn btn-sm" name="NButton" onclick="GetNotes('+ rowid +');" />' +
+				'<input type="button" value="Notes" class="btn btn-sm" name="NButton['+ rowid +']" onclick="GetNotes('+ rowid +');" />' +
 			'</td>' +
 			'<td>' +
-				'<input id="insertSong" type="button" class="btn btn-danger rmvBtn" value="Remove"/>' +
+				'<button type="button" class="btn btn-sm btn-danger rmvBtn">' +
+				      '<span class="glyphicon glyphicon-trash"></span>' +
+		  		'</button>' +
 			'</td>' +
 		'</tr>'
 
@@ -179,6 +181,26 @@ $(document).on('click', '.rmvBtn', function(e){
 	$(this).closest ('tr').remove();
 });
 
+
+//event for remove button from the song table
+$(document).on('click', '.editBtn', function(e){
+	//First, enable select option and checkbox to get values
+	$('#songTable').find("[type='checkbox']").attr("disabled", false);
+	$('#songTable').find('select,option').attr("disabled", false);
+	$('#songTable').find('input').attr("readonly", false);
+	$(this).find('span').text(' Confirm');
+	$(this).removeClass('editBtn');
+	$(this).addClass('confirmBtn');
+});
+
+$(document).on('click', '.confirmBtn', function(e){
+	$('#songTable').find("[type='checkbox']").attr("disabled", true);
+	$('#songTable').find('select,option').attr("disabled", true);
+	$('#songTable').find('input').attr("readonly", true);
+	$(this).find('span').text(' Edit');
+	$(this).removeClass('confirmBtn');
+	$(this).addClass('editBtn');
+});
 
 
 //Prevent enter key to submit form
@@ -265,9 +287,10 @@ function popitup(url) {
 function GetNotes(rowId) {
     var NOTE = prompt("Short Notes Regarding current song (90 char max)", $('#songTable').find("input[name='note["+ rowId +"]']").val());
     if (NOTE != null && NOTE != '') {
-
         $('#songTable').find("input[name='note["+ rowId +"]']").val(NOTE);
+        $('#songTable').find("input[name='NButton["+ rowId +"]']").addClass('btn-info');
     }
+
     // $("NoteField").slideDown();
 }
 

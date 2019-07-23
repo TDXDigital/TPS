@@ -138,7 +138,8 @@ $app->group('/episode', $authenticate($app,[1,2]),
             'title'=>'Log Addition',
             'req' => $req,
             'ads' => $ads,
-            'commercial' => $commercials
+            'commercial' => $commercials,
+            'action' => '/episode/finalize'
         );
         if($episodeCheck->getEpisode()['id']){
             $params['episode'] = $episode->getEpisode();
@@ -153,7 +154,9 @@ $app->group('/episode', $authenticate($app,[1,2]),
             if($app->request->post('legacy')=='true')
                 $app->render("episodeRedirect.twig",$params);
             else
+            {
                 $app->render("episodeInsertSong.twig",$params);
+            }
 
         }
         else{
@@ -226,13 +229,31 @@ $app->group('/episode', $authenticate($app,[1,2]),
 
 
       $app->get('/edit/:epNum', $authenticate, function ($epNum) use ($app){
+
+        $station = new \TPS\station($_SESSION['CALLSIGN']);
+        $episodeVal = \TPS\episode::getEpisodeByEpNum($epNum);  //array, not object
+        $programID = \TPS\program::getId($_SESSION['CALLSIGN'], $episodeVal['name']);
+
+        $program = new \TPS\program($station, $programID);
+        $episode = new \TPS\episode($program);  //episode object
+        $episode->setAttributes($epNum);
+
+        $req = $program->getRequirement();
+        $ads = $episode->getAdOptions($req['spons']);
+        $commercials =  $episode->getAllCommercials($ads);
+
         $params = array(
-            "area"=>"Episode",
-            "title"=>"Edit"
+            'area'=>'Episode',
+            'title'=>'Log Addition',
+            'action' => '/episode/update',
+            'req' => $req,
+            'ads' => $ads,
+            'commercial' => $commercials
         );
-        $params["episode"] = \TPS\episode::getEpisodeByEpNum($epNum);
+        $params["episode"] = $episodeVal;
         $params["songs"] = \TPS\episode::getSongByEpNum($epNum);
-        $app->render('episodeLog.twig', $params);
+
+        $app->render('episodeInsertSong.twig', $params);
     });
 
 });
