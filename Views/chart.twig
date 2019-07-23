@@ -146,7 +146,7 @@
 	colors = ['lightgrey', 'darkgrey'];
 	for (var i = 0; i < ties.length; i++)
 	    for (var j = 0; j < ties[i].length; j++)
-		$($('#sortable').children()[ties[i][j]]).css('background-color', colors[i % 2]);
+		$($('#sortable').children()[ties[i][j]]).addClass('tied').css('background-color', colors[i % 2]);
     }
 
     function shuffleRanks(start_pos, end_pos) {
@@ -186,6 +186,7 @@
 
 	// Make table sortable
 	$('#sortable').sortable({
+	    items: 'tr.tied',
 	    helper: fixWidthHelper,
 	    start: function(event, ui) {
 		var start_pos = ui.item.index();
