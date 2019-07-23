@@ -85,10 +85,10 @@ $app->group('/host', $authenticate, function () use ($app,$authenticate){
         $host = new \TPS\host($_SESSION['CALLSIGN']);
         $hostToEdit = $host->get($alias);
 
-	$callsign = $_SESSION['CALLSIGN'];
-	$station = new \TPS\station();
-	$station = $station->getStation($callsign);
-	$probationMultiplier = $station[$callsign]['hostProbationWeight'];
+    	$callsign = $_SESSION['CALLSIGN'];
+    	$station = new \TPS\station();
+    	$station = $station->getStation($callsign);
+    	$probationMultiplier = $station[$callsign]['hostProbationWeight'];
 
         $params = array(
 	    "area"=>"Host",

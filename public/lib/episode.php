@@ -332,6 +332,27 @@ class episode extends program{
         );
     }
 
+    public static function getSongByEpNum($epNum)
+    {
+        $tmpstn = new station($_SESSION['CALLSIGN']);
+        $episode = self::getEpisodeByEpNum($epNum);
+        $stmt = $tmpstn->mysqli->prepare("SELECT * FROM song where callsign = ? and programname = ? and date = ? and starttime = ?");
+        $param = array($episode['callsign'], $episode['name'], $episode['date'], $episode['time']);
+
+        $stmt->bind_param("ssss", ...$param);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $songs = [];
+        while($row = $result->fetch_assoc()){
+            array_push($songs, $row);
+        }
+        $stmt->free_result();
+        $stmt->close();
+
+        return $songs;
+    }
+
 
     //Everything is array except epNum
     public static function insertSongs($row, $epNum, $title, $album, $composer, $time, $artist, $cancon, $playlistNumber, $type, $category, $hit, $inst, $lang, $note=null, $spoken=null, $AdViolationFlag=null)
@@ -664,6 +685,36 @@ class episodes extends station{
             $val = new \TPS\episode($pgm, $key);
         }
         return $results;
+    }
+
+    public function displayTable($filter)
+    {
+        $where = '';
+        $table = 'episode';
+         
+        // Table's primary key
+        $primaryKey = 'EpNum';         
+        // Array of database columns which should be read and sent back to DataTables.
+        // The `db` parameter represents the column name in the database, while the `dt`
+        // parameter represents the DataTables column identifier. In this case simple
+        // indexes
+        
+        $columns = array(
+            array( 'db' => 'callsign',   'dt' => 'callsign' ),
+            array( 'db' => 'programname', 'dt' => 'programname' ),
+            array( 'db' => 'date', 'dt' => 'date' ),
+            array( 'db' => 'prerecorddate', 'dt' => 'prerecorddate' ),
+            array( 'db' => 'starttime', 'dt' => 'starttime' ),
+            array( 'db' => 'EpNum', 'dt' => 'EpNum' ),
+            array( 'db' => 'description', 'dt' => 'description' ),
+        );
+
+        $prog_data = \SSP::complex($_GET, $this->db, $table, $primaryKey, $columns, null, $where);
+
+        // foreach($prog_data['data'] as &$program) {
+        //     $program['host'] = $this->getDjByProgramName($program['programname']);
+        // }
+        return json_encode($prog_data);
     }
 
 }
