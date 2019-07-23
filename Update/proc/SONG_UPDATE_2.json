@@ -1,0 +1,16 @@
+{
+    "TPS_Errno" : "SNG-002",
+    "type" : "database",
+    "execute" : "SQL",
+    "description" : "Adds language column to song table",
+    "SQL_QRY" : {
+        "TEST" : "SHOW COLUMNS FROM `song` WHERE `Field`='language';",
+        "RESULT" : {
+	    "Field" : [
+		"language"
+	    ]
+	},
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "SONG_UPDATE_2.sql"
+    }
+}

@@ -1,0 +1,1 @@
+ALTER TABLE song ADD COLUMN language VARCHAR(25) NOT NULL DEFAULT 'English';

@@ -1,0 +1,97 @@
+{% extends 'baseAdmin.twig' %}
+{% block headScripts %}
+	<link href="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.css"
+		  rel="stylesheet" type="text/css"/>
+	<link href="{{siteUrl}}/js/chosen.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" href="{{siteUrl}}/js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>
+{% endblock %}
+
+{% block title %}{{title|default('Traffic')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+	<li>
+		<i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+	</li>
+	<li class="active">
+		<i class="fa fa-fw fa-group"></i> <a href="../">Traffic</a>
+	</li>
+	<li class="active">
+		<a href="/traffic/new-contract"><i class="fa fa-plus-square-o"></i> New Contract</a>
+	</li>
+</ol>
+{% endblock %}
+{% block content %}
+<div class="container">
+	<form role="form" method="POST" {% if host.alias is not null %} 
+	action="/contract/create" {% else %} action="./create" {% endif %}>
+		<div class="row">
+	            <div class="col-sm-4">
+        	        <div class="form-group">
+                	    <label for="category">Category</label>
+	                    <select id="category" name="category" required class="form-control chosen-select">
+        	                <option value="">Select A Category</option>
+	                        {% for genreGroup in genres %}
+	                            <optgroup label="{{genreGroup}}">
+	                            {% for pgm in program %}
+	                                {% if pgm.genre == genreGroup %}
+	                                    <option value="{{pgm.programID}}">{{pgm.name}}</option>
+	                                {% endif %}
+	                            {% endfor %}
+	                        {% endfor %}
+	                    </select>
+	                </div>
+	            </div>
+		    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="probEndDate">Start Date</label>
+                            <input id="probEndDate" type="text" autocomplete="off" class="form-control" value="{{host.probationEnds|date("Y-m-d")}}" onchange="updateAdjWeight()" name="probEndDate" />
+                        </div>
+                    </div>
+		    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label for="probEndDate">End Date</label>
+                            <input id="probEndDate" type="text" autocomplete="off" class="form-control" value="{{host.probationEnds|date("Y-m-d")}}" onchange="updateAdjWeight()" name="probEndDate" />
+                        </div>
+                     </div>
+		     <div class="col-sm-1">
+		         <div class="form-group">
+			     <label for="weight">Active</label>
+			     <input type='checkbox' class="form-control" id='active' name="active"
+			     {% if host.active is null or host.active == 1 %} checked {% endif %}/>
+			 </div>
+		     </div>
+		     <div class="col-sm-1">
+		         <div class="form-group">
+			     <label for="weight">Friend</label>
+			     <input type='checkbox' class="form-control" id='active' name="active"
+			     {% if host.active is null or host.active == 1 %} checked {% endif %}/>
+			 </div>
+		     </div>
+		</div>
+		<div class="row">	
+		    <div class="col-sm-11"></div>
+		    <div class="col-sm-1">
+		        <div class="form-group pull-right">
+			    {% if program.id is not null %}
+			    <input type="hidden" name="_METHOD" value="PUT"/>
+			    {% endif %}
+			    <button id="submit" type="submit" class="btn btn-success pull-down ">Submit</button>
+			</div>
+		    </div>
+		</div>
+	</form>
+</div>
+{% endblock %}
+{% block lastScripts %}
+	<script src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
+	<script src="{{siteUrl}}/js/chosen.jquery.min.js"></script>
+	<script>
+	$(document).ready(function(){
+	        $.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
+                $( "#probEndDate" ).datepicker({
+                    changeMonth: true,
+                    changeYear: true
+                });
+	});
+	</script>
+{% endblock %}
