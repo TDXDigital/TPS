@@ -201,7 +201,9 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $inst = $app->request->post('instrumental')?? array();
         $type = $app->request->post('type');
         $lang = $app->request->post('lang');
-        $note = $app->request->post('note');
+        $note = $app->request->post('note');spokenTime
+        $endTime = $app->request->post('endTime');
+        $endTime = $app->request->post('spokenTime');
 
         \TPS\episode::insertSongs($row, $epNum, $title, $album, $composer, $time, $artist, $cancon, $playlisdId, $type, $category, $hit, $inst, $lang, $note);
         $params = array();

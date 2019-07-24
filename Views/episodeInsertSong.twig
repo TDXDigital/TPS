@@ -220,7 +220,7 @@
 				<input type="text" readonly  class="form-control input-sm" name="cat[{{loop.index}}]" placeholder="" value="{{song.category}}">
 			</td>
 			<td>
-				<input type="text" readonly class="form-control input-sm" name="time[{{loop.index}}]" placeholder="" 
+				<input type="time" readonly class="form-control input-sm" name="time[{{loop.index}}]" placeholder="" 
 				value="{{song.time|date('H:i')}}">
 			</td>
 			<td>
@@ -233,7 +233,7 @@
 				<input class="form-control input-sm" readonly id="album" name="album[{{loop.index}}]" type="text" placeholder="Album" value="{{song.album}}">
 			</td>
 			<td>
-				<input class="form-control input-sm" readonly id="album" name="composer[{{loop.index}}]" type="text" placeholder="Composer" value="{{song.composer}}">
+				<input class="form-control input-sm" readonly id="composer" name="composer[{{loop.index}}]" type="text" placeholder="Composer" value="{{song.composer}}">
 			</td>
 			<td>
 				<input type="checkbox" disabled id="ccin" name="cancon[{{loop.index}}]" {{(song.cancon == 1)? 'checked':''}} value="1"/>
@@ -273,14 +273,29 @@
 			</tr>
         </tfoot>
 	</table>
-	<div class="pull-right">
-		<button type="button" class="btn btn-info editBtn">
-			      <span class="glyphicon glyphicon-edit"> Edit</span>
-		</button>
-		<input type="submit" class="btn" id="finalizeEP" value="Finalize" />
-		
+	<div class="row">
+		<div class="col-md-2">
+			<div class="input-group">
+				<span for="endTime" class="input-group-addon">End Time</span>
+				<input type="time" class="form-control input-sm" name="endTime" value="{{episode.endtime ?? episode.starttime|date('H:i')}}">
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="input-group">
+				<span for="spokenTime" class="input-group-addon">Calculated Spoken Time</span>
+				<input type="text" readonly class="form-control input-sm" name="spokenTime" value="{{episode.totalspokentime ?? 0}} min">
+			</div>
+		</div>
+
+		<div class="pull-right">
+			<button type="button" class="btn btn-info editBtn">
+				      <span class="glyphicon glyphicon-edit"> Edit</span>
+			</button>
+			<input type="submit" class="btn" id="finalizeEP" value="Finalize" />
+			
+		</div>
 	</div>
-		</form>
+</form>
 
 
 </div>

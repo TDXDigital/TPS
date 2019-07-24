@@ -48,10 +48,13 @@ function setPsaVal()
 	var startPsaTime = inputfield.find("input[name='time']").val();
 	var endPsaTime = new Date(1900,0,1,startPsaTime.split(":")[0],startPsaTime.split(":")[1]);
 	var MinuteToAdd = inputfield.find("input[name='playlistNum']").val();
+	$("input[name='spokenTime']").val(parseInt($("input[name='spokenTime']").val()) + parseInt(MinuteToAdd));
+
 	inputfield.find("input[name='playlistNum']").val('NA');
 	endPsaTime.setMinutes(parseInt(endPsaTime.getMinutes()) + parseInt(MinuteToAdd));
 	inputfield.find("input[name='time']").val(("0" + endPsaTime.getHours()).slice(-2) + ':' + ("0" + endPsaTime.getMinutes()).slice(-2)) ;
-	return startPsaTime + ' ~ ' + ("0" + endPsaTime.getHours()).slice(-2) + ':' + ("0" + endPsaTime.getMinutes()).slice(-2);
+	// return startPsaTime + ' ~ ' + ("0" + endPsaTime.getHours()).slice(-2) + ':' + ("0" + endPsaTime.getMinutes()).slice(-2);
+	return ("0" + endPsaTime.getHours()).slice(-2) + ':' + ("0" + endPsaTime.getMinutes()).slice(-2);
 }
 //for insert song button listner 
 $(document).on('click', '.insertBtn', function(){
@@ -89,7 +92,8 @@ $(document).on('click', '.insertBtn', function(){
  			inputVal.find("input[name='title']").val().toUpperCase().indexOf("PSA")>=0)
  			$('#psaCount').text(parseInt($('#psaCount').text()) + 1);
  	}
-
+ 	//Set End time
+ 	$("input[name='endTime']").val(time);
 
  	// alert(inputVal.find("input[name='time']").val());
  	$('#songTable tbody tr:last').after(
