@@ -38,5 +38,22 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $app->post('/new-contract', function() use ($app){
 //        $refCodes = $app->request->post("refCode");
     });
+
+    $app->get('/new', function() use ($app){
+        $callsign = $_SESSION['CALLSIGN'];
+        $station = new \TPS\station();
+        $station = $station->getStation($callsign);
+        $probationDays = $station[$callsign]['hostProbationDays'];
+        $probationEnds = date('Y-m-d', strtotime("+{$probationDays} days"));
+        $probationMultiplier = $station[$callsign]['hostProbationWeight'];
+
+        $params = array(
+        "area"=>"Traffic",
+        "title"=>"New",
+        // "host"=>['probationEnds'=>$probationEnds],
+        // "station"=>['probationMultiplier'=>$probationMultiplier]
+         );
+         $app->render("trafficNew.twig", $params);
+    });
 });
 
