@@ -73,6 +73,7 @@ $(document).on('click', '.insertBtn', function(){
  	var hitChecked = inputVal.find("input[name='hit']").is(':checked')?'checked':'';
  	var instChecked = inputVal.find("input[name='instrumental']").is(':checked')?'checked':'';
  	var time = inputVal.find("input[name='time']").val();
+ 	var endTime = time;
  	// if it's AD, increase the Ad count
  	if(catValue == 51)
  	{
@@ -81,19 +82,29 @@ $(document).on('click', '.insertBtn', function(){
  	}
 
  	// if it's Promo increase PSA count
- 	if(catValue == 45)
+ 	else if(catValue == 45)
  		$('#psaCount').text(parseInt($('#psaCount').text()) + 1);
 
  	// if it's PSA, increase PSA count
- 	if(catValue == 11 || catValue == 12)
+ 	else if(catValue == 11 || catValue == 12)
 	{
-		time = setPsaVal(); 	
+		endTime = setPsaVal(); 	
  		if(inputVal.find("input[name='artist']").val().toUpperCase().indexOf("STATION PSA")>=0||
  			inputVal.find("input[name='title']").val().toUpperCase().indexOf("PSA")>=0)
  			$('#psaCount').text(parseInt($('#psaCount').text()) + 1);
  	}
+ 	else
+ 	{
+ 		//increase time by 3 mim for music
+ 		var startTempTime = inputVal.find("input[name='time']").val();
+		var endTempTime = new Date(1900,0,1,startTempTime.split(":")[0],startTempTime.split(":")[1]);
+		endTempTime.setMinutes(parseInt(endTempTime.getMinutes()) + parseInt(3));
+		endTime = ("0" + endTempTime.getHours()).slice(-2) + ':' + ("0" + endTempTime.getMinutes()).slice(-2);
+		inputVal.find("input[name='time']").val(endTime);
+
+ 	}
  	//Set End time
- 	$("input[name='endTime']").val(time);
+ 	$("input[name='endTime']").val(endTime);
 
  	// alert(inputVal.find("input[name='time']").val());
  	$('#songTable tbody tr:last').after(
@@ -107,7 +118,7 @@ $(document).on('click', '.insertBtn', function(){
 				'<input type="text" readonly  class="form-control input-sm" name="cat['+ rowid +']" placeholder="" value="'+ inputVal.find("select[name='cat']").val()+'">' +
 			'</td>' +
 			'<td>' +
-				'<input type="text" readonly class="form-control input-sm" name="time['+ rowid +']" placeholder="" value="'+ time +'">' +
+				'<input type="time" readonly class="form-control input-sm" name="time['+ rowid +']" placeholder="" value="'+ time +'">' +
 			'</td>' +
 			'<td>' +
 				'<input class="form-control input-sm" type="text" readonly  name="title['+ rowid +']" placeholder="Title" value="'+ inputVal.find("input[name='title']").val()+'">' + 
@@ -199,6 +210,7 @@ $(document).on('click', '.editBtn', function(e){
 	$('#songTable').find("[type='checkbox']").attr("disabled", false);
 	$('#songTable').find('select,option').attr("disabled", false);
 	$('#songTable').find('input').attr("readonly", false);
+	$("input[name='spokenTime']").attr("readonly", false);
 	$(this).find('span').text(' Confirm');
 	$(this).removeClass('editBtn');
 	$(this).addClass('confirmBtn');
@@ -208,6 +220,7 @@ $(document).on('click', '.confirmBtn', function(e){
 	$('#songTable').find("[type='checkbox']").attr("disabled", true);
 	$('#songTable').find('select,option').attr("disabled", true);
 	$('#songTable').find('input').attr("readonly", true);
+	$("input[name='spokenTime']").attr("readonly", true);
 	$(this).find('span').text(' Edit');
 	$(this).removeClass('confirmBtn');
 	$(this).addClass('editBtn');
@@ -394,3 +407,13 @@ function drawHand(ctx, pos, length, width) {
 }
 
 // Drawing Clock functions done //
+
+
+
+    //back link
+    $(document).ready(function(){
+    $('a.back').click(function(){
+        parent.history.back();
+        return false;
+    });
+});

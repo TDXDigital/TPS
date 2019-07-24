@@ -24,13 +24,18 @@
 {% block breadcrumb %}
 <ol class="breadcrumb">
     <li>
+        <i class="fa fa-arrow-left"></i>  <a class="back" href="#">Back</a>
+    </li>
+</ol>
+<ol class="breadcrumb">
+    <li>
         <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
     </li>
     <li class="active">
-        <i class="fa fa-tasks"></i> <a href="/Episode/">Episode</a>
+        <i class="fa fa-tasks"></i> <a href="/episode/search">Episode</a>
     </li>
     <li class="active">
-        <a href="/review/search/album/{{album.RefCode}}"><i class="fa fa-barcode"></i> {{episode.RefCode}}</a>
+        <a href="#"><i class="fa fa-barcode"></i></a>
     </li>
 </ol>
 {% endblock %}
@@ -248,7 +253,7 @@
 				<input type="text" readonly readonly class="form-control input-sm" name="type[{{loop.index}}]" placeholder="" value="{{song.type}}">
 			</td>
 			<td>
-				<input type="text" readonly class="form-control input-sm" name="lang[{{loop.index}}]" placeholder="" value="{{song.lang}}">
+				<input type="text" readonly class="form-control input-sm" name="lang[{{loop.index}}]" placeholder="" value="{{song.language}}">
 			</td>
 			<td>
 				<input type="hidden" class="form-control input-sm" name="note[{{loop.index}}]" placeholder="" value="{{song.note}}">
@@ -277,13 +282,13 @@
 		<div class="col-md-2">
 			<div class="input-group">
 				<span for="endTime" class="input-group-addon">End Time</span>
-				<input type="time" class="form-control input-sm" name="endTime" value="{{episode.endtime ?? episode.starttime|date('H:i')}}">
+				<input type="time" class="form-control input-sm" name="endTime" value="{{episode.endTime ?? episode.starttime|date('H:i')}}">
 			</div>
 		</div>
 		<div class="col-md-3">
 			<div class="input-group">
-				<span for="spokenTime" class="input-group-addon">Calculated Spoken Time</span>
-				<input type="text" readonly class="form-control input-sm" name="spokenTime" value="{{episode.totalspokentime ?? 0}} min">
+				<span for="spokenTime" class="input-group-addon">Calculated Spoken Time (min)</span>
+				<input type="text" readonly class="form-control input-sm" name="spokenTime" value="{{episode.totalSpokenTime ?? 0}}">
 			</div>
 		</div>
 

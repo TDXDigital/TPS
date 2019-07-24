@@ -201,11 +201,13 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $inst = $app->request->post('instrumental')?? array();
         $type = $app->request->post('type');
         $lang = $app->request->post('lang');
-        $note = $app->request->post('note');spokenTime
+        $note = $app->request->post('note');
         $endTime = $app->request->post('endTime');
-        $endTime = $app->request->post('spokenTime');
-
+        $spokenTime = $app->request->post('spokenTime');
         \TPS\episode::insertSongs($row, $epNum, $title, $album, $composer, $time, $artist, $cancon, $playlisdId, $type, $category, $hit, $inst, $lang, $note);
+        \TPS\episode::updateEndTime($epNum, $endTime);
+        \TPS\episode::updateSpokenTime($epNum, $spokenTime);
+        
         $params = array();
         $params["songs"] = \TPS\episode::getSongByEpNum($epNum);
         $params["title"] = 'View Program Log';
@@ -276,8 +278,13 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $type = $app->request->post('type');
         $lang = $app->request->post('lang');
         $note = $app->request->post('note');
+        $endTime = $app->request->post('endTime');
+        $spokenTime = $app->request->post('spokenTime');
 
+        \TPS\episode::updateEndTime($epNum, $endTime);
+        \TPS\episode::updateSpokenTime($epNum, $spokenTime);
         \TPS\episode::updateSongs($row, $epNum, $title, $album, $composer, $time, $artist, $cancon, $playlisdId, $type, $category, $hit, $inst, $lang, $note);
+
         $params = array();
         $params["songs"] = \TPS\episode::getSongByEpNum($epNum);
         $params["title"] = 'View Program Log';

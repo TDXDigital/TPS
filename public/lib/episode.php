@@ -401,8 +401,8 @@ class episode extends program{
             $hit[$value] = array_key_exists($value, $hit)? $hit[$value]: 0;
             $inst[$value] = array_key_exists($value, $inst)? $inst[$value]: 0;
 
-            if(strpos($time[$value], '~'))
-                $time[$value] = substr($time[$value], 0, strpos($time[$value], '~'));
+            // if(strpos($time[$value], '~'))
+            //     $time[$value] = substr($time[$value], 0, strpos($time[$value], '~'));
 
             $param = array( $episode['callsign'], $episode['name'], $episode['date'], $episode['time'],
                             $inst[$value], $time[$value], $title[$value], $album[$value], $composer[$value],
@@ -450,6 +450,33 @@ class episode extends program{
         $stmt->close();
     }
 
+    public static function updateEndTime($epNum, $endTime)
+    {
+        $tmpstn = new station($_SESSION['CALLSIGN']);
+        //first, delete all the songs from the episode
+        $stmt = $tmpstn->mysqli->prepare("UPDATE episode SET endTime = ? WHERE EpNum = ?");
+        $param = array( $endTime, $epNum);
+        $stmt->bind_param("si", ...$param);
+
+        if(!$stmt->execute())
+            $this->log->error($this->mysqli->errno);
+        $stmt->close();
+    }
+    public static function updateSpokenTime($epNum, $spokenTime)
+    {
+
+        $tmpstn = new station($_SESSION['CALLSIGN']);
+        //first, delete all the songs from the episode
+        $stmt = $tmpstn->mysqli->prepare("UPDATE episode SET totalspokentime = ? WHERE EpNum = ?");
+        $param = array( $spokenTime, $epNum );
+        $stmt->bind_param("ii", ...$param);
+        
+        if(!$stmt->execute())
+        {
+            $this->log->error($this->mysqli->errno);
+        }
+        $stmt->close();
+    }
 
     public function getAdOptions($SPONS)
     {

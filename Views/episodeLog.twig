@@ -12,10 +12,10 @@
         <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
     </li>
     <li class="active">
-        <i class="fa fa-tasks"></i> <a href="/">Episode</a>
+        <i class="fa fa-tasks"></i> <a href="/episode/search">Episode</a>
     </li>
     <li class="active">
-        <a href="/episode/new"><i class="fa fa-plus-square-o"></i>Episode Log</a>
+        <a href="#"><i class="fa fa-plus-square-o"></i>Episode Log</a>
     </li>
 </ol>
 {% endblock %}
@@ -49,7 +49,7 @@
                     <td>{{song.cancon}}</td>
                     <td>{{song.hit}}</td>
                     <td>{{song.instrumental}}</td>
-                    <td>{{song.lang}}</td>
+                    <td>{{song.language}}</td>
                 </tr>
             {% endfor %} 
         </tbody>
@@ -60,6 +60,19 @@
             </tr>
         </tfoot>
     </table>
+
+    <div class="col-md-2">
+            <div class="input-group">
+                <span for="endTime" class="input-group-addon">End Time</span>
+                <input type="time" class="form-control input-sm" name="endTime" value="{{episode.endTime ?? episode.time|date('H:i')}}">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span for="spokenTime" class="input-group-addon">Calculated Spoken Time (min)</span>
+                <input type="text" readonly class="form-control input-sm" name="spokenTime" value="{{episode.totalSpokenTime ?? 0}}">
+            </div>
+        </div>
 
 {% endblock %}
 {% block lastScripts %}
