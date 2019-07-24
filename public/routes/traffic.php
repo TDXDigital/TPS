@@ -30,9 +30,9 @@ $app->get('/traffic', function () use ($app) {
 $app->group('/traffic', function() use ($app, $authenticate){
     $app->get('/new-contract', function() use ($app){
         $params = array(
-	    "area"=>"Traffic",
-            "title"=>"New Contract",
-        );
+         "area"=>"Traffic",
+         "title"=>"New Contract",
+     );
         $app->render("contract.twig", $params);
     });
     $app->post('/new-contract', function() use ($app){
@@ -41,50 +41,92 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
     $app->get('/new', function() use ($app){
         $params = array(
-        "area"=>"Traffic",
-        "title"=>"New",
-         );
-         $app->render("trafficNew.twig", $params);
+            "area"=>"Traffic",
+            "title"=>"New",
+        );
+        $app->render("trafficNew.twig", $params);
     });
 
     $app->post('/create', function() use ($app){
-       
-       $traffic = new \TPS\traffic();
 
-       $advertiser = $app->request->post('advertiser');
-       $cat = $app->request->post('cat');
-       $length = $app->request->post('length');
-       $lang = $app->request->post('lang');
-       $startDate = $app->request->post('startDate');
-       $endDate = $app->request->post('endDate');
-       $active = $app->request->post('active') ?? 0;
-       $friend = $app->request->post('friend') ?? 0;
-       
-       $id = $traffic ->createNewAd($advertiser, $cat, $length, $lang, $startDate, $endDate, $active, $friend);
-       echo $id;
-       exit;
+    $traffic = new \TPS\traffic();
 
-        $params = array(
+    $advertiser = $app->request->post('advertiser');
+    $cat = $app->request->post('cat');
+    $length = $app->request->post('length');
+    $lang = $app->request->post('lang');
+    $startDate = $app->request->post('startDate');
+    $endDate = $app->request->post('endDate');
+    $active = $app->request->post('active') ?? 0;
+    $friend = $app->request->post('friend') ?? 0;
+
+    $id = $traffic ->createNewAd($advertiser, $cat, $length, $lang, $startDate, $endDate, $active, $friend);
+    $ad = $traffic->get($id);
+
+    if($id == -1 )
+        $flash['error'] = 'Failed to Create new Ad';
+    else
+        $flash['success'] = 'Created new Ad';
+
+    $params = array(
         "area"=>"Traffic",
         "title"=>"New",
-        // "host"=>['probationEnds'=>$probationEnds],
-        // "station"=>['probationMultiplier'=>$probationMultiplier]
-         );
-         $app->render("trafficNew.twig", $params);
-    });
+        "ad"=>$ad,
+        "flash" => $flash
+    );
+    $app->render("trafficNew.twig", $params);
+});
 
     $app->get('/search', function() use ($app, $authenticate){
-         $params = array(
-            "area"=>"Traffic",
-            "title"=>"Search",
-        );
-        $app->render("trafficSearch.twig", $params);
-    });
+     $params = array(
+        "area"=>"Traffic",
+        "title"=>"Search",
+    );
+     $app->render("trafficSearch.twig", $params);
+ });
 
-     $app->get('/display', $authenticate, function () use ($app){
+    $app->get('/display', $authenticate, function () use ($app){
         $traffic = new \TPS\traffic();
         $filter = $app->request->get("filter");
         echo $traffic -> displayTable($filter);
+    });
+
+    $app->get('/edit/:id', $authenticate, function ($id) use ($app){
+        $traffic = new \TPS\traffic();
+        $ad = $traffic->get($id);
+        $params = array(
+            "ad"=>$ad,
+        );
+        $app->render("trafficNew.twig", $params);
+    });
+
+    $app->post('/update', function() use ($app){
+
+        $traffic = new \TPS\traffic();
+        $adId = $app->request->post('adNumber');
+        $advertiser = $app->request->post('advertiser');
+        $cat = $app->request->post('cat');
+        $length = $app->request->post('length');
+        $lang = $app->request->post('lang');
+        $startDate = $app->request->post('startDate');
+        $endDate = $app->request->post('endDate');
+        $active = $app->request->post('active') ?? 0;
+        $friend = $app->request->post('friend') ?? 0;
+
+        $id = $traffic ->updateAd($adId, $advertiser, $cat, $length, $lang, $startDate, $endDate, $active, $friend);
+        $ad = $traffic->get($id);
+        $flash = array();
+        if($id == -1 )
+            $flash['error'] = 'Failed to Update the Ad';
+        else
+            $flash['success'] = 'Updated the Ad';
+        $params = array(
+            "area"=>"Traffic",
+            "title"=>"New",
+            "ad"=>$ad,
+            "flash" => $flash
+        );
+        $app->render("trafficNew.twig", $params);
     });
 });
 

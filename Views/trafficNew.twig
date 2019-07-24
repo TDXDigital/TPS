@@ -27,45 +27,61 @@
 </ol>
 {% endblock %}
 {% block content %}
+
+	{% if flash.error %}
+        <div class="row">
+            <div class="alert alert-danger">
+                <strong>Error</strong> {{flash.error}}
+            </div>
+        </div>
+    {% endif %}
+    {% if flash.success %}
+        <div class="row">
+            <div class="alert alert-success">
+                <strong>Success</strong> {{flash.success}}
+            </div>
+        </div>
+    {% endif %}
+
+
 <div class="container">
-	<form role="form" method="POST" {% if host.alias is not null %} 
-	action="/traffic/create" {% else %} action="./create" {% endif %}>
+	<form role="form" method="POST" {% if ad.AdId is not null %} 
+	action="/traffic/update" {% else %} action="./create" {% endif %}>
 		<div class="row">
 			<div class="col-sm-1">
 				<div class="form-group">
 					<label for="adNumber">Ad #</label>
-					<input type='text' readonly class="form-control" id='adNumber' name="adNumber" value="{{host.djname}}"/>
+					<input type='text' readonly class="form-control" id='adNumber' name="adNumber" value="{{ad.AdId}}"/>
 			   </div>
 			</div>
 			<div class="col-sm-3">
 				<div class="form-group">
 					<label for="programName">Advertiser</label>
-					<input type='text' class="form-control" id='advertiser' name="advertiser" value="{{host.alias}}"/>
+					<input type='text' class="form-control" id='advertiser' name="advertiser" value="{{ad.AdName}}"/>
 			   </div>
 			</div>
 			
 			<div class="col-sm-3" id="catSelection" >
 				<label for="DDLNormal">Category</label>
 				<select name="cat" id="DDLNormal" class="form-control chtype">
-	               <option value="53">53, Sponsored Promotion</option>
-	               <OPTION value="52">52, Sponsor Indentification</OPTION>
-	               <OPTION selected VALUE="51">51, Commercial</OPTION>
-	               <option value="45">45, Show Promo</option>
-	               <option value="44">44, Programmer/Show ID</option>
-	               <option value="43">43, Musical Station ID</option>
-	               <option value="12">12, PSA/Spoken Word Other</option>
+	               <option value="53" {{(ad.Category == 53)? 'selected':''}}>53, Sponsored Promotion</option>
+	               <OPTION value="52" {{(ad.Category == 52)? 'selected':''}}>52, Sponsor Indentification</OPTION>
+	               <OPTION VALUE="51" {{(ad.Category == 51)? 'selected': (ad.Category is null)? 'selected':''}}>51, Commercial</OPTION>
+	               <option value="45" {{(ad.Category == 45)? 'selected':''}}>45, Show Promo</option>
+	               <option value="44" {{(ad.Category == 44)? 'selected':''}}>44, Programmer/Show ID</option>
+	               <option value="43" {{(ad.Category == 43)? 'selected':''}}>43, Musical Station ID</option>
+	               <option value="12" {{(ad.Category == 12)? 'selected':''}}>12, PSA/Spoken Word Other</option>
                	</select>
             </div>
 			<div class="col-sm-1">
 			    <div class="form-group">
 				<label for="weight">Length</label>
-				<input type='number' class="form-control" id='length' name="length"
-				{% if host.active is null or host.active == 1 %} checked {% endif %}/>
+				<input type='number' class="form-control" id='length' value="{{ad.Length}}" name="length"/>
 			    </div>
 			</div>
 			<div class="col-sm-2">
 	       		<label for="lang">Language</label>
-				<input list="lang" name="lang" required value="English" size="10" maxlength="40" class="form-control input-sm"/>
+				<input list="lang" name="lang" value="{{ad.Language}}" required value="English" size="10" maxlength="40" class="form-control input-sm"/>
 	           	<datalist id="lang">
 	           		<option value="English">
 	           		<option value="French">
@@ -75,14 +91,13 @@
 		 <div class="row">
 
 		 	<div class="col-md-3">
-           
                 <fieldset>
                     <div id="sort_group" class="form-group input-group">
                         <label for="startDate">Start Date</label>
                         <input type="text" class="form-control datepicker" required
                                name="startDate" id="startDate" placeholder="2000-01-01"
                                pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
-                               value="{{ startDate |date('Y-m-d') }}">
+                               value="{{ ad.StartDate |date('Y-m-d') }}">
                     </div>
                 </fieldset>
             </div>
@@ -93,7 +108,7 @@
                         <input type="text" class="form-control datepicker" required
                                name="endDate" id="endDate" placeholder="2000-01-02"
                                pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
-                               value="{{ endDate?? endDate | date_modify('+1 year')|date('Y-m-d') }}">
+                               value="{{ ad.EndDate ?? ad.EndDate | date_modify('+1 year')|date('Y-m-d') }}">
                                 
                     </div>
                 </fieldset>
@@ -103,14 +118,14 @@
 			    <div class="form-group">
 				<label for="active">Active</label>
 				<input type='checkbox' class="form-control" id='active' value ="1" name="active"
-				{% if host.active is null or host.active == 1 %} checked {% endif %}/>
+				{{ad.Active == 1 ? 'checked' : ''}} />
 			    </div>
 			</div>
 			<div class="col-sm-1">
 			    <div class="form-group">
 				<label for="friend">Friend</label>
 				<input type='checkbox' class="form-control" id='friend' value ="1" name="friend"
-				{% if host.active is null or host.active == 1 %} checked {% endif %}/>
+				{{ad.Friend == 1 ? 'checked' : ''}}/>
 			    </div>
 			</div>
 			<div class="col-sm-2"></div>

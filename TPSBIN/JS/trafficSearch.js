@@ -35,7 +35,7 @@ $(document).ready(function() {
         "columnDefs": [
             {
                 "render": function ( data, type, row ) {
-                    return '<button type="button" onclick="location.href=\'/traffoc/edit/'+data+'\';" class="btn btn-default btn-xs">' +
+                    return '<button type="button" onclick="location.href=\'/traffic/edit/'+data+'\';" class="btn btn-default btn-xs">' +
                         'Edit ' + '<i class="fa fa-edit" aria-hidden="true"></i></button>';
                 },
                 "targets": 1
