@@ -40,13 +40,26 @@ $app->group('/traffic', function() use ($app, $authenticate){
     });
 
     $app->get('/new', function() use ($app){
-        $callsign = $_SESSION['CALLSIGN'];
-        $station = new \TPS\station();
-        $station = $station->getStation($callsign);
-        $probationDays = $station[$callsign]['hostProbationDays'];
-        $probationEnds = date('Y-m-d', strtotime("+{$probationDays} days"));
-        $probationMultiplier = $station[$callsign]['hostProbationWeight'];
+        $params = array(
+        "area"=>"Traffic",
+        "title"=>"New",
+         );
+         $app->render("trafficNew.twig", $params);
+    });
 
+    $app->post('/create', function() use ($app){
+       
+       print_r($_POST);
+
+       $advertiser = $app->request->post('advertiser');
+       $cat = $app->request->post('cat');
+       $lang = $app->request->post('lang');
+       $startDate = $app->request->post('startDate');
+       $endDate = $app->request->post('endDate');
+       $active = $app->request->post('active') ?? 0;
+       $friend = $app->request->post('friend') ?? 0;
+       
+       
         $params = array(
         "area"=>"Traffic",
         "title"=>"New",

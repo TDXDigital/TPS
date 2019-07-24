@@ -29,7 +29,7 @@
 {% block content %}
 <div class="container">
 	<form role="form" method="POST" {% if host.alias is not null %} 
-	action="/host/create" {% else %} action="./create" {% endif %}>
+	action="/traffic/create" {% else %} action="./create" {% endif %}>
 		<div class="row">
 			<div class="col-sm-1">
 				<div class="form-group">
@@ -59,7 +59,7 @@
 			<div class="col-sm-1">
 			    <div class="form-group">
 				<label for="weight">Length</label>
-				<input type='number' class="form-control" id='active' name="active"
+				<input type='number' class="form-control" id='length' name="length"
 				{% if host.active is null or host.active == 1 %} checked {% endif %}/>
 			    </div>
 			</div>
@@ -101,15 +101,15 @@
 
 			<div class="col-sm-1">
 			    <div class="form-group">
-				<label for="weight">Active</label>
-				<input type='checkbox' class="form-control" id='active' name="active"
+				<label for="active">Active</label>
+				<input type='checkbox' class="form-control" id='active' value ="1" name="active"
 				{% if host.active is null or host.active == 1 %} checked {% endif %}/>
 			    </div>
 			</div>
 			<div class="col-sm-1">
 			    <div class="form-group">
-				<label for="weight">Friend</label>
-				<input type='checkbox' class="form-control" id='friend' name="friend"
+				<label for="friend">Friend</label>
+				<input type='checkbox' class="form-control" id='friend' value ="1" name="friend"
 				{% if host.active is null or host.active == 1 %} checked {% endif %}/>
 			    </div>
 			</div>
