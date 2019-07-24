@@ -72,5 +72,19 @@ $app->group('/traffic', function() use ($app, $authenticate){
          );
          $app->render("trafficNew.twig", $params);
     });
+
+    $app->get('/search', function() use ($app, $authenticate){
+         $params = array(
+            "area"=>"Traffic",
+            "title"=>"Search",
+        );
+        $app->render("trafficSearch.twig", $params);
+    });
+
+     $app->get('/display', $authenticate, function () use ($app){
+        $traffic = new \TPS\traffic();
+        $filter = $app->request->get("filter");
+        echo $traffic -> displayTable($filter);
+    });
 });
 

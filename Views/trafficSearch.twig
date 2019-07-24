@@ -1,0 +1,77 @@
+{% extends 'baseAdmin.twig' %}
+
+{% block headScripts %}
+    <style type="text/css">
+        td label {
+           display: block;
+           text-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+    </li>
+    <li class="active">
+        <a href="/traffic/search/"><i class="fa fa-tasks"></i>{% if search %}
+        traffic</a>
+    </li>
+    <li>
+        <a href="/traffic/search/"><i class="fa fa-search"></i> Search</a>
+        {% else %}
+            traffic</a>
+        {% endif %}
+    </li>
+</ol>
+{% endblock %}
+{% block content %}
+    {% if flash.error %}
+        <div class="row">
+            <div class="alert alert-danger">
+                <strong>Error</strong> {{flash.error}}
+            </div>
+        </div>
+    {% endif %}
+    {% if flash.success %}
+        <div class="row">
+            <div class="alert alert-success">
+                <strong>Success</strong> {{flash.success}}
+            </div>
+        </div>
+    {% endif %}
+    
+    <hr size="30">
+    
+    <table class='table table-bordered table-hover display' id='data_table'>
+        <thead>
+            <tr>
+                <th>Advertiser</th>
+                <th>Edit</th>
+                <th>Category</th>
+                <th>StartDate</th>
+                <th>EndDate</th>
+                <th>Active</th>
+                <th>Friend</th>
+                <th>Play Count</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Advertiser</th>
+                <th>Edit</th>
+                <th>Category</th>
+                <th>StartDate</th>
+                <th>EndDate</th>
+                <th>Active</th>
+                <th>Friend</th>
+                <th>Play Count</th>
+            </tr>
+        </tfoot>
+    </table>
+{% endblock %}
+{% block lastScripts %}
+<script src="{{siteUrl}}/TPSBIN/JS/trafficSearch.js"></script>
+{% endblock %}
