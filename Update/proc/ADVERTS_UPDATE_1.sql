@@ -1,0 +1,16 @@
+ALTER TABLE adverts
+  ADD COLUMN maxPlayCount TINYINT UNSIGNED NULL,
+  ADD COLUMN maxDailyPlayCount TINYINT UNSIGNED NULL,
+  ADD COLUMN assignedShow INT(11) UNSIGNED ZEROFILL NULL,
+  ADD COLUMN assignedHour TIME NULL,
+  ADD COLUMN backing_song VARCHAR(30) NULL,
+  ADD COLUMN backing_artist VARCHAR(30) NULL,
+  ADD COLUMN backing_album VARCHAR(30) NULL,
+  ADD CONSTRAINT fk_program FOREIGN KEY (assignedShow) REFERENCES program(ProgramID);||
+CREATE TABLE radio_show_promos (
+  AdId INT(11),
+  showName VARCHAR(30) NOT NULL,
+  showDay DATE NOT NULL,
+  showTime TIME NOT NULL,
+  FOREIGN KEY fk_ad_id(AdId) REFERENCES adverts(AdId) ON UPDATE CASCADE ON DELETE RESTRICT
+);
