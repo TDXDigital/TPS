@@ -28,17 +28,6 @@ $app->get('/traffic', function () use ($app) {
 });
 
 $app->group('/traffic', function() use ($app, $authenticate){
-    $app->get('/new-contract', function() use ($app){
-        $params = array(
-         "area"=>"Traffic",
-         "title"=>"New Contract",
-     );
-        $app->render("contract.twig", $params);
-    });
-    $app->post('/new-contract', function() use ($app){
-//        $refCodes = $app->request->post("refCode");
-    });
-
     $app->get('/new', function() use ($app){
 	$traffic = new \TPS\traffic();
         $params = array(
@@ -133,7 +122,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
         $traffic = new \TPS\traffic();
         $adId = $app->request->post('adNumber');
-        $advertiser = $app->request->post('advertiser');
+        $adName = $app->request->post('advertiser');
         $cat = $app->request->post('cat');
         $length = $app->request->post('length');
         $lang = $app->request->post('lang');
@@ -142,7 +131,23 @@ $app->group('/traffic', function() use ($app, $authenticate){
         $active = $app->request->post('active') ?? 0;
         $friend = $app->request->post('friend') ?? 0;
 
-        $id = $traffic ->updateAd($adId, $advertiser, $cat, $length, $lang, $startDate, $endDate, $active, $friend);
+        // Need to receive the following info from post as UI is built...
+        $maxPlayCount = Null;
+        $maxDailyPlayCount = Null;
+        $assignedShow = Null;
+        $assignedHour = Null;
+        $backingTrack = Null;
+        $backingArtist = Null;
+        $backingAlbum = Null;
+//      $showName = Null;
+        $showName = 'Derek\'s Show!';
+//      $showDayTimes = [];
+        $showDayTimes = [0 => [['start' => '12:00', 'end' => '14:00'], ['start' => '16:30', 'end' => '18:00']], 3 => [['start' => '12:00', 'end' => '14:00']]];
+        $title = Null;
+
+        $id = $traffic ->updateAd($adId, $adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend,
+				  $maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack,
+				  $backingArtist, $backingAlbum, $showName, $showDayTimes);
         $ad = $traffic->get($id);
 	$client = $traffic->getClientByID($ad['ClientID']);
 	$promoInfo = $traffic->getPromoInfo($id);

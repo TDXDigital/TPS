@@ -141,21 +141,7 @@ class traffic extends station{
             }
             $stmt->close();
 
-	    // If it's an ad promoting a radio show
-	    if ($id > -1 && $showName != NULL && count($showDayTimes) > 0) {
-		// Insert the name and date information of the show into the radio_show_promos table
-		if ($stmt = $this->mysqli->prepare("INSERT INTO radio_show_promos (AdId, showName, showDay, showStart, showEnd) VALUES (?, ?, ?, ?, ?)")) {
-		    foreach ($showDayTimes as $dayNum => $showTimes) {
-			foreach ($showTimes as $showTime) {
-			    $stmt->bind_param("isiss", $id, $showName, $dayNum, $showTime['start'], $showTime['end']);
-			    if (!$stmt->execute())
-                		$this->log->error($this->mysqli->errno);
-			}
-		    }
-		}
-		$stmt->close();
-	    }
-
+	    $this->updateRadioShowPromos($id, $showName, $showDayTimes);
         }
         else{
             $this->log->error("Failed to create new Ad"
@@ -218,13 +204,56 @@ class traffic extends station{
 
     }
 
-    public function updateAd($adId, $advertiser, $cat, $length, $lang, $startDate, $endDate, $active, $friend)
+    /*
+    * @author Derek Melchin
+    * @abstract Updates the radio_show_promos tables with the radio show information
+    * @param $adID         int	ID of the ad
+    * @param $showName     str  Name of the show being promoted 
+    * @param $showDayTimes arr  The broadcasting schedule for the show being promoted
+    *                           [ <day#Week> =>[['start' => '9:30', 'end' => '11:30'], ...], ...]. Sunday = 0 day#Week.
+    */
+    public function updateRadioShowPromos($adID, $showName, $showDayTimes) {
+	if ($adID < 0)
+	    return;
+
+	// Remove radio_show_promos in database for this $adID
+	if ($stmt = $this->mysqli->prepare("DELETE FROM radio_show_promos WHERE AdId=?")) {
+	    $stmt->bind_param("i", $adID);
+	    if ($stmt->execute())
+	        $this->log->info(sprintf("Deleted radio_show_promos where AdId %d", $adID));
+	    else 
+	        $this->log->error($this->mysqli->errno);
+	}
+
+	// If it's an ad promoting a radio show
+        if ($showName != NULL && count($showDayTimes) > 0) {
+
+	    // Insert the name and date information of the show into the radio_show_promos table
+	    if ($stmt = $this->mysqli->prepare("INSERT INTO radio_show_promos (AdId, showName, showDay, showStart, showEnd) VALUES (?, ?, ?, ?, ?)")) {
+	        foreach ($showDayTimes as $dayNum => $showTimes) {
+		    foreach ($showTimes as $showTime) {
+		        $stmt->bind_param("isiss", $adID, $showName, $dayNum, $showTime['start'], $showTime['end']);
+			if (!$stmt->execute())
+                	    $this->log->error($this->mysqli->errno);
+		    }
+	        }
+	    }
+	    $stmt->close();
+	}
+    }
+
+    public function updateAd($adId, $adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, 
+			     $maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack, 
+			     $backingArtist, $backingAlbum, $showName, $showDayTimes)
     {
     	 if($stmt = $this->mysqli->prepare("UPDATE adverts SET "
                 . "Category=?, Length=?, EndDate=?, StartDate =?, AdName=?, "
-                . "Language=?, Active=?, Friend=? "
+                . "Language=?, Active=?, Friend=?, maxPlayCount=?, maxDailyPlayCount=?, assignedShow=?, "
+		. "assignedHour=?, backing_song=?, backing_artist=?, backing_album=? "
                 . "WHERE AdId=?")){
-            $stmt->bind_param("sissssiii", $cat, $length, $endDate, $startDate, $advertiser, $lang, $active, $friend,$adId);
+            $stmt->bind_param("sissssiiiiissssi", $cat, $length, $endDate, $startDate, $adName, $lang, $active, 
+				$friend, $maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, 
+				$backingTrack, $backingArtist, $backingAlbum, $adId);
             if($stmt->execute()){
                 $id = $this->mysqli->insert_id;
                 $this->log->info(sprintf("Updated Ad %d", $adId ));
@@ -234,6 +263,8 @@ class traffic extends station{
                 $adId = -1;
             }
             $stmt->close();
+
+	    $this->updateRadioShowPromos($adId, $showName, $showDayTimes);
         }
         else{
             $this->log->error("Failed to update Ad"
