@@ -65,9 +65,10 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $backingTrack = Null;
     $backingArtist = Null;
     $backingAlbum = Null;
-    $showName = Null;
-    $showDay = Null;
-    $showTime = Null;
+//    $showName = Null;
+    $showName = 'Derek\'s Show!';
+//    $showDayTimes = [];
+    $showDayTimes = [0 => [['start' => '12:00', 'end' => '14:00'], ['start' => '16:30', 'end' => '18:00']], 3 => [['start' => '12:00', 'end' => '14:00']]];
     $title = Null;
     $language = Null;
 
@@ -80,7 +81,9 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $friend = $app->request->post('friend') ?? 0;
     $clientID = $app->request->post('clientID') ?? $traffic->createClient($clientName, $contactName, $contactEmail);
 
-    $id = $traffic->createNewAd($adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID);
+    $id = $traffic->createNewAd($adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID, 
+				$maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack,
+				$backingArtist, $backingAlbum, $showName, $showDayTimes, $app);
     $ad = $traffic->get($id);
 
     if($id == -1 )

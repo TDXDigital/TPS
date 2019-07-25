@@ -74,14 +74,42 @@ class traffic extends station{
 	return $this->mysqli->insert_id;
     }
 
-    public function createNewAd($adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID)
+    /*
+    * @abstract Create a new add
+    * @param $adName            str  Name of the ad
+    * @param $cat               str  Ad category
+    * @param $length            int  Ad length
+    * @param $lang              str  Langauge of the ad
+    * @param $startDate         str  Ad start date
+    * @param $endDate           str  Ad end date
+    * @param $active            int  Ad active status (0/1)
+    * @param $friend            int  Ad friend status (0/1)
+    * @param $clientID          int  Unique ID of the client this ad is for
+    * @param $maxPlayCount      int  Maximum number of times the ad can be run
+    * @param $maxDailyPlayCount int  Maximum number of times the ad can run in a single day
+    * @param $assignedShow      int  The id of the show that this ad should be played on
+    * @param $assignedHour      str  The hour when the show should play the ad
+    * @param $backingTrack      str  The title of the backing song in the ad
+    * @param $backingArtist     str  The artist of the backing song in the ad
+    * @param $backingAlbum      str  The album name of the backing song in the ad
+    * @param $showName          str  The name of the show being promoted
+    * @param $showDayTimes      arr  [ <day#Week> =>[['start' => '9:30', 'end' => '11:30'], ...], ...]. Sunday = 0 day#Week.
+    * @return The unique id of the newly-created ad
+    */
+    public function createNewAd($adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID,
+				$maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack,
+				$backingArtist, $backingAlbum, $showName, $showDayTimes, &$app)
     {
     	$id = -1;
         if($stmt = $this->mysqli->prepare("insert into adverts ("
                 . "Category, Length, EndDate, StartDate, AdName,"
-                . "Language, Active, Friend, ClientID) values "
-                . "( ?, ?, ?, ?, ?, ?, ?, ?, ?)")){
-            $stmt->bind_param("sissssiii", $cat, $length, $endDate, $startDate, $adName, $lang, $active, $friend, $clientID);
+                . "Language, Active, Friend, ClientID, maxPlayCount, "
+		. "maxDailyPlayCount, assignedShow, assignedHour, "
+		. "backing_song, backing_artist, backing_album) values "
+                . "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")){
+            $stmt->bind_param("sissssiiiiiissss", $cat, $length, $endDate, $startDate, $adName, $lang, $active, 
+				$friend, $clientID, $maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour,
+				$backingTrack, $backingArtist, $backingAlbum);
             if($stmt->execute()){
                 $id = $this->mysqli->insert_id;
                 $this->log->info(sprintf("New Ad created %d", $id ));
@@ -90,6 +118,22 @@ class traffic extends station{
                 $this->log->error($this->mysqli->errno);
             }
             $stmt->close();
+
+	    // If it's an ad promoting a radio show
+	    if ($id > -1 && $showName != NULL && count($showDayTimes) > 0) {
+		// Insert the name and date information of the show into the radio_show_promos table
+		if ($stmt = $this->mysqli->prepare("INSERT INTO radio_show_promos (AdId, showName, showDay, showStart, showEnd) VALUES (?, ?, ?, ?, ?)")) {
+		    foreach ($showDayTimes as $dayNum => $showTimes) {
+			foreach ($showTimes as $showTime) {
+			    $stmt->bind_param("isiss", $id, $showName, $dayNum, $showTime['start'], $showTime['end']);
+			    if (!$stmt->execute())
+                		$this->log->error($this->mysqli->errno);
+			}
+		    }
+		}
+		$stmt->close();
+	    }
+
         }
         else{
             $this->log->error("Failed to create new Ad"

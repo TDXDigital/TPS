@@ -1,0 +1,19 @@
+{
+    "TPS_Errno" : "ADVT-003",
+    "type" : "database",
+    "execute" : "SQL",
+    "requires" : "ADVT-001",
+    "description" : "Adds a range of show times to the radio_show_promos table",
+    "SQL_QRY" : {
+        "TEST" : "SHOW COLUMNS FROM radio_show_promos WHERE `Field`='showEnd';",
+        "RESULT" : {
+	    "Field" : [
+		"showEnd"
+	    ]
+	},
+	"Negate": 0,
+	"createMode" : 1,
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "ADVERTS_UPDATE_3.sql"
+    }
+}
