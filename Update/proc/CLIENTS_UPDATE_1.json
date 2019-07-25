@@ -1,0 +1,18 @@
+{
+    "TPS_Errno" : "CLNT-001",
+    "type" : "database",
+    "execute" : "SQL",
+    "description" : "Adds email column to `clients` table",
+    "SQL_QRY" : {
+        "TEST" : "SHOW COLUMNS FROM adverts WHERE `Field`='email';",
+        "RESULT" : {
+	    "Field" : [
+		"email"
+	    ]
+	},
+	"Negate": 0,
+	"createMode" : 1,
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "CLIENTS_UPDATE_1.sql"
+    }
+}
