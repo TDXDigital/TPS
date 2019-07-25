@@ -40,9 +40,11 @@ $app->group('/traffic', function() use ($app, $authenticate){
     });
 
     $app->get('/new', function() use ($app){
+	$traffic = new \TPS\traffic();
         $params = array(
             "area"=>"Traffic",
             "title"=>"New",
+	    "clients"=>$traffic->getClientsNames();
         );
         $app->render("trafficNew.twig", $params);
     });
