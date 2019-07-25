@@ -13,13 +13,13 @@ class traffic extends station{
     /*
     * @author Derek Melchin
     * @abstract Fetch all of the names of our clients
-    * @return array An array of all our client names
+    * @return Associative array [ClientNumber => Name, ...]
     */
     public function getClientsNames() {
-	$stmt = $this->mysqli->query("SELECT Name FROM clients");
+	$stmt = $this->mysqli->query("SELECT ClientNumber, Name FROM clients");
 	$clients = [];
 	while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
-	    array_push($clients, $row['Name']);
+	    $clients[$row['ClientNumber']] = $row['Name'];
 	return $clients;
     }
 
@@ -74,14 +74,14 @@ class traffic extends station{
 	return $this->mysqli->insert_id;
     }
 
-    public function createNewAd($advertiser, $cat, $length, $lang, $startDate, $endDate, $active, $friend)
+    public function createNewAd($adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID)
     {
     	$id = -1;
         if($stmt = $this->mysqli->prepare("insert into adverts ("
                 . "Category, Length, EndDate, StartDate, AdName,"
-                . "Language, Active, Friend) values "
-                . "( ?, ?, ?, ?, ?, ?, ?, ?)")){
-            $stmt->bind_param("sissssii", $cat, $length, $endDate, $startDate, $advertiser, $lang, $active, $friend);
+                . "Language, Active, Friend, ClientID) values "
+                . "( ?, ?, ?, ?, ?, ?, ?, ?, ?)")){
+            $stmt->bind_param("sissssiii", $cat, $length, $endDate, $startDate, $adName, $lang, $active, $friend, $clientID);
             if($stmt->execute()){
                 $id = $this->mysqli->insert_id;
                 $this->log->info(sprintf("New Ad created %d", $id ));

@@ -53,7 +53,24 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
     $traffic = new \TPS\traffic();
 
-    $advertiser = $app->request->post('advertiser');
+    $clientName = $app->request->post('advertiser');
+    // Need to receive the following info from post as UI is built...
+    $contactName = 'Contact Name';
+    $contactEmail = 'email@email.com';
+    $adName = 'Ad Name';
+    $maxPlayCount = Null;
+    $maxDailyPlayCount = Null;
+    $assignedShow = Null;
+    $assignedHour = Null;
+    $backingTrack = Null;
+    $backingArtist = Null;
+    $backingAlbum = Null;
+    $showName = Null;
+    $showDay = Null;
+    $showTime = Null;
+    $title = Null;
+    $language = Null;
+
     $cat = $app->request->post('cat');
     $length = $app->request->post('length');
     $lang = $app->request->post('lang');
@@ -61,8 +78,9 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $endDate = $app->request->post('endDate');
     $active = $app->request->post('active') ?? 0;
     $friend = $app->request->post('friend') ?? 0;
+    $clientID = $app->request->post('clientID') ?? $traffic->createClient($clientName, $contactName, $contactEmail);
 
-    $id = $traffic ->createNewAd($advertiser, $cat, $length, $lang, $startDate, $endDate, $active, $friend);
+    $id = $traffic->createNewAd($adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID);
     $ad = $traffic->get($id);
 
     if($id == -1 )
