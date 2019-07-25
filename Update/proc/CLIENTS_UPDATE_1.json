@@ -4,7 +4,7 @@
     "execute" : "SQL",
     "description" : "Adds email column to `clients` table",
     "SQL_QRY" : {
-        "TEST" : "SHOW COLUMNS FROM adverts WHERE `Field`='email';",
+        "TEST" : "SHOW COLUMNS FROM clients WHERE `Field`='email';",
         "RESULT" : {
 	    "Field" : [
 		"email"

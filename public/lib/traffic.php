@@ -10,7 +10,69 @@ class traffic extends station{
         parent::__construct($callsign);
     }
     
+    /*
+    * @author Derek Melchin
+    * @abstract Fetch all of the names of our clients
+    * @return array An array of all our client names
+    */
+    public function getClientsNames() {
+	$stmt = $this->mysqli->query("SELECT Name FROM clients");
+	$clients = [];
+	while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
+	    array_push($clients, $row['Name']);
+	return $clients;
+    }
 
+    /*
+    * @author Derek Melchin
+    * @abstract Gathers information about a given client
+    * @return Associative array The database row for the given client
+    */
+    public function getClientByID($id) {
+	return $this->mysqli->query("SELECT * FROM clients WHERE ClientNumber=$id;")->fetch_array(MYSQLI_ASSOC);
+    }
+
+    /*
+    * @author Derek Melchin
+    * @abstract Create a new client
+    * @param $name         string Name of the company who is advertising
+    * @param $contactName  string Name of the company contact
+    * @param $email        string Email of the company contact
+    * @param $creditLimit  double Credit limit for the client
+    * @param $paymentTerms int    Payment terms for this client
+    * @param $address      string Address of the client
+    * @param $phoneNumber  string Phone number of the client
+    * @param $status       string Status of the client
+    * @return int ClientNumber of the newly created client
+    */
+    public function createClient($name, $contactName, $email, $creditLimit=NULL, $paymentTerms=NULL, $address=NULL, $phoneNumber=NULL, $status=NULL) {
+	$columns = "Name, ContactName, email";
+	if ($creditLimit != NULL)
+	    $columns .= ", CreditLimit";
+	if ($paymentTerms != NULL)
+	    $columns .= ", PaymentTerms";
+	if ($address != NULL)
+	    $columns .= ", Address";
+	if ($phoneNumber != NULL)
+	    $columns .= ", PhoneNumber";
+	if ($status != NULL)
+	    $columns .= ", Status";
+
+	$values = "'$name', '$contactName', '$email'";
+	if ($creditLimit != NULL)
+	    $values .= ", $creditLimit";
+	if ($paymentTerms != NULL)
+	    $values .= ", $paymentTerms";
+	if ($address != NULL)
+	    $values .= ", '$address'";
+	if ($phoneNumber != NULL)
+	    $values .= ", '$phoneNumber'";
+	if ($status != NULL)
+	    $values .= ", $status";
+
+	$this->mysqli->query("INSERT INTO clients ($columns) VALUES ($values);");
+	return $this->mysqli->insert_id;
+    }
 
     public function createNewAd($advertiser, $cat, $length, $lang, $startDate, $endDate, $active, $friend)
     {
