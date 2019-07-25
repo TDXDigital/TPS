@@ -34,6 +34,28 @@ class traffic extends station{
 
     /*
     * @author Derek Melchin
+    * @abstract Gathers information regarding a radio show promo
+    * @param $id int ID of the advert
+    * @return Associative array The database row for the given client
+    */
+    public function getPromoInfo($id) {
+	$stmt = $this->mysqli->query("SELECT * FROM radio_show_promos WHERE AdId=$id ORDER BY showDay ASC, showStart ASC;");
+	$promoShowInfo = [];
+	while ($row = $stmt->fetch_array(MYSQLI_ASSOC)) {
+	    if (count($promoShowInfo) == 0)
+	        $promoShowInfo['name'] = $row['showName'];
+
+	    $duration = [ $row['showStart'], $row['showEnd'] ];
+	    if (in_array($row['showDay'], array_keys($promoShowInfo)))
+		array_push($promoShowInfo[$row['showDay']], $duration);
+	    else
+		$promoShowInfo[$row['showDay']] = [$duration];
+	}
+	return $promoShowInfo;
+    }
+
+    /*
+    * @author Derek Melchin
     * @abstract Create a new client
     * @param $name         string Name of the company who is advertising
     * @param $contactName  string Name of the company contact
@@ -98,7 +120,7 @@ class traffic extends station{
     */
     public function createNewAd($adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID,
 				$maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack,
-				$backingArtist, $backingAlbum, $showName, $showDayTimes, &$app)
+				$backingArtist, $backingAlbum, $showName, $showDayTimes)
     {
     	$id = -1;
         if($stmt = $this->mysqli->prepare("insert into adverts ("
