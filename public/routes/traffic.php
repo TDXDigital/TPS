@@ -44,7 +44,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
         $params = array(
             "area"=>"Traffic",
             "title"=>"New",
-	    "clients"=>$traffic->getClientsNames();
+	    "clients"=>$traffic->getClientsNames()
         );
         $app->render("trafficNew.twig", $params);
     });
