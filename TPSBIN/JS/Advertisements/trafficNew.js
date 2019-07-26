@@ -1,5 +1,11 @@
 
 
+$( document ).ready(function() {
+	
+    $('#Category').trigger('change');
+});
+
+
 $('#backingTrack').change(function(){
     this.checked ? $('#musicChecked').show() : $('#musicChecked').hide();
 });
@@ -8,7 +14,6 @@ $('#backingTrack').change(function(){
 $('#friend').change(function(){
     this.checked ? $('#playCountPart').hide() : $('#playCountPart').show();
 });
-
 
 
 $('#psa').change(function(){
