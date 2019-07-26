@@ -152,7 +152,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
 //      $showName = Null;
         $showName = 'Derek\'s Show!';
 //      $showDayTimes = [];
-        $showDayTimes = [0 => [['start' => '12:00', 'end' => '14:00'], ['start' => '16:30', 'end' => '18:00']], 3 => [['start' => '12:00', 'end' => '14:00']]];
+        $showDayTimes = [0 => [['12:00', '14:00'], ['16:30', '18:00']], 3 => [['12:00', '14:00']]];
         $title = Null;
 
         $id = $traffic ->updateAd($adId, $adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID,

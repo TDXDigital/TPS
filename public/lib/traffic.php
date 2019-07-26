@@ -210,7 +210,7 @@ class traffic extends station{
     * @param $adID         int	ID of the ad
     * @param $showName     str  Name of the show being promoted 
     * @param $showDayTimes arr  The broadcasting schedule for the show being promoted
-    *                           [ <day#Week> =>[['start' => '9:30', 'end' => '11:30'], ...], ...]. Sunday = 0 day#Week.
+    *                           [ <day#Week> =>[[<startTime>, <endTime>], ...], ...]. Sunday = 0 day#Week.
     */
     public function updateRadioShowPromos($adID, $showName, $showDayTimes) {
 	if ($adID < 0)
@@ -232,7 +232,7 @@ class traffic extends station{
 	    if ($stmt = $this->mysqli->prepare("INSERT INTO radio_show_promos (AdId, showName, showDay, showStart, showEnd) VALUES (?, ?, ?, ?, ?)")) {
 	        foreach ($showDayTimes as $dayNum => $showTimes) {
 		    foreach ($showTimes as $showTime) {
-		        $stmt->bind_param("isiss", $adID, $showName, $dayNum, $showTime['start'], $showTime['end']);
+		        $stmt->bind_param("isiss", $adID, $showName, $dayNum, $showTime[0], $showTime[1]);
 			if (!$stmt->execute())
                 	    $this->log->error($this->mysqli->errno);
 		    }
