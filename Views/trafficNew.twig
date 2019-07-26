@@ -71,7 +71,7 @@
 			<div class="col-sm-2">
 				    <div class="form-group">
 					<label for="company">Ad Name</label>
-					<input type='text' class="form-control" id='adName' value="{{ad.Length}}" name="adName"/>
+					<input type='text' class="form-control" id='adName' required value="{{ad.Length}}" name="adName"/>
 				    </div>
 				</div>
 
@@ -176,8 +176,8 @@
 
 		</div>
 		
-
-		<div class="row" id="showPromoPart" style="display: none">
+		<div id="showPromoPart" style="display: none">
+		<div class="row" >
 			<div class="col-sm-2">
 			    <div class="form-group">
 				<label for="song">Show Name</label>
@@ -186,19 +186,47 @@
 			</div>
 			<div class="col-sm-2">
                 <label for="showDate">Date</label>
-                <input type='text' class="form-control datepicker" id='showDate'
-                       name="showDate"
-                       value="{{showDate|default("now"|date('Y-m-d', firstStation.timezone))}}"
-                       required
-                       pattern="([1-9][\d]{3})-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])"/>
+                <select name="showDate" id="showDate" class="form-control chtype">
+	               <option value="Monday">Monday</option>
+	               <OPTION value="Tuesday">Tuesday</OPTION>
+	               <OPTION VALUE="Wednesday">Wednesday</OPTION>
+	               <option value="Thursday">Thursday</option>
+	               <option value="Friday">Friday</option>
+	               <option value="Saturday">Saturday</option>
+	               <option value="Sunday">Sunday</option>
+               	</select>
             </div>
             <div class="col-sm-2">
-                <label for="showTime">Time</label>
-                <input type='time' class="form-control" id='showTime'
-                       name="airTime"
-                       required
+                <label for="showTimeStart">Start</label>
+                <input type='time' class="form-control" id='showTimeStart'
+                       name="showTimeStart"
                        value="{{showTime|default("+1 hour"|date('H:00', firstStation.timezone))}}"/>
             </div>
+            <div class="col-sm-2">
+                <label for="showTimeEnd">End</label>
+                <input type='time' class="form-control" id='showTimeEnd'
+                       name="showTimeEnd"
+                       value="{{showTime|default("+1 hour"|date('H:00', firstStation.timezone))}}"/>
+            </div>
+            <div class="col-sm-1">
+            	<label for="insertShow"> &nbsp;</label>
+                <input id="insertShow" type="button" class="btn btn-primary" value="Insert"/>
+            </div>
+        </div>
+        <div class="row">
+       		 <div class="container">
+       		 	
+            	<div class="col-md-3">
+	            	<table class="table" id="showPromoTimeTable">
+	            		<tbody>
+	            		<tr></tr>
+	            		</tbody>
+	            	</table>
+            	</div>
+            </div>
+    	</div>
+
+
 		</div>
 		<!-- Show Promo part end -->
 

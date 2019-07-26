@@ -117,33 +117,6 @@ class traffic extends station{
             $this->log->error("Failed to create client" . $this->mysqli->error);
         }
 	return $id;
-/*
-	$columns = "Name, ContactName, email";
-	if ($creditLimit != NULL)
-	    $columns .= ", CreditLimit";
-	if ($paymentTerms != NULL)
-	    $columns .= ", PaymentTerms";
-	if ($address != NULL)
-	    $columns .= ", Address";
-	if ($phoneNumber != NULL)
-	    $columns .= ", PhoneNumber";
-	if ($status != NULL)
-	    $columns .= ", Status";
-
-	$values = "'$name', '$contactName', '$email'";
-	if ($creditLimit != NULL)
-	    $values .= ", $creditLimit";
-	if ($paymentTerms != NULL)
-	    $values .= ", $paymentTerms";
-	if ($address != NULL)
-	    $values .= ", '$address'";
-	if ($phoneNumber != NULL)
-	    $values .= ", '$phoneNumber'";
-	if ($status != NULL)
-	    $values .= ", $status";
-
-	$this->mysqli->query("INSERT INTO clients ($columns) VALUES ($values);");
-	return $this->mysqli->insert_id;*/
     }
 
     /*
@@ -280,12 +253,12 @@ class traffic extends station{
 
 	    // Insert the name and date information of the show into the radio_show_promos table
 	    if ($stmt = $this->mysqli->prepare("INSERT INTO radio_show_promos (AdId, showName, showDay, showStart, showEnd) VALUES (?, ?, ?, ?, ?)")) {
-	        foreach ($showDayTimes as $dayNum => $showTimes) {
-		    foreach ($showTimes as $showTime) {
-		        $stmt->bind_param("isiss", $adID, $showName, $dayNum, $showTime[0], $showTime[1]);
+	        foreach ($showDayTimes as $key => $showTimes) {
+		    // foreach ($showTimes as $showTime) {
+		        $stmt->bind_param("issss", $adID, $showName, $showTimes['day'], $showTime['start'], $showTime['end']);
 			if (!$stmt->execute())
                 	    $this->log->error($this->mysqli->errno);
-		    }
+		    // }
 	        }
 	    }
 	    $stmt->close();
