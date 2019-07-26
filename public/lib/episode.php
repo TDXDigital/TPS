@@ -222,6 +222,52 @@ class episode extends program{
         return $this->$date;
     }
 
+    /*
+    * @author Derek Melchin
+    * @abstract Return the tree of the playsheet insertion types
+    * @return Array A mapping of playsheet insertion types to their child types and node category codes.
+    */
+    public function getInsertionTypes() {
+	$tree = [
+	 "Spoken" => ["General Spoken Word" => 1.2, "Disclaimer" => 1.2, "News" => 1.1, "Verbal Station ID" => 1.2],
+
+	 "Music" => ["Pop/Alt category" => 2.1, 
+		     "Acoustic version" => 2.3, 
+		     "Folk/Roots category" => [
+				"General folk roots" => 2.1,
+				"Country" => 2.2,
+				"Traditional folk" => 3.2,
+				"Traditional blues" => 3.4
+		     ], 
+		     "Heavy category" => 2.1, 
+		     "Electronic category" => 2.1, 
+		     "World/Indigenous" => [
+				"Traditional world/Non-English or French" => 3.3,
+				"Canadian Indigenous" => 3.3
+		     ],
+		     "Jazz/Classical category" => [
+				"Classical" => 3.1,
+				"Jazz" => 3.4
+		     ],
+		     "Experimental category" => 3.6,
+		     "Other category" => [
+				"Religious" => 3.5,
+				"Adult Contemporary" => 2.4
+		     ]],
+
+	 "Station ID" => ["Musical" => 4.3, "Verbal" => 1.2],
+
+	 "PSA/Promo" => ["PSA" => 1.2, "Radio Show Promo" => 4.5],
+
+	 "Ad" => ["Paid Ad/Friends Ad" => 5.1, "Sponsor Ad" => 5.4, "Sponsor ID" => 5.3],
+
+	 "Radio show specific" => ["Theme" => 4.1, "Show/Programmer ID/Intro/Stinger" => 4.4], 
+
+	 "Other" => ["Tech Test" => 4.2]
+	];
+	return $tree;
+    }
+
     public function getEpisode(){
         if($this->needsUpdate && !is_null($this->callsign)){
             $stmt = $this->mysqli->prepare("SELECT "
