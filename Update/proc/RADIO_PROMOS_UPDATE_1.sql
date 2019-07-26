@@ -1,0 +1,1 @@
+ALTER TABLE radio_show_promos MODIFY COLUMN showDay VARCHAR(9) NOT NULL;
