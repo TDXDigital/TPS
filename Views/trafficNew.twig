@@ -48,19 +48,6 @@
 	<form role="form" method="POST" {% if ad.AdId is not null %} 
 	action="/traffic/update" {% else %} action="./create" {% endif %}>
 		<div class="row">
-			<div class="col-sm-1">
-				<div class="form-group">
-					<label for="adNumber">Ad #</label>
-					<input type='text' readonly class="form-control" id='adNumber' name="adNumber" value="{{ad.AdId}}"/>
-			   </div>
-			</div>
-			<div class="col-sm-3">
-				<div class="form-group">
-					<label for="programName">Advertiser</label>
-					<input type='text' class="form-control" id='advertiser' name="advertiser" value="{{ad.AdName}}"/>
-			   </div>
-			</div>
-			
 			<div class="col-sm-3" id="catSelection" >
 				<label for="DDLNormal">Category</label>
 				<select name="cat" id="DDLNormal" class="form-control chtype">
@@ -73,24 +60,15 @@
 	               <option value="12" {{(ad.Category == 12)? 'selected':''}}>12, PSA/Spoken Word Other</option>
                	</select>
             </div>
-			<div class="col-sm-1">
-			    <div class="form-group">
-				<label for="weight">Length</label>
-				<input type='number' class="form-control" id='length' value="{{ad.Length}}" name="length"/>
-			    </div>
-			</div>
-			<div class="col-sm-2">
-	       		<label for="lang">Language</label>
-				<input list="lang" name="lang" value="{{ad.Language}}" required value="English" size="10" maxlength="40" class="form-control input-sm"/>
-	           	<datalist id="lang">
-	           		<option value="English">
-	           		<option value="French">
-	          	</datalist>
-	        </div>
-		</div>
-		 <div class="row">
 
-		 	<div class="col-md-3">
+            <div class="col-sm-1">
+				<div class="form-group">
+					<label for="adNumber">Ad #</label>
+					<input type='text' readonly class="form-control" id='adNumber' name="adNumber" value="{{ad.AdId}}"/>
+			   </div>
+			</div>
+
+			<div class="col-md-3">
                 <fieldset>
                     <div id="sort_group" class="form-group input-group">
                         <label for="startDate">Start Date</label>
@@ -113,14 +91,112 @@
                     </div>
                 </fieldset>
           	</div>
-
-			<div class="col-sm-1">
+          	<div class="col-sm-1">
 			    <div class="form-group">
 				<label for="active">Active</label>
 				<input type='checkbox' class="form-control" id='active' value ="1" name="active"
 				{{ad.Active == 1 ? 'checked' : ''}} />
 			    </div>
 			</div>
+        </div>
+
+        <!-- common part end -->
+
+        <div class="row">
+        	<div id="spokenPart" style="display: none">
+        	<div class="col-sm-1" id="psaChckBox" >
+			    <div class="form-group">
+				<label for="psa">PSA</label>
+				<input type='checkbox' class="form-control" id='psa' value ="1" name="psa"
+				{{ad.Friend == 1 ? 'checked' : ''}}/>
+			    </div>
+			</div>
+			<div id="spokenPart">
+				<div class="col-sm-2">
+				    <div class="form-group">
+					<label for="title">Title</label>
+					<input type='text' class="form-control" id='title' value="{{ad.Length}}" name="title"/>
+				    </div>
+				</div>
+
+				<div class="col-sm-2">
+		       		<label for="lang">Language</label>
+					<input list="lang" name="lang" value="{{ad.Language}}" required value="English" size="10" maxlength="40" class="form-control input-sm"/>
+		           	<datalist id="lang">
+		           		<option value="English">
+		           		<option value="French">
+		          	</datalist>
+		        </div>
+			</div>
+			</div>
+			<!-- Spoken Part End -->
+			
+			<div id="clientPart">
+				<div class="col-sm-3">
+					<div class="form-group">
+					<label for="lang">Client</label>
+						<input list="client" name="client" size="10" maxlength="40" class="form-control input-sm"/>
+			           	<datalist id="client">
+			           		{% for client in clients %}
+			           		<option value="{{client.Name}}"/>
+			           		{% endfor %}
+			          	</datalist>
+				   </div>
+				</div>
+
+				<div class="col-sm-2">
+				    <div class="form-group">
+					<label for="company">Company</label>
+					<input type='text' class="form-control" id='company' value="{{ad.Length}}" name="company"/>
+				    </div>
+				</div>
+
+				<div class="col-sm-2">
+				    <div class="form-group">
+					<label for="phone">Phone Number</label>
+					<input type='text' class="form-control" id='phone' value="{{ad.Length}}" name="phone"/>
+				    </div>
+				</div>
+				<div class="col-sm-2">
+				    <div class="form-group">
+					<label for="email">Email</label>
+					<input type='text' class="form-control" id='email' value="{{ad.Length}}" name="email"/>
+				    </div>
+				</div>
+			</div>
+			<!-- Client part end -->
+
+		</div>
+		
+
+		<div class="row" id="showPromoPart" style="display: none">
+			<div class="col-sm-2">
+			    <div class="form-group">
+				<label for="song">Show Name</label>
+				<input type='text' class="form-control" id='song' value="{{ad.Length}}" name="song"/>
+			    </div>
+			</div>
+			<div class="col-sm-2">
+                <label for="showDate">Date</label>
+                <input type='text' class="form-control datepicker" id='showDate'
+                       name="showDate"
+                       value="{{showDate|default("now"|date('Y-m-d', firstStation.timezone))}}"
+                       required
+                       pattern="([1-9][\d]{3})-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])"/>
+            </div>
+            <div class="col-sm-2">
+                <label for="showTime">Time</label>
+                <input type='time' class="form-control" id='showTime'
+                       name="airTime"
+                       required
+                       value="{{showTime|default("+1 hour"|date('H:00', firstStation.timezone))}}"/>
+            </div>
+		</div>
+		<!-- Show Promo part end -->
+
+
+		<div class="row" id="paidAdPart" style="display: none">
+
 			<div class="col-sm-1">
 			    <div class="form-group">
 				<label for="friend">Friend</label>
@@ -128,6 +204,79 @@
 				{{ad.Friend == 1 ? 'checked' : ''}}/>
 			    </div>
 			</div>
+			<div class="col-sm-2">
+			    <div class="form-group">
+				<label for="maxPlayCount">Max Play Count</label>
+				<input type='number' class="form-control" id='maxPlayCount' value="{{ad.Length}}" name="maxPlayCount"/>
+			    </div>
+			</div>
+
+			<div class="col-sm-2">
+			    <div class="form-group">
+				<label for="maxDailyPlayCount">Max Daily Play Count</label>
+				<input type='number' class="form-control" id='maxDailyPlayCount' value="{{ad.Length}}" name="maxDailyPlayCount"/>
+			    </div>
+			</div>
+			<div class="col-sm-2">
+			    <div class="form-group">
+				<label for="assignedHour">Assugned Show/Hour</label>
+				<input type='text' class="form-control" id='assignedHour' value="{{ad.Length}}" name="assignedHour"/>
+			    </div>
+			</div>
+		</div>
+		<!-- Paid Ad part end -->
+		<div class="row" id="sponsor" style="display: none">
+
+			<div class="col-sm-2">
+			    <div class="form-group">
+				<label for="assignedHourSponsor">Assugned Show/Hour</label>
+				<input type='text' class="form-control" id='assignedHourSponsor' value="{{ad.Length}}" name="assignedHourSponsor"/>
+			    </div>
+			</div>
+		</div>
+		<!-- Paid Ad part end -->
+
+
+
+		<div class="row" id="musicPart">
+
+			<div class="col-sm-1" id="musicCheckBox">
+			    <div class="form-group">
+				<label for="backingTrack">Music</label>
+				<input type='checkbox' class="form-control" id='backingTrack' value="{{ad.Length}}" name="backingTrack"/>
+			    </div>
+			</div>
+			<div id="musicChecked" style="display: none">
+				
+				<div class="col-sm-2">
+				    <div class="form-group">
+					<label for="song">Song Title</label>
+					<input type='text' class="form-control" id='song' value="{{ad.Length}}" name="song"/>
+				    </div>
+				</div>
+				<div class="col-sm-2">
+				    <div class="form-group">
+					<label for="Artist">Artist</label>
+					<input type='text' class="form-control" id='artist' value="{{ad.Length}}" name="artist"/>
+				    </div>
+				</div>
+				<div class="col-sm-2">
+				    <div class="form-group">
+					<label for="album">Album</label>
+					<input type='text' class="form-control" id='album' value="{{ad.Length}}" name="album"/>
+				    </div>
+				</div>
+			</div>
+
+
+		</div>
+		<!-- Music part end -->
+
+		 <div class="row">
+
+		 	
+			
+			
 			<div class="col-sm-2"></div>
 			<div class="col-sm-1">
 				<div class="form-group pull-right">
@@ -146,6 +295,7 @@
 {% block lastScripts %}
 	<script src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
 	<script src="{{siteUrl}}/js/chosen.jquery.min.js"></script>
+	<script src="{{siteUrl}}/TPSBIN/JS/Advertisements/trafficNew.js"></script>
 	<script>
 
 	$( ".datepicker" ).datepicker({
