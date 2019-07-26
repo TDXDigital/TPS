@@ -1,1 +1,1 @@
-ALTER TABLE radio_show_promos MODIFY COLUMN showDay VARCHAR(9) NOT NULL;
+ALTER TABLE radio_show_promos MODIFY COLUMN showDay ENUM('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat') NOT NULL;

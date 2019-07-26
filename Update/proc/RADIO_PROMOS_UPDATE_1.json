@@ -4,7 +4,7 @@
     "execute" : "SQL",
     "description" : "Adds 6 new columns to `adverts` table",
     "SQL_QRY" : {
-        "TEST" : "SHOW COLUMNS FROM radio_show_promos WHERE `Field`='showDay' AND `Type`='varchar(9)';",
+        "TEST" : "SHOW COLUMNS FROM radio_show_promos WHERE `Field`='showDay' AND `Type` like 'enum%';",
         "RESULT" : {
 	    "Field" : [
 		"showDay"

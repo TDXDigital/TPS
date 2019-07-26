@@ -30,15 +30,14 @@ $app->get('/traffic', function () use ($app) {
 $app->group('/traffic', function() use ($app, $authenticate){
     $app->get('/new', function() use ($app){
 	$traffic = new \TPS\traffic();
-    $station = new \TPS\station($_SESSION['CALLSIGN']);
-    $programs = $station->getAllPrograms();
+        $station = new \TPS\station($_SESSION['CALLSIGN']);
+        $programs = $station->getAllPrograms();
         $params = array(
             "area"=>"Traffic",
             "title"=>"New",
     	    "clients"=> $traffic->getClientsNames(),
             "programs"=> $programs
         );
-        $clientInfo = $traffic->getClientByID(1);
         $app->render("trafficNew.twig", $params);
     });
 
