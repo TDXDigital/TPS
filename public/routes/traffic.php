@@ -106,14 +106,17 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $app->get('/edit/:id', $authenticate, function ($id) use ($app){
         $traffic = new \TPS\traffic();
         $ad = $traffic->get($id);
+	$clients = $traffic->getClientsNames();
 	$client = $traffic->getClientByID($ad['ClientID']);
-	$promoInfo = $traffic->getPromoInfo($id);
+	$promo = $traffic->getPromoInfo($id);
 
         $params = array(
 	    "area" => "Traffic",
 	    "title" => "Edit",
             "ad"=>$ad,
-	    "client" => $client
+	    "clients" => $clients,
+	    "client" => $client,
+	    "promo" => $promo
         );
         $app->render("trafficNew.twig", $params);
     });
@@ -132,6 +135,10 @@ $app->group('/traffic', function() use ($app, $authenticate){
         $friend = $app->request->post('friend') ?? 0;
 
         // Need to receive the following info from post as UI is built...
+        $clientName = 'Toys Inc.';
+	$contactName= 'John';
+	$contactEmail = 'email@email.com';
+        $clientID = $app->request->post('clientID') ?? $traffic->createClient($clientName, $contactName, $contactEmail);
         $maxPlayCount = Null;
         $maxDailyPlayCount = Null;
         $assignedShow = Null;
@@ -145,7 +152,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
         $showDayTimes = [0 => [['start' => '12:00', 'end' => '14:00'], ['start' => '16:30', 'end' => '18:00']], 3 => [['start' => '12:00', 'end' => '14:00']]];
         $title = Null;
 
-        $id = $traffic ->updateAd($adId, $adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend,
+        $id = $traffic ->updateAd($adId, $adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID,
 				  $maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack,
 				  $backingArtist, $backingAlbum, $showName, $showDayTimes);
         $ad = $traffic->get($id);
