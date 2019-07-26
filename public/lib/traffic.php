@@ -56,18 +56,68 @@ class traffic extends station{
 
     /*
     * @author Derek Melchin
+    * @abstract Updates the information on a client's record
+    * @param $clientID     int  Client ID
+    * @param $clientName   str  Client's name
+    * @param $company      str  Client's employer
+    * @param $contactEmail str  Client contact email
+    * @param $creditLimit  dbl  Credit limit of client
+    * @param $paymentTerms int  Payment terms for client
+    * @param $address      str  Address of client
+    * @param $phoneNumber  str  Phone number of client
+    * @param $status       int  Status of client. enum('OVL','ACT','EXP','COL','INT','CLO','SUS') 
+    */
+    public function updateClient($clientID, $clientName, $company, $contactEmail, $creditLimit=5000, 
+				 $paymentTerms=1, $address=NULL, $phoneNumber=NULL, $status=7) {
+        if($stmt = $this->mysqli->prepare("UPDATE clients SET Name=?, companyName=?, email=?, "
+					. "CreditLimit=?, PaymentTerms=?, Address=?, PhoneNumber=?, Status=? "
+					. "WHERE ClientNumber=?")) {
+            $stmt->bind_param("sssdisssi", $clientName, $company, $contactEmail, $creditLimit, 
+			      $paymentTerms, $address, $phoneNumber, $status, $clientID);
+            if($stmt->execute())
+                $this->log->info(sprintf("Updated Client %d", $clientID ));
+            else
+                $this->log->error($this->mysqli->errno);
+            $stmt->close();
+        }
+        else{
+            $this->log->error("Failed to update client" . $this->mysqli->error);
+        }
+    }
+
+    /*
+    * @author Derek Melchin
     * @abstract Create a new client
     * @param $name         string Name of the company who is advertising
-    * @param $contactName  string Name of the company contact
+    * @param $company      string Name of the company $name works at
     * @param $email        string Email of the company contact
     * @param $creditLimit  double Credit limit for the client
     * @param $paymentTerms int    Payment terms for this client
     * @param $address      string Address of the client
     * @param $phoneNumber  string Phone number of the client
-    * @param $status       string Status of the client
+    * @param $status       int    Status of the client
     * @return int ClientNumber of the newly created client
     */
-    public function createClient($name, $contactName, $email, $creditLimit=NULL, $paymentTerms=NULL, $address=NULL, $phoneNumber=NULL, $status=NULL) {
+    public function createClient($name, $company, $email, $creditLimit=5000, $paymentTerms=1, $address=NULL, $phoneNumber=NULL, $status=7) {
+	$id = -1;
+        if($stmt = $this->mysqli->prepare("INSERT INTO clients (Name, companyName, email, "
+					. "CreditLimit, PaymentTerms, Address, PhoneNumber, Status) "
+					. "VALUES (?, ?, ?, ?, ?, ?, ?, ?);")) {
+            $stmt->bind_param("sssdissi", $name, $company, $contactEmail, $creditLimit, 
+			      $paymentTerms, $address, $phoneNumber, $status);
+            if($stmt->execute()) {
+		$id = $this->mysqli->insert_id();
+                $this->log->info(sprintf("Created client %d", $id ));
+            } else {
+                $this->log->error($this->mysqli->errno);
+	    }
+            $stmt->close();
+        }
+        else{
+            $this->log->error("Failed to create client" . $this->mysqli->error);
+        }
+	return $id;
+/*
 	$columns = "Name, ContactName, email";
 	if ($creditLimit != NULL)
 	    $columns .= ", CreditLimit";
@@ -93,7 +143,7 @@ class traffic extends station{
 	    $values .= ", $status";
 
 	$this->mysqli->query("INSERT INTO clients ($columns) VALUES ($values);");
-	return $this->mysqli->insert_id;
+	return $this->mysqli->insert_id;*/
     }
 
     /*

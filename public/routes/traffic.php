@@ -48,7 +48,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
     $cat = $app->request->post('cat');
     $clientName = $app->request->post('client');
-    $contactName = $app->request->post('company');
+    $company = $app->request->post('company');
     $contactEmail = $app->request->post('email');
     $adName = $app->request->post('adName');
     $maxPlayCount = $app->request->post('maxPlayCount');
@@ -71,7 +71,14 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $active = $app->request->post('active') ?? 0;
     $friend = $app->request->post('friend') ?? 0;
 
-    $clientID = $app->request->post('clientID') ?? $traffic->createClient($clientName, $contactName, $contactEmail);
+
+
+    $clientID = $app->request->post('clientID');
+    if ($clientID == NULL) 
+	$clientID = $traffic->createClient($clientName, $company, $contactEmail);
+    else
+	$traffic-updateClient($clientID, $clientName, $company, $contactEmail);
+
 
     $id = $traffic->createNewAd($adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID, 
 				$maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack,
@@ -128,7 +135,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
         $traffic = new \TPS\traffic();
         $adId = $app->request->post('adNumber');
-        $adName = $app->request->post('advertiser');
+        $adName = $app->request->post('adName');
         $cat = $app->request->post('cat');
         $length = $app->request->post('length');
         $lang = $app->request->post('lang');
@@ -139,9 +146,9 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
         // Need to receive the following info from post as UI is built...
         $clientName = 'Toys Inc.';
-    	$contactName= 'John';
+    	$company = 'Nike';
     	$contactEmail = 'email@email.com';
-        $clientID = $app->request->post('clientID') ?? $traffic->createClient($clientName, $contactName, $contactEmail);
+        $clientID = $app->request->post('clientID') ?? 34;
         $maxPlayCount = Null;
         $maxDailyPlayCount = Null;
         $assignedShow = Null;
@@ -155,11 +162,16 @@ $app->group('/traffic', function() use ($app, $authenticate){
         $showDayTimes = [0 => [['12:00', '14:00'], ['16:30', '18:00']], 3 => [['12:00', '14:00']]];
         $title = Null;
 
+	if ($clientID == NULL)
+	    $clientID = $traffic->createClient($clientName, $ompany, $contactEmail);
+	else
+	    $traffic->updateClient($clientID, $clientName, $company, $contactEmail);
+	$client = $traffic->getClientByID($clientID);
+
         $id = $traffic ->updateAd($adId, $adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID,
 				  $maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack,
 				  $backingArtist, $backingAlbum, $showName, $showDayTimes);
         $ad = $traffic->get($id);
-	$client = $traffic->getClientByID($ad['ClientID']);
 	$promoInfo = $traffic->getPromoInfo($id);
 
         $flash = array();
