@@ -41,7 +41,7 @@ $('#Category').change(function(){
     		$('#musicLanguage').show();
     		break;
 
-    	case 44:
+    	case "44":
 
     	break;
 
@@ -51,12 +51,12 @@ $('#Category').change(function(){
 	    	break;
 
 		case "51":
+
 			if($('#psa').is(':checked'))
 			{
 				$('#psa').prop('checked', false);
 				$('#psa').trigger('change');
 			}
-			
 			$('#psaClientPart').show();
 			$('#paidAdPart').show();
 			$('#musicPart').show();
