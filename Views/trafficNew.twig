@@ -145,8 +145,8 @@
 					<label for="lang">Client</label>
 						<input list="client" name="client" size="10" maxlength="40" class="form-control input-sm"/>
 			           	<datalist id="client">
-			           		{% for client in clients %}
-			           		<option value="{{client.Name}}"/>
+			           		{% for key, client in clients %}
+			           		<option data-value="{{key}}"> {{client}} </option>
 			           		{% endfor %}
 			          	</datalist>
 				   </div>
@@ -228,21 +228,43 @@
 				</div>
 				<div class="col-sm-2">
 				    <div class="form-group">
-					<label for="assignedHour">Assigned Show/Hour</label>
-					<input type='text' class="form-control" id='assignedHour' value="{{ad.Length}}" name="assignedHour"/>
+					<label for="assignedShow">Assigned Show</label>
+					<select class="form-control" id='assignedShow' value="{{ad.Length}}" name="assignedShow"/>
+		           		{% for key, program in programs %}
+		           		<option value="{{key}}"> {{program.name}} </option>
+		           		{% endfor %}
+		           	</select>
 				    </div>
 				</div>
+
+				<div class="col-sm-2">
+	                <label for="assignedHour">Assigned Time</label>
+	                <input type='time' class="form-control" id='assignedHour'
+	                       name="assignedHour"
+	                       value="{{assignedHour|default("+1 hour"|date('H:00', firstStation.timezone))}}"/>
+           		</div>
 			</div>
 		</div>
 		<!-- Paid Ad part end -->
 		<div class="row" id="sponsor" style="display: none">
 
 			<div class="col-sm-2">
-			    <div class="form-group">
-				<label for="assignedHourSponsor">Assugned Show/Hour</label>
-				<input type='text' class="form-control" id='assignedHourSponsor' value="{{ad.Length}}" name="assignedHourSponsor"/>
-			    </div>
-			</div>
+				    <div class="form-group">
+					<label for="assignedShowSponsor">Assigned Show</label>
+					<select class="form-control" id='assignedShowSponsor' value="{{ad.Length}}" name="assignedShowSponsor"/>
+		           		{% for key, program in programs %}
+		           		<option value="{{key}}"> {{program.name}} </option>
+		           		{% endfor %}
+		           	</select>
+				    </div>
+				</div>
+
+				<div class="col-sm-2">
+                <label for="assignedHourSponsor">Assigned Time</label>
+                <input type='time' class="form-control" id='assignedHourSponsor'
+                       name="assignedHourSponsor"
+                       value="{{assignedHourSponsor|default("+1 hour"|date('H:00', firstStation.timezone))}}"/>
+           		</div>
 		</div>
 		<!-- Paid Ad part end -->
 
@@ -294,17 +316,10 @@
 
 		 <div class="row">
 
-		 	
-			
-			
-			<div class="col-sm-2"></div>
-			<div class="col-sm-1">
-				<div class="form-group pull-right">
-					<button id="submit" type="submit" class="btn btn-success pull-down">Submit</button>
-				<!--<button type="reset" class="btn btn-warning">Reset</button>-->
-				</div>
+			<div class="form-group pull-right">
+				<button id="submit" type="submit" class="btn btn-success pull-down">Submit</button>
+			<!--<button type="reset" class="btn btn-warning">Reset</button>-->
 			</div>
-
 		</div>
 	</form>
 </div>

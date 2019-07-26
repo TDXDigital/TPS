@@ -30,12 +30,15 @@ $app->get('/traffic', function () use ($app) {
 $app->group('/traffic', function() use ($app, $authenticate){
     $app->get('/new', function() use ($app){
 	$traffic = new \TPS\traffic();
-    $clients = $traffic->getClientsNames();
+    $station = new \TPS\station($_SESSION['CALLSIGN']);
+    $programs = $station->getAllPrograms();
         $params = array(
             "area"=>"Traffic",
             "title"=>"New",
-    	    "clients"=>$traffic->getClientsNames()
+    	    "clients"=> $traffic->getClientsNames(),
+            "programs"=> $programs
         );
+        $clientInfo = $traffic->getClientByID(1);
         $app->render("trafficNew.twig", $params);
     });
 
@@ -43,32 +46,31 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
     $traffic = new \TPS\traffic();
 
+    $cat = $app->request->post('cat');
     $clientName = $app->request->post('client');
-    // Need to receive the following info from post as UI is built...
     $contactName = $app->request->post('company');
     $contactEmail = $app->request->post('email');
     $adName = $app->request->post('adName');
     $maxPlayCount = $app->request->post('maxPlayCount');
     $maxDailyPlayCount = $app->request->post('maxDailyPlayCount');
-    $assignedShow = $app->request->post('assignedHour');
-    $assignedHour = $app->request->post('assignedHourSponsor');
+    $assignedShow = $cat==52? $app->request->post('assignedShowSponsor') : $app->request->post('assignedShow');
+    $assignedHour = $cat==52? $app->request->post('assignedHourSponsor') :$app->request->post('assignedHour');
     $backingTrack = $app->request->post('song');
     $backingArtist = $app->request->post('artist');
     $backingAlbum = $app->request->post('album');
-//    $showName = Null;
     $showName =  $app->request->post('showName');
     // $showDayTimes = [0 => [['start' => '12:00', 'end' => '14:00'], ['start' => '16:30', 'end' => '18:00']], 3 => [['start' => '12:00', 'end' => '14:00']]];
     $showDayTimes = $app->request->post('showTime');
     $title =  $app->request->post('title');
     $language =  $app->request->post('lang');
 
-    $cat = $app->request->post('cat');
     $length = $app->request->post('length');
     $lang = $app->request->post('lang');
     $startDate = $app->request->post('startDate');
     $endDate = $app->request->post('endDate');
     $active = $app->request->post('active') ?? 0;
     $friend = $app->request->post('friend') ?? 0;
+
     $clientID = $app->request->post('clientID') ?? $traffic->createClient($clientName, $contactName, $contactEmail);
 
     $id = $traffic->createNewAd($adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID, 
@@ -137,8 +139,8 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
         // Need to receive the following info from post as UI is built...
         $clientName = 'Toys Inc.';
-	$contactName= 'John';
-	$contactEmail = 'email@email.com';
+    	$contactName= 'John';
+    	$contactEmail = 'email@email.com';
         $clientID = $app->request->post('clientID') ?? $traffic->createClient($clientName, $contactName, $contactEmail);
         $maxPlayCount = Null;
         $maxDailyPlayCount = Null;
@@ -172,6 +174,14 @@ $app->group('/traffic', function() use ($app, $authenticate){
             "flash" => $flash
         );
         $app->render("trafficNew.twig", $params);
+    });
+
+    $app->post('/searchClient/:clientId', function($clientId) use ($app, $authenticate){
+        $traffic = new \TPS\traffic();
+        $clientInfo = $traffic->getClientByID($clientId);
+        // echo $playlistId;
+        // print_r(reset($albumInfo));
+        echo json_encode($clientInfo);
     });
 });
 

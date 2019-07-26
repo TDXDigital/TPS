@@ -86,3 +86,23 @@ function hideAll()
 	$('#psaChckBox').hide();
 }
 
+
+$(document).on('change ', "input[name='client']", function(){
+	var val = $("input[name='client']").val()
+	var clientID = $("#client option").filter(function() {
+        return this.value == val;
+    }).data('value');
+    	$.ajax({
+            url: "/traffic/searchClient/" + clientID,
+            type: 'POST',
+            }).done(function(data) {
+            	var clientInfo = JSON.parse(data);
+            	$('#company').val(clientInfo.ContactName);
+            	$('#phone').val(clientInfo.PhoneNumber);
+            	$('#email').val(clientInfo.email);
+            }).fail(function(data){
+                alert(JSON.stringfy(data));
+            });
+    
+
+});

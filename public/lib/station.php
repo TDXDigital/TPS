@@ -742,7 +742,7 @@ class station extends TPS{
         $result = array();
         $progam = null;
         $con = $this->mysqli->prepare(
-                "SELECT ProgramID FROM program where callsign=? and active=?");
+                "SELECT ProgramID, programName FROM program where callsign=? and active=?");
         $iactive = (int)$active;
         $vcallsign = $this->callsign;
         $con->bind_param('si',$vcallsign,$iactive);
@@ -750,6 +750,28 @@ class station extends TPS{
         if($con->execute()){
             while($con->fetch()){
                 array_push($result,$progam);
+            }
+            return $result;
+        }
+        else{return false;}
+    }
+    public function getAllPrograms($active = TRUE)
+    {
+        $result = array();
+        $progam = null;
+        $con = $this->mysqli->prepare(
+                "SELECT ProgramID, programName, Airtime FROM program where callsign=? and active=?");
+        $iactive = (int)$active;
+        $vcallsign = $this->callsign;
+        $con->bind_param('si',$vcallsign,$iactive);
+        $con->bind_result($id, $name, $time);
+        if($con->execute()){
+            while($con->fetch()){
+                $result[$id] = array
+                (
+                    "name" =>$name,
+                    "time" =>$time
+                );
             }
             return $result;
         }
