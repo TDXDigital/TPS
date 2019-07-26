@@ -50,6 +50,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $clientName = $app->request->post('client');
     $contactName = $app->request->post('company');
     $contactEmail = $app->request->post('email');
+    $clientPhone = $app->request->post('phone');
     $adName = $app->request->post('adName');
     $maxPlayCount = $app->request->post('maxPlayCount');
     $maxDailyPlayCount = $app->request->post('maxDailyPlayCount');
@@ -60,10 +61,25 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $backingAlbum = $app->request->post('album');
     $showName =  $app->request->post('showName');
     // $showDayTimes = [0 => [['start' => '12:00', 'end' => '14:00'], ['start' => '16:30', 'end' => '18:00']], 3 => [['start' => '12:00', 'end' => '14:00']]];
-    $showDayTimes = $app->request->post('showTime');
+
+    $showDayTimes = array();
+    $showDays = $app->request->post('showDayVal');
+    if(is_array($showDays))
+    {
+        $showTimeStartVal = $app->request->post('showTimeStartVal');
+        $showTimeEndVal = $app->request->post('showTimeEndVal');
+        foreach($showDays as $key => $day)
+        {
+            $showDayTimes[$key] = array(
+                'day' => $showDays[$key],
+                'start' => $showTimeStartVal[$key],
+                'end' => $showTimeEndVal[$key]
+            );
+        }
+    }
+    
     $title =  $app->request->post('title');
     $language =  $app->request->post('lang');
-
     $length = $app->request->post('length');
     $lang = $app->request->post('lang');
     $startDate = $app->request->post('startDate');
@@ -71,7 +87,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $active = $app->request->post('active') ?? 0;
     $friend = $app->request->post('friend') ?? 0;
 
-    $clientID = $app->request->post('clientID') ?? $traffic->createClient($clientName, $contactName, $contactEmail);
+    $clientID = $app->request->post('clientID') ?? $traffic->createClient($clientName, $contactName, $contactEmail, $clientPhone);
 
     $id = $traffic->createNewAd($adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID, 
 				$maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack,

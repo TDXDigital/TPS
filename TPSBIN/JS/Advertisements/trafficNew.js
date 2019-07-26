@@ -1,7 +1,6 @@
 
 
 $( document ).ready(function() {
-	
     $('#Category').trigger('change');
 });
 
@@ -111,3 +110,62 @@ $(document).on('change ', "input[name='client']", function(){
     
 
 });
+
+$(document).on('click', '#insertShow', function(){
+
+	var date = $('#showDate option:selected').text();
+	var start = $('#showTimeStart').val();
+	var end = $('#showTimeEnd').val();
+	var showNamme = $('#showName').val();
+
+ 	$('#showPromoTimeTable tbody tr:last').after(
+
+ 		'<tr>' +
+			'<td>' +
+			'<input type="hidden" name="showDayVal[]" value="'+ date +'">' +
+				date +
+			'</td>' +
+			'<td>' +
+			'<input type="hidden" name="showTimeStartVal[]" value="'+ start +'">' +
+			'<input type="hidden" name="showTimeEndVal[]" value="'+ end +'">' +
+				start + ' ~ ' + end +
+			'</td>' +
+			'<td>' +
+				'<button type="button" class="btn btn-sm btn-danger rmvBtn">' +
+				      '<span class="glyphicon glyphicon-trash"></span>' +
+		  		'</button>' +
+			'</td>' +
+		'</tr>'
+
+ 		);
+});
+
+
+
+//event for remove button from the song table
+$(document).on('click', '.rmvBtn', function(e){
+	$(this).closest ('tr').remove();
+});
+
+
+
+
+//Prevent enter key to submit form
+$(document).ready(function() {
+  $(window).keydown(function(event){
+  	var cat = $('#Category').val();
+    if(event.keyCode == 13 && cat == 45) {
+      event.preventDefault();
+      return false;
+    }
+  });
+});
+
+$(document).on('keyup', '#showPromoPart input', function(e){
+	if(e.keyCode == 13)
+    {
+        // $(this).trigger("enterKey");
+        $('#insertShow').trigger('click');
+    }
+});
+

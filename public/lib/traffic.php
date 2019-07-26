@@ -67,7 +67,7 @@ class traffic extends station{
     * @param $status       string Status of the client
     * @return int ClientNumber of the newly created client
     */
-    public function createClient($name, $contactName, $email, $creditLimit=NULL, $paymentTerms=NULL, $address=NULL, $phoneNumber=NULL, $status=NULL) {
+    public function createClient($name, $contactName, $email, $phoneNumber=NULL, $creditLimit=NULL, $paymentTerms=NULL, $address=NULL, $status=NULL) {
 	$columns = "Name, ContactName, email";
 	if ($creditLimit != NULL)
 	    $columns .= ", CreditLimit";
@@ -230,12 +230,12 @@ class traffic extends station{
 
 	    // Insert the name and date information of the show into the radio_show_promos table
 	    if ($stmt = $this->mysqli->prepare("INSERT INTO radio_show_promos (AdId, showName, showDay, showStart, showEnd) VALUES (?, ?, ?, ?, ?)")) {
-	        foreach ($showDayTimes as $dayNum => $showTimes) {
-		    foreach ($showTimes as $showTime) {
-		        $stmt->bind_param("isiss", $adID, $showName, $dayNum, $showTime[0], $showTime[1]);
+	        foreach ($showDayTimes as $key => $showTimes) {
+		    // foreach ($showTimes as $showTime) {
+		        $stmt->bind_param("issss", $adID, $showName, $showTimes['day'], $showTime['start'], $showTime['end']);
 			if (!$stmt->execute())
                 	    $this->log->error($this->mysqli->errno);
-		    }
+		    // }
 	        }
 	    }
 	    $stmt->close();
