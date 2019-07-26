@@ -103,10 +103,10 @@ class traffic extends station{
         if($stmt = $this->mysqli->prepare("INSERT INTO clients (Name, companyName, email, "
 					. "CreditLimit, PaymentTerms, Address, PhoneNumber, Status) "
 					. "VALUES (?, ?, ?, ?, ?, ?, ?, ?);")) {
-            $stmt->bind_param("sssdissi", $name, $company, $contactEmail, $creditLimit, 
+            $stmt->bind_param("sssdissi", $name, $company, $email, $creditLimit, 
 			      $paymentTerms, $address, $phoneNumber, $status);
             if($stmt->execute()) {
-		$id = $this->mysqli->insert_id();
+		$id = $this->mysqli->insert_id;
                 $this->log->info(sprintf("Created client %d", $id ));
             } else {
                 $this->log->error($this->mysqli->errno);
