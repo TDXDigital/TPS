@@ -242,17 +242,17 @@ class traffic extends station{
 	}
     }
 
-    public function updateAd($adId, $adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, 
+    public function updateAd($adId, $adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID,
 			     $maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack, 
 			     $backingArtist, $backingAlbum, $showName, $showDayTimes)
     {
     	 if($stmt = $this->mysqli->prepare("UPDATE adverts SET "
                 . "Category=?, Length=?, EndDate=?, StartDate =?, AdName=?, "
-                . "Language=?, Active=?, Friend=?, maxPlayCount=?, maxDailyPlayCount=?, assignedShow=?, "
+                . "Language=?, Active=?, Friend=?, ClientID=?, maxPlayCount=?, maxDailyPlayCount=?, assignedShow=?, "
 		. "assignedHour=?, backing_song=?, backing_artist=?, backing_album=? "
                 . "WHERE AdId=?")){
-            $stmt->bind_param("sissssiiiiissssi", $cat, $length, $endDate, $startDate, $adName, $lang, $active, 
-				$friend, $maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, 
+            $stmt->bind_param("sissssiiiiiissssi", $cat, $length, $endDate, $startDate, $adName, $lang, $active, 
+				$friend, $clientID, $maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, 
 				$backingTrack, $backingArtist, $backingAlbum, $adId);
             if($stmt->execute()){
                 $id = $this->mysqli->insert_id;
