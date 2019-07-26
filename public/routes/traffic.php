@@ -43,24 +43,24 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
     $traffic = new \TPS\traffic();
 
-    $clientName = $app->request->post('advertiser');
+    $clientName = $app->request->post('client');
     // Need to receive the following info from post as UI is built...
-    $contactName = 'Contact Name';
-    $contactEmail = 'email@email.com';
-    $adName = 'Ad Name';
-    $maxPlayCount = Null;
-    $maxDailyPlayCount = Null;
-    $assignedShow = Null;
-    $assignedHour = Null;
-    $backingTrack = Null;
-    $backingArtist = Null;
-    $backingAlbum = Null;
+    $contactName = $app->request->post('company');
+    $contactEmail = $app->request->post('email');
+    $adName = $app->request->post('adName');
+    $maxPlayCount = $app->request->post('maxPlayCount');
+    $maxDailyPlayCount = $app->request->post('maxDailyPlayCount');
+    $assignedShow = $app->request->post('assignedHour');
+    $assignedHour = $app->request->post('assignedHourSponsor');
+    $backingTrack = $app->request->post('song');
+    $backingArtist = $app->request->post('artist');
+    $backingAlbum = $app->request->post('album');
 //    $showName = Null;
-    $showName = 'Derek\'s Show!';
-//    $showDayTimes = [];
-    $showDayTimes = [0 => [['start' => '12:00', 'end' => '14:00'], ['start' => '16:30', 'end' => '18:00']], 3 => [['start' => '12:00', 'end' => '14:00']]];
-    $title = Null;
-    $language = Null;
+    $showName =  $app->request->post('showName');
+    // $showDayTimes = [0 => [['start' => '12:00', 'end' => '14:00'], ['start' => '16:30', 'end' => '18:00']], 3 => [['start' => '12:00', 'end' => '14:00']]];
+    $showDayTimes = $app->request->post('showTime');
+    $title =  $app->request->post('title');
+    $language =  $app->request->post('lang');
 
     $cat = $app->request->post('cat');
     $length = $app->request->post('length');

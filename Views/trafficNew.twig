@@ -49,8 +49,8 @@
 	action="/traffic/update" {% else %} action="./create" {% endif %}>
 		<div class="row">
 			<div class="col-sm-3" id="catSelection" >
-				<label for="DDLNormal">Category</label>
-				<select name="cat" id="DDLNormal" class="form-control chtype">
+				<label for="Category">Category</label>
+				<select name="cat" id="Category" class="form-control chtype">
 	               <option value="53" {{(ad.Category == 53)? 'selected':''}}>53, Sponsored Promotion</option>
 	               <OPTION value="52" {{(ad.Category == 52)? 'selected':''}}>52, Sponsor Indentification</OPTION>
 	               <OPTION VALUE="51" {{(ad.Category == 51)? 'selected': (ad.Category is null)? 'selected':''}}>51, Commercial</OPTION>
@@ -68,7 +68,14 @@
 			   </div>
 			</div>
 
-			<div class="col-md-3">
+			<div class="col-sm-2">
+				    <div class="form-group">
+					<label for="company">Ad Name</label>
+					<input type='text' class="form-control" id='adName' value="{{ad.Length}}" name="adName"/>
+				    </div>
+				</div>
+
+			<div class="col-md-2">
                 <fieldset>
                     <div id="sort_group" class="form-group input-group">
                         <label for="startDate">Start Date</label>
@@ -79,7 +86,7 @@
                     </div>
                 </fieldset>
             </div>
-             <div class="col-md-3">
+             <div class="col-md-2">
                 <fieldset>
                     <div id="sort_group" class="form-group input-group">
                         <label for="endDate">End Date</label>
@@ -102,32 +109,33 @@
 
         <!-- common part end -->
 
-        <div class="row">
+        <div class="row" id="psaClientPart">
         	<div id="spokenPart" style="display: none">
-        	<div class="col-sm-1" id="psaChckBox" >
-			    <div class="form-group">
-				<label for="psa">PSA</label>
-				<input type='checkbox' class="form-control" id='psa' value ="1" name="psa"
-				{{ad.Friend == 1 ? 'checked' : ''}}/>
-			    </div>
-			</div>
-			<div id="spokenPart">
-				<div class="col-sm-2">
+	        	<div class="col-sm-1" id="psaChckBox" >
 				    <div class="form-group">
-					<label for="title">Title</label>
-					<input type='text' class="form-control" id='title' value="{{ad.Length}}" name="title"/>
+					<label for="psa">PSA</label>
+					<input type='checkbox' class="form-control" id='psa' value ="1" name="psa"
+					{{ad.Friend == 1 ? 'checked' : ''}}/>
 				    </div>
 				</div>
 
-				<div class="col-sm-2">
-		       		<label for="lang">Language</label>
-					<input list="lang" name="lang" value="{{ad.Language}}" required value="English" size="10" maxlength="40" class="form-control input-sm"/>
-		           	<datalist id="lang">
-		           		<option value="English">
-		           		<option value="French">
-		          	</datalist>
-		        </div>
-			</div>
+				<div id="psaChecked" style="display: none">
+					<div class="col-sm-2">
+					    <div class="form-group">
+						<label for="title">Title</label>
+						<input type='text' class="form-control" id='title' value="{{ad.Length}}" name="title"/>
+					    </div>
+					</div>
+
+					<div class="col-sm-2">
+			       		<label for="lang">Language</label>
+						<input list="lang" name="lang" value="{{ad.Language}}" value="English" size="10" maxlength="40" class="form-control input-sm"/>
+			           	<datalist id="lang">
+			           		<option value="English">
+			           		<option value="French">
+			          	</datalist>
+			        </div>
+				</div>
 			</div>
 			<!-- Spoken Part End -->
 			
@@ -173,7 +181,7 @@
 			<div class="col-sm-2">
 			    <div class="form-group">
 				<label for="song">Show Name</label>
-				<input type='text' class="form-control" id='song' value="{{ad.Length}}" name="song"/>
+				<input type='text' class="form-control" id='showName' value="{{ad.Length}}" name="showName"/>
 			    </div>
 			</div>
 			<div class="col-sm-2">
@@ -195,7 +203,7 @@
 		<!-- Show Promo part end -->
 
 
-		<div class="row" id="paidAdPart" style="display: none">
+		<div class="row" id="paidAdPart">
 
 			<div class="col-sm-1">
 			    <div class="form-group">
@@ -204,24 +212,26 @@
 				{{ad.Friend == 1 ? 'checked' : ''}}/>
 			    </div>
 			</div>
-			<div class="col-sm-2">
-			    <div class="form-group">
-				<label for="maxPlayCount">Max Play Count</label>
-				<input type='number' class="form-control" id='maxPlayCount' value="{{ad.Length}}" name="maxPlayCount"/>
-			    </div>
-			</div>
+			<div id="playCountPart">
+				<div class="col-sm-2">
+				    <div class="form-group">
+					<label for="maxPlayCount">Max Play Count</label>
+					<input type='number' class="form-control" id='maxPlayCount' value="{{ad.Length}}" name="maxPlayCount"/>
+				    </div>
+				</div>
 
-			<div class="col-sm-2">
-			    <div class="form-group">
-				<label for="maxDailyPlayCount">Max Daily Play Count</label>
-				<input type='number' class="form-control" id='maxDailyPlayCount' value="{{ad.Length}}" name="maxDailyPlayCount"/>
-			    </div>
-			</div>
-			<div class="col-sm-2">
-			    <div class="form-group">
-				<label for="assignedHour">Assugned Show/Hour</label>
-				<input type='text' class="form-control" id='assignedHour' value="{{ad.Length}}" name="assignedHour"/>
-			    </div>
+				<div class="col-sm-2">
+				    <div class="form-group">
+					<label for="maxDailyPlayCount">Max Daily Play Count</label>
+					<input type='number' class="form-control" id='maxDailyPlayCount' value="{{ad.Length}}" name="maxDailyPlayCount"/>
+				    </div>
+				</div>
+				<div class="col-sm-2">
+				    <div class="form-group">
+					<label for="assignedHour">Assigned Show/Hour</label>
+					<input type='text' class="form-control" id='assignedHour' value="{{ad.Length}}" name="assignedHour"/>
+				    </div>
+				</div>
 			</div>
 		</div>
 		<!-- Paid Ad part end -->
@@ -266,6 +276,16 @@
 					<input type='text' class="form-control" id='album' value="{{ad.Length}}" name="album"/>
 				    </div>
 				</div>
+				<div id="musicLanguage" style="display: none">
+					<div class="col-sm-2">
+			       		<label for="musicLang">Language</label>
+						<input list="musicLang" name="musicLang" value="{{ad.Language}}" value="English" size="10" maxlength="40" class="form-control input-sm"/>
+			           	<datalist id="musicLang">
+			           		<option value="English">
+			           		<option value="French">
+			          	</datalist>
+			        </div>
+				</div>
 			</div>
 
 
@@ -280,9 +300,6 @@
 			<div class="col-sm-2"></div>
 			<div class="col-sm-1">
 				<div class="form-group pull-right">
-					{% if program.id is not null %}
-						<input type="hidden" name="_METHOD" value="PUT"/>
-					{% endif %}
 					<button id="submit" type="submit" class="btn btn-success pull-down">Submit</button>
 				<!--<button type="reset" class="btn btn-warning">Reset</button>-->
 				</div>
