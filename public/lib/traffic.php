@@ -34,6 +34,34 @@ class traffic extends station{
 
     /*
     * @author Derek Melchin
+    * @abstract Gathers information about all the active radio_show_promos
+    * @return Associative array containing info about each radio_show_promo
+    *              [<AdId> => ['name' => <showName>, 'Sun' => [['12:00', '14:30'], ...], ...], ...]
+    */
+    public function getPromos() {
+	$stmt = $this->mysqli->query("SELECT * FROM radio_show_promos WHERE AdId IN (SELECT AdId FROM adverts WHERE Active = 1) ORDER BY showName ASC, showDay ASC, showStart ASC;");
+	$promos = [];
+	while ($row = $stmt->fetch_array(MYSQLI_ASSOC)) {
+	    $duration = [ $row['showStart'], $row['showEnd'] ];
+	    // If we already have the AdId as a key in $promos
+	    if (in_array($row['AdId'], array_keys($promos)))
+		// If we already have this row's day
+		if (in_array($row['showDay'], array_keys($promos[$row['AdId']])))
+		    // Append this row's duration times
+		    array_push($promos[$row['AdId']][$row['showDay']], $duration);
+		else
+		    // Start this day
+		    $promos[$row['AdId']][$row['showDay']] = [$duration];
+	    else
+		// Create a promo element for this AdId
+		$promos[$row['AdId']] = ["name" => $row['showName'], $row['showDay'] => [$duration]];
+
+	}
+	return $promos;
+    }
+
+    /*
+    * @author Derek Melchin
     * @abstract Gathers information regarding a radio show promo
     * @param $id int ID of the advert
     * @return Associative array The database row for the given client

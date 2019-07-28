@@ -85,6 +85,8 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $params['genres'] = $genres;
         $params['program'] = $temp;
         $params['legacy'] = $app->request->get('legacy')??'false';
+	$traffic = new \TPS\traffic();
+	$params['radioShowPromos'] = $traffic->getPromos();
         $isXHR = $app->request->isAjax();
         if($isXHR){
             print json_encode($params);
