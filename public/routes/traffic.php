@@ -61,7 +61,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $backingArtist = $app->request->post('artist') ?: NULL;
     $backingAlbum = $app->request->post('album') ?: NULL;
     $showName =  $app->request->post('showName') ?: NULL;
-    // $showDayTimes = [0 => [['start' => '12:00', 'end' => '14:00'], ['start' => '16:30', 'end' => '18:00']], 3 => [['start' => '12:00', 'end' => '14:00']]];
+    // $showDayTimes = ['Sun' => [['12:00', '14:00'], ['16:30', '18:00']], 'Tue' => [['12:00', '14:00']]];
 
     $showDayTimes = array();
     $showDays = $app->request->post('showDayVal');
@@ -71,11 +71,11 @@ $app->group('/traffic', function() use ($app, $authenticate){
         $showTimeEndVal = $app->request->post('showTimeEndVal');
         foreach($showDays as $key => $day)
         {
-            $showDayTimes[$key] = array(
-                'day' => $showDays[$key],
-                'start' => $showTimeStartVal[$key],
-                'end' => $showTimeEndVal[$key]
-            );
+	    $duration = [$showTimeStartVal[$key], $showTimeEndVal[$key]];
+	    if (in_array($day, array_keys($showDayTimes)))
+		array_push($showDayTimes[$day], $duration);
+	    else
+		$showDayTimes[$day] = [$duration];
         }
     }
     
@@ -175,10 +175,8 @@ $app->group('/traffic', function() use ($app, $authenticate){
         $backingTrack = Null;
         $backingArtist = Null;
         $backingAlbum = Null;
-//      $showName = Null;
         $showName = 'Derek\'s Show!';
-//      $showDayTimes = [];
-        $showDayTimes = [0 => [['12:00', '14:00'], ['16:30', '18:00']], 3 => [['12:00', '14:00']]];
+        $showDayTimes = ['Sun' => [['12:00', '14:00'], ['16:30', '18:00']], 'Tue' => [['12:00', '14:00']]];
         $title = Null;
 
 	if ($clientID == NULL)

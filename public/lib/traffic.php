@@ -275,10 +275,10 @@ class traffic extends station{
     /*
     * @author Derek Melchin
     * @abstract Updates the radio_show_promos tables with the radio show information
-    * @param $adID         int	ID of the ad
+    * @param $adID         int  ID of the ad
     * @param $showName     str  Name of the show being promoted 
     * @param $showDayTimes arr  The broadcasting schedule for the show being promoted
-    *                           [ <day#Week> =>[[<startTime>, <endTime>], ...], ...]. Sunday = 0 day#Week.
+    *                           [ <day> => [[<startTime>, <endTime>], ...], ...]. 
     */
     public function updateRadioShowPromos($adID, $showName, $showDayTimes) {
 	if ($adID < 0)
@@ -298,12 +298,12 @@ class traffic extends station{
 
 	    // Insert the name and date information of the show into the radio_show_promos table
 	    if ($stmt = $this->mysqli->prepare("INSERT INTO radio_show_promos (AdId, showName, showDay, showStart, showEnd) VALUES (?, ?, ?, ?, ?)")) {
-	        foreach ($showDayTimes as $key => $showTimes) {
-		    // foreach ($showTimes as $showTime) {
-		        $stmt->bind_param("issss", $adID, $showName, $showTimes['day'], $showTime['start'], $showTime['end']);
+	        foreach ($showDayTimes as $day => $showTimes) {
+		    foreach ($showTimes as $showTime) {
+		        $stmt->bind_param("issss", $adID, $showName, $day, $showTime[0], $showTime[1]);
 			if (!$stmt->execute())
                 	    $this->log->error($this->mysqli->errno);
-		    // }
+		    }
 	        }
 	    }
 	    $stmt->close();
