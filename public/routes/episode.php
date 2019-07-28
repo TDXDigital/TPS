@@ -85,8 +85,6 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $params['genres'] = $genres;
         $params['program'] = $temp;
         $params['legacy'] = $app->request->get('legacy')??'false';
-	$traffic = new \TPS\traffic();
-	$params['radioShowPromos'] = $traffic->getPromos();
         $isXHR = $app->request->isAjax();
         if($isXHR){
             print json_encode($params);
@@ -115,6 +113,8 @@ $app->group('/episode', $authenticate($app,[1,2]),
 
         $station = new \TPS\station($callsign);
         $program = new \TPS\program($station, $programID);
+	$traffic = new \TPS\traffic();
+
         $req = $program->getRequirement();
        
         $episode = new \TPS\episode($program, NULL, $airDate, $airTime,
@@ -141,7 +141,9 @@ $app->group('/episode', $authenticate($app,[1,2]),
             'req' => $req,
             'ads' => $ads,
             'commercial' => $commercials,
-            'action' => '/episode/finalize'
+            'action' => '/episode/finalize',
+	    'radioShowPromos' => $traffic->getPromos(),
+	    'PSAs' => $traffic->getPSAs()
         );
         if($episodeCheck->getEpisode()['id']){
             $params['episode'] = $episode->getEpisode();
@@ -240,6 +242,7 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $station = new \TPS\station($_SESSION['CALLSIGN']);
         $episodeVal = \TPS\episode::getEpisodeByEpNum($epNum);  //array, not object
         $programID = \TPS\program::getId($_SESSION['CALLSIGN'], $episodeVal['name']);
+	$traffic = new \TPS\traffic();
 
         $program = new \TPS\program($station, $programID);
         $episode = new \TPS\episode($program);  //episode object
@@ -255,7 +258,9 @@ $app->group('/episode', $authenticate($app,[1,2]),
             'action' => '/episode/update',
             'req' => $req,
             'ads' => $ads,
-            'commercial' => $commercials
+            'commercial' => $commercials,
+	    'radioShowPromos' => $traffic->getPromos(),
+	    'PSAs' => $traffic->getPSAs()
         );
         $params["episode"] = $episodeVal;
         $params["songs"] = \TPS\episode::getSongByEpNum($epNum);

@@ -29,6 +29,8 @@ class traffic extends station{
     * @return Associative array The database row for the given client
     */
     public function getClientByID($id) {
+	if ($id == NULL)
+	    return;
 	return $this->mysqli->query("SELECT * FROM clients WHERE ClientNumber=$id;")->fetch_array(MYSQLI_ASSOC);
     }
 
@@ -81,6 +83,20 @@ class traffic extends station{
 	}
 	return $promoShowInfo;
     }
+
+    /*
+    * @author Derek Melchin
+    * @abstract Gathers the PSAs from the database
+    * @return Array of adverts rows in the database that are PSA
+    */
+    public function getPSAs() {
+	$stmt = $this->mysqli->query("SELECT * FROM adverts WHERE psa = 1 AND active = 1;");
+	$PSAs = [];
+	while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
+	    array_push($PSAs, $row);
+	return $PSAs;
+    }
+
 
     /*
     * @author Derek Melchin
@@ -167,22 +183,23 @@ class traffic extends station{
     * @param $backingAlbum      str  The album name of the backing song in the ad
     * @param $showName          str  The name of the show being promoted
     * @param $showDayTimes      arr  [ <day#Week> =>[['start' => '9:30', 'end' => '11:30'], ...], ...]. Sunday = 0 day#Week.
+    * @param $psa               int  1 if the advert is a PSA, 0 otherwise.
     * @return The unique id of the newly-created ad
     */
     public function createNewAd($adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID,
 				$maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack,
-				$backingArtist, $backingAlbum, $showName, $showDayTimes)
+				$backingArtist, $backingAlbum, $showName, $showDayTimes, $psa)
     {
     	$id = -1;
         if($stmt = $this->mysqli->prepare("insert into adverts ("
                 . "Category, Length, EndDate, StartDate, AdName,"
                 . "Language, Active, Friend, ClientID, maxPlayCount, "
 		. "maxDailyPlayCount, assignedShow, assignedHour, "
-		. "backing_song, backing_artist, backing_album) values "
-                . "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")){
-            $stmt->bind_param("sissssiiiiiissss", $cat, $length, $endDate, $startDate, $adName, $lang, $active, 
+		. "backing_song, backing_artist, backing_album, psa) values "
+                . "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")){
+            $stmt->bind_param("sissssiiiiiissssi", $cat, $length, $endDate, $startDate, $adName, $lang, $active, 
 				$friend, $clientID, $maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour,
-				$backingTrack, $backingArtist, $backingAlbum);
+				$backingTrack, $backingArtist, $backingAlbum, $psa);
             if($stmt->execute()){
                 $id = $this->mysqli->insert_id;
                 $this->log->info(sprintf("New Ad created %d", $id ));
@@ -295,16 +312,16 @@ class traffic extends station{
 
     public function updateAd($adId, $adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID,
 			     $maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack, 
-			     $backingArtist, $backingAlbum, $showName, $showDayTimes)
+			     $backingArtist, $backingAlbum, $showName, $showDayTimes, $psa)
     {
     	 if($stmt = $this->mysqli->prepare("UPDATE adverts SET "
                 . "Category=?, Length=?, EndDate=?, StartDate =?, AdName=?, "
                 . "Language=?, Active=?, Friend=?, ClientID=?, maxPlayCount=?, maxDailyPlayCount=?, assignedShow=?, "
-		. "assignedHour=?, backing_song=?, backing_artist=?, backing_album=? "
+		. "assignedHour=?, backing_song=?, backing_artist=?, backing_album=?, psa=? "
                 . "WHERE AdId=?")){
-            $stmt->bind_param("sissssiiiiiissssi", $cat, $length, $endDate, $startDate, $adName, $lang, $active, 
+            $stmt->bind_param("sissssiiiiiissssii", $cat, $length, $endDate, $startDate, $adName, $lang, $active, 
 				$friend, $clientID, $maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, 
-				$backingTrack, $backingArtist, $backingAlbum, $adId);
+				$backingTrack, $backingArtist, $backingAlbum, $psa, $adId);
             if($stmt->execute()){
                 $id = $this->mysqli->insert_id;
                 $this->log->info(sprintf("Updated Ad %d", $adId ));

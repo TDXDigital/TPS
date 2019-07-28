@@ -46,6 +46,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $traffic = new \TPS\traffic();
 
     $cat = $app->request->post('cat');
+    $psa = $app->request->post('psa') ?: 0;
     $clientID = $app->request->post('clientID') ?: NULL;
     $clientName = $app->request->post('client') ?: NULL;
     $company = $app->request->post('company') ?: NULL;
@@ -95,7 +96,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
     $id = $traffic->createNewAd($adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID, 
 				$maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack,
-				$backingArtist, $backingAlbum, $showName, $showDayTimes);
+				$backingArtist, $backingAlbum, $showName, $showDayTimes, $psa);
     $ad = $traffic->get($id);
 
     if($id == -1 )
@@ -103,11 +104,15 @@ $app->group('/traffic', function() use ($app, $authenticate){
     else
         $flash['success'] = 'Created new Ad';
 
+    $traffic = new \TPS\traffic();
+    $station = new \TPS\station($_SESSION['CALLSIGN']);
     $params = array(
         "area"=>"Traffic",
         "title"=>"New",
         "ad"=>$ad,
-        "flash" => $flash
+        "flash" => $flash,
+    	"clients"=> $traffic->getClientsNames(),
+        "programs"=> $station->getAllPrograms()
     );
     $app->render("trafficNew.twig", $params);
 });
@@ -150,6 +155,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
         $adId = $app->request->post('adNumber');
         $adName = $app->request->post('adName');
         $cat = $app->request->post('cat');
+        $psa = $app->request->post('psa') ?: 0;
         $length = $app->request->post('length');
         $lang = $app->request->post('lang');
         $startDate = $app->request->post('startDate');
@@ -183,7 +189,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
         $id = $traffic ->updateAd($adId, $adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID,
 				  $maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack,
-				  $backingArtist, $backingAlbum, $showName, $showDayTimes);
+				  $backingArtist, $backingAlbum, $showName, $showDayTimes, $psa);
         $ad = $traffic->get($id);
 	$promoInfo = $traffic->getPromoInfo($id);
 
