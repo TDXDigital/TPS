@@ -12,13 +12,7 @@ $(document).ready(function() {
             "data": function(d) {
                     
                     d.filter = {
-                        status: $('#filter_status').val(), 
-                        date: $('#filter_date').val(),
-                        genre: $('#filter_genre').val(),
-                        locale: $('#filter_location').val(),
-                        format: $('#filter_format').val(),
-                        missing_info: $('#missing_info').val(),
-                        tag: $('#filter_tag').val()
+                       
                         }
                  }
         },
@@ -29,7 +23,6 @@ $(document).ready(function() {
             { "data": "StartDate" },
             { "data": "EndDate" },
             { "data": "Active" },
-            { "data": "Friend" },
             { "data": "Playcount" },
         ],
         "columnDefs": [
@@ -49,16 +42,6 @@ $(document).ready(function() {
                     
                     },
                 "targets": 5
-            },
-            {
-                "render": function ( data, type, row ) {
-                    if(data == 1 )
-                        return '<i class="fa fa-check-circle-o" style="color: #008000"></i>';
-                    else if(data == 0)
-                        return '<i class="fa fa-times-circle-o" style="color: #800000"></i>';
-                    
-                    },
-                "targets": 6
             },
         ]
     });
