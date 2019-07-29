@@ -81,7 +81,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
     
     $title =  $app->request->post('title') ?: NULL;
     $length = $app->request->post('length');
-    $lang = $app->request->post('lang') ?: NULL;
+    $lang = $app->request->post('lang') ?: 'English';
     $startDate = $app->request->post('startDate');
     $endDate = $app->request->post('endDate');
     $active = $app->request->post('active') ?? 0;
@@ -89,9 +89,9 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
     if ($clientID == NULL) {
 	if ($clientName != NULL)
-	    $clientID = $traffic->createClient($clientName, $company, $contactEmail);
+	    $clientID = $traffic->createClient($clientName, $company, $contactEmail, $clientPhone);
     } else {
-	$traffic->updateClient($clientID, $clientName, $company, $contactEmail);
+	$traffic->updateClient($clientID, $clientName, $company, $contactEmail, $clientPhone);
     }
 
     $id = $traffic->createNewAd($adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID, 

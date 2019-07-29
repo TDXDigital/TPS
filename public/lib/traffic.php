@@ -111,8 +111,8 @@ class traffic extends station{
     * @param $phoneNumber  str  Phone number of client
     * @param $status       int  Status of client. enum('OVL','ACT','EXP','COL','INT','CLO','SUS') 
     */
-    public function updateClient($clientID, $clientName, $company, $contactEmail, $creditLimit=5000, 
-				 $paymentTerms=1, $address=NULL, $phoneNumber=NULL, $status=7) {
+    public function updateClient($clientID, $clientName, $company, $contactEmail, $phoneNumber=NULL, $creditLimit=5000, 
+				 $paymentTerms=1, $address=NULL, $status=7) {
         if($stmt = $this->mysqli->prepare("UPDATE clients SET Name=?, companyName=?, email=?, "
 					. "CreditLimit=?, PaymentTerms=?, Address=?, PhoneNumber=?, Status=? "
 					. "WHERE ClientNumber=?")) {
@@ -142,7 +142,7 @@ class traffic extends station{
     * @param $status       int    Status of the client
     * @return int ClientNumber of the newly created client
     */
-    public function createClient($name, $company, $email, $creditLimit=5000, $paymentTerms=1, $address=NULL, $phoneNumber=NULL, $status=7) {
+    public function createClient($name, $company, $email, $creditLimit=5000, $phoneNumber=NULL, $paymentTerms=1, $address=NULL, $status=7) {
 	$id = -1;
         if($stmt = $this->mysqli->prepare("INSERT INTO clients (Name, companyName, email, "
 					. "CreditLimit, PaymentTerms, Address, PhoneNumber, Status) "

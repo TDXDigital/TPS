@@ -50,7 +50,7 @@
 		<div class="row">
 			<div class="col-sm-3" id="catSelection" >
 				<label for="Category">Category</label>
-				<select name="cat" id="Category" class="form-control chtype">
+				<select name="cat" id="Category" class="form-control chtype" {{ad.AdId is defined ? "disabled" : ""}}>
 	               <option value="53" {{(ad.Category == 53)? 'selected':''}}>53, Sponsored Promotion</option>
 	               <OPTION value="52" {{(ad.Category == 52)? 'selected':''}}>52, Sponsor Indentification</OPTION>
 	               <OPTION VALUE="51" {{(ad.Category == 51)? 'selected': (ad.Category is null)? 'selected':''}}>51, Commercial</OPTION>
@@ -59,6 +59,7 @@
 	               <option value="43" {{(ad.Category == 43)? 'selected':''}}>43, Musical Station ID</option>
 	               <option value="12" {{(ad.Category == 12)? 'selected':''}}>12, PSA/Spoken Word Other</option>
                	</select>
+               	<input type="hidden" id="catUpdate" name="catUpdate" value="{{ad.Category}}" />
             </div>
 
             <div class="col-sm-1">
@@ -162,7 +163,7 @@
 				<div class="col-sm-2">
 				    <div class="form-group">
 					<label for="company">Company</label>
-					<input type='text' class="form-control" id='company' value="{{client.ContactName}}" name="company"/>
+					<input type='text' class="form-control" id='company' value="{{client.companyName}}" name="company"/>
 				    </div>
 				</div>
 
@@ -310,7 +311,7 @@
 			<div class="col-sm-1" id="musicCheckBox">
 			    <div class="form-group">
 				<label for="backingTrack">Music</label>
-				<input type='checkbox' class="form-control" id='backingTrack' value="{{ad.Length}}" name="backingTrack"/>
+				<input type='checkbox' class="form-control" {{ad.backing_song != '' ? 'checked' : ''}} id='backingTrack' value="{{ad.Length}}" name="backingTrack"/>
 			    </div>
 			</div>
 			<div id="musicChecked" style="display: none">
@@ -318,19 +319,19 @@
 				<div class="col-sm-2">
 				    <div class="form-group">
 					<label for="song">Song Title</label>
-					<input type='text' class="form-control" id='song' value="{{ad.Length}}" name="song"/>
+					<input type='text' class="form-control" id='song' value="{{ad.backing_song}}" name="song"/>
 				    </div>
 				</div>
 				<div class="col-sm-2">
 				    <div class="form-group">
 					<label for="Artist">Artist</label>
-					<input type='text' class="form-control" id='artist' value="{{ad.Length}}" name="artist"/>
+					<input type='text' class="form-control" id='artist' value="{{ad.backing_artist}}" name="artist"/>
 				    </div>
 				</div>
 				<div class="col-sm-2">
 				    <div class="form-group">
 					<label for="album">Album</label>
-					<input type='text' class="form-control" id='album' value="{{ad.Length}}" name="album"/>
+					<input type='text' class="form-control" id='album' value="{{ad.backing_album}}" name="album"/>
 				    </div>
 				</div>
 				<div id="musicLanguage" style="display: none">
