@@ -140,13 +140,20 @@
 			<!-- Spoken Part End -->
 			
 			<div id="clientPart">
+				<div class="col-sm-1">
+				    <div class="form-group">
+					<label for="clientID">Client ID</label>
+					<input type='text' class="form-control" readonly id='clientID' value="{{ad.Length}}" name="clientID"/>
+				    </div>
+				</div>
+
 				<div class="col-sm-3">
 					<div class="form-group">
 					<label for="lang">Client</label>
 						<input list="client" name="client" size="10" maxlength="40" class="form-control input-sm"/>
 			           	<datalist id="client">
 			           		{% for key, client in clients %}
-			           		<option data-value="{{key}}"> {{client}} </option>
+			           		<option data-value="{{key}}">{{client}} </option>
 			           		{% endfor %}
 			          	</datalist>
 				   </div>

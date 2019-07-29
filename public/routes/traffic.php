@@ -208,8 +208,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $app->post('/searchClient/:clientId', function($clientId) use ($app, $authenticate){
         $traffic = new \TPS\traffic();
         $clientInfo = $traffic->getClientByID($clientId);
-        // echo $playlistId;
-        // print_r(reset($albumInfo));
+
         echo json_encode($clientInfo);
     });
 });
