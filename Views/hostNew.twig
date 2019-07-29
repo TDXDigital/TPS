@@ -29,20 +29,19 @@
 {% block content %}
 <div class="container">
 	<form role="form" method="POST" {% if host.alias is not null %} 
-	action="/host/create" {% else %} action="./create" {% endif %}>
+	action="/host/update" {% else %} action="./create" {% endif %}>
 		<div class="row">
 			<div class="col-sm-5">
 				<div class="form-group">
 					<label for="programName">Host Name</label>
-					<input type='text' class="form-control" id='hostName' name="hostName" value="{{host.djname}}"
-					{% if program.programID is not null %} readonly {% endif %}/>
+					<input type='text' class="form-control" id='hostName' name="hostName" value="{{host.djname}}"/>
 			   </div>
 			</div>
 			<div class="col-sm-5">
 				<div class="form-group">
 					<label for="programName">On-Air Name (Optional)</label>
 					<input type='text' class="form-control" id='alias' name="alias" value="{{host.alias}}"
-					{% if program.programID is not null %} readonly {% endif %}/>
+					{% if host.alias is not null %} readonly {% endif %}/>
 			   </div>
 			</div>
 			
