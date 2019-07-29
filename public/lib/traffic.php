@@ -38,10 +38,18 @@ class traffic extends station{
     * @author Derek Melchin
     * @abstract Gathers information about all the active radio_show_promos
     * @return Associative array containing info about each radio_show_promo
-    *              [<AdId> => ['name' => <showName>, 'Sun' => [['12:00', '14:30'], ...], ...], ...]
+    *              [<AdId> => ['name' => <showName>, 
+			       'backing_song' => <song>, 
+			       'backing_artist' => <artist>, 
+			       'backing_album => <album>, 
+			       'Sun' => [['12:00', '14:30'], ...], 
+			       'Mon' => [['16:30', '18:00']], 
+				...], 
+		     ...]
     */
     public function getPromos() {
-	$stmt = $this->mysqli->query("SELECT * FROM radio_show_promos WHERE AdId IN (SELECT AdId FROM adverts WHERE Active = 1) ORDER BY showName ASC, showDay ASC, showStart ASC;");
+	$stmt = $this->mysqli->query("SELECT r.AdId, backing_song, backing_artist, backing_album, showName, showDay, showStart, showEnd "
+				   . "FROM radio_show_promos r LEFT JOIN adverts a ON r.AdId=a.AdId WHERE a.Active = 1 ORDER BY showName ASC, showDay ASC, showStart ASC;");
 	$promos = [];
 	while ($row = $stmt->fetch_array(MYSQLI_ASSOC)) {
 	    $duration = [ $row['showStart'], $row['showEnd'] ];
@@ -56,7 +64,11 @@ class traffic extends station{
 		    $promos[$row['AdId']][$row['showDay']] = [$duration];
 	    else
 		// Create a promo element for this AdId
-		$promos[$row['AdId']] = ["name" => $row['showName'], $row['showDay'] => [$duration]];
+		$promos[$row['AdId']] = ["name" => $row['showName'], 
+					 "backing_song" => $row['backing_song'], 
+					 "backing_artist" => $row['backing_artist'], 
+					 "backing_album" => $row['backing_album'], 
+					 $row['showDay'] => [$duration]];
 
 	}
 	return $promos;
