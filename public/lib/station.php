@@ -86,6 +86,32 @@ class station extends TPS{
 	throw new Exception("Error while converting server time to station time.");
     }
 
+
+    /*
+    * @abstract Get time zone code of the station
+    * @return str  Time zone code of the station
+    */
+    public function getTimeZoneCode() {
+        $stmt = $this->mysqli->prepare("SELECT timezone FROM station WHERE callsign=?;");
+        $stmt->bind_param('s',$this->callsign);
+        $stmt->bind_result($stationTZ);
+        if($stmt->execute()) {
+            while($stmt->fetch())
+                foreach (\DateTimeZone::listAbbreviations(\DateTimeZone::ALL) as $tzCode => $zones) {
+		    $tzCode = strtoupper($tzCode);
+		    foreach ($zones as $zone)
+		        if ($zone['timezone_id'] == $stationTZ)
+		            try {
+				date_default_timezone_set($tzCode);
+				return $tzCode;
+			    } catch (\Exception $e) {
+				continue;
+			    }
+		}
+            $stmt->close();
+        }
+    }
+
     public function getAlertProviders(){
         $con = $this->mysqli->prepare(
                 "SELECT id, provider, url, logo, locations, active, area FROM"
