@@ -66,6 +66,40 @@ class host extends station{
         }
 
     }
+
+    public function updateHost($alias, $djname, $active, $years, $weight=1, $emailBlock=NULL,
+            $memberRef=NULL, $GUID=NULL, $probEndDate){
+        try {
+            $stmt = $this->db->prepare("UPDATE dj SET djname=:djname, active=:active,"
+                    . " years=:years, weight=:weight, email_block=:emailBlock,"
+                    . " member_ref=:memberRef, GUID=:guid, probation_ends=:probEndDate"
+                    . " WHERE alias=:alias");
+
+            $stmt->bindParam(":djname", $djname);
+            $stmt->bindParam(":active", $active);
+
+            $stmt->bindParam(":years", $years);
+            $stmt->bindParam(":weight", $weight);
+            $stmt->bindParam(":emailBlock", $emailBlock);
+
+            $stmt->bindParam(":memberRef", $member_ref);
+            $stmt->bindParam(":guid", $GUID);
+            $stmt->bindParam(":probEndDate", $probEndDate);
+
+            $stmt->bindParam(":alias", $alias, \PDO::PARAM_STR);
+            
+            $stmt->execute();
+            return TRUE;
+
+        } catch (PDOException $exc) {
+            $this->db->rollback(); 
+            error_log(sprintf("PDO Exception, %s: %s"
+                    ,$exc->getMessage(), $exc->getTraceAsString()));
+            return FALSE;
+        }
+
+    }
+
     
     /***
      * @todo WIP

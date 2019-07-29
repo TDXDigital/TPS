@@ -2,6 +2,9 @@
 
 $( document ).ready(function() {
     $('#Category').trigger('change');
+    $('#backingTrack').trigger('change');
+    $('#friend').trigger('change');
+    $('#psa').trigger('change');
 });
 
 
@@ -108,7 +111,7 @@ $(document).on('change ', "input[name='client']", function(){
             }).done(function(data) {
                 var clientInfo = JSON.parse(data);
                 $('#clientID').val(clientInfo.ClientNumber);
-                $('#company').val(clientInfo.ContactName);
+                $('#company').val(clientInfo.companyName);
                 $('#phone').val(clientInfo.PhoneNumber);
                 $('#email').val(clientInfo.email);
             }).fail(function(data){

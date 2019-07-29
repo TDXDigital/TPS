@@ -66,6 +66,22 @@ $app->group('/host', $authenticate, function () use ($app,$authenticate){
     
     });
 
+
+  $app->post('/update', function() use ($app, $authenticate){
+    $host = new \TPS\host($_SESSION['CALLSIGN']);
+
+    $djname = $app->request->post('hostName');
+    $alias = $app->request->post('alias');
+    $years = $app->request->post('JoinedYear');
+    $weight = $app->request->post('weight');
+    $active = $app->request->post('active')!==null? 1:0;
+    $probEndDate = $app->request->post('probEndDate') ?: date('Y-m-d');
+   
+    $host -> updateHost($alias, $djname, $active, $years, $weight, NULL, NULL, NULL, $probEndDate);
+    $app->redirect('./search');
+    
+    });
+
     $app->get('/search', function() use ($app, $authenticate){
          $params = array(
             "area"=>"Host",

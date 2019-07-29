@@ -52,11 +52,11 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $company = $app->request->post('company') ?: NULL;
     $contactEmail = $app->request->post('email') ?: NULL;
     $clientPhone = $app->request->post('phone') ?: NULL;
-    $adName = $app->request->post('adName');
+    $adName = $cat == 12 ? $app->request->post('title') : $app->request->post('adName');
     $maxPlayCount = $app->request->post('maxPlayCount') ?: NULL;
     $maxDailyPlayCount = $app->request->post('maxDailyPlayCount') ?: NULL;
-    $assignedShow = $cat==52? $app->request->post('assignedShowSponsor') : $app->request->post('assignedShow');
-    $assignedHour = $cat==52? $app->request->post('assignedHourSponsor') :$app->request->post('assignedHour');
+    $assignedShow = $cat==51? $app->request->post('assignedShow') : $app->request->post('assignedShowSponsor');
+    $assignedHour = $cat==51? $app->request->post('assignedHour') :$app->request->post('assignedHourSponsor');
     $backingTrack = $app->request->post('song') ?: NULL;
     $backingArtist = $app->request->post('artist') ?: NULL;
     $backingAlbum = $app->request->post('album') ?: NULL;
@@ -79,9 +79,9 @@ $app->group('/traffic', function() use ($app, $authenticate){
         }
     }
     
-    $title =  $app->request->post('title') ?: NULL;
+    // $title =  $app->request->post('title') ?: NULL;
     $length = $app->request->post('length');
-    $lang = $app->request->post('lang') ?: NULL;
+    $lang = $app->request->post('lang') ?: 'English';
     $startDate = $app->request->post('startDate');
     $endDate = $app->request->post('endDate');
     $active = $app->request->post('active') ?? 0;
@@ -89,9 +89,9 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
     if ($clientID == NULL) {
 	if ($clientName != NULL)
-	    $clientID = $traffic->createClient($clientName, $company, $contactEmail);
+	    $clientID = $traffic->createClient($clientName, $company, $contactEmail, $clientPhone);
     } else {
-	$traffic->updateClient($clientID, $clientName, $company, $contactEmail);
+	$traffic->updateClient($clientID, $clientName, $company, $contactEmail, $clientPhone);
     }
 
     $id = $traffic->createNewAd($adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID, 
@@ -114,7 +114,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
     	"clients"=> $traffic->getClientsNames(),
         "programs"=> $station->getAllPrograms()
     );
-    $app->render("trafficNew.twig", $params);
+    $app->render("trafficSearch.twig", $params);
 });
 
     $app->get('/search', function() use ($app, $authenticate){
@@ -133,18 +133,22 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
     $app->get('/edit/:id', $authenticate, function ($id) use ($app){
         $traffic = new \TPS\traffic();
+        $station = new \TPS\station($_SESSION['CALLSIGN']);
+        $programs = $station->getAllPrograms();
         $ad = $traffic->get($id);
     	$clients = $traffic->getClientsNames();
     	$client = $traffic->getClientByID($ad['ClientID']);
     	$promo = $traffic->getPromoInfo($id);
-
+        // print_r($promo);
+        // exit;
         $params = array(
 	    "area" => "Traffic",
 	    "title" => "Edit",
         "ad"=>$ad,
 	    "clients" => $clients,
 	    "client" => $client,
-	    "promo" => $promo
+	    "promo" => $promo,
+        "programs"=> $programs
         );
         $app->render("trafficNew.twig", $params);
     });
@@ -153,36 +157,54 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
         $traffic = new \TPS\traffic();
         $adId = $app->request->post('adNumber');
-        $adName = $app->request->post('adName');
-        $cat = $app->request->post('cat');
+        $cat = $app->request->post('catUpdate');
         $psa = $app->request->post('psa') ?: 0;
+        $clientID = $app->request->post('clientID') ?: NULL;
+        $clientName = $app->request->post('client') ?: NULL;
+        $company = $app->request->post('company') ?: NULL;
+        $contactEmail = $app->request->post('email') ?: NULL;
+        $clientPhone = $app->request->post('phone') ?: NULL;
+        $adName = $cat == 12 ? $app->request->post('title') : $app->request->post('adName');
+        $maxPlayCount = $app->request->post('maxPlayCount') ?: NULL;
+        $maxDailyPlayCount = $app->request->post('maxDailyPlayCount') ?: NULL;
+        $assignedShow = $cat==51? $app->request->post('assignedShow') : $app->request->post('assignedShowSponsor');
+        $assignedHour = $cat==51? $app->request->post('assignedHour') :$app->request->post('assignedHourSponsor');
+        $backingTrack = $app->request->post('song') ?: NULL;
+        $backingArtist = $app->request->post('artist') ?: NULL;
+        $backingAlbum = $app->request->post('album') ?: NULL;
+        $showName =  $app->request->post('showName') ?: NULL;
+        // $showDayTimes = ['Sun' => [['12:00', '14:00'], ['16:30', '18:00']], 'Tue' => [['12:00', '14:00']]];
+
+        $showDayTimes = array();
+        $showDays = $app->request->post('showDayVal');
+        if(is_array($showDays))
+        {
+            $showTimeStartVal = $app->request->post('showTimeStartVal');
+            $showTimeEndVal = $app->request->post('showTimeEndVal');
+            foreach($showDays as $key => $day)
+            {
+            $duration = [$showTimeStartVal[$key], $showTimeEndVal[$key]];
+            if (in_array($day, array_keys($showDayTimes)))
+            array_push($showDayTimes[$day], $duration);
+            else
+            $showDayTimes[$day] = [$duration];
+            }
+        }
+        
+        // $title =  $app->request->post('title') ?: NULL;
         $length = $app->request->post('length');
-        $lang = $app->request->post('lang');
+        $lang = $app->request->post('lang') ?: 'English';
         $startDate = $app->request->post('startDate');
         $endDate = $app->request->post('endDate');
         $active = $app->request->post('active') ?? 0;
         $friend = $app->request->post('friend') ?? 0;
 
-        // Need to receive the following info from post as UI is built...
-        $clientName = 'Toys Inc.';
-    	$company = 'Nike';
-    	$contactEmail = 'email@email.com';
-        $clientID = $app->request->post('clientID') ?? 34;
-        $maxPlayCount = Null;
-        $maxDailyPlayCount = Null;
-        $assignedShow = Null;
-        $assignedHour = Null;
-        $backingTrack = Null;
-        $backingArtist = Null;
-        $backingAlbum = Null;
-        $showName = 'Derek\'s Show!';
-        $showDayTimes = ['Sun' => [['12:00', '14:00'], ['16:30', '18:00']], 'Tue' => [['12:00', '14:00']]];
-        $title = Null;
-
-	if ($clientID == NULL)
-	    $clientID = $traffic->createClient($clientName, $ompany, $contactEmail);
-	else
-	    $traffic->updateClient($clientID, $clientName, $company, $contactEmail);
+	if ($clientID == NULL) {
+    if ($clientName != NULL)
+        $clientID = $traffic->createClient($clientName, $company, $contactEmail, $clientPhone);
+    } else {
+    $traffic->updateClient($clientID, $clientName, $company, $contactEmail, $clientPhone);
+    }
 	$client = $traffic->getClientByID($clientID);
 
         $id = $traffic ->updateAd($adId, $adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID,
@@ -202,7 +224,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
             "ad"=>$ad,
             "flash" => $flash
         );
-        $app->render("trafficNew.twig", $params);
+        $app->render("trafficSearch.twig", $params);
     });
 
     $app->post('/searchClient/:clientId', function($clientId) use ($app, $authenticate){
