@@ -71,7 +71,7 @@
 			<div class="col-sm-2">
 				    <div class="form-group">
 					<label for="company">Ad Name</label>
-					<input type='text' class="form-control" id='adName' required value="{{ad.Length}}" name="adName"/>
+					<input type='text' class="form-control" id='adName' required value="{{ad.AdName}}" name="adName"/>
 				    </div>
 				</div>
 
@@ -115,7 +115,7 @@
 				    <div class="form-group">
 					<label for="psa">PSA</label>
 					<input type='checkbox' class="form-control" id='psa' value ="1" name="psa"
-					{{ad.Friend == 1 ? 'checked' : ''}}/>
+					{{ad.ClientID == '' ? 'checked' : ''}}/>
 				    </div>
 				</div>
 
@@ -143,14 +143,14 @@
 				<div class="col-sm-1">
 				    <div class="form-group">
 					<label for="clientID">Client ID</label>
-					<input type='text' class="form-control" readonly id='clientID' value="{{ad.Length}}" name="clientID"/>
+					<input type='text' class="form-control" readonly id='clientID' value="{{ad.ClientID}}" name="clientID"/>
 				    </div>
 				</div>
 
 				<div class="col-sm-3">
 					<div class="form-group">
 					<label for="lang">Client</label>
-						<input list="client" name="client" size="10" maxlength="40" class="form-control input-sm"/>
+						<input list="client" name="client" size="10" value="{{client.Name}}" maxlength="40" class="form-control input-sm"/>
 			           	<datalist id="client">
 			           		{% for key, client in clients %}
 			           		<option data-value="{{key}}">{{client}} </option>
@@ -162,20 +162,20 @@
 				<div class="col-sm-2">
 				    <div class="form-group">
 					<label for="company">Company</label>
-					<input type='text' class="form-control" id='company' value="{{ad.Length}}" name="company"/>
+					<input type='text' class="form-control" id='company' value="{{client.ContactName}}" name="company"/>
 				    </div>
 				</div>
 
 				<div class="col-sm-2">
 				    <div class="form-group">
 					<label for="phone">Phone Number</label>
-					<input type='text' class="form-control" id='phone' value="{{ad.Length}}" name="phone"/>
+					<input type='text' class="form-control" id='phone' value="{{client.PhoneNumber}}" name="phone"/>
 				    </div>
 				</div>
 				<div class="col-sm-2">
 				    <div class="form-group">
 					<label for="email">Email</label>
-					<input type='text' class="form-control" id='email' value="{{ad.Length}}" name="email"/>
+					<input type='text' class="form-control" id='email' value="{{client.email}}" name="email"/>
 				    </div>
 				</div>
 			</div>
@@ -251,14 +251,14 @@
 				<div class="col-sm-2">
 				    <div class="form-group">
 					<label for="maxPlayCount">Max Play Count</label>
-					<input type='number' class="form-control" id='maxPlayCount' value="{{ad.Length}}" name="maxPlayCount"/>
+					<input type='number' class="form-control" id='maxPlayCount' value="{{ad.maxPlayCount}}" name="maxPlayCount"/>
 				    </div>
 				</div>
 
 				<div class="col-sm-2">
 				    <div class="form-group">
 					<label for="maxDailyPlayCount">Max Daily Play Count</label>
-					<input type='number' class="form-control" id='maxDailyPlayCount' value="{{ad.Length}}" name="maxDailyPlayCount"/>
+					<input type='number' class="form-control" id='maxDailyPlayCount' value="{{ad.maxDailyPlayCount}}" name="maxDailyPlayCount"/>
 				    </div>
 				</div>
 				<div class="col-sm-2">
@@ -266,7 +266,7 @@
 					<label for="assignedShow">Assigned Show</label>
 					<select class="form-control" id='assignedShow' value="{{ad.Length}}" name="assignedShow"/>
 		           		{% for key, program in programs %}
-		           		<option value="{{key}}"> {{program.name}} </option>
+		           		<option value="{{key}}" {{ad.assignedShow == key ? 'selected' : ''}} > {{program.name}} </option>
 		           		{% endfor %}
 		           	</select>
 				    </div>
@@ -276,7 +276,7 @@
 	                <label for="assignedHour">Assigned Time</label>
 	                <input type='time' class="form-control" id='assignedHour'
 	                       name="assignedHour"
-	                       value="{{assignedHour|default("+1 hour"|date('H:00', firstStation.timezone))}}"/>
+	                       value="{{ad.assignedHour|default("+1 hour"|date('H:00', firstStation.timezone))}}"/>
            		</div>
 			</div>
 		</div>
@@ -288,7 +288,7 @@
 					<label for="assignedShowSponsor">Assigned Show</label>
 					<select class="form-control" id='assignedShowSponsor' value="{{ad.Length}}" name="assignedShowSponsor"/>
 		           		{% for key, program in programs %}
-		           		<option value="{{key}}"> {{program.name}} </option>
+		           		<option value="{{key}}" {{ad.assignedShow == key ? 'selected' : ''}} > {{program.name}} </option>
 		           		{% endfor %}
 		           	</select>
 				    </div>
@@ -298,7 +298,7 @@
                 <label for="assignedHourSponsor">Assigned Time</label>
                 <input type='time' class="form-control" id='assignedHourSponsor'
                        name="assignedHourSponsor"
-                       value="{{assignedHourSponsor|default("+1 hour"|date('H:00', firstStation.timezone))}}"/>
+                       value="{{ad.assignedHour|default("+1 hour"|date('H:00', firstStation.timezone))}}"/>
            		</div>
 		</div>
 		<!-- Paid Ad part end -->

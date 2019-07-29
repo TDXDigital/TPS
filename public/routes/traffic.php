@@ -134,14 +134,14 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $app->get('/edit/:id', $authenticate, function ($id) use ($app){
         $traffic = new \TPS\traffic();
         $ad = $traffic->get($id);
-	$clients = $traffic->getClientsNames();
-	$client = $traffic->getClientByID($ad['ClientID']);
-	$promo = $traffic->getPromoInfo($id);
+    	$clients = $traffic->getClientsNames();
+    	$client = $traffic->getClientByID($ad['ClientID']);
+    	$promo = $traffic->getPromoInfo($id);
 
         $params = array(
 	    "area" => "Traffic",
 	    "title" => "Edit",
-            "ad"=>$ad,
+        "ad"=>$ad,
 	    "clients" => $clients,
 	    "client" => $client,
 	    "promo" => $promo
