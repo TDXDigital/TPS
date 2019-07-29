@@ -1,0 +1,18 @@
+{
+    "TPS_Errno" : "CLNT-002",
+    "type" : "database",
+    "execute" : "SQL",
+    "description" : "Changes ContactName column to be the company name column",
+    "SQL_QRY" : {
+        "TEST" : "SHOW COLUMNS FROM clients WHERE `Field`='companyName';",
+        "RESULT" : {
+	    "Field" : [
+		"companyName"
+	    ]
+	},
+	"Negate": 0,
+	"createMode" : 1,
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "CLIENTS_UPDATE_2.sql"
+    }
+}

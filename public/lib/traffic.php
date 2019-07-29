@@ -29,7 +29,37 @@ class traffic extends station{
     * @return Associative array The database row for the given client
     */
     public function getClientByID($id) {
+	if ($id == NULL)
+	    return;
 	return $this->mysqli->query("SELECT * FROM clients WHERE ClientNumber=$id;")->fetch_array(MYSQLI_ASSOC);
+    }
+
+    /*
+    * @author Derek Melchin
+    * @abstract Gathers information about all the active radio_show_promos
+    * @return Associative array containing info about each radio_show_promo
+    *              [<AdId> => ['name' => <showName>, 'Sun' => [['12:00', '14:30'], ...], ...], ...]
+    */
+    public function getPromos() {
+	$stmt = $this->mysqli->query("SELECT * FROM radio_show_promos WHERE AdId IN (SELECT AdId FROM adverts WHERE Active = 1) ORDER BY showName ASC, showDay ASC, showStart ASC;");
+	$promos = [];
+	while ($row = $stmt->fetch_array(MYSQLI_ASSOC)) {
+	    $duration = [ $row['showStart'], $row['showEnd'] ];
+	    // If we already have the AdId as a key in $promos
+	    if (in_array($row['AdId'], array_keys($promos)))
+		// If we already have this row's day
+		if (in_array($row['showDay'], array_keys($promos[$row['AdId']])))
+		    // Append this row's duration times
+		    array_push($promos[$row['AdId']][$row['showDay']], $duration);
+		else
+		    // Start this day
+		    $promos[$row['AdId']][$row['showDay']] = [$duration];
+	    else
+		// Create a promo element for this AdId
+		$promos[$row['AdId']] = ["name" => $row['showName'], $row['showDay'] => [$duration]];
+
+	}
+	return $promos;
     }
 
     /*
@@ -56,44 +86,81 @@ class traffic extends station{
 
     /*
     * @author Derek Melchin
+    * @abstract Gathers the PSAs from the database
+    * @return Array of adverts rows in the database that are PSA
+    */
+    public function getPSAs() {
+	$stmt = $this->mysqli->query("SELECT * FROM adverts WHERE psa = 1 AND active = 1;");
+	$PSAs = [];
+	while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
+	    array_push($PSAs, $row);
+	return $PSAs;
+    }
+
+
+    /*
+    * @author Derek Melchin
+    * @abstract Updates the information on a client's record
+    * @param $clientID     int  Client ID
+    * @param $clientName   str  Client's name
+    * @param $company      str  Client's employer
+    * @param $contactEmail str  Client contact email
+    * @param $creditLimit  dbl  Credit limit of client
+    * @param $paymentTerms int  Payment terms for client
+    * @param $address      str  Address of client
+    * @param $phoneNumber  str  Phone number of client
+    * @param $status       int  Status of client. enum('OVL','ACT','EXP','COL','INT','CLO','SUS') 
+    */
+    public function updateClient($clientID, $clientName, $company, $contactEmail, $creditLimit=5000, 
+				 $paymentTerms=1, $address=NULL, $phoneNumber=NULL, $status=7) {
+        if($stmt = $this->mysqli->prepare("UPDATE clients SET Name=?, companyName=?, email=?, "
+					. "CreditLimit=?, PaymentTerms=?, Address=?, PhoneNumber=?, Status=? "
+					. "WHERE ClientNumber=?")) {
+            $stmt->bind_param("sssdisssi", $clientName, $company, $contactEmail, $creditLimit, 
+			      $paymentTerms, $address, $phoneNumber, $status, $clientID);
+            if($stmt->execute())
+                $this->log->info(sprintf("Updated Client %d", $clientID ));
+            else
+                $this->log->error($this->mysqli->errno);
+            $stmt->close();
+        }
+        else{
+            $this->log->error("Failed to update client" . $this->mysqli->error);
+        }
+    }
+
+    /*
+    * @author Derek Melchin
     * @abstract Create a new client
     * @param $name         string Name of the company who is advertising
-    * @param $contactName  string Name of the company contact
+    * @param $company      string Name of the company $name works at
     * @param $email        string Email of the company contact
     * @param $creditLimit  double Credit limit for the client
     * @param $paymentTerms int    Payment terms for this client
     * @param $address      string Address of the client
     * @param $phoneNumber  string Phone number of the client
-    * @param $status       string Status of the client
+    * @param $status       int    Status of the client
     * @return int ClientNumber of the newly created client
     */
-    public function createClient($name, $contactName, $email, $phoneNumber=NULL, $creditLimit=NULL, $paymentTerms=NULL, $address=NULL, $status=NULL) {
-	$columns = "Name, ContactName, email";
-	if ($creditLimit != NULL)
-	    $columns .= ", CreditLimit";
-	if ($paymentTerms != NULL)
-	    $columns .= ", PaymentTerms";
-	if ($address != NULL)
-	    $columns .= ", Address";
-	if ($phoneNumber != NULL)
-	    $columns .= ", PhoneNumber";
-	if ($status != NULL)
-	    $columns .= ", Status";
-
-	$values = "'$name', '$contactName', '$email'";
-	if ($creditLimit != NULL)
-	    $values .= ", $creditLimit";
-	if ($paymentTerms != NULL)
-	    $values .= ", $paymentTerms";
-	if ($address != NULL)
-	    $values .= ", '$address'";
-	if ($phoneNumber != NULL)
-	    $values .= ", '$phoneNumber'";
-	if ($status != NULL)
-	    $values .= ", $status";
-
-	$this->mysqli->query("INSERT INTO clients ($columns) VALUES ($values);");
-	return $this->mysqli->insert_id;
+    public function createClient($name, $company, $email, $creditLimit=5000, $paymentTerms=1, $address=NULL, $phoneNumber=NULL, $status=7) {
+	$id = -1;
+        if($stmt = $this->mysqli->prepare("INSERT INTO clients (Name, companyName, email, "
+					. "CreditLimit, PaymentTerms, Address, PhoneNumber, Status) "
+					. "VALUES (?, ?, ?, ?, ?, ?, ?, ?);")) {
+            $stmt->bind_param("sssdissi", $name, $company, $email, $creditLimit, 
+			      $paymentTerms, $address, $phoneNumber, $status);
+            if($stmt->execute()) {
+		$id = $this->mysqli->insert_id;
+                $this->log->info(sprintf("Created client %d", $id ));
+            } else {
+                $this->log->error($this->mysqli->errno);
+	    }
+            $stmt->close();
+        }
+        else{
+            $this->log->error("Failed to create client" . $this->mysqli->error);
+        }
+	return $id;
     }
 
     /*
@@ -116,22 +183,23 @@ class traffic extends station{
     * @param $backingAlbum      str  The album name of the backing song in the ad
     * @param $showName          str  The name of the show being promoted
     * @param $showDayTimes      arr  [ <day#Week> =>[['start' => '9:30', 'end' => '11:30'], ...], ...]. Sunday = 0 day#Week.
+    * @param $psa               int  1 if the advert is a PSA, 0 otherwise.
     * @return The unique id of the newly-created ad
     */
     public function createNewAd($adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID,
 				$maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack,
-				$backingArtist, $backingAlbum, $showName, $showDayTimes)
+				$backingArtist, $backingAlbum, $showName, $showDayTimes, $psa)
     {
     	$id = -1;
         if($stmt = $this->mysqli->prepare("insert into adverts ("
                 . "Category, Length, EndDate, StartDate, AdName,"
                 . "Language, Active, Friend, ClientID, maxPlayCount, "
 		. "maxDailyPlayCount, assignedShow, assignedHour, "
-		. "backing_song, backing_artist, backing_album) values "
-                . "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")){
-            $stmt->bind_param("sissssiiiiiissss", $cat, $length, $endDate, $startDate, $adName, $lang, $active, 
+		. "backing_song, backing_artist, backing_album, psa) values "
+                . "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")){
+            $stmt->bind_param("sissssiiiiiissssi", $cat, $length, $endDate, $startDate, $adName, $lang, $active, 
 				$friend, $clientID, $maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour,
-				$backingTrack, $backingArtist, $backingAlbum);
+				$backingTrack, $backingArtist, $backingAlbum, $psa);
             if($stmt->execute()){
                 $id = $this->mysqli->insert_id;
                 $this->log->info(sprintf("New Ad created %d", $id ));
@@ -207,10 +275,10 @@ class traffic extends station{
     /*
     * @author Derek Melchin
     * @abstract Updates the radio_show_promos tables with the radio show information
-    * @param $adID         int	ID of the ad
+    * @param $adID         int  ID of the ad
     * @param $showName     str  Name of the show being promoted 
     * @param $showDayTimes arr  The broadcasting schedule for the show being promoted
-    *                           [ <day#Week> =>[[<startTime>, <endTime>], ...], ...]. Sunday = 0 day#Week.
+    *                           [ <day> => [[<startTime>, <endTime>], ...], ...]. 
     */
     public function updateRadioShowPromos($adID, $showName, $showDayTimes) {
 	if ($adID < 0)
@@ -230,12 +298,12 @@ class traffic extends station{
 
 	    // Insert the name and date information of the show into the radio_show_promos table
 	    if ($stmt = $this->mysqli->prepare("INSERT INTO radio_show_promos (AdId, showName, showDay, showStart, showEnd) VALUES (?, ?, ?, ?, ?)")) {
-	        foreach ($showDayTimes as $key => $showTimes) {
-		    // foreach ($showTimes as $showTime) {
-		        $stmt->bind_param("issss", $adID, $showName, $showTimes['day'], $showTime['start'], $showTime['end']);
+	        foreach ($showDayTimes as $day => $showTimes) {
+		    foreach ($showTimes as $showTime) {
+		        $stmt->bind_param("issss", $adID, $showName, $day, $showTime[0], $showTime[1]);
 			if (!$stmt->execute())
                 	    $this->log->error($this->mysqli->errno);
-		    // }
+		    }
 	        }
 	    }
 	    $stmt->close();
@@ -244,16 +312,16 @@ class traffic extends station{
 
     public function updateAd($adId, $adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID,
 			     $maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack, 
-			     $backingArtist, $backingAlbum, $showName, $showDayTimes)
+			     $backingArtist, $backingAlbum, $showName, $showDayTimes, $psa)
     {
     	 if($stmt = $this->mysqli->prepare("UPDATE adverts SET "
                 . "Category=?, Length=?, EndDate=?, StartDate =?, AdName=?, "
                 . "Language=?, Active=?, Friend=?, ClientID=?, maxPlayCount=?, maxDailyPlayCount=?, assignedShow=?, "
-		. "assignedHour=?, backing_song=?, backing_artist=?, backing_album=? "
+		. "assignedHour=?, backing_song=?, backing_artist=?, backing_album=?, psa=? "
                 . "WHERE AdId=?")){
-            $stmt->bind_param("sissssiiiiiissssi", $cat, $length, $endDate, $startDate, $adName, $lang, $active, 
+            $stmt->bind_param("sissssiiiiiissssii", $cat, $length, $endDate, $startDate, $adName, $lang, $active, 
 				$friend, $clientID, $maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, 
-				$backingTrack, $backingArtist, $backingAlbum, $adId);
+				$backingTrack, $backingArtist, $backingAlbum, $psa, $adId);
             if($stmt->execute()){
                 $id = $this->mysqli->insert_id;
                 $this->log->info(sprintf("Updated Ad %d", $adId ));

@@ -746,10 +746,10 @@ class station extends TPS{
         $iactive = (int)$active;
         $vcallsign = $this->callsign;
         $con->bind_param('si',$vcallsign,$iactive);
-        $con->bind_result($progam);
+        $con->bind_result($progamID, $progName);
         if($con->execute()){
             while($con->fetch()){
-                array_push($result,$progam);
+                array_push($result,$progamID);
             }
             return $result;
         }
