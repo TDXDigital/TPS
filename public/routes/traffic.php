@@ -91,7 +91,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
 	if ($clientName != NULL)
 	    $clientID = $traffic->createClient($clientName, $company, $contactEmail);
     } else {
-	$traffic-updateClient($clientID, $clientName, $company, $contactEmail);
+	$traffic->updateClient($clientID, $clientName, $company, $contactEmail);
     }
 
     $id = $traffic->createNewAd($adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID, 
