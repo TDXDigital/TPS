@@ -52,7 +52,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $company = $app->request->post('company') ?: NULL;
     $contactEmail = $app->request->post('email') ?: NULL;
     $clientPhone = $app->request->post('phone') ?: NULL;
-    $adName = $app->request->post('adName');
+    $adName = $cat == 12 ? $app->request->post('title') : $app->request->post('adName');
     $maxPlayCount = $app->request->post('maxPlayCount') ?: NULL;
     $maxDailyPlayCount = $app->request->post('maxDailyPlayCount') ?: NULL;
     $assignedShow = $cat==52? $app->request->post('assignedShowSponsor') : $app->request->post('assignedShow');
@@ -79,7 +79,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
         }
     }
     
-    $title =  $app->request->post('title') ?: NULL;
+    // $title =  $app->request->post('title') ?: NULL;
     $length = $app->request->post('length');
     $lang = $app->request->post('lang') ?: 'English';
     $startDate = $app->request->post('startDate');
@@ -133,18 +133,22 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
     $app->get('/edit/:id', $authenticate, function ($id) use ($app){
         $traffic = new \TPS\traffic();
+        $station = new \TPS\station($_SESSION['CALLSIGN']);
+        $programs = $station->getAllPrograms();
         $ad = $traffic->get($id);
     	$clients = $traffic->getClientsNames();
     	$client = $traffic->getClientByID($ad['ClientID']);
     	$promo = $traffic->getPromoInfo($id);
-
+        // print_r($promo);
+        // exit;
         $params = array(
 	    "area" => "Traffic",
 	    "title" => "Edit",
         "ad"=>$ad,
 	    "clients" => $clients,
 	    "client" => $client,
-	    "promo" => $promo
+	    "promo" => $promo,
+        "programs"=> $programs
         );
         $app->render("trafficNew.twig", $params);
     });

@@ -142,7 +142,7 @@ class traffic extends station{
     * @param $status       int    Status of the client
     * @return int ClientNumber of the newly created client
     */
-    public function createClient($name, $company, $email, $creditLimit=5000, $phoneNumber=NULL, $paymentTerms=1, $address=NULL, $status=7) {
+    public function createClient($name, $company, $email, $phoneNumber=NULL, $creditLimit=5000, $paymentTerms=1, $address=NULL, $status=7) {
 	$id = -1;
         if($stmt = $this->mysqli->prepare("INSERT INTO clients (Name, companyName, email, "
 					. "CreditLimit, PaymentTerms, Address, PhoneNumber, Status) "

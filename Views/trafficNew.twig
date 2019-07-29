@@ -71,7 +71,7 @@
 
 			<div class="col-sm-2">
 				    <div class="form-group">
-					<label for="company">Ad Name</label>
+					<label for="company">Ad Name / Title </label>
 					<input type='text' class="form-control" id='adName' required value="{{ad.AdName}}" name="adName"/>
 				    </div>
 				</div>
@@ -116,18 +116,11 @@
 				    <div class="form-group">
 					<label for="psa">PSA</label>
 					<input type='checkbox' class="form-control" id='psa' value ="1" name="psa"
-					{{ad.ClientID == '' ? 'checked' : ''}}/>
+					{{ad.psa == 1 ? 'checked' : ''}}/>
 				    </div>
 				</div>
 
 				<div id="psaChecked" style="display: none">
-					<div class="col-sm-2">
-					    <div class="form-group">
-						<label for="title">Title</label>
-						<input type='text' class="form-control" id='title' value="{{ad.Length}}" name="title"/>
-					    </div>
-					</div>
-
 					<div class="col-sm-2">
 			       		<label for="lang">Language</label>
 						<input list="lang" name="lang" value="{{ad.Language}}" value="English" size="10" maxlength="40" class="form-control input-sm"/>
@@ -151,7 +144,7 @@
 				<div class="col-sm-3">
 					<div class="form-group">
 					<label for="lang">Client</label>
-						<input list="client" name="client" size="10" value="{{client.Name}}" maxlength="40" class="form-control input-sm"/>
+						<input list="client" name="client" size="10" value="{{client.Name}}" maxlength="40" class="form-control"/>
 			           	<datalist id="client">
 			           		{% for key, client in clients %}
 			           		<option data-value="{{key}}">{{client}} </option>
@@ -189,7 +182,7 @@
 			<div class="col-sm-2">
 			    <div class="form-group">
 				<label for="song">Show Name</label>
-				<input type='text' class="form-control" id='showName' value="{{ad.Length}}" name="showName"/>
+				<input type='text' class="form-control" id='showName' value="{{promo.name}}" name="showName"/>
 			    </div>
 			</div>
 			<div class="col-sm-2">
@@ -228,6 +221,27 @@
 	            	<table class="table" id="showPromoTimeTable">
 	            		<tbody>
 	            		<tr></tr>
+	            		{% for key, times in promo %}
+		           			{% for key2, time in times %}
+		           		<tr>
+							<td>
+							<input type="hidden" name="showDayVal[]" value="{{key}}">
+								{{key}} 
+							</td>
+							<td>
+							<input type="hidden" name="showTimeStartVal[]" value="{{time[0]}}">
+							<input type="hidden" name="showTimeEndVal[]" value="{{time[1]}}">
+								{{time[0]}} ~ {{time[1]}}
+							</td>
+							<td>
+								<button type="button" class="btn btn-sm btn-danger rmvBtn">
+								      <span class="glyphicon glyphicon-trash"></span>
+						  		</button>
+							</td>
+						</tr>
+							{% endfor %}
+		           		{% endfor %}
+
 	            		</tbody>
 	            	</table>
             	</div>
