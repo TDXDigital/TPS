@@ -1,0 +1,18 @@
+{
+    "TPS_Errno" : "PROG-002",
+    "type" : "database",
+    "execute" : "SQL",
+    "description" : "Allows each program to have multiple sponsors",
+    "SQL_QRY" : {
+        "TEST" : "SHOW COLUMNS FROM `program_sponsors` WHERE Field='program_ProgramID';",
+        "RESULT" : {
+	    "Field" : [
+		"program_ProgramID"
+	    ]
+	},
+	"Negate": 0,
+	"createMode" : 1,
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "PROGRAM_UPDATE_2.sql"
+    }
+}
