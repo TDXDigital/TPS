@@ -45,7 +45,7 @@ class program extends station{
     protected $govReqOverride = false;
     protected $playlistOverride = false;
     protected $hitLimit = null;
-    protected $sponsor = false;
+    protected $sponsors = [];
     protected $theme = null;
     protected $programID = null;
     protected $displayOrder = false;
@@ -90,7 +90,7 @@ class program extends station{
             return False;
         }
         $con = $this->mysqli->prepare(
-                "SELECT programname, length, syndicatesource, genre, active, Airtime, CCX, PLX, HitLimit, SponsId, displayorder, Theme, Display_Order, Reviewable, last_review, weight FROM program WHERE ProgramID=? and callsign=?"
+                "SELECT programname, length, syndicatesource, genre, active, Airtime, CCX, PLX, HitLimit, displayorder, Theme, Display_Order, Reviewable, last_review, weight FROM program WHERE ProgramID=? and callsign=?"
             );
         if($this->mysqli->error){
             die($this->mysqli->error);
@@ -101,12 +101,26 @@ class program extends station{
                     $this->name, $this->length, $this->syndicateSource,
                     $this->genre, $this->active, $this->airTime,
                     $this->govReqOverride, $this->playlistOverride,
-                    $this->hitLimit, $this->sponsor, $this->displayOrder,
+                    $this->hitLimit, $this->displayOrder,
                     $this->theme, $this->displayOrder, $this->reviewable,
                     $this->lastReview, $this->weight
                     );
             $con->execute();
             $con->fetch();
+	    $con->close();
+
+            $con = $this->mysqli->prepare("SELECT adverts_AdId as sponsorID FROM program_sponsors WHERE program_ProgramID=?");
+            if($this->mysqli->error)
+                die($this->mysqli->error);
+            if($con){
+		$this->sponsers = [];
+		$sponsor = NULL;
+                $con->bind_param("i",$this->programID);
+                $con->bind_result($sponsor);
+		if ($con->execute())
+		    while ($con->fetch())
+			array_push($this->sponsors, $sponsor);
+	    }
             return True;
         }
         else{
@@ -161,7 +175,7 @@ class program extends station{
             "govReqOverride" => $this->govReqOverride,
             "playlistOverride" => $this->playlistOverride,
             "hitLimit" => $this->hitLimit,
-            "sponsor" => $this->sponsor,
+            "sponsor" => $this->sponsors,
             "theme" => $this->theme,
             "programID" => $this->programID,
             "displayOrder" => $this->displayOrder,
@@ -455,7 +469,13 @@ class program extends station{
         }
         if(!($Req2 = $result2->fetch_array(MYSQLI_ASSOC))){
             echo "Program Error 004 " . $this->mysqli->error;
-        }
+        } else {
+	    $Req2['sponsor_ids'] = [];
+	    $sql = "SELECT adverts_AdId as sponsor_id FROM program_sponsors WHERE program_ProgramID=" . $Req2['ProgramID'];
+	    $stmt = $this->mysqli->query($sql);
+	    while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
+		array_push($Req2['sponsor_ids'], $row['sponsor_id']);
+	}
 
         if($Req2['CCX']!='-1'){
             $CC = ceil($Req2['CCX'] * $Requirements['length'] / 60);
@@ -514,19 +534,20 @@ class program extends station{
         else
             $req['playlist'] = $PL;
 
-        if(isset($Req2['SponsId'])){
-            $SPONS_SQL = " select * from adverts where AdId='".$Req2['SponsId']."' ";
-            $SPONSRES = $mysqli->query($SPONS_SQL);
-            $SPONS = $SPONSRES->fetch_array(MYSQLI_ASSOC);
-            $req['spons'] = $SPONS; // used for getAdOptions function in episode
-            $req['sponsor'] = $SPONS['AdName'];
+        if(isset($Req2['sponsor_ids']) && count($Req2['sponsor_ids']) > 0) {
+            $SPONS_SQL = " select * from adverts where AdId IN (" . implode(", ", $Req2['sponsor_ids']) . ")";
+            $SPONSRES = $this->mysqli->query($SPONS_SQL);
+            $req['spons'] = []; // Sponsor Ad rows. Used for getAdOptions function in episode
+	    $req['sponsors'] = []; // Sponsor Ad names
+	    while ($row = $SPONSRES->fetch_array(MYSQLI_ASSOC)) {
+		array_push($req['spons'], $row);
+		array_push($req['sponsors'], $row['AdName']);
+	    }
         }
-        else{
-            $req['sponsor'] = 'None';
-            $req['spons'] = NULL; // used for getAdOptions function in episode
+        else {
+            $req['spons'] = []; // Sponsor Ad rows. Used for getAdOptions function in episode
+            $req['sponsors'] = []; // Sponsor names
         }
-
-
 
         $req['ads'] = ceil(($Requirements['length']*$SETTINGS['ST_ADSH'])/60);
         $req['psa'] = ceil(($Requirements['length']*$SETTINGS['ST_PSAH'])/60);

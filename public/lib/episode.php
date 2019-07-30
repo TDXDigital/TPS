@@ -526,7 +526,6 @@ class episode extends program{
 
     public function getAdOptions($SPONS)
     {
-
         $REQAD_SQL = "SELECT adverts.*,adrotation.* FROM adrotation,addays,adverts WHERE '".
         date('H:i:s')."' BETWEEN adrotation.startTime AND adrotation.endTime AND addays.AdIdRef=".
         "adrotation.RotationNum AND adrotation.AdId=adverts.AdId AND addays.Day='".date('l').
@@ -595,9 +594,11 @@ class episode extends program{
         }
         else
         {
-            if(isset($SPONS)){
-                $ADOPT .= "<option value='".$SPONS['AdId']."'>".$SPONS['AdName']."</option>";
-                array_push($ADIDS,$avadi['AdId']);
+            if(isset($SPONS) && count($SPONS) > 0){
+		foreach ($SPONS as $SPON) {
+                    $ADOPT .= "<option value='".$SPON['AdId']."'>".$SPON['AdName']."</option>";
+                    array_push($ADIDS,$SPON['AdId']);
+		}
             }
             else{
                         //$selcom51 is origin
