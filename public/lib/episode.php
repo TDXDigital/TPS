@@ -526,14 +526,23 @@ class episode extends program{
 
     public function getAdOptions($SPONS)
     {
+/*
         $REQAD_SQL = "SELECT adverts.*,adrotation.* FROM adrotation,addays,adverts WHERE '".
         date('H:i:s')."' BETWEEN adrotation.startTime AND adrotation.endTime AND addays.AdIdRef=".
         "adrotation.RotationNum AND adrotation.AdId=adverts.AdId AND addays.Day='".date('l').
         "' AND adverts.active='1' AND '".date('Y-m-d')."' BETWEEN adverts.StartDate AND ".
         "adverts.EndDate";
+*/
         $RQADSIDS = array();
         $ADIDS = array();
         $REQAD = "";
+
+	// Make show sponsor ads required
+	foreach ($SPONS as $SPON)
+	    $RQADSIDS[(int)$SPON['AdId']] = $SPON['AdName'];
+
+
+/*
         if(!$READS = $this->mysqli->query($REQAD_SQL))
         {
             $REQAD .= "<option value='-1'>ERROR - AdRotation</option>";
@@ -572,12 +581,17 @@ class episode extends program{
                 }
             }
         }
+*/
         if(sizeof($RQADSIDS)>0){
             if($REQAD!=""&&!isset($SPONS)){
 
             }
             else if(isset($SPONS)){
-                $REQAD = "<option>Sponsored Program</option>";
+	        // Add sponsor select options
+                $REQAD = "<optgroup label='Sponsored Program'>";
+		foreach ($RQADSIDS as $adID => $adName)
+	    	    $REQAD .= "<option value='" . $adID . "'>" . $adName . "</option>";
+		$REQAD .= "</optgroup>";
             }
             else{
                 $REQAD = "<option>No Required Ads [E3]</option>";
@@ -587,21 +601,27 @@ class episode extends program{
             $REQAD = "<option>No Required Ads</option>";
         }
 
-        // Friends Ads
         $ADOPT="";
         if(sizeof($RQADSIDS) > 0 && !isset($SPONS)){
-            $ADOPT .= "<option>Paid Ad Required this hour [".sizeof($RQADSIDS)."]</option>";
+            $REQAD .= "<option>Paid Ad Required this hour [".sizeof($RQADSIDS)."]</option>";
         }
         else
         {
-            if(isset($SPONS) && count($SPONS) > 0){
+            // Friends Ads
+
+
+
+/*            if(isset($SPONS) && count($SPONS) > 0){
 		foreach ($SPONS as $SPON) {
-                    $ADOPT .= "<option value='".$SPON['AdId']."'>".$SPON['AdName']."</option>";
-                    array_push($ADIDS,$SPON['AdId']);
+                    $REQAD .= "<option value='".$SPON['AdId']."'>".$SPON['AdName']."</option>";
+                    array_push($RQADSIDS,$SPON['AdId']);
 		}
-            }
-            else{
+            } 
+            else{ */
                         //$selcom51 is origin
+
+		// Select the active friend adverts with the least playcount
+		// If there are none, just select all the advert that are between their start & end dates
                 $minplaysql51 = "select MIN(Playcount) from adverts where Category='51' ".
                 "and Active='1' and Friend='1' and '".$this->mysqli->real_escape_string($this->date).
                 "' between StartDate and EndDate";
@@ -616,8 +636,8 @@ class episode extends program{
                     addslashes($this->date) . "' between StartDate and EndDate and Friend='1' ".
                     "and Active='1' and Playcount='".$minplay51."' ";
                 }
-                $selspon = "select MIN(Playcount) from adverts where Category!='51' and '" .
-                addslashes($this->date) . "' between EndDate and StartDate ";
+//                $selspon = "select MIN(Playcount) from adverts where Category!='51' and '" .
+//                addslashes($this->date) . "' between EndDate and StartDate ";
                 if($comsav = $this->mysqli->query($selcom51)){
                     $ADOPT = "";
                     while($avadi = $comsav->fetch_array(MYSQLI_ASSOC)){
@@ -628,7 +648,7 @@ class episode extends program{
                 else{
                     $ADOPT = "<option value=\"-1\">ERROR - SQL Command</option>";
                 }
-            }
+//            }
         }
         $result = array();
         $result['REQAD'] = $REQAD;
@@ -641,6 +661,7 @@ class episode extends program{
 
     public function getAllCommercials($ads)
     {
+	$REQAD = $ads['REQAD'];
         $ADIDS = $ads['ADIDS'];
         $RQADSIDS = $ads['RQADSIDS'];
         $output = "";
