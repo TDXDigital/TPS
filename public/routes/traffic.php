@@ -52,7 +52,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $company = $app->request->post('company') ?: NULL;
     $contactEmail = $app->request->post('email') ?: NULL;
     $clientPhone = $app->request->post('phone') ?: NULL;
-    $adName = $cat == 12 ? $app->request->post('title') : $app->request->post('adName');
+    $adName = $app->request->post('adName');
     $maxPlayCount = $app->request->post('maxPlayCount') ?: NULL;
     $maxDailyPlayCount = $app->request->post('maxDailyPlayCount') ?: NULL;
     $assignedShow = $cat==51? $app->request->post('assignedShow') : $app->request->post('assignedShowSponsor');

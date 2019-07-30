@@ -113,7 +113,7 @@ $app->group('/episode', $authenticate($app,[1,2]),
 
         $station = new \TPS\station($callsign);
         $program = new \TPS\program($station, $programID);
-	$traffic = new \TPS\traffic();
+	    $traffic = new \TPS\traffic();
 
         $req = $program->getRequirement();
        

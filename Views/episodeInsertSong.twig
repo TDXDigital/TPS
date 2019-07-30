@@ -175,15 +175,52 @@
 			</div>
 
 			<div id="psaPart" style="display: none">
-				<div class="col-md-3">
+				<div class="col-md-1">
+					<label for="psaCheck">PSA</label>
+					<input type="checkbox" class="form-control input-sm" name="psaCheck" id="psaCheck">
+				</div>
+
+				<div class="col-md-3" id="spokenInput">
 					<label for="psaTitle">Title</label>
-					<input list="spoken" name="psaTitle" id="psaTitle" size="25" required class="form-control input-sm"  maxlength="90" value="Spoken Word / Talk"/>
+					<input list="spoken" name="spokenTitle" id="spokenTitle" size="25" required class="form-control input-sm"  maxlength="90" value="Spoken Word / Talk"/>
                    <datalist id="spoken">
                    		<option value="Spoken Word / Talk">
                    		<option value="PSA / Promo">
                    		<option value="News">
                    		<option value="Verbal Station ID">
                    </datalist>		
+				</div>
+
+				<div class="col-md-3" style="display: none" id="psaInput">
+					<label for="psaTitle">PSA</label>
+					<select name="psaList" id="psaList" class="form-control adch">
+                   
+		           		<option value="" disabled selected> Select PSA </option>
+						{% for key, PSA in PSAs %}
+		           		<option value="{{PSA.AdId}}"> {{ PSA.AdName }} </option>
+		           		{% endfor %}
+                  	 </select>		
+				</div>
+
+
+				 <div class="col-md-1">
+					<label for="minutes">Minutes</label>
+					<input type="number" class="form-control input-sm" name="minutes" id="minutes" placeholder="">
+				</div>
+				<div class="col-md-6"></div>
+			</div>
+
+			<div id="showPromoPart" style="display: none">
+				<div class="col-md-3">
+					<label for="showPromo">Show/Promo</label>
+					<select name="showPromo" id="showPromo" class="form-control adch">
+						<option value="" disabled selected> Select Show/Promo </option>
+						{% for key, promo in radioShowPromos %}
+		           		<option value="{{key}}"> {{ promo.name }} </option>
+		           		{% endfor %}
+	               	</select>
+
+
 				</div>
 				<div class="col-md-8"></div>
 			</div>

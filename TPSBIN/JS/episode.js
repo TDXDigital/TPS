@@ -31,6 +31,15 @@ $(document).on('change paste input', ".playlistNum", function(){
     }
 
 });
+
+function setPromoVal()
+{
+	var inputfield = $('.songInputField');
+	inputfield.find("input[name='title']").val(inputfield.find("select[name='showPromo'] option:selected").text());
+	// inputfield.find("input[name='artist']").val('CKXU');
+	// inputfield.find("input[name='album']").val('Advertisement');
+}
+
 function setAdVal()
 {
 	var inputfield = $('.songInputField');
@@ -42,15 +51,20 @@ function setAdVal()
 function setPsaVal()
 {	
 	var inputfield = $('.songInputField');
-	inputfield.find("input[name='title']").val(inputfield.find("input[name='psaTitle']").val());
+	if($('#psaCheck').is(':checked'))
+	{
+		inputfield.find("input[name='title']").val(inputfield.find("select[name='psaList'] option:selected").text());
+	}
+	else
+		inputfield.find("input[name='title']").val(inputfield.find("input[name='psaTitle']").val());
 
 	//calculate minutes and return it
 	var startPsaTime = inputfield.find("input[name='time']").val();
 	var endPsaTime = new Date(1900,0,1,startPsaTime.split(":")[0],startPsaTime.split(":")[1]);
-	var MinuteToAdd = inputfield.find("input[name='playlistNum']").val();
+	var MinuteToAdd = inputfield.find("input[name='minutes']").val();
 	$("input[name='spokenTime']").val(parseInt($("input[name='spokenTime']").val()) + parseInt(MinuteToAdd));
 
-	inputfield.find("input[name='playlistNum']").val('NA');
+	// inputfield.find("input[name='playlistNum']").val('NA');
 	endPsaTime.setMinutes(parseInt(endPsaTime.getMinutes()) + parseInt(MinuteToAdd));
 	inputfield.find("input[name='time']").val(("0" + endPsaTime.getHours()).slice(-2) + ':' + ("0" + endPsaTime.getMinutes()).slice(-2)) ;
 	// return startPsaTime + ' ~ ' + ("0" + endPsaTime.getHours()).slice(-2) + ':' + ("0" + endPsaTime.getMinutes()).slice(-2);
@@ -83,7 +97,10 @@ $(document).on('click', '.insertBtn', function(){
 
  	// if it's Promo increase PSA count
  	else if(catValue == 45)
+ 	{
  		$('#psaCount').text(parseInt($('#psaCount').text()) + 1);
+ 		setPromoVal();
+ 	}
 
  	// if it's PSA, increase PSA count
  	else if(catValue == 11 || catValue == 12)
@@ -173,10 +190,12 @@ function getRowId()
 }
 function clearInputField(){
 	var inputfield =  $('.songInputField');
+	inputfield.find("input[type='number']").val('');
 	inputfield.find("input[type='text']").val('');
 	inputfield.find("input[type='checkbox']").prop('checked', false);
 	// inputfield.find("select").val('');
 	inputfield.find("[name='type']").val('NA');
+	 $('#psaCheck').trigger('change');
 }
 
 //event for remove button from the song table
@@ -258,36 +277,43 @@ $(document).on('submit','#episodeForm',function(){
 
 });
 
+function hideAll()
+{
+	$('#adPart').hide();
+	$('#psaPart').hide();
+	$('#musicPart').hide();
+	$('#showPromoPart').hide();
+}
 
 $(document).on('change', '.chtype', function(e){
 	$('#catSelection').removeClass('has-error has-feedback');
-
+	hideAll();
 	var catNum = $(this).val();
 	var row = $(this).closest('tr');
 	var rowid = row.attr('id');
 
 	switch(catNum)
 	{
+		case '45':
+			clearInputField();
+			$('.songInputField').find("label[for='playlistNum']").text('Ad ID');
+			$('#showPromoPart').show();
+			break;
 		case '51':
 			clearInputField();
 			$('.songInputField').find("[name='cat']").val('51');
-			$('#musicPart').hide();
-			$('#psaPart').hide();
 			$('#adPart').show();
 			$('.songInputField').find("label[for='playlistNum']").text('Ad ID');
 			break;
 
-		case '11':
 		case '12':
+
+		case '11':
 			clearInputField();
-			$('.songInputField').find("label[for='playlistNum']").text('Minutes');
-			$('#musicPart').hide();
-			$('#adPart').hide();
+			$('.songInputField').find("label[for='playlistNum']").text('Ad ID');
 			$('#psaPart').show();
 			break;
 		default:
-			$('#adPart').hide();
-			$('#psaPart').hide();
 			$('#musicPart').show();
 			$('.songInputField').find("label[for='playlistNum']").text('Playlist ID');
 
@@ -296,6 +322,13 @@ $(document).on('change', '.chtype', function(e){
 
 
 });
+
+
+$('#psaCheck').change(function(){
+    this.checked ? $('#psaInput').show() : $('#psaInput').hide();
+    this.checked ? $('#spokenInput').hide() : $('#spokenInput').show();
+});
+
 
 $(document).on('change', '.adch', function(e){
 	$('.songInputField').find("input[name='playlistNum']").val($(this).val());
