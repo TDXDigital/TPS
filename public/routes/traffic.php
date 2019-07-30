@@ -61,23 +61,18 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $backingArtist = $app->request->post('artist') ?: NULL;
     $backingAlbum = $app->request->post('album') ?: NULL;
     $showName =  $app->request->post('showName') ?: NULL;
-    // $showDayTimes = ['Sun' => [['12:00', '14:00'], ['16:30', '18:00']], 'Tue' => [['12:00', '14:00']]];
-
-    $showDayTimes = array();
     $showDays = $app->request->post('showDayVal');
-    if(is_array($showDays))
-    {
-        $showTimeStartVal = $app->request->post('showTimeStartVal');
-        $showTimeEndVal = $app->request->post('showTimeEndVal');
-        foreach($showDays as $key => $day)
-        {
-	    $duration = [$showTimeStartVal[$key], $showTimeEndVal[$key]];
-	    if (in_array($day, array_keys($showDayTimes)))
-		array_push($showDayTimes[$day], $duration);
-	    else
-		$showDayTimes[$day] = [$duration];
-        }
-    }
+    $showTimeStartVals = $app->request->post('showTimeStartVal');
+    $showTimeEndVals = $app->request->post('showTimeEndVal');
+    $showSchedule = $traffic->createSchedule($showDays, $showTimeStartVals, $showTimeEndVals);
+
+    $hourlyLimit =  $app->request->post('hourlyLimit') ?: NULL;
+    $blockLimit =  $app->request->post('blockLimit') ?: NULL;
+    $adDays = $app->request->post('adDayVal');
+    $adTimeStarts = $app->request->post('adTimeStartVal');
+    $adTimeEnds = $app->request->post('adTimeEndVal');
+    $adSchedule = $traffic->createSchedule($adDays, $adTimeStarts, $adTimeEnds);
+//    $app->halt(500, json_encode($adSchedule));
     
     // $title =  $app->request->post('title') ?: NULL;
     $length = $app->request->post('length');
@@ -96,7 +91,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
     $id = $traffic->createNewAd($adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID, 
 				$maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack,
-				$backingArtist, $backingAlbum, $showName, $showDayTimes, $psa);
+				$backingArtist, $backingAlbum, $showName, $showSchedule, $psa);
     $ad = $traffic->get($id);
 
     if($id == -1 )
@@ -173,24 +168,18 @@ $app->group('/traffic', function() use ($app, $authenticate){
         $backingArtist = $app->request->post('artist') ?: NULL;
         $backingAlbum = $app->request->post('album') ?: NULL;
         $showName =  $app->request->post('showName') ?: NULL;
-        // $showDayTimes = ['Sun' => [['12:00', '14:00'], ['16:30', '18:00']], 'Tue' => [['12:00', '14:00']]];
-
-        $showDayTimes = array();
         $showDays = $app->request->post('showDayVal');
-        if(is_array($showDays))
-        {
-            $showTimeStartVal = $app->request->post('showTimeStartVal');
-            $showTimeEndVal = $app->request->post('showTimeEndVal');
-            foreach($showDays as $key => $day)
-            {
-            $duration = [$showTimeStartVal[$key], $showTimeEndVal[$key]];
-            if (in_array($day, array_keys($showDayTimes)))
-            array_push($showDayTimes[$day], $duration);
-            else
-            $showDayTimes[$day] = [$duration];
-            }
-        }
-        
+        $showTimeStartVals = $app->request->post('showTimeStartVal');
+        $showTimeEndVals = $app->request->post('showTimeEndVal');
+        $showSchedule = $traffic->createSchedule($showDays, $showTimeStartVals, $showTimeEndVals);
+
+        $hourlyLimit =  $app->request->post('hourlyLimit') ?: NULL;
+        $blockLimit =  $app->request->post('blockLimit') ?: NULL;
+        $adDays = $app->request->post('adDayVal');
+        $adStarts = $app->request->post('adTimeStartVal');
+        $adEnds = $app->request->post('adTimeEndVal');
+        $adSchedule = $traffic->createSchedule($adDays, $adTimeStartVals, $adTimeEndVals);
+
         // $title =  $app->request->post('title') ?: NULL;
         $length = $app->request->post('length');
         $lang = $app->request->post('lang') ?: 'English';
@@ -200,16 +189,16 @@ $app->group('/traffic', function() use ($app, $authenticate){
         $friend = $app->request->post('friend') ?? 0;
 
 	if ($clientID == NULL) {
-    if ($clientName != NULL)
-        $clientID = $traffic->createClient($clientName, $company, $contactEmail, $clientPhone);
-    } else {
-    $traffic->updateClient($clientID, $clientName, $company, $contactEmail, $clientPhone);
-    }
+            if ($clientName != NULL)
+                $clientID = $traffic->createClient($clientName, $company, $contactEmail, $clientPhone);
+        } else {
+            $traffic->updateClient($clientID, $clientName, $company, $contactEmail, $clientPhone);
+        }
 	$client = $traffic->getClientByID($clientID);
 
         $id = $traffic ->updateAd($adId, $adName, $cat, $length, $lang, $startDate, $endDate, $active, $friend, $clientID,
 				  $maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack,
-				  $backingArtist, $backingAlbum, $showName, $showDayTimes, $psa);
+				  $backingArtist, $backingAlbum, $showName, $showSchedule, $psa);
         $ad = $traffic->get($id);
 	$promoInfo = $traffic->getPromoInfo($id);
 

@@ -12,6 +12,28 @@ class traffic extends station{
     
     /*
     * @author Derek Melchin
+    * @abstract Build a schedule-like object to communicate between the front-end and back-end.
+    * @param $days    arr  The day for the given schedule row
+    * @param $starts  arr  The time the schedule starts for that day on the parrallel $days array
+    * @param $ends    arr  The end time for the schedule on the parrallel arrays above
+    * @return Associative array [ <day> => [[<startTime>, <endTime>], ...], ... ]
+    */
+    public function createSchedule($days, $starts, $ends) {
+	$schedule = [];
+	if (!isset($days) || !isset($starts) || !isset($ends))
+	    return;
+        foreach($days as $key => $day) {
+            $duration = [$starts[$key], $ends[$key]];
+            if (in_array($day, array_keys($schedule)))
+                array_push($schedule[$day], $duration);
+            else
+                $schedule[$day] = [$duration];
+        }
+	return $schedule;
+    }
+
+    /*
+    * @author Derek Melchin
     * @abstract Fetch all of the names of our clients
     * @return Associative array [ClientNumber => Name, ...]
     */
@@ -194,7 +216,7 @@ class traffic extends station{
     * @param $backingArtist     str  The artist of the backing song in the ad
     * @param $backingAlbum      str  The album name of the backing song in the ad
     * @param $showName          str  The name of the show being promoted
-    * @param $showDayTimes      arr  [ <day#Week> =>[['start' => '9:30', 'end' => '11:30'], ...], ...]. Sunday = 0 day#Week.
+    * @param $showDayTimes      arr  [ <day> => [[<startTime>, <endTime>], ...], ...]
     * @param $psa               int  1 if the advert is a PSA, 0 otherwise.
     * @return The unique id of the newly-created ad
     */
