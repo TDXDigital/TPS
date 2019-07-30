@@ -22,6 +22,7 @@ $(document).ready(function() {
                  }
         },
         "columns": [
+            { "data": "EpNum" },
             { "data": "callsign" },
             { "data": "programname" },
             { "data": "date" },
@@ -32,12 +33,13 @@ $(document).ready(function() {
         ],
         "order": [[ 2, "desc" ]],
         "columnDefs": [
+
             {
                 "render": function ( data, type, row ) {
-                    return '<button type="button" onclick="location.href=\'/episode/edit/'+data+'\';" class="btn btn-default btn-xs">' +
-                        'Edit ' + '<i class="fa fa-edit" aria-hidden="true"></i></button>';
+                    return '<button type="button" onclick="location.href=\'/episode/log/'+data+'\';" class="btn btn-default btn-xs">' +
+                        'View ' + '<i class="fa fa-edit" aria-hidden="true"></i></button>';
                 },
-                "targets": 6
+                "targets": 7
             },
         ]
     });

@@ -300,4 +300,21 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $app->render("episodeLog.twig",$params);
     });
 
+    $app->get('/log/:epNum', $authenticate, function ($epNum) use ($app){
+
+        $params = array();
+        $playlist = new \TPS\playlist();
+
+        $songs = \TPS\episode::getSongByEpNum($epNum);
+        foreach ($songs as $key => $song) {
+            $record = $playlist->getAllByShortCode($song["playlistnumber"]);
+            $refcode = reset($record)['RefCode'];
+            $songs[$key]["RefCode"] = $refcode; 
+        }
+        $params["songs"] = $songs;
+        $params["title"] = 'View Program Log';
+        $params["episode"] = \TPS\episode::getEpisodeByEpNum($epNum);
+
+        $app->render("episodeLog.twig",$params);
+    });
 });

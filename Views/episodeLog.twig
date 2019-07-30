@@ -34,14 +34,20 @@
     <table class="table" id="songTable" >
         <thead class="thead-dark">
         <tr>
-             <th>Category</th><th>Playlist</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th><th>CC</th><th>Hit</th><th>Ins</th><th>Language</th>
+             <th>Playlist</th><th>Category</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th><th>CC</th><th>Hit</th><th>Ins</th><th>Language</th><th>Note</th>
         </tr>
         </thead>
         <tbody>
              {% for song in songs %}
                 <tr>
-                    <td>{{song.category}}</td>
+                    {% if song.category == 12 or  song.category == 45 or song.category == 51 or song.category == 52 or song.category == 53 %}
+                    <td><a href="/traffic/edit/{{song.playlistnumber}}">{{song.playlistnumber}}</a></td>
+                    {% elseif song.playlistnumber!= 0 or song.playlistnumber!='' %}
+                    <td><a href="/library/{{song.RefCode}}">{{song.playlistnumber}}</a></td>
+                    {% else %}
                     <td>{{song.playlistnumber}}</td>
+                    {% endif %}
+                    <td>{{song.category}}</td>
                     <td>{{song.time}}</td>
                     <td>{{song.title}}</td>
                     <td>{{song.artist}}</td>
@@ -50,13 +56,16 @@
                     <td>{{song.hit}}</td>
                     <td>{{song.instrumental}}</td>
                     <td>{{song.language}}</td>
+                    <td>
+                        <input type="hidden" class="form-control input-sm" name="note[{{loop.index}}]" placeholder="" value="{{song.note}}">
+                        <input type="button" value="Notes" class="btn btn-sm {{song.note !=''? 'btn-info':''}}" name="NButton[{{loop.index}}]" onclick="GetNotes({{loop.index}});" /></td>
                 </tr>
             {% endfor %} 
         </tbody>
 
         <tfoot>
             <tr>
-                <th>Category</th><th>Playlist</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th><th>CC</th><th>Hit</th><th>Ins</th><th>Language</th>
+                <th>Category</th><th>Playlist</th><th>Time</th><th>Title</th><th>Artist</th><th>Album</th><th>CC</th><th>Hit</th><th>Ins</th><th>Language</th><th>Note</th>
             </tr>
         </tfoot>
     </table>
@@ -67,16 +76,28 @@
                 <input type="time" class="form-control input-sm" name="endTime" value="{{episode.endTime ?? episode.time|date('H:i')}}">
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="input-group">
-                <span for="spokenTime" class="input-group-addon">Calculated Spoken Time (min)</span>
-                <input type="text" readonly class="form-control input-sm" name="spokenTime" value="{{episode.totalSpokenTime ?? 0}}">
-            </div>
+    <div class="col-md-3">
+        <div class="input-group">
+            <span for="spokenTime" class="input-group-addon">Calculated Spoken Time (min)</span>
+            <input type="text" readonly class="form-control input-sm" name="spokenTime" value="{{episode.totalSpokenTime ?? 0}}">
         </div>
+    </div>
+    <div class="col-md-6"></div>
+    <div class="col-md-1">
+        <button type="button" onclick="location.href='/episode/edit/{{episode.id}}'" class="btn btn-primary">
+            Edit</button>
+    </div>
 
 {% endblock %}
 {% block lastScripts %}
     <script src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
     <script src="{{siteUrl}}/js/chosen.jquery.min.js"></script>
-   
+    <script>
+        function GetNotes(rowId) {
+            var note =  $('#songTable').find("input[name='note["+ rowId +"]']").val();
+            alert(note);
+            }
+
+
+    </script>
 {% endblock %}
