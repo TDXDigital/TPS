@@ -205,6 +205,22 @@ class traffic extends station{
     }
 
 
+    public function getSponsorID() {
+    $stmt = $this->mysqli->query("SELECT * FROM adverts WHERE Category = 52 AND active = 1;");
+    $sponsorID = [];
+    while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
+        array_push($sponsorID, $row);
+    return $sponsorID;
+    }
+
+    public function getSponsorPromo() {
+    $stmt = $this->mysqli->query("SELECT * FROM adverts WHERE Category = 53 AND active = 1;");
+    $sponsorPromo = [];
+    while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
+        array_push($sponsorPromo, $row);
+    return $sponsorPromo;
+    }    
+
     /*
     * @author Derek Melchin
     * @abstract Updates the information on a client's record

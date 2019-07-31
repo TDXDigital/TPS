@@ -94,7 +94,10 @@ $(document).on('click', '.insertBtn', function(){
  		$('#adCount').text(parseInt($('#adCount').text()) + 1);
 		setAdVal();
  	}
-
+ 	else if(catValue == 52)
+ 		inputVal.find("input[name='title']").val(inputVal.find("select[name='sponsorId'] option:selected").text());
+ 	else if(catValue == 53)
+ 		inputVal.find("input[name='title']").val(inputVal.find("select[name='sponsorPromo'] option:selected").text());
  	// if it's Promo increase PSA count
  	else if(catValue == 45)
  	{
@@ -283,6 +286,8 @@ function hideAll()
 	$('#psaPart').hide();
 	$('#musicPart').hide();
 	$('#showPromoPart').hide();
+	$('#sponsorIDPart').hide();
+	$('#sponsorPromoPart').hide();
 }
 
 $(document).on('change', '.chtype', function(e){
@@ -303,6 +308,18 @@ $(document).on('change', '.chtype', function(e){
 			clearInputField();
 			$('.songInputField').find("[name='cat']").val('51');
 			$('#adPart').show();
+			$('.songInputField').find("label[for='playlistNum']").text('Ad ID');
+			break;
+		case '52':
+			clearInputField();
+			$('.songInputField').find("[name='cat']").val('52');
+			$('#sponsorIDPart').show();
+			$('.songInputField').find("label[for='playlistNum']").text('Ad ID');
+			break;
+		case '53':
+			clearInputField();
+			$('.songInputField').find("[name='cat']").val('53');
+			$('#sponsorPromoPart').show();
 			$('.songInputField').find("label[for='playlistNum']").text('Ad ID');
 			break;
 

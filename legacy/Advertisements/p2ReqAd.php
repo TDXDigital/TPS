@@ -1,7 +1,7 @@
 <?php
     session_start();
 
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
+$con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
 if (!$con){
 	echo 'Uh oh!';
 	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
@@ -9,7 +9,7 @@ if (!$con){
 	username=' . $_SESSION["username"]);
 }
 else if($con){
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../login.php');}
+	if(!mysqli_select_db($con, $_SESSION['DBNAME'])){header('Location: ../login.php');}
 
     }
 else{
@@ -19,9 +19,9 @@ $ADN = addslashes($_POST['adnum']);
 $LIM = addslashes($_POST['limit']);
 $START = addslashes($_POST['start']);
 $END = addslashes($_POST['end']);
-$DAY = array_values($_POST['day']);
+$DAY = isset($_POST['day'])? array_values($_POST['day']) : '';
 $BLM = addslashes($_POST['BLM']);
-$DEL = array_values($_POST['delete']);
+$DEL = isset($_POST['delete'])? array_values($_POST['delete']): '';
 
 ?>
 
@@ -50,25 +50,25 @@ $DEL = array_values($_POST['delete']);
                 $DELPASS = TRUE;
                 $DELERR = FALSE;
                 echo "<br/>ARRAY SIZE: " . sizeof($DAY);
-			    echo "<br/>POST  SIZE: " . sizeof($_POST['day']);
+			    // echo "<br/>POST  SIZE: " . sizeof($_POST['day']);
                 echo "<br/>ARRAY SIZE: " . sizeof($DEL);
-			    echo "<br/>POST  SIZE: " . sizeof($_POST['delete']);
+			    // echo "<br/>POST  SIZE: " . sizeof($_POST['delete']);
                 if(sizeof($DAY)>0){
                     $ADDPASS = FALSE;
 				    $ADU = "insert into adrotation (startTime,endTime,HourlyLimit,BlockLimit,AdId) values ('".$START."','".$END."','".$LIM."','".$BLM."','".$ADN."')";
-				    if(mysql_query($ADU)){
+				    if(mysqli_query($con, $ADU)){
 					    echo "<br/>Completed PART 1/2";
 					    /*
                         echo "<br/>ARRAY SIZE: " . sizeof($DAY);
 					    echo "<br/>POST  SIZE: " . sizeof($_POST['day']);
                         */
-					    $REFER = mysql_insert_id();
+					    $REFER = mysqli_insert_id($con);
 					    for($i=0;$i<sizeof($DAY);$i++){
 
 						    $DayAdd = "insert into addays (AdIdRef,Day) values ('".$REFER."','".$DAY[$i]."')";
 						    //echo $DayAdd . " - ". $DAY[$i];
-						    if(!mysql_query($DayAdd)){
-							    echo "<br/>".mysql_error();
+						    if(!mysqli_query($con, $DayAdd)){
+							    echo "<br/>".mysqli_error($con);
 						    }
 					    }
 					    echo "<br/>Completed PART 2/2";
@@ -91,12 +91,12 @@ $DEL = array_values($_POST['delete']);
                     echo "<br/>Delete ad started";
                     for($i2=0;$i2<sizeof($DEL);$i2++){
                         $DelSQL1 = "DELETE FROM adrotation WHERE RotationNum = '".$DEL[$i2]."'";
-                        if(!mysql_query($DelSQL1)){
+                        if(!mysqli_query($con, $DelSQL1)){
                             $DELPASS = FALSE;
                             $DELERR = TRUE;
                         }
                         $DelSQL2 = "DELETE FROM addays WHERE AdIdRef = '".$DEL[$i2]."'";
-                        if(!mysql_query($DelSQL2)){
+                        if(!mysqli_query($con, $DelSQL2)){
                             $DELPASS = FALSE;
                             $DELERR = TRUE;
                         }
