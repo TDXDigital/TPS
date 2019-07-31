@@ -120,6 +120,14 @@ $app->group('/traffic', function() use ($app, $authenticate){
      $app->render("trafficSearch.twig", $params);
  });
 
+    $app->get('/schedule', function() use ($app, $authenticate){
+        $params = array(
+            "area"=>"Traffic",
+            "title"=>"Requirement",
+        );
+         $app->render("trafficSchedule.twig", $params);
+    });
+
     $app->get('/display', $authenticate, function () use ($app){
         $traffic = new \TPS\traffic();
         $filter = $app->request->get("filter");

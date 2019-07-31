@@ -1,0 +1,130 @@
+{% extends 'baseAdmin.twig' %}
+{% block headScripts %}
+	<link href="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.css"
+		  rel="stylesheet" type="text/css"/>
+	<link href="{{siteUrl}}/js/chosen.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" href="{{siteUrl}}/js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>
+	<link rel="stylesheet" href="{{siteUrl}}/js/timetable/styles/timetablejs.css">
+    <link rel="stylesheet" href="{{siteUrl}}/js/timetable/styles/demo.css">
+
+
+
+
+	<link rel="stylesheet" type="text/css" href="{{siteUrl}}/node_modules/tui-calendar/dist/tui-calendar.min.css" />
+
+	<link rel="stylesheet" type="text/css" href="{{siteUrl}}/node_modules/tui-date-picker/dist/tui-date-picker.css" />
+	<link rel="stylesheet" type="text/css" href="{{siteUrl}}/node_modules/tui-time-picker/dist/tui-time-picker.css" />
+
+
+{% endblock %}
+{% set firstStation = station|first %}
+{% block title %}{{title|default('Traffic')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-arrow-left"></i>  <a class="back" href="#">Back</a>
+    </li>
+</ol>
+
+<ol class="breadcrumb">
+	<li>
+		<i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+	</li>
+	<li class="active">
+		<i class="fa fa-fw fa-usd"></i> <a href="/traffic/search">Traffic</a>
+	</li>
+	<li class="active">
+		<a href="/traffic/new"><i class="fa fa-plus-square-o"></i> New Requirement</a>
+	</li>
+</ol>
+{% endblock %}
+{% block content %}
+
+	{% if flash.error %}
+        <div class="row">
+            <div class="alert alert-danger">
+                <strong>Error</strong> {{flash.error}}
+            </div>
+        </div>
+    {% endif %}
+    {% if flash.success %}
+        <div class="row">
+            <div class="alert alert-success">
+                <strong>Success</strong> {{flash.success}}
+            </div>
+        </div>
+    {% endif %}
+
+
+<div class="container">
+	
+
+	<div id="calendar" style="height: 800px;"></div>
+
+</div>
+{% endblock %}
+{% block lastScripts %}
+	<script src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
+	<script src="{{siteUrl}}/js/chosen.jquery.min.js"></script>
+	<script src="{{siteUrl}}/TPSBIN/JS/Advertisements/trafficNew.js"></script>
+	<script src="{{siteUrl}}/js/timetable/scripts/timetable.js"></script>
+
+
+
+    <link rel="stylesheet" type="text/css" src="{{siteUrl}}/node_modules/tui-code-snippet/dist/tui-code-snippet.js" />
+	<link rel="stylesheet" type="text/css" src="{{siteUrl}}/node_modules/tui-calendar/dist/tui-calendar.js" />
+
+	<script src="https://uicdn.toast.com/tui.code-snippet/latest/tui-code-snippet.js"></script>
+<script src="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.js"></script>
+
+
+
+	<script>
+
+	$( ".datepicker" ).datepicker({
+            numberOfMonths: 3,
+            showButtonPanel: true,
+            dateFormat: "yy-mm-dd"
+        });
+
+	$(document).ready(function(){
+		$('.pull-down').each(function() {
+			$(this).css('margin-top', $(this).parent().height()-$(this).height())
+		});
+
+        $.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
+            $( "#probEndDate" ).datepicker({
+                changeMonth: true,
+                changeYear: true
+            });
+	});
+
+	//back link
+	$(document).ready(function(){
+		$('a.back').click(function(){
+			parent.history.back();
+			return false;
+		});
+	});
+
+	</script>
+
+	<script>
+	var Calendar = tui.Calendar;
+
+var calendar = new Calendar('#calendar', {
+  defaultView: 'week',
+  taskView: false,
+  template: {
+    monthGridHeader: function(model) {
+      var date = new Date(model.date);
+      var template = '<span class="tui-full-calendar-weekday-grid-date">' + date.getDate() + '</span>';
+      return template;
+    }
+  }
+});
+
+    </script>
+
+
+{% endblock %}
