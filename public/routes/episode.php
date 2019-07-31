@@ -141,6 +141,8 @@ $app->group('/episode', $authenticate($app,[1,2]),
             'req' => $req,
             'ads' => $ads,
             'commercial' => $commercials,
+            'sponsorIds' => $traffic->getSponsorID(),
+            'sponsorPromos'=>$traffic-> getSponsorPromo(),
             'action' => '/episode/finalize',
 	    'radioShowPromos' => $traffic->getPromos(),
 	    'PSAs' => $traffic->getPSAs()
@@ -259,6 +261,8 @@ $app->group('/episode', $authenticate($app,[1,2]),
             'req' => $req,
             'ads' => $ads,
             'commercial' => $commercials,
+            'sponsorIds' => $traffic->getSponsorID(),
+            'sponsorPromos'=>$traffic-> getSponsorPromo(),
 	    'radioShowPromos' => $traffic->getPromos(),
 	    'PSAs' => $traffic->getPSAs()
         );
