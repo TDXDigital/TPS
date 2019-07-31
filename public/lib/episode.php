@@ -458,6 +458,10 @@ class episode extends program{
             $stmt->bind_param("ssssisssssssiisiiis", ...$param);
             if(!$stmt->execute())
                 $this->log->error($this->mysqli->errno);
+            if($category[$value] == 12 || $category[$value] == 45 || $category[$value] == 51 || $category[$value] == 52 || $category[$value] == 53)
+            {
+                self::increasePlayCount($playlistNumber[$value]);
+            }
 
             $songs[$key]["title"] = $title[$value];
             $songs[$key]["album"] = $album[$value];
@@ -475,6 +479,18 @@ class episode extends program{
         }
          $stmt->close();
          return $songs;
+    }
+
+    public static function increasePlayCount($AdId)
+    {
+        $tmpstn = new station($_SESSION['CALLSIGN']);
+        $stmt = $tmpstn->mysqli->prepare("UPDATE `adverts` SET Playcount = (Playcount + 1) WHERE AdId = ?");
+        $param = array( $AdId);
+        $stmt->bind_param("i", ...$param);
+
+        if(!$stmt->execute())
+            $this->log->error($this->mysqli->errno);
+        $stmt->close();
     }
 
  //Everything is array except epNum
@@ -526,7 +542,7 @@ class episode extends program{
 
     public function getAdOptions($SPONS)
     {
-/*
+/*  
         $REQAD_SQL = "SELECT adverts.*,adrotation.* FROM adrotation,addays,adverts WHERE '".
         date('H:i:s')."' BETWEEN adrotation.startTime AND adrotation.endTime AND addays.AdIdRef=".
         "adrotation.RotationNum AND adrotation.AdId=adverts.AdId AND addays.Day='".date('l').
@@ -639,7 +655,7 @@ class episode extends program{
 //                $selspon = "select MIN(Playcount) from adverts where Category!='51' and '" .
 //                addslashes($this->date) . "' between EndDate and StartDate ";
                 if($comsav = $this->mysqli->query($selcom51)){
-                    $ADOPT = "";
+                    $ADOPT = "<option value='' disabled selected> ". "Select Ads" ."</option>";
                     while($avadi = $comsav->fetch_array(MYSQLI_ASSOC)){
                         $ADOPT .= "<option value=\"" . $avadi['AdId'] . "\">" . $avadi['AdName'] . "</option>";
                         array_push($ADIDS,$avadi['AdId']);

@@ -135,6 +135,7 @@ $app->group('/episode', $authenticate($app,[1,2]),
             $episode = new \TPS\episode($program, NULL, $airDate, $airTime,
                     $description, $type, $recordDate);
         }
+
         $params = array(
             'area'=>'Episode',
             'title'=>'Log Addition',
@@ -244,7 +245,7 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $station = new \TPS\station($_SESSION['CALLSIGN']);
         $episodeVal = \TPS\episode::getEpisodeByEpNum($epNum);  //array, not object
         $programID = \TPS\program::getId($_SESSION['CALLSIGN'], $episodeVal['name']);
-	$traffic = new \TPS\traffic();
+	    $traffic = new \TPS\traffic();
 
         $program = new \TPS\program($station, $programID);
         $episode = new \TPS\episode($program);  //episode object
@@ -253,7 +254,6 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $req = $program->getRequirement();
         $ads = $episode->getAdOptions($req['spons']);
         $commercials =  $episode->getAllCommercials($ads);
-
         $params = array(
             'area'=>'Episode',
             'title'=>'Log Addition',

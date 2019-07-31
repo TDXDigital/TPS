@@ -85,7 +85,7 @@
             . "episode.description, episode.lock, episode.type, "
             . "episode.EpNum, program.length, program.genre, "
             . "program.active, program.CCX, program.PLX,"
-            . "program.HitLimit, program.SponsId, program.displayorder,"
+            . "program.HitLimit, program.displayorder,"
             . "program.theme, program.ProgramID, program.Display_Order,"
             . "program.reviewable from episode LEFT JOIN program on "
             . "program.programname=episode.programname where "
@@ -108,7 +108,7 @@
                 $ep_lock,$ep_type, $ep_num,
                 $ep_length, $ep_genre, $pgm_active,
                 $pgm_CCX, $pgm_PLX, $pgm_HitLimit,
-                $pgm_SponsID, $pgm_displayorder, $pgm_theme,
+                $pgm_displayorder, $pgm_theme,
                 $pgm_ID, $pgm_Disp_Order, $pgm_reviewable
                 )){
             die("could not bind result : ".$check_episode->error);
@@ -123,7 +123,7 @@
                 $ep_lock,$ep_type, $ep_num,
                 $ep_length, $ep_genre, $pgm_active,
                 $pgm_CCX, $pgm_PLX, $pgm_HitLimit,
-                $pgm_SponsID, $pgm_displayorder, $pgm_theme,
+                $pgm_displayorder, $pgm_theme,
                 $pgm_ID, $pgm_Disp_Order, $pgm_reviewable);
         echo "<br>";
         }
