@@ -1,15 +1,15 @@
 <?php
     session_start();
 
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
+$con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw']);
 if (!$con){
 	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
+	die('Error connecting to SQL Server, could not connect due to: ' . mysqli_error() . ';  
 
 	username=' . $_SESSION["username"]);
 }
 else if($con){
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: ../login.php');}
+	if(!mysqli_select_db($con, $_SESSION['DBNAME'])){header('Location: ../login.php');}
 	
     }
 else{
@@ -27,11 +27,11 @@ else{
 		$ADS_SQL .= " and AdId='".addslashes($_GET['AD']) . "' ";
 		$AdNum = addslashes($_GET['AD']);
 	}
- 	if(!$ADS = mysql_query($ADS_SQL)){
+ 	if(!$ADS = mysqli_query($con, $ADS_SQL)){
  		$adoptions_list .= "<option value='-1'>ERROR</option>";
  	}
 	else{
-		while($adop = mysql_fetch_array($ADS)){
+		while($adop = mysqli_fetch_array($ADS)){
 			$adoptions_list .= "<option value=\"".$adop['AdId']."\">".$adop['AdName']."</option>";
 		}
 	}
@@ -138,11 +138,11 @@ xmlhttp.send();
 				$sql.="0".$i;
 			}
 			$sql .= ":00:00' BETWEEN adrotation.startTime AND adrotation.endTime AND addays.AdIdRef=adrotation.RotationNum AND addays.Day='".$day."' ";
-			$result=mysql_query($sql);
-			if(mysql_error()){
-				echo mysql_error();
+			$result=mysqli_query($sql);
+			if(mysqli_error()){
+				echo mysqli_error();
 			}
-			$var = mysql_fetch_array($result);
+			$var = mysqli_fetch_array($result);
 			if($var["count(adrotation.AdId)"]=="0"){
 				echo ", null";
 			}
@@ -268,8 +268,8 @@ xmlhttp.send();
 					//CHECK FOR XREF 
 					
 					//END CHECK
-					if($COMS = mysql_query($COMSQ)){
-						while($COM = mysql_fetch_array($COMS)){
+					if($COMS = mysqli_query($con, $COMSQ)){
+						while($COM = mysqli_fetch_array($COMS)){
 							echo "<tr><td>";
 							echo $COM['RotationNum'];
 							echo "<input type=\"radio\" name=\"edit\" value=\"".$COM['RotationNum']."\"/></td><td>";
@@ -284,11 +284,11 @@ xmlhttp.send();
 							echo $COM['BlockLimit'];
 							echo "</td><td>";
 							$DAYS_SQLQ = "select * from addays where AdIdRef = '".$COM['RotationNum']."' ";
-							if(!$DAYS_QU = mysql_query($DAYS_SQLQ)){
-								echo mysql_error();
+							if(!$DAYS_QU = mysqli_query($con, $DAYS_SQLQ)){
+								echo mysqli_error();
 							}
 							else{
-								while($DAY = mysql_fetch_array($DAYS_QU)){
+								while($DAY = mysqli_fetch_array($DAYS_QU)){
 									echo $DAY['Day'] . ", ";
 								}
 							}
@@ -298,7 +298,7 @@ xmlhttp.send();
 						}
 					}
 					else{
-						echo "<tr><td>ERROR:".mysql_error()."</td></tr>";
+						echo "<tr><td>ERROR:".mysqli_error()."</td></tr>";
 					}
 				?>
 			</table>
