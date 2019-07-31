@@ -105,6 +105,17 @@ class traffic extends station{
 	return $status;
     }
 
+
+
+    public function getAds() {
+    $stmt = $this->mysqli->query("SELECT Adid, AdName FROM adverts WHERE active = 1");
+    $ads = [];
+    while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
+        $ads[$row['Adid']] = $row['AdName'];
+    return $ads;
+    }
+
+
     /*
     * @author Derek Melchin
     * @abstract Fetch all of the names of our clients

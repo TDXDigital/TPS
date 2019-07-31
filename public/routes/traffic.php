@@ -134,7 +134,9 @@ $app->group('/traffic', function() use ($app, $authenticate){
  });
 
     $app->get('/schedule', function() use ($app, $authenticate){
+        $traffic = new \TPS\traffic();
         $params = array(
+            "ads"=>$traffic->getAds(),
             "area"=>"Traffic",
             "title"=>"Requirement",
         );

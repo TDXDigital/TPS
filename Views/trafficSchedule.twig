@@ -58,6 +58,106 @@
 
 <div class="container">
 	
+	<form role="form" method="POST" action="/traffic/schedule/add">
+		<div class="row">
+			<div class="col-sm-3" id="catSelection" >
+				<label for="Category">Ad</label>
+				<select name="cat" id="Category" class="form-control">
+	               {% for key, ad in ads %}
+		           		<option value="{{key}}"> {{ ad }} </option>
+           			{% endfor %}
+               	</select>
+               	<input type="hidden" id="catUpdate" name="catUpdate" value="{{ad.Category}}" />
+            </div>
+
+            <div class="col-sm-2">
+				<div class="form-group">
+					<label for="adNumber">Hourly Limit</label>
+					<input type='number' class="form-control" id='adNumber' name="hourLimit" value="{{ad.AdId}}"/>
+			   </div>
+			</div>
+
+			<div class="col-sm-2">
+			    <div class="form-group">
+				<label for="company" class="">Block Limit </label>
+				<input type='number' class="form-control" id='adName' required value="{{ad.AdName}}" name="blockLimit"/>
+			    </div>
+			</div>
+
+			<div class="col-sm-2">
+			    <div class="form-group">
+				<label for="company" class="">Start Time </label>
+				<input type='time' class="form-control" id='adName' required value="{{ad.AdName}}" name="startTime"/>
+			    </div>
+			</div>
+			<div class="col-sm-2">
+			    <div class="form-group">
+				<label for="company" class="">End Time </label>
+				<input type='time' class="form-control" id='adName' required value="{{ad.AdName}}" name="endTime"/>
+			    </div>
+			</div>
+
+        </div>
+        <div class="row">
+        	<div class="col-sm-1">
+			    <div class="form-group">
+				<label for="company">Days: </label>
+			    </div>
+			</div>
+
+        	<div class="col-sm-1">
+			    <div class="form-group">
+				<label for="company">M </label>
+				<input type='checkbox' class="form-control" name="m"/>
+			    </div>
+			</div>
+			<div class="col-sm-1">
+			    <div class="form-group">
+				<label for="company">T </label>
+				<input type='checkbox' class="form-control" name="m"/>
+			    </div>
+			</div>
+			<div class="col-sm-1">
+			    <div class="form-group">
+				<label for="company">W </label>
+				<input type='checkbox' class="form-control" name="m"/>
+			    </div>
+			</div>
+			<div class="col-sm-1">
+			    <div class="form-group">
+				<label for="company">R </label>
+				<input type='checkbox' class="form-control" name="m"/>
+			    </div>
+			</div>
+			<div class="col-sm-1">
+			    <div class="form-group">
+				<label for="company">F </label>
+				<input type='checkbox' class="form-control" name="m"/>
+			    </div>
+			</div>
+			<div class="col-sm-1">
+			    <div class="form-group">
+				<label for="company">Sa </label>
+				<input type='checkbox' class="form-control" name="m"/>
+			    </div>
+			</div>	
+			<div class="col-sm-1">
+			    <div class="form-group">
+				<label for="company">Su </label>
+				<input type='checkbox' class="form-control" name="m"/>
+			    </div>
+			</div>
+			<div class="col-sm-1">
+			</div>
+			<div class="col-sm-1">
+				<label for="company">&nbsp; </label>
+				<input type="submit" value="Submit" class="btn btn-primary">
+			</div>
+
+        </div>
+
+	</form>
+	<hr>
 
 	<div id="calendar" style="height: 800px;"></div>
 
@@ -67,7 +167,7 @@
 	<script src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
 	<script src="{{siteUrl}}/js/chosen.jquery.min.js"></script>
 	<script src="{{siteUrl}}/TPSBIN/JS/Advertisements/trafficNew.js"></script>
-	<script src="{{siteUrl}}/js/timetable/scripts/timetable.js"></script>
+	<script src="{{siteUrl}}/js/Datejs-master/build/date.js"></script>
 
 
 
@@ -111,19 +211,37 @@
 
 	<script>
 	var Calendar = tui.Calendar;
+  var cal = new tui.Calendar('#calendar', {
+    defaultView: 'week',
+    taskView: false,
+    scheduleView: 'time',  // Can be also ['allday', 'time']
+    useDetailPopup: true,
+    isReadOnly: true
+  });
 
-var calendar = new Calendar('#calendar', {
-  defaultView: 'week',
-  taskView: false,
-  template: {
-    monthGridHeader: function(model) {
-      var date = new Date(model.date);
-      var template = '<span class="tui-full-calendar-weekday-grid-date">' + date.getDate() + '</span>';
-      return template;
+cal.createSchedules([
+    {
+        id: '1',
+        calendarId: '1',
+        title: 'my schedule',
+        category: 'time',
+        dueDateClass: '',
+        start: Date.monday().at('12:30:00'),
+        end: Date.monday().at('22:30:00')
+    },
+    {
+        id: '2',
+        calendarId: '1',
+        title: 'second schedule',
+        category: 'time',
+        dueDateClass: '',
+        start: '2018-01-18T17:30:00+09:00',
+        end: '2018-01-19T17:31:00+09:00',
+        isReadOnly: true    // schedule is read-only
     }
-  }
-});
+]);
 
+	console.log(Date.monday().at('22:30:00'));
     </script>
 
 
