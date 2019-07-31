@@ -1,0 +1,18 @@
+{
+    "TPS_Errno" : "ADDY-001",
+    "type" : "database",
+    "execute" : "SQL",
+    "description" : "Makes adday enum values match the radio_show_promos day enum",
+    "SQL_QRY" : {
+        "TEST" : "SHOW COLUMNS FROM addays WHERE `Field`='Day' AND `Type` like \"%Sun'%\";",
+        "RESULT" : {
+	    "Field" : [
+		"Day"
+	    ]
+	},
+	"Negate": 0,
+	"createMode" : 1,
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "ADDAYS_UPDATE_1.sql"
+    }
+}

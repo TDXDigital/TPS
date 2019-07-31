@@ -34,6 +34,79 @@ class traffic extends station{
 
     /*
     * @author Derek Melchin
+    * @abstract 
+    * @return 
+    */
+    public function getAdRequirements($adID) {
+	throw new \Exception("To be implemented");
+    }
+
+    /*
+    * @author Derek Melchin
+    * @abstract Set the ad requirements for the given ad ID. This is how many times it can be played per hour & period.
+    * @param $adID          int  Unique id of the advert
+    * @param $schedules     arr  An array of schedules (see createSchedule()) for the ad to be played
+    * @param $hourlyLimits  arr  The maximum number of times the ad can be played per hour for the parrallel schedule period
+    * @param $blockLimits   arr  The maximum number of times the ad can be played for the parrallel schedule period
+    * @return boolean 0 - Something went wrong. 1 - Successful insertion into db
+    */
+    public function setAdRequirements($adID, $schedules, $hourlyLimits, $blockLimits) {
+	// Remove all the current adrotation & addays from the ad
+	if ($stmt = $this->mysqli->prepare("DELETE FROM adrotation WHERE AdId=?")) {
+	    $stmt->bind_param("i", $adID);
+	    if ($stmt->execute())
+                $this->log->info(sprintf("Deleted from adrotation where AdId is %d", $adID));
+	    else
+	        $this->log->error($this->mysqli->errno);
+	} else {
+            $this->log->error("Failed to delete adrotation " . $this->mysqli->error);
+	}
+
+	$status = TRUE;
+        $i = 0;
+	// Loop through each of the schedules
+	while ($i < count($schedules)) {
+	    // Insert each schedule into adrotation
+            if ($stmt = $this->mysqli->prepare("INSERT INTO adrotation (startTime,endTime,HourlyLimit,BlockLimit,AdId) VALUES (?, ?, ?, ?, ?)")) {
+		$startTime = array_values($schedules[$i])[0][0][0];
+		$endTime = array_values($schedules[$i])[0][0][1];
+                $stmt->bind_param("ssiii", $startTime, $endTime, $hourlyLimits[$i], $blockLimits[$i], $adID);
+                if($stmt->execute()) {
+		    $rotationNum = $this->mysqli->insert_id;
+                    $this->log->info(sprintf("Insert into adrotation %d", $rotationNum));
+		    $stmt->close();
+
+		    // If you successfully insert the schedule into adrotation, set the day in addays
+                    if ($stmt = $this->mysqli->prepare("INSERT INTO addays (AdIdRef, Day) VALUES (?, ?)")) {
+			$day = array_keys($schedules[$i])[0];
+                        $stmt->bind_param("is", $rotationNum, $day);
+
+                	if($stmt->execute()) {
+	                    $this->log->info(sprintf("Insert into adday %d", $this->mysqli->insert_id));
+			} else {
+	                    $this->log->error($this->mysqli->errno);
+		            $status = FALSE;
+			}
+
+		    } else {
+                        $this->log->error("Failed to insert into adday " . $this->mysqli->error);
+		        $status = FALSE;
+		    }
+		} else {
+                    $this->log->error($this->mysqli->errno);
+		    $status = FALSE;
+	        }
+	    } else{
+                $this->log->error("Failed to insert into adrotation " . $this->mysqli->error);
+		$status = FALSE;
+            }
+	    $i++;
+	}
+	return $status;
+    }
+
+    /*
+    * @author Derek Melchin
     * @abstract Fetch all of the names of our clients
     * @return Associative array [ClientNumber => Name, ...]
     */
