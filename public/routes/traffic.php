@@ -278,7 +278,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
         // $adTimeEnds = ['2:00', '1:30', '18:00', '8:00'];
        if($app->request->post('Monday') != null)
        {
-            array_push($adDays, 'Monday');
+            array_push($adDays, 'Mon');
             array_push($adTimeStarts, $adTimeStartVal);
             array_push($adTimeEnds, $adTimeEndVal);
             array_push($hourlyLimits, $hourlyLimitVal);
@@ -286,7 +286,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
        }
        if($app->request->post('Tuesday') != null)
        {
-            array_push($adDays, 'Tuesday');
+            array_push($adDays, 'Tue');
             array_push($adTimeStarts, $adTimeStartVal);
             array_push($adTimeEnds, $adTimeEndVal);
             array_push($hourlyLimits, $hourlyLimitVal);
@@ -294,7 +294,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
        }
        if($app->request->post('Wednesday') != null)
        {
-            array_push($adDays, 'Wednesday');
+            array_push($adDays, 'Wed');
             array_push($adTimeStarts, $adTimeStartVal);
             array_push($adTimeEnds, $adTimeEndVal);
             array_push($hourlyLimits, $hourlyLimitVal);
@@ -302,7 +302,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
        }
        if($app->request->post('Thursday') != null)
        {
-            array_push($adDays, 'Thursday' );
+            array_push($adDays, 'Thu' );
             array_push($adTimeStarts, $adTimeStartVal);
             array_push($adTimeEnds, $adTimeEndVal);
             array_push($hourlyLimits, $hourlyLimitVal);
@@ -310,7 +310,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
        }
        if($app->request->post('Friday') != null)
        {
-            array_push($adDays, 'Friday' );
+            array_push($adDays, 'Fri' );
             array_push($adTimeStarts, $adTimeStartVal);
             array_push($adTimeEnds, $adTimeEndVal);
             array_push($hourlyLimits, $hourlyLimitVal);
@@ -318,7 +318,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
        }
        if($app->request->post('Saturday') != null)
        {
-            array_push($adDays, 'Saturday' );
+            array_push($adDays, 'Sat' );
             array_push($adTimeStarts, $adTimeStartVal);
             array_push($adTimeEnds, $adTimeEndVal);
             array_push($hourlyLimits, $hourlyLimitVal);
@@ -326,7 +326,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
        }
        if($app->request->post('Sunday') != null)
        {
-            array_push($adDays, 'Sunday' );
+            array_push($adDays, 'Sun' );
             array_push($adTimeStarts, $adTimeStartVal);
             array_push($adTimeEnds, $adTimeEndVal);
             array_push($hourlyLimits, $hourlyLimitVal);
