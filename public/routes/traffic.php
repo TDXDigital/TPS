@@ -88,8 +88,6 @@ $app->group('/traffic', function() use ($app, $authenticate){
 				$backingArtist, $backingAlbum, $showName, $showSchedule, $psa);
     $ad = $traffic->get($id);
 
-    $traffic->setAdRequirements($id, $adSchedules, $hourlyLimits, $blockLimits);
-
     if($id == -1 )
         $flash['error'] = 'Failed to Create new Ad';
     else
@@ -169,7 +167,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
         $company = $app->request->post('company') ?: NULL;
         $contactEmail = $app->request->post('email') ?: NULL;
         $clientPhone = $app->request->post('phone') ?: NULL;
-        $adName = $cat == 12 ? $app->request->post('adName') : $app->request->post('title');
+        $adName = $cat == 12 ? $app->request->post('title') : $app->request->post('adName');
         $maxPlayCount = $app->request->post('maxPlayCount') ?: NULL;
         $maxDailyPlayCount = $app->request->post('maxDailyPlayCount') ?: NULL;
         $assignedShow = $cat==51? $app->request->post('assignedShow') : $app->request->post('assignedShowSponsor');
@@ -182,30 +180,6 @@ $app->group('/traffic', function() use ($app, $authenticate){
         $showTimeStartVals = $app->request->post('showTimeStartVal');
         $showTimeEndVals = $app->request->post('showTimeEndVal');
         $showSchedule = $traffic->createSchedule($showDays, $showTimeStartVals, $showTimeEndVals);
-
-        $hourlyLimit =  $app->request->post('hourlyLimit') ?: NULL;
-        $blockLimit =  $app->request->post('blockLimit') ?: NULL;
-        $adDays = $app->request->post('adDayVal');
-        $adStarts = $app->request->post('adTimeStartVal');
-        $adEnds = $app->request->post('adTimeEndVal');
-//        $hourlyLimit =  $app->request->post('hourlyLimit') ?: NULL;
-        $hourlyLimits = [1, 1, 1, 2];
-//        $blockLimit =  $app->request->post('blockLimit') ?: NULL;
-        $blockLimits = [1, 2, 3, 1];
-//        $adDays = $app->request->post('adDayVal');
-        $adDays = ['Mon', 'Fri', 'Fri', 'Wed'];
-//        $adTimeStarts = $app->request->post('adTimeStartVal');
-        $adTimeStarts = ['12:00', '11:30', '16:00', '7:00'];
-//        $adTimeEnds = $app->request->post('adTimeEndVal');
-        $adTimeEnds = ['2:00', '1:30', '18:00', '8:00'];
-
-        $adSchedules = [];
-        $i = 0;
-        while ($i < count($adDays)) {
-    	    $adSchedule = $traffic->createSchedule([$adDays[$i]], [$adTimeStarts[$i]], [$adTimeEnds[$i]]);
-	    array_push($adSchedules, $adSchedule);
-	    $i++;
-        }
 
         // $title =  $app->request->post('title') ?: NULL;
         $length = $app->request->post('length');
@@ -228,8 +202,6 @@ $app->group('/traffic', function() use ($app, $authenticate){
 				  $backingArtist, $backingAlbum, $showName, $showSchedule, $psa);
         $ad = $traffic->get($id);
 	$promoInfo = $traffic->getPromoInfo($id);
-
-        $traffic->setAdRequirements($id, $adSchedules, $hourlyLimits, $blockLimits);
 
         $flash = array();
         if($id == -1 )
