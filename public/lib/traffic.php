@@ -39,7 +39,20 @@ class traffic extends station{
         while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
             array_push($adRotation, $row);
 
+        $stmt->close();
         return $adRotation;
+    }
+
+    public function deleteAdRotation($adRotationNum)
+    {
+        if ($stmt = $this->mysqli->prepare("DELETE FROM adrotation WHERE RotationNum=?")) {
+        $stmt->bind_param("i", $adRotationNum);
+        if ($stmt->execute())
+            $this->log->info(sprintf("Deleted Ad rotation %d", $adRotationNum));
+        else 
+            $this->log->error($this->mysqli->errno);
+        }
+        $stmt->close();
     }
 
     /*

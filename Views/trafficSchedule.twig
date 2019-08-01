@@ -125,7 +125,7 @@
 			<div class="col-sm-1">
 			    <div class="form-group">
 				<label for="Thrusday">Thr </label>
-				<input type='checkbox' class="form-control" name="Thrusday"/>
+				<input type='checkbox' class="form-control" name="Thursday"/>
 			    </div>
 			</div>
 			<div class="col-sm-1">
@@ -215,7 +215,7 @@
     taskView: false,
     scheduleView: 'time',  // Can be also ['allday', 'time']
     useDetailPopup: true,
-    isReadOnly: true
+    // isReadOnly: true
   });
 
 
@@ -223,7 +223,7 @@ cal.createSchedules([
 
 	{% for key, ad in rotation %}
 	{
-        id: '{{ad.AdId}}',
+        id: '{{ad.RotationNum}}',
         calendarId: '1',
         title: '{{ad.AdName}}',
         category: 'time',
@@ -236,7 +236,17 @@ cal.createSchedules([
 	{% endfor %}
 ]);
 
-	console.log(Date.monday().at('22:30:00'));
+	cal.on('beforeDeleteSchedule', function(event) {
+	    var schedule = event.schedule;
+	    $.ajax({
+            url: "/traffic/schedule/delete/" + schedule.id,
+            type: 'POST',
+            }).done(function(data) {
+            	cal.deleteSchedule(schedule.id, "1", false);
+            }).fail(function(data){
+                alert(JSON.stringfy(data));
+            });
+	});
     </script>
 
 

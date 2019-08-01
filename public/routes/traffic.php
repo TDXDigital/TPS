@@ -252,6 +252,11 @@ $app->group('/traffic', function() use ($app, $authenticate){
         echo json_encode($clientInfo);
     });
 
+    $app->post('/schedule/delete/:adId', $authenticate, function ($adRotationNum) use ($app){
+        $traffic = new \TPS\traffic();
+        $traffic->deleteAdRotation($adRotationNum);
+    });
+
     $app->post('/schedule/add', $authenticate, function () use ($app){
         $traffic = new \TPS\traffic();
         
@@ -295,9 +300,9 @@ $app->group('/traffic', function() use ($app, $authenticate){
             array_push($hourlyLimits, $hourlyLimitVal);
             array_push($blockLimits, $blockLimitVal);
        }
-       if($app->request->post('Thrusday') != null)
+       if($app->request->post('Thursday') != null)
        {
-            array_push($adDays, 'Thrusday' );
+            array_push($adDays, 'Thursday' );
             array_push($adTimeStarts, $adTimeStartVal);
             array_push($adTimeEnds, $adTimeEndVal);
             array_push($hourlyLimits, $hourlyLimitVal);
