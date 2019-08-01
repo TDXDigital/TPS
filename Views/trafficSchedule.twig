@@ -61,39 +61,38 @@
 	<form role="form" method="POST" action="/traffic/schedule/add">
 		<div class="row">
 			<div class="col-sm-3" id="catSelection" >
-				<label for="Category">Ad</label>
-				<select name="cat" id="Category" class="form-control">
+				<label for="adId">Ad</label>
+				<select name="adId" id="adId" class="form-control">
 	               {% for key, ad in ads %}
 		           		<option value="{{key}}"> {{ ad }} </option>
            			{% endfor %}
                	</select>
-               	<input type="hidden" id="catUpdate" name="catUpdate" value="{{ad.Category}}" />
             </div>
 
             <div class="col-sm-2">
 				<div class="form-group">
 					<label for="adNumber">Hourly Limit</label>
-					<input type='number' class="form-control" id='adNumber' name="hourLimit" value="{{ad.AdId}}"/>
+					<input type='number' class="form-control" id='hourLimit' name="hourLimit" value="{{ad.AdId}}"/>
 			   </div>
 			</div>
 
 			<div class="col-sm-2">
 			    <div class="form-group">
 				<label for="company" class="">Block Limit </label>
-				<input type='number' class="form-control" id='adName' required value="{{ad.AdName}}" name="blockLimit"/>
+				<input type='number' class="form-control" id='blockLimit' required value="{{ad.AdName}}" name="blockLimit"/>
 			    </div>
 			</div>
 
 			<div class="col-sm-2">
 			    <div class="form-group">
 				<label for="company" class="">Start Time </label>
-				<input type='time' class="form-control" id='adName' required value="{{ad.AdName}}" name="startTime"/>
+				<input type='time' class="form-control" id='startTime' required value="{{ad.AdName}}" name="startTime"/>
 			    </div>
 			</div>
 			<div class="col-sm-2">
 			    <div class="form-group">
 				<label for="company" class="">End Time </label>
-				<input type='time' class="form-control" id='adName' required value="{{ad.AdName}}" name="endTime"/>
+				<input type='time' class="form-control" id='endTime' required value="{{ad.AdName}}" name="endTime"/>
 			    </div>
 			</div>
 
@@ -107,44 +106,44 @@
 
         	<div class="col-sm-1">
 			    <div class="form-group">
-				<label for="company">M </label>
-				<input type='checkbox' class="form-control" name="m"/>
+				<label for="Monday">Mon </label>
+				<input type='checkbox' class="form-control" name="Monday"/>
 			    </div>
 			</div>
 			<div class="col-sm-1">
 			    <div class="form-group">
-				<label for="company">T </label>
-				<input type='checkbox' class="form-control" name="m"/>
+				<label for="Tuesday">Tue </label>
+				<input type='checkbox' class="form-control" name="Tuesday"/>
 			    </div>
 			</div>
 			<div class="col-sm-1">
 			    <div class="form-group">
-				<label for="company">W </label>
-				<input type='checkbox' class="form-control" name="m"/>
+				<label for="Wednesday">Wed </label>
+				<input type='checkbox' class="form-control" name="Wednesday"/>
 			    </div>
 			</div>
 			<div class="col-sm-1">
 			    <div class="form-group">
-				<label for="company">R </label>
-				<input type='checkbox' class="form-control" name="m"/>
+				<label for="Thrusday">Thr </label>
+				<input type='checkbox' class="form-control" name="Thrusday"/>
 			    </div>
 			</div>
 			<div class="col-sm-1">
 			    <div class="form-group">
-				<label for="company">F </label>
-				<input type='checkbox' class="form-control" name="m"/>
+				<label for="Friday">Fri </label>
+				<input type='checkbox' class="form-control" name="Friday"/>
 			    </div>
 			</div>
 			<div class="col-sm-1">
 			    <div class="form-group">
-				<label for="company">Sa </label>
-				<input type='checkbox' class="form-control" name="m"/>
+				<label for="Saturday">Sat </label>
+				<input type='checkbox' class="form-control" name="Saturday"/>
 			    </div>
 			</div>	
 			<div class="col-sm-1">
 			    <div class="form-group">
-				<label for="company">Su </label>
-				<input type='checkbox' class="form-control" name="m"/>
+				<label for="Sunday">Sun </label>
+				<input type='checkbox' class="form-control" name="Sunday"/>
 			    </div>
 			</div>
 			<div class="col-sm-1">

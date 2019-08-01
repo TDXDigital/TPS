@@ -66,24 +66,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $showTimeEndVals = $app->request->post('showTimeEndVal');
     $showSchedule = $traffic->createSchedule($showDays, $showTimeStartVals, $showTimeEndVals);
 
-//    $hourlyLimit =  $app->request->post('hourlyLimit') ?: NULL;
-    $hourlyLimits = [1, 1, 1, 2];
-//    $blockLimit =  $app->request->post('blockLimit') ?: NULL;
-    $blockLimits = [1, 2, 3, 1];
-//    $adDays = $app->request->post('adDayVal');
-    $adDays = ['Mon', 'Fri', 'Fri', 'Sun'];
-//    $adTimeStarts = $app->request->post('adTimeStartVal');
-    $adTimeStarts = ['12:00', '11:30', '16:00', '6:00'];
-//    $adTimeEnds = $app->request->post('adTimeEndVal');
-    $adTimeEnds = ['2:00', '1:30', '18:00', '8:00'];
 
-    $adSchedules = [];
-    $i = 0;
-    while ($i < count($adDays)) {
-	$adSchedule = $traffic->createSchedule([$adDays[$i]], [$adTimeStarts[$i]], [$adTimeEnds[$i]]);
-	array_push($adSchedules, $adSchedule);
-	$i++;
-    }
 
     // $title =  $app->request->post('title') ?: NULL;
     $length = $app->request->post('length');
@@ -264,5 +247,94 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
         echo json_encode($clientInfo);
     });
+
+    $app->post('/schedule/add', $authenticate, function () use ($app){
+        $traffic = new \TPS\traffic();
+        $id = $app->request->post('adId');
+        $adTimeStarts = array();
+        $adTimeEnds = array();
+        $hourlyLimits = array();
+        $blockLimits = array();
+        $adDays = array();
+
+        $hourlyLimitVal =  $app->request->post('hourLimit') ?: NULL;
+        // $hourlyLimits = [1, 1, 1, 2];
+       $blockLimitVal =  $app->request->post('blockLimit') ?: NULL;
+        // $blockLimits = [1, 2, 3, 1];
+        // $adDays = ['Mon', 'Fri', 'Fri', 'Sun'];
+       $adTimeStartVal = $app->request->post('startTime');
+        // $adTimeStarts = ['12:00', '11:30', '16:00', '6:00'];
+       $adTimeEndVal = $app->request->post('endTime');
+        // $adTimeEnds = ['2:00', '1:30', '18:00', '8:00'];
+
+       if($app->request->post('Monday') != null)
+       {
+            array_push($adDays, 'Monday');
+            array_push($adTimeStarts, $adTimeStartVal);
+            array_push($adTimeEnds, $adTimeEndVal);
+            array_push($hourlyLimits, $hourlyLimitVal);
+            array_push($blockLimits, $blockLimitVal);
+       }
+       if($app->request->post('Tuesday') != null)
+       {
+            array_push($adDays, 'Tuesday');
+            array_push($adTimeStarts, $adTimeStartVal);
+            array_push($adTimeEnds, $adTimeEndVal);
+            array_push($hourlyLimits, $hourlyLimitVal);
+            array_push($blockLimits, $blockLimitVal);
+       }
+       if($app->request->post('Wednesday') != null)
+       {
+            array_push($adDays, 'Wednesday');
+            array_push($adTimeStarts, $adTimeStartVal);
+            array_push($adTimeEnds, $adTimeEndVal);
+            array_push($hourlyLimits, $hourlyLimitVal);
+            array_push($blockLimits, $blockLimitVal);
+       }
+       if($app->request->post('Thrusday') != null)
+       {
+            array_push($adDays, 'Thrusday' );
+            array_push($adTimeStarts, $adTimeStartVal);
+            array_push($adTimeEnds, $adTimeEndVal);
+            array_push($hourlyLimits, $hourlyLimitVal);
+            array_push($blockLimits, $blockLimitVal);
+       }
+       if($app->request->post('Friday') != null)
+       {
+            array_push($adDays, 'Friday' );
+            array_push($adTimeStarts, $adTimeStartVal);
+            array_push($adTimeEnds, $adTimeEndVal);
+            array_push($hourlyLimits, $hourlyLimitVal);
+            array_push($blockLimits, $blockLimitVal);
+       }
+       if($app->request->post('Saturday') != null)
+       {
+            array_push($adDays, 'Saturday' );
+            array_push($adTimeStarts, $adTimeStartVal);
+            array_push($adTimeEnds, $adTimeEndVal);
+            array_push($hourlyLimits, $hourlyLimitVal);
+            array_push($blockLimits, $blockLimitVal);
+       }
+       if($app->request->post('Sunday') != null)
+       {
+            array_push($adDays, 'Sunday' );
+            array_push($adTimeStarts, $adTimeStartVal);
+            array_push($adTimeEnds, $adTimeEndVal);
+            array_push($hourlyLimits, $hourlyLimitVal);
+            array_push($blockLimits, $blockLimitVal);
+       }
+
+
+        $adSchedules = [];
+        $i = 0;
+        while ($i < count($adDays)) {
+            $adSchedule = $traffic->createSchedule([$adDays[$i]], [$adTimeStarts[$i]], [$adTimeEnds[$i]]);
+            array_push($adSchedules, $adSchedule);
+            $i++;
+        }
+
+        $traffic->setAdRequirements($id, $adSchedules, $hourlyLimits, $blockLimits);
+    });
+
 });
 

@@ -321,4 +321,5 @@ $app->group('/episode', $authenticate($app,[1,2]),
 
         $app->render("episodeLog.twig",$params);
     });
+
 });
