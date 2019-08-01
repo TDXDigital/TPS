@@ -535,13 +535,13 @@ class program extends station{
             $req['playlist'] = $PL;
 
         if(isset($Req2['sponsor_ids']) && count($Req2['sponsor_ids']) > 0) {
-            $SPONS_SQL = " select * from adverts where AdId IN (" . implode(", ", $Req2['sponsor_ids']) . ")";
+            $SPONS_SQL = " select * from adverts left join clients on adverts.ClientID=clients.ClientNumber where AdId IN (" . implode(", ", $Req2['sponsor_ids']) . ")";
             $SPONSRES = $this->mysqli->query($SPONS_SQL);
             $req['spons'] = []; // Sponsor Ad rows. Used for getAdOptions function in episode
 	    $req['sponsors'] = []; // Sponsor Ad names
 	    while ($row = $SPONSRES->fetch_array(MYSQLI_ASSOC)) {
 		array_push($req['spons'], $row);
-		array_push($req['sponsors'], $row['AdName']);
+		array_push($req['sponsors'], $row['companyName']);
 	    }
         }
         else {

@@ -122,7 +122,8 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $episodeCheck = new \TPS\episode($program, NULL, $airDate, $airTime,
                 $description, $type, $recordDate);
 
-        $ads = $episode->getAdOptions($req['spons']);
+	$localTime = strtotime($station->getTimeFromServerTime(date('Y-m-d H:i:s')));
+        $ads = $episode->getAdOptions($localTime);
         $commercials =  $episode->getAllCommercials($ads);
          
         if( $type == 2){
@@ -252,7 +253,8 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $episode->setAttributes($epNum);
 
         $req = $program->getRequirement();
-        $ads = $episode->getAdOptions($req['spons']);
+	$localTime = strtotime($station->getTimeFromServerTime(date('Y-m-d H:i:s')));
+        $ads = $episode->getAdOptions($localTime);
         $commercials =  $episode->getAllCommercials($ads);
         $params = array(
             'area'=>'Episode',

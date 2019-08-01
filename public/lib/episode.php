@@ -540,25 +540,19 @@ class episode extends program{
         $stmt->close();
     }
 
-    public function getAdOptions($SPONS)
+    public function getAdOptions($localTime)
     {
-/*  
         $REQAD_SQL = "SELECT adverts.*,adrotation.* FROM adrotation,addays,adverts WHERE '".
-        date('H:i:s')."' BETWEEN adrotation.startTime AND adrotation.endTime AND addays.AdIdRef=".
-        "adrotation.RotationNum AND adrotation.AdId=adverts.AdId AND addays.Day='".date('l').
-        "' AND adverts.active='1' AND '".date('Y-m-d')."' BETWEEN adverts.StartDate AND ".
+        date('H:i:s', $localTime)."' BETWEEN adrotation.startTime AND adrotation.endTime AND addays.AdIdRef=".
+        "adrotation.RotationNum AND adrotation.AdId=adverts.AdId AND addays.Day='".substr(date('l', $localTime), 0, 3).
+        "' AND adverts.active='1' AND '".date('Y-m-d', $localTime)."' BETWEEN adverts.StartDate AND ".
         "adverts.EndDate";
-*/
+
         $RQADSIDS = array();
         $ADIDS = array();
         $REQAD = "";
+        $ADOPT="";
 
-	// Make show sponsor ads required
-	foreach ($SPONS as $SPON)
-	    $RQADSIDS[(int)$SPON['AdId']] = $SPON['AdName'];
-
-
-/*
         if(!$READS = $this->mysqli->query($REQAD_SQL))
         {
             $REQAD .= "<option value='-1'>ERROR - AdRotation</option>";
@@ -566,25 +560,34 @@ class episode extends program{
         else if(mysqli_num_rows($READS)==0){
             $REQAD .= "<option value='-1'>No Paid Commercials</option>";
         }
-        else if(!isset($SPONS)){
+        else {
             while($PdAds=$READS->fetch_array(MYSQLI_ASSOC)){
                 if($PdAds['Limit'] == NULL || $PdAds['Playcount'] < $PdAds['Limit']){
                                 // Check BlockLimit (BLIM)
                     $CHECKBLIM = "SELECT count(song.songid) FROM adrotation,song WHERE adrotation.AdId='".
                     addslashes($PdAds['AdId'])."' AND song.title='".addslashes($PdAds['AdName']).
-                    "' and song.date='".addslashes($this->date)."' and song.time BETWEEN '".
+                    "' and song.date='".addslashes($localTime)."' and song.time BETWEEN '".
                     addslashes($PdAds['startTime'])."' AND '".addslashes($PdAds['endTime'])."' ";
                     $BL_lim_R = $this->mysqli->query($CHECKBLIM);
                     $BL_lim = $BL_lim_R->fetch_array(MYSQLI_ASSOC);
                     if($this->mysqli->errno){
                         $REQAD .= "<option value='-3'>ERROR SQL</option>";
                     }
+		    // If the ad is within it's block limit
                     if($BL_lim['count(song.songid)']<$PdAds['BlockLimit']){
-                                    //echo "<option value='-2'>BL_Lim:".$BL_lim['count(song.songid)']."</option>";
-                        $REQAD .= "<option value='".$PdAds['AdId']."'>".$PdAds['AdName']."</option>";
-                        array_push($RQADSIDS,$PdAds['AdId']);
-                        array_push($ADIDS,$PdAds['AdId']);
-                        $SQL_PL_AD = "INSERT INTO promptlog (EpNum,AdNum) VALUES (".
+
+			// If assisgned to this show
+			if ($PdAds['assignedShow'] == 0) {
+			    // Make required
+                            array_push($RQADSIDS,$PdAds['AdId']);
+                            $REQAD .= "<option value='".$PdAds['AdId']."'>".$PdAds['AdName']."</option>";
+			} else {
+			    // Make available
+                            array_push($ADIDS,$PdAds['AdId']);
+                            $ADOPT .= "<option value='".$PdAds['AdId']."'>".$PdAds['AdName']."</option>";
+			}
+
+/*                        $SQL_PL_AD = "INSERT INTO promptlog (EpNum,AdNum) VALUES (".
                         addslashes($ep_num).",".addslashes($PdAds['AdId']).")";
                         if(!$this->mysqli->query($SQL_PL_AD)){
                             $REQAD .= "<!-- ERROR: " . $this->mysqli->error . "-->";
@@ -592,22 +595,15 @@ class episode extends program{
                         }
                         else{
                             $REQAD .= "<!-- Inserted into Log -->";
-                        }
+                        }*/
                     }
                 }
             }
         }
-*/
-        if(sizeof($RQADSIDS)>0){
-            if($REQAD!=""&&!isset($SPONS)){
 
-            }
-            else if(isset($SPONS)){
-	        // Add sponsor select options
-                $REQAD = "<optgroup label='Sponsored Program'>";
-		foreach ($RQADSIDS as $adID => $adName)
-	    	    $REQAD .= "<option value='" . $adID . "'>" . $adName . "</option>";
-		$REQAD .= "</optgroup>";
+        if(sizeof($RQADSIDS)>0){
+            if($REQAD!=""){
+
             }
             else{
                 $REQAD = "<option>No Required Ads [E3]</option>";
@@ -617,9 +613,8 @@ class episode extends program{
             $REQAD = "<option>No Required Ads</option>";
         }
 
-        $ADOPT="";
-        if(sizeof($RQADSIDS) > 0 && !isset($SPONS)){
-            $REQAD .= "<option>Paid Ad Required this hour [".sizeof($RQADSIDS)."]</option>";
+        if(sizeof($RQADSIDS) > 0){
+//            $REQAD .= "<option>Paid Ad Required this hour [".sizeof($RQADSIDS)."]</option>";
         }
         else
         {
@@ -639,17 +634,17 @@ class episode extends program{
 		// Select the active friend adverts with the least playcount
 		// If there are none, just select all the advert that are between their start & end dates
                 $minplaysql51 = "select MIN(Playcount) from adverts where Category='51' ".
-                "and Active='1' and Friend='1' and '".$this->mysqli->real_escape_string($this->date).
+                "and Active='1' and Friend='1' and '".$this->mysqli->real_escape_string($localTime).
                 "' between StartDate and EndDate";
                 $advertResult = $this->mysqli->query($minplaysql51);
                 if(!$minplay51Array = $advertResult->fetch_array(MYSQLI_ASSOC)){
                     $selcom51 = "select * from adverts where Category='51' and '".
-                    $this->mysqli->real_escape_string($this->date)."' between StartDate and EndDate";
+                    $this->mysqli->real_escape_string($localTime)."' between StartDate and EndDate";
                 }
                 else{
                     $minplay51 = $minplay51Array['MIN(Playcount)'];
                     $selcom51 = "select * from adverts where Category='51' and '" .
-                    addslashes($this->date) . "' between StartDate and EndDate and Friend='1' ".
+                    addslashes($localTime) . "' between StartDate and EndDate and Friend='1' ".
                     "and Active='1' and Playcount='".$minplay51."' ";
                 }
 //                $selspon = "select MIN(Playcount) from adverts where Category!='51' and '" .
@@ -666,6 +661,7 @@ class episode extends program{
                 }
 //            }
         }
+
         $result = array();
         $result['REQAD'] = $REQAD;
         $result['ADOPT'] = $ADOPT;
@@ -677,9 +673,11 @@ class episode extends program{
 
     public function getAllCommercials($ads)
     {
-	$REQAD = $ads['REQAD'];
-        $ADIDS = $ads['ADIDS'];
-        $RQADSIDS = $ads['RQADSIDS'];
+
+	$REQAD = $ads['REQAD']; // Required ads
+        $ADIDS = $ads['ADIDS']; // Available ad ids
+        $RQADSIDS = $ads['RQADSIDS']; // Required ad ids
+
         $output = "";
        //<input type="text" name="title" id="title001" size="33" required="true" maxlength="45">
         $output .= "<select id=\"ADLis\" name=\"title\" class=\"adch form-control\" >";
@@ -699,11 +697,11 @@ class episode extends program{
                     $AVAIL=FALSE;
                     $REQUIRE=FALSE;
                     $TEMP = "<option value=\"" . $ADZL['AdId'] . "\" ";
-                    if(in_array((int)$ADZL['AdId'], $ADIDS)){
+                    if(in_array($ADZL['AdId'], $ADIDS)){
                         $AVAIL = TRUE;
                         $TEMP .= " style=\"background-color:green; color:white\" ";
                     }
-                    else if((int)in_array($ADZL['AdId'], $RQADSIDS)){
+                    if(in_array($ADZL['AdId'], $RQADSIDS)){
                         $REQUIRE = TRUE;
                         $TEMP .= " style=\"background-color:blue; color:white\" ";
                     }
@@ -713,10 +711,10 @@ class episode extends program{
                         array_push($ADGR_REQUI,$TEMP);
                         $output .= "<!-- Entered Require -->";
                     }
-                    elseif($AVAIL){
+                    else if($AVAIL){
                         array_push($ADGR_AVAIL,$TEMP);
                     }
-                    else{
+                    else {
                         array_push($ADGR_INVAL,$TEMP);
                     }
                 }
