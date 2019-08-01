@@ -32,6 +32,16 @@ class traffic extends station{
 	return $schedule;
     }
 
+    public function getAllAdRotation()
+    {
+        $stmt = $this->mysqli->query("SELECT * FROM addays LEFT JOIN adrotation ON adrotation.rotationNum = addays.AdIdRef LEFT JOIN adverts ON adrotation.AdId = adverts.AdId;");
+        $adRotation = [];
+        while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
+            array_push($adRotation, $row);
+
+        return $adRotation;
+    }
+
     /*
     * @author Derek Melchin
     * @abstract 

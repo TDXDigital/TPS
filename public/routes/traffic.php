@@ -118,11 +118,15 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
     $app->get('/schedule', function() use ($app, $authenticate){
         $traffic = new \TPS\traffic();
+        $adRotations = $traffic->getAllAdRotation();
         $params = array(
             "ads"=>$traffic->getAds(),
             "area"=>"Traffic",
             "title"=>"Requirement",
+            "rotation"=>$adRotations
         );
+
+
          $app->render("trafficSchedule.twig", $params);
     });
 
@@ -250,6 +254,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
 
     $app->post('/schedule/add', $authenticate, function () use ($app){
         $traffic = new \TPS\traffic();
+        
         $id = $app->request->post('adId');
         $adTimeStarts = array();
         $adTimeEnds = array();
@@ -266,7 +271,6 @@ $app->group('/traffic', function() use ($app, $authenticate){
         // $adTimeStarts = ['12:00', '11:30', '16:00', '6:00'];
        $adTimeEndVal = $app->request->post('endTime');
         // $adTimeEnds = ['2:00', '1:30', '18:00', '8:00'];
-
        if($app->request->post('Monday') != null)
        {
             array_push($adDays, 'Monday');
@@ -323,8 +327,6 @@ $app->group('/traffic', function() use ($app, $authenticate){
             array_push($hourlyLimits, $hourlyLimitVal);
             array_push($blockLimits, $blockLimitVal);
        }
-
-
         $adSchedules = [];
         $i = 0;
         while ($i < count($adDays)) {
@@ -334,6 +336,17 @@ $app->group('/traffic', function() use ($app, $authenticate){
         }
 
         $traffic->setAdRequirements($id, $adSchedules, $hourlyLimits, $blockLimits);
+        $adRotations = $traffic->getAllAdRotation();
+
+        $params = array(
+            "ads"=>$traffic->getAds(),
+            "area"=>"Traffic",
+            "title"=>"Requirement",
+            "rotation"=>$adRotations
+        );
+
+         $app->render("trafficSchedule.twig", $params);
+
     });
 
 });
