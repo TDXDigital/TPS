@@ -166,9 +166,36 @@ class notification extends station{
 		$alreadyNotifiedOf = $num[0];
 	    }
 	    if ($alreadyNotifiedOf != $numExpired) {
+		if ($numExpired == 1)
+		    $msg = "1 expired album is on the playlist";
+		else
+		    $msg = "$numExpired albums are on the playlist";
 	        $this->db->query("DELETE FROM notification WHERE tag='expired albums';");
 	        $this->db->query("INSERT INTO notification (message, time, tag, path) VALUES ('" .
-				 $numExpired . " expired albums are on the playlist', NOW(), 'expired albums', '/playlist/?expired=true');");
+				 $msg . "', NOW(), 'expired albums', '/playlist/?expired=true');");
+	        if (!$notifyMgmt)
+		    $this->db->query("UPDATE notification SET acknowledged=NOW() WHERE notificationid=LAST_INSERT_ID();");
+	    }
+	}
+
+	// Update the notification message to match the number of expired contracts if it has changed since last time
+	$traffic = new \TPS\traffic();
+	$numExpired = sizeof($traffic->getExpiredContracts());
+	if ($numExpired > 0) {
+	    $stmt = $this->db->query("SELECT message FROM notification WHERE tag='expired contracts';");
+	    $alreadyNotifiedOf = 0;
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+		preg_match('/[0-9]+/', $row['message'], $num);
+		$alreadyNotifiedOf = $num[0];
+	    }
+	    if ($alreadyNotifiedOf != $numExpired) {
+		if ($numExpired == 1)
+		    $msg = "1 expired contract is active";
+		else
+		    $msg = "$numExpired expired contracts are active";
+	        $this->db->query("DELETE FROM notification WHERE tag='expired contracts';");
+	        $this->db->query("INSERT INTO notification (message, time, tag, path) VALUES ('" .
+				 $msg . "', NOW(), 'expired contracts', '/traffic/search/?expired=true');");
 	        if (!$notifyMgmt)
 		    $this->db->query("UPDATE notification SET acknowledged=NOW() WHERE notificationid=LAST_INSERT_ID();");
 	    }

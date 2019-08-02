@@ -69,11 +69,11 @@ class traffic extends station{
     * @abstract Return the database rows of contracts that are expired
     * @return Array of database rows of expired contracts
     */
-    public function getExpiredContracts() {
+    public function getExpiredContracts(&$app) {
 	$station = new \TPS\station($_SESSION['CALLSIGN']);
 	$localDate = $station->getTimeFromServerTime(date('Y-m-d'));
 	$localDate = substr($localDate, 0, 10);
-	$stmt = $this->mysqli->query("SELECT * FROM adverts WHERE EndDate < '$localDate'");
+	$stmt = $this->mysqli->query("SELECT * FROM adverts WHERE EndDate < $localDate");
 	$expiredContracts = [];
 	while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
 	    array_push($expiredContracts, $row);
