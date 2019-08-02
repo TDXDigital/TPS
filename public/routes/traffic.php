@@ -56,7 +56,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
     $maxPlayCount = $app->request->post('maxPlayCount') ?: NULL;
     $maxDailyPlayCount = $app->request->post('maxDailyPlayCount') ?: NULL;
     $assignedShow = $cat==51? $app->request->post('assignedShow') : $app->request->post('assignedShowSponsor');
-    $assignedShow == "" ? null;
+    $assignedShow = $assignedShow == "" ? null : $assignedShow;
     $assignedHour = $cat==51? $app->request->post('assignedHour') :$app->request->post('assignedHourSponsor');
     $backingTrack = $app->request->post('song') ?: NULL;
     $backingArtist = $app->request->post('artist') ?: NULL;
@@ -172,7 +172,7 @@ $app->group('/traffic', function() use ($app, $authenticate){
         $maxPlayCount = $app->request->post('maxPlayCount') ?: NULL;
         $maxDailyPlayCount = $app->request->post('maxDailyPlayCount') ?: NULL;
         $assignedShow = $cat==51? $app->request->post('assignedShow') : $app->request->post('assignedShowSponsor');
-        $assignedShow == "" ? null;
+        $assignedShow = $assignedShow == "" ? null : $assignedShow;
         $assignedHour = $cat==51? $app->request->post('assignedHour') :$app->request->post('assignedHourSponsor');
         $backingTrack = $app->request->post('song') ?: NULL;
         $backingArtist = $app->request->post('artist') ?: NULL;

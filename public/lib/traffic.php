@@ -347,14 +347,20 @@ class traffic extends station{
 				$maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour, $backingTrack,
 				$backingArtist, $backingAlbum, $showName, $showDayTimes, $psa)
     {
+	$playcount = 0;
+	if ($cat == 51 && $friend) {
+	    $stmt = $this->mysqli->query("SELECT MIN(Playcount) as playcount FROM adverts WHERE Category=51 AND friend=1");
+	    $playcount = $stmt->fetch_array(MYSQLI_ASSOC)['playcount'];
+	}
+
     	$id = -1;
         if($stmt = $this->mysqli->prepare("insert into adverts ("
-                . "Category, Length, EndDate, StartDate, AdName,"
+                . "Category, Length, EndDate, StartDate, Playcount, AdName,"
                 . "Language, Active, Friend, ClientID, maxPlayCount, "
 		. "maxDailyPlayCount, assignedShow, assignedHour, "
 		. "backing_song, backing_artist, backing_album, psa) values "
-                . "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")){
-            $stmt->bind_param("sissssiiiiiissssi", $cat, $length, $endDate, $startDate, $adName, $lang, $active, 
+                . "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")){
+            $stmt->bind_param("sississiiiiiissssi", $cat, $length, $endDate, $startDate, $playcount, $adName, $lang, $active, 
 				$friend, $clientID, $maxPlayCount, $maxDailyPlayCount, $assignedShow, $assignedHour,
 				$backingTrack, $backingArtist, $backingAlbum, $psa);
             if($stmt->execute()){
