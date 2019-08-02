@@ -180,7 +180,8 @@ class notification extends station{
 
 	// Update the notification message to match the number of expired contracts if it has changed since last time
 	$traffic = new \TPS\traffic();
-	$numExpired = sizeof($traffic->getExpiredContracts());
+	// $numExpired = sizeof($traffic->getExpiredContracts());
+    $numExpired = 0;
 	if ($numExpired > 0) {
 	    $stmt = $this->db->query("SELECT message FROM notification WHERE tag='expired contracts';");
 	    $alreadyNotifiedOf = 0;
