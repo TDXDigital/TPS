@@ -446,9 +446,8 @@ class program extends station{
     }
 
     //Moved backend functions from /legacy/oep/p2insertEP
-    public function getRequirement()
+    public function getRequirement($programID)
     {
-
         $result = array();
         $result2 = array();
         //move db operation from legacy/oep/p2insertEP.php
@@ -471,10 +470,11 @@ class program extends station{
             echo "Program Error 004 " . $this->mysqli->error;
         } else {
 	    $Req2['sponsor_ids'] = [];
-	    $sql = "SELECT adverts_AdId as sponsor_id FROM program_sponsors WHERE program_ProgramID=" . $Req2['ProgramID'];
+	    $sql = "SELECT AdId FROM adverts WHERE assignedShow=$programID AND Category = 52 AND active = 1";
 	    $stmt = $this->mysqli->query($sql);
 	    while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
-		array_push($Req2['sponsor_ids'], $row['sponsor_id']);
+		if (!in_array($row['AdId'], $Req2['sponsor_ids']))
+		    array_push($Req2['sponsor_ids'], $row['AdId']);
 	}
 
         if($Req2['CCX']!='-1'){
@@ -535,7 +535,7 @@ class program extends station{
             $req['playlist'] = $PL;
 
         if(isset($Req2['sponsor_ids']) && count($Req2['sponsor_ids']) > 0) {
-            $SPONS_SQL = " select * from adverts left join clients on adverts.ClientID=clients.ClientNumber where AdId IN (" . implode(", ", $Req2['sponsor_ids']) . ")";
+	    $SPONS_SQL = "SELECT * FROM adverts LEFT JOIN clients ON adverts.ClientID=clients.ClientNumber WHERE AdId IN (" . implode(", ", $Req2['sponsor_ids']) . ")";
             $SPONSRES = $this->mysqli->query($SPONS_SQL);
             $req['spons'] = []; // Sponsor Ad rows. Used for getAdOptions function in episode
 	    $req['sponsors'] = []; // Sponsor Ad names

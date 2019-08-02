@@ -280,6 +280,7 @@
 				    <div class="form-group">
 					<label for="assignedShow">Assigned Show</label>
 					<select class="form-control" id='assignedShow' value="{{ad.Length}}" name="assignedShow"/>
+					<option></option>
 		           		{% for key, program in programs %}
 		           		<option value="{{key}}" {{ad.assignedShow == key ? 'selected' : ''}} > {{program.name}} </option>
 		           		{% endfor %}

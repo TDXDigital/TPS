@@ -540,13 +540,13 @@ class episode extends program{
         $stmt->close();
     }
 
-    public function getAdOptions($localTime)
+    public function getAdOptions($localTime, $programID)
     {
         $REQAD_SQL = "SELECT adverts.*,adrotation.* FROM adrotation,addays,adverts WHERE '".
         date('H:i:s', $localTime)."' BETWEEN adrotation.startTime AND adrotation.endTime AND addays.AdIdRef=".
         "adrotation.RotationNum AND adrotation.AdId=adverts.AdId AND addays.Day='".substr(date('l', $localTime), 0, 3).
         "' AND adverts.active='1' AND '".date('Y-m-d', $localTime)."' BETWEEN adverts.StartDate AND ".
-        "adverts.EndDate";
+        "adverts.EndDate AND adverts.Category=51";
 
         $RQADSIDS = array();
         $ADIDS = array();
@@ -575,9 +575,8 @@ class episode extends program{
                     }
 		    // If the ad is within it's block limit
                     if($BL_lim['count(song.songid)']<$PdAds['BlockLimit']){
-
 			// If assisgned to this show
-			if ($PdAds['assignedShow'] == 0) {
+			if ($PdAds['assignedShow'] == $programID) {
 			    // Make required
                             array_push($RQADSIDS,$PdAds['AdId']);
                             $REQAD .= "<option value='".$PdAds['AdId']."'>".$PdAds['AdName']."</option>";
@@ -600,6 +599,7 @@ class episode extends program{
                 }
             }
         }
+
 
         if(sizeof($RQADSIDS)>0){
             if($REQAD!=""){
