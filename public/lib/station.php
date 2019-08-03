@@ -76,11 +76,18 @@ class station extends TPS{
     * @return string The $serverTime arugement converted to the stations local timezone
     */
     public function getTimeFromServerTime($serverTime) {
-
-	$serverTZCode = strtolower(system('date +"%Z"'));
-	$serverTZId = \DateTimeZone::listAbbreviations(\DateTimeZone::ALL)[$serverTZCode][0]['timezone_id'];
-	$stmt = $this->mysqli->query("SELECT CONVERT_TZ('" . $serverTime . "','" . $serverTZId . 
-				     "',(SELECT timezone FROM station WHERE callsign='" . $_SESSION['CALLSIGN'] . "')) as time;");
+    if(PHP_OS != 'WINNT')
+    {
+        $serverTZCode = strtolower(system('date +"%Z"'));
+        $serverTZId = \DateTimeZone::listAbbreviations(\DateTimeZone::ALL)[$serverTZCode][0]['timezone_id'];
+        $stmt = $this->mysqli->query("SELECT CONVERT_TZ('" . $serverTime . "','" . $serverTZId . 
+                     "',(SELECT timezone FROM station WHERE callsign='" . $_SESSION['CALLSIGN'] . "')) as time;");
+        
+    }
+    else
+    {
+        $stmt = $this->mysqli->query("SELECT now() as time;");   
+    }
 	while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
             return $row['time'];
 	throw new Exception("Error while converting server time to station time.");
@@ -159,6 +166,7 @@ class station extends TPS{
 
     public function setupParams($callsign){
         $callsign = strtoupper($callsign);
+
         $this->callsign = $callsign;
         $this->setStation($callsign);
         $stations = $this->getStation($callsign);
