@@ -1,5 +1,6 @@
 <?php
-if(file_exists("../TPSBIN/XML/DBSETTINGS.xml")){
+include implode(DIRECTORY_SEPARATOR, [dirname(__FILE__), 'setup.common.php']);
+if(file_exists($xml_path)){
     http_response_code(403);
     $refusal = "<h1>403 Forbidden</h1><p>Your request cannot proceed as the"
             . " this server has already been configured.</p>";
@@ -24,7 +25,7 @@ if(!isset($_SESSION)){
  */
 
 
-include_once '../TPSBIN/functions.php';
+include_once implode(DIRECTORY_SEPARATOR, [$directory, 'TPSBIN', 'functions.php']);
 
 $URR=$_SESSION['user'];
 $PDR=$_SESSION['password'];
@@ -71,8 +72,8 @@ foreach($SERV as $key=>$value)
 
 }
 //if(function(){
-if($doc->save('../TPSBIN/XML/DBSETTINGS.xml')){
-    if(chmod('../TPSBIN/XML/DBSETTINGS.xml',0600)){
+if($doc->save($xml_path)){
+    if(chmod($xml_path,0600)){
         print json_encode(array("status"=>"Complete"));#,"value"=>$SERV));
     }
     else{
@@ -81,7 +82,7 @@ if($doc->save('../TPSBIN/XML/DBSETTINGS.xml')){
 }
 else{
     http_response_code(500);
-    print json_encode(array("status"=>"Fail"));#,"value"=>$SERV));
+    print json_encode(array("status"=>"Fail","value"=>$SERV));
 }
     
 /*})

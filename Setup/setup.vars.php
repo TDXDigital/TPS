@@ -2,11 +2,11 @@
 
 $DEBUG=FALSE;
 #$DEBUG = TRUE;
+include implode(DIRECTORY_SEPARATOR, [dirname(__FILE__), 'setup.common.php']);
+include $function_path;
 
-include "../TPSBIN/functions.php";
 if(is_session_started()===FALSE) { session_start(); }
-    if(file_exists("../TPSBIN/XML/DBSETTINGS.xml") 
-            && !key_exists("max_page", $_SESSION)){
+    if(file_exists($xml_path) && !key_exists("max_page", $_SESSION)){
         http_response_code(403);
         $refusal = "<h1>403 Forbidden</h1><p>Your request cannot proceed as the"
                 . " this server has already been configured.</p>";

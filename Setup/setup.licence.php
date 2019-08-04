@@ -5,7 +5,8 @@
     if(isset($_GET['m'])){
         $message=urldecode($_GET['m']);
     }*/
-if(file_exists("../TPSBIN/XML/DBSETTINGS.xml")){
+include implode(DIRECTORY_SEPARATOR, [dirname(__FILE__), 'setup.common.php']);
+if(file_exists($xml_path)){
     http_response_code(403);
     $refusal = "<h1>403 Forbidden</h1><p>Your request cannot proceed as the"
             . " this server has already been configured.</p>";
@@ -39,14 +40,17 @@ if(file_exists("../TPSBIN/XML/DBSETTINGS.xml")){
         <p>
             <?php
             // get licences
-            $lic_xml = simplexml_load_file("lics.xml");
+            $lic_xml = simplexml_load_file(
+                    implode(DIRECTORY_SEPARATOR, [$current_directory, "lics.xml"])
+                    );
+            assert(!is_null($lic_xml), "XML licence files not found");
             $n = 0;
             foreach( $lic_xml->license as $license_file){
                 if($n>0){
                     echo "<h3>".$license_file->Segment."</h3>";
                 }
                 $file = $license_file->file;
-                $lic = file_get_contents($file);
+                $lic = file_get_contents(implode(DIRECTORY_SEPARATOR, [$current_directory, $file]));
                 echo nl2br($lic);
                 $n++;
                 echo "<br><hr>";

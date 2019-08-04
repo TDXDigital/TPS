@@ -5,6 +5,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+include implode(DIRECTORY_SEPARATOR, [dirname(__FILE__), 'setup.common.php']);
+
 error_reporting(0);
 if(!extension_loaded('mysqli')||!extension_loaded('PDO_MySQL')){
     die(http_response_code(500));
@@ -13,7 +15,7 @@ if(!extension_loaded('mysqli')||!extension_loaded('PDO_MySQL')){
 $CHECKDB=false;
 
 $return=[];
-include_once "../TPSBIN/functions.php";
+include_once $function_path;
     if(!isset($_SESSION)){
         sec_session_start();
     }
@@ -214,7 +216,7 @@ else{
     }
     //$mysqli->commit();
     $mysqli->autocommit(TRUE);
-    $functions = \file_get_contents("setup.functions.sql");
+    $functions = \file_get_contents($directory."setup.functions.sql");
     //$functions = preg_replace("/[\\n\\r]+/", ' ' , $functions);
     $functions = preg_replace("/[?]+/", $callsign, $functions);
     

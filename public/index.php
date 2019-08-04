@@ -158,11 +158,58 @@ $sessionExpiry = "30minutes";
 $sessionName = "TPSSlimSession";
 $sessionSecret =
         "Q7^nY{Zd'UO]Z`=L8X&`fV)Fn(LwH(vFwAm-y[z,YJD*vJj'WVYNC!+R3\cnF3I";
+$setupUrl = "/Setup/";
 
 if(!file_exists("TPSBIN".DIRECTORY_SEPARATOR."XML".
         DIRECTORY_SEPARATOR."DBSETTINGS.xml")){
-    header('Location: /Setup/');
-    exit();
+    if(filter_has_var(INPUT_SERVER, "REQUEST_URI")){
+        $URI = filter_input(INPUT_SERVER, "REQUEST_URI");
+        $URI_base = parse_url($URI);
+        $extension = pathinfo($URI, PATHINFO_EXTENSION);
+        if (!is_null($URI_base)){
+            $uri_components = explode('/', ltrim($URI_base['path'], '/'));
+        } else {
+            $uri_components = [''];
+        }
+        if ($URI_base['path'] != $setupUrl && !in_array($uri_components[0], ['js', 'TPSBIN']) && $extension == ''){
+            //load twig
+            if(file_exists($autoload_path)){
+                require_once($autoload_path);
+            }
+            elseif(file_exists($twig_path)&&file_exists($slim_path)){
+                require_once $twig_path;
+                require_once $slim_path;
+                Twig_Autoloader::register();
+                Slim\Slim::registerAutoloader();
+            }
+            $app = new \Slim\Slim(array(
+                'debug' => $debug,
+                'view' => new \Slim\Views\Twig(),
+            ));
+            $app->response->redirect($setupUrl);
+            $app->run();
+            $app->stop();
+        } else if ($URI_base['path'] == $setupUrl) {
+            $base = '.';
+            include_once 'Setup'.DIRECTORY_SEPARATOR.'index.php';
+            exit();
+        } else {
+            $base_path = dirname(dirname(__FILE__));
+            $sys_path = implode(DIRECTORY_SEPARATOR, [$base_path, ltrim($URI_base['path'], '/')]);
+            if ($extension!='php') {
+                if (file_exists($sys_path)){
+                    echo file_get_contents($sys_path);
+                }
+                else{
+                    $app->response()->status(404);
+                    $app->run();
+                }
+            } else {
+                include $sys_path;
+            }
+            exit();
+        }
+    }
 }
 
 require_once 'header.php';
