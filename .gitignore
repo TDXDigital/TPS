@@ -37,3 +37,4 @@ php_errors.log
 /.idea/
 /mysqlDumpToTests.bat
 /public/lib/std/githubConfig.php
+/node_modules/

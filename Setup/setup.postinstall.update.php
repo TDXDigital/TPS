@@ -24,15 +24,16 @@
  * THE SOFTWARE.
  */
 
+include implode(DIRECTORY_SEPARATOR, [dirname(__FILE__), 'setup.common.php']);
 //require_once '../Update/update.php';
-include_once "../TPSBIN/functions.php";
+include_once $function_path;
 
 define("HOST",$_SESSION['host']);
 define("PASSWORD",$_SESSION['password']);
 define("USER",$_SESSION['user']);
 define("DB",$_SESSION['database']);
 
-$files = \glob("../Update/proc/*.json");
+$files = \glob(implode(DIRECTORY_SEPARATOR, [$directory, 'Update', 'proc', '*.json']));
 $updates = array();
 
 function installUpdate($Update_PKG){

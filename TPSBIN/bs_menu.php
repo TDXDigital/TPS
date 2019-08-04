@@ -30,7 +30,7 @@
     $access=$_SESSION['access'];
     $opened_db=FALSE;
 
-    if(!$mysqli){
+    if(!$mysqli && !$SETUP){
         $opened_db=TRUE;
         require_once dirname(__FILE__).DIRECTORY_SEPARATOR."functions.php";
         require_once dirname(__FILE__).DIRECTORY_SEPARATOR."db_connect.php";
@@ -132,7 +132,7 @@
                             'Library_View'=>1,'Library_Create'=>1,'Library_Edit'=>1,
                             'Advert_View'=>0,'Advert_Edit'=>0,'Advert_Create'=>0,
                             'Audit_View'=>0];
-            $base="../";
+            $base="";
             $opened_db=FALSE;
             $logo="Setup/opensource_logo.png";
         }

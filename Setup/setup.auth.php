@@ -7,6 +7,7 @@
     }*/
 ?>
 <?php
+    include implode(DIRECTORY_SEPARATOR, [dirname(__FILE__), 'setup.common.php']);
     if(count(get_included_files()) ==1){
         http_response_code(403);
         $refusal = "<h1>403 Forbidden</h1><p>The requested resource cannot"

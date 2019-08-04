@@ -5,7 +5,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-if(file_exists("../TPSBIN/XML/DBSETTINGS.xml")){
+include implode(DIRECTORY_SEPARATOR, [dirname(__FILE__), 'setup.common.php']);
+if(file_exists($xml_path)){
     http_response_code(403);
     $refusal = "<h1>403 Forbidden</h1><p>Your request cannot proceed as the"
             . " this server has already been configured.</p>";
@@ -21,7 +22,7 @@ if(!extension_loaded('mysqli')||!extension_loaded('PDO_MySQL')){
 $CHECKDB=false;
 
 $return=[];
-include_once "../TPSBIN/functions.php";
+include_once implode(DIRECTORY_SEPARATOR, [$directory, 'TPSBIN', 'functions.php']);
     if(!isset($_SESSION)){
         sec_session_start();
     }
