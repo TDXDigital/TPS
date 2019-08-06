@@ -156,8 +156,18 @@ $views_path = $basepath."Views";
 $temp_path = false;
 $sessionExpiry = "30minutes";
 $sessionName = "TPSSlimSession";
-$sessionSecret =
-        "Q7^nY{Zd'UO]Z`=L8X&`fV)Fn(LwH(vFwAm-y[z,YJD*vJj'WVYNC!+R3\cnF3I";
+
+$secretFilePath = "TPSBIN".DIRECTORY_SEPARATOR."XML".DIRECTORY_SEPARATOR."sessionSecret.txt";
+if (!file_exists($secretFilePath)) {
+    $myfile = fopen($secretFilePath, "w");
+    $sessionSecret = md5(microtime().rand());
+    fwrite($myfile, $sessionSecret);
+    fclose($myfile);
+} else {
+    $myfile = fopen($secretFilePath, "r");
+    $sessionSecret = fgets($myfile);
+    fclose($myfile);
+}
 
 if(!file_exists("TPSBIN".DIRECTORY_SEPARATOR."XML".
         DIRECTORY_SEPARATOR."DBSETTINGS.xml")){
