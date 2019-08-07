@@ -107,7 +107,60 @@
         return $decrypted_string;
     }
 
+   /*
+    * @abstract Encryt/decrypt a string
+    * @param $action str  'encrypt'/'decrypt'
+    * @param @string str  String to encrypt/decrypt
+    * Source: https://gist.github.com/joashp/a1ae9cb30fa533f4ad94
+    */
+    function encrypt_decrypt($action, $string) {
+        $output = false;
+
+        $encrypt_method = "AES-256-CBC";
+
+        $secretKeyPath = "TPSBIN".DIRECTORY_SEPARATOR."XML".DIRECTORY_SEPARATOR."encryptKey.txt";
+        if (!file_exists($secretKeyPath)) {
+            $myfile = fopen($secretKeyPath, "w");
+            $secret_key = md5(microtime().rand());
+            fwrite($myfile, $secret_key);
+            fclose($myfile);
+        } else {
+            $myfile = fopen($secretKeyPath, "r");
+            $secret_key = fgets($myfile);
+            fclose($myfile);
+        }
+
+        $secretIVPath = "TPSBIN".DIRECTORY_SEPARATOR."XML".DIRECTORY_SEPARATOR."encryptIV.txt";
+        if (!file_exists($secretIVPath)) {
+            $myfile = fopen($secretIVPath, "w");
+            $secret_iv = md5(microtime().rand());
+            fwrite($myfile, $secret_iv);
+            fclose($myfile);
+        } else {
+            $myfile = fopen($secretIVPath, "r");
+            $secret_iv = fgets($myfile);
+            fclose($myfile);
+        }
+
+        // hash
+        $key = hash('sha256', $secret_key);
+    
+        // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
+        $iv = substr(hash('sha256', $secret_iv), 0, 16);
+
+        if ( $action == 'encrypt' ) {
+            $output = openssl_encrypt($string, $encrypt_method, $key, 0, $iv);
+            $output = base64_encode($output);
+        } else if( $action == 'decrypt' ) {
+            $output = openssl_decrypt(base64_decode($string), $encrypt_method, $key, 0, $iv);
+        }
+
+        return $output;
+    }
+
     function easy_crypt($ekey,$value){
+        return encrypt_decrypt('encrypt', $value);
+/*
         $encrypted=base64_encode(
                 mcrypt_encrypt(
                         MCRYPT_RIJNDAEL_256,
@@ -118,9 +171,12 @@
                         )
                 );
         return $encrypted;
+*/
     }
 
     function easy_decrypt($ekey,$encr_string){
+        return encrypt_decrypt('decrypt', $encr_string);
+/*
         $decrypted=rtrim(
                 mcrypt_decrypt(
                         MCRYPT_RIJNDAEL_256,
@@ -130,6 +186,7 @@
                         md5(md5($ekey))),
                 "\0");
         return $decrypted;
+*/
     }
 
     /**
