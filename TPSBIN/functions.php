@@ -159,8 +159,8 @@
     }
 
     function easy_crypt($ekey,$value){
-        // return encrypt_decrypt('encrypt', $value);
-
+        return encrypt_decrypt('encrypt', $value);
+/*
         $encrypted=base64_encode(
                 mcrypt_encrypt(
                         MCRYPT_RIJNDAEL_256,
@@ -171,12 +171,12 @@
                         )
                 );
         return $encrypted;
-
+*/
     }
 
     function easy_decrypt($ekey,$encr_string){
-        // return encrypt_decrypt('decrypt', $encr_string);
-
+        return encrypt_decrypt('decrypt', $encr_string);
+/*
         $decrypted=rtrim(
                 mcrypt_decrypt(
                         MCRYPT_RIJNDAEL_256,
@@ -186,7 +186,7 @@
                         md5(md5($ekey))),
                 "\0");
         return $decrypted;
-
+*/
     }
 
     /**
