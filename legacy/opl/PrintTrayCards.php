@@ -44,6 +44,7 @@ $reviews = new \TPS\reviews();
             color:#000000
         }
         -webkit-print-color-adjust: exact;
+        color-adjust: exact;
     }
 
     @page :right{
