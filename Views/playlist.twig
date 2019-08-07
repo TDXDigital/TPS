@@ -54,13 +54,16 @@
             <fieldset>
                 <div id="name-group" class="form-group input-group">
                     <label class="input-group-addon" for="refCodes">ReferenceCode</label>
-                    <input name="refCode" id="refCodes" type="text" required
-                               value="{{playlist.RefCode}}"
-                                {% if playlist.RefCode is defined %}
-                                    readonly
-                                {% endif %}
-                               placeholder="RefCode" pattern="\d*"
-                               class="form-control">
+                    
+                        {% if playlist.RefCode is defined %}
+                            <a class="btn btn-default" href="/library/{{playlist.RefCode}}">{{playlist.RefCode}}</a>
+                        {% else %}
+                            <input name="refCode" id="refCodes" type="text" required
+                           value="{{playlist.RefCode}}"
+                            placeholder="RefCode" pattern="\d*"
+                           class="form-control">
+                        {% endif %}
+                               
                 </div>
             </fieldset>
         </div>

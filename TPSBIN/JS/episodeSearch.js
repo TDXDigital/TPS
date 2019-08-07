@@ -31,7 +31,7 @@ $(document).ready(function() {
             { "data": "description" },
             { "data": "EpNum" },
         ],
-        "order": [[ 2, "desc" ]],
+        "order": [[ 3, "desc" ]],
         "columnDefs": [
 
             {
