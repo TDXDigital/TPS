@@ -124,7 +124,7 @@ class playlist extends TPS{
 				. ")"; break;
         }
 
-        $table = 'library l left join playlist p on l.refCode=p.refCode';
+        $table = 'library l right join playlist p on l.refCode=p.refCode';
         $primaryKey = 'PlaylistId';
         $where = '';
         $columns = array(
@@ -145,7 +145,7 @@ class playlist extends TPS{
 	    $album['refCode'] = $refCode;
             $album['subgenres'] = $library->getSubgenresByRefCode($refCode);
             $album['hometowns'] = $library->getHometownsByRefCode($refCode);
-	    $album['tags'] = $library->getTagsByRefCode($refCode);
+	        $album['tags'] = $library->getTagsByRefCode($refCode);
         }
 
         return json_encode($lib_data);
