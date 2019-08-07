@@ -66,7 +66,8 @@ function setPsaVal()
 
 	// inputfield.find("input[name='playlistNum']").val('NA');
 	endPsaTime.setMinutes(parseInt(endPsaTime.getMinutes()) + parseInt(MinuteToAdd));
-	inputfield.find("input[name='time']").val(("0" + endPsaTime.getHours()).slice(-2) + ':' + ("0" + endPsaTime.getMinutes()).slice(-2)) ;
+	if($('#epType').text() != 'Live')
+		inputfield.find("input[name='time']").val(("0" + endPsaTime.getHours()).slice(-2) + ':' + ("0" + endPsaTime.getMinutes()).slice(-2)) ;
 	// return startPsaTime + ' ~ ' + ("0" + endPsaTime.getHours()).slice(-2) + ':' + ("0" + endPsaTime.getMinutes()).slice(-2);
 	return ("0" + endPsaTime.getHours()).slice(-2) + ':' + ("0" + endPsaTime.getMinutes()).slice(-2);
 }
@@ -113,16 +114,16 @@ $(document).on('click', '.insertBtn', function(){
  			inputVal.find("input[name='title']").val().toUpperCase().indexOf("PSA")>=0)
  			$('#psaCount').text(parseInt($('#psaCount').text()) + 1);
  	}
- 	else
- 	{
- 		//increase time by 3 mim for music
- 		var startTempTime = inputVal.find("input[name='time']").val();
-		var endTempTime = new Date(1900,0,1,startTempTime.split(":")[0],startTempTime.split(":")[1]);
-		endTempTime.setMinutes(parseInt(endTempTime.getMinutes()) + parseInt(3));
-		endTime = ("0" + endTempTime.getHours()).slice(-2) + ':' + ("0" + endTempTime.getMinutes()).slice(-2);
-		inputVal.find("input[name='time']").val(endTime);
 
- 	}
+ 	if($('#epType').text() == 'Live')
+ 	{
+ 		var now = new Date();
+ 		var currentTime = ("0" + now.getHours()).slice(-2) + ':' + ("0" + now.getMinutes()).slice(-2);
+		inputVal.find("input[name='time']").val(currentTime);
+		endTime = inputVal.find("input[name='time']").val();
+ 	}	
+ 		
+
  	//Set End time
  	$("input[name='endTime']").val(endTime);
 
