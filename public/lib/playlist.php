@@ -126,6 +126,7 @@ class playlist extends TPS{
 
         $table = 'library l left join playlist p on l.refCode=p.refCode';
         $primaryKey = 'PlaylistId';
+        $where = '';
         $columns = array(
             array( 'db' => 'SmallCode', 'dt' => 'ShortCode' ),
             array( 'db' => 'artist',  'dt' => 'artist' ),
