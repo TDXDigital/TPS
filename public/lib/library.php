@@ -1524,7 +1524,7 @@ class library extends station{
     public function createAlbum($artist, $album, $format, $genre, $genre_num, $labelNums, $locale, $CanCon, $playlist,
                                 $governmentCategory, $schedule, $note="", $accepted=1, $variousartists=False,
                                 $datein=null, $release_date=null, $print=1, $rating=null, $tags=[], $hometowns=[],
-				$subgenres=[], $tracklist=[], $missing=True){
+				$subgenres=[], $tracklist=[], $missing=false){
 	$this->formatArtistName($artist);
         if(is_null($datein)){
             $datein = date("Y-m-d");

@@ -599,6 +599,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $app->render('libraryInduct.twig',$params);
     });
     $app->put('/:RefCode', $authenticate($app,2), function ($RefCode) use ($app){
+
         if($_SESSION['access']<2){
             $app->render('error.html.twig');
         }

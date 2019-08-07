@@ -22,7 +22,7 @@ $('#psa').change(function(){
     if(this.checked)
     {
     	$('#psaChecked').show();
-    	$('#clientPart').hide();
+    	$('#clientPart').show();
     }
     else
     {

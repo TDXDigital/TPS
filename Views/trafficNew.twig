@@ -120,16 +120,6 @@
 				    </div>
 				</div>
 
-				<div id="psaChecked" style="display: none">
-					<div class="col-sm-2">
-			       		<label for="lang">Language</label>
-						<input list="lang" name="lang" value="{{ad.Language}}" value="English" size="10" maxlength="40" class="form-control input-sm"/>
-			           	<datalist id="lang">
-			           		<option value="English">
-			           		<option value="French">
-			          	</datalist>
-			        </div>
-				</div>
 			</div>
 			<!-- Spoken Part End -->
 			
@@ -171,6 +161,16 @@
 					<label for="email">Email</label>
 					<input type='text' class="form-control" id='email' value="{{client.email}}" name="email"/>
 				    </div>
+				</div>
+				<div id="psaChecked" style="display: none">
+					<div class="col-sm-2">
+			       		<label for="lang">Language</label>
+						<input list="lang" name="lang" value="{{ad.Language}}" value="English" size="10" maxlength="40" class="form-control"/>
+			           	<datalist id="lang">
+			           		<option value="English">
+			           		<option value="French">
+			          	</datalist>
+			        </div>
 				</div>
 			</div>
 			<!-- Client part end -->
