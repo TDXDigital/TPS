@@ -1,3 +1,5 @@
+ALTER TABLE adverts ALTER COLUMN last_update SET DEFAULT '1970-01-01 00:00:01';||
+UPDATE adverts SET last_update='1970-01-01 00:00:01' WHERE last_update < '1000-01-01';||
 ALTER TABLE adverts
   ADD COLUMN maxPlayCount TINYINT UNSIGNED NULL,
   ADD COLUMN maxDailyPlayCount TINYINT UNSIGNED NULL,
@@ -7,10 +9,11 @@ ALTER TABLE adverts
   ADD COLUMN backing_artist VARCHAR(30) NULL,
   ADD COLUMN backing_album VARCHAR(30) NULL,
   ADD CONSTRAINT fk_program FOREIGN KEY (assignedShow) REFERENCES program(ProgramID);||
-CREATE TABLE radio_show_promos (
+CREATE TABLE IF NOT EXISTS radio_show_promos (
   AdId INT(11),
   showName VARCHAR(30) NOT NULL,
   showDay DATE NOT NULL,
   showTime TIME NOT NULL,
   FOREIGN KEY fk_ad_id(AdId) REFERENCES adverts(AdId) ON UPDATE CASCADE ON DELETE RESTRICT
 );
+
