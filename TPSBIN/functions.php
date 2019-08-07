@@ -118,7 +118,7 @@
 
         $encrypt_method = "AES-256-CBC";
 
-        $secretKeyPath = "TPSBIN".DIRECTORY_SEPARATOR."XML".DIRECTORY_SEPARATOR."encryptKey.txt";
+        $secretKeyPath = __DIR__.DIRECTORY_SEPARATOR."XML".DIRECTORY_SEPARATOR."encryptKey.txt";
         if (!file_exists($secretKeyPath)) {
             $myfile = fopen($secretKeyPath, "w");
             $secret_key = md5(microtime().rand());
@@ -130,7 +130,7 @@
             fclose($myfile);
         }
 
-        $secretIVPath = "TPSBIN".DIRECTORY_SEPARATOR."XML".DIRECTORY_SEPARATOR."encryptIV.txt";
+        $secretIVPath = __DIR__.DIRECTORY_SEPARATOR."XML".DIRECTORY_SEPARATOR."encryptIV.txt";
         if (!file_exists($secretIVPath)) {
             $myfile = fopen($secretIVPath, "w");
             $secret_iv = md5(microtime().rand());
