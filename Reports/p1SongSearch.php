@@ -2,15 +2,15 @@
 date_default_timezone_set("UTC");
     session_start();
 
-$con = mysql_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
+$con = mysqli_connect($_SESSION['DBHOST'],$_SESSION['usr'],$_SESSION['rpw'],$_SESSION['DBNAME']);
 if (!$con){
 	echo 'Uh oh!';
-	die('Error connecting to SQL Server, could not connect due to: ' . mysql_error() . ';  
+	die('Error connecting to SQL Server, could not connect due to: ' . mysqli_error($con) . ';  
 
 	username=' . $_SESSION["username"]);
 }
 else if($con){
-	if(!mysql_select_db($_SESSION['DBNAME'])){header('Location: /user/login');}
+	if(!mysqli_select_db($con,$_SESSION['DBNAME'])){header('Location: /user/login');}
 ?>
 
 <!DOCTYPE HTML>
@@ -59,13 +59,13 @@ else if($con){
 				<input list="playlist" name="Playlist" size="6"/>
 				<datalist id="playlist">
 						<?php
-							$result = mysql_query("select playlistnumber from song group by playlistnumber asc");
-							if(mysql_error()!='0'){
-								echo "<option value='".mysql_error()."' >
+							$result = mysqli_query($con, "select playlistnumber from song group by playlistnumber asc");
+							if(mysqli_error($con)!='0'){
+								echo "<option value='".mysqli_error($con)."' >
 								";
 
 							}
-							while($row = mysql_fetch_array($result)){
+							while($row = mysqli_fetch_array($con, $con, $result)){
 								echo "<option value=\"" . $row['playlistnumber'] . "\">
 								";
 							}
@@ -87,13 +87,13 @@ else if($con){
 					<input list="program" name="program" />
 					<datalist id="program">
 						<?php
-							$result = mysql_query("select programname from program");
-							if(mysql_error()!='0'){
-								echo "<option value='".mysql_error()."' >
+							$result = mysqli_query("select programname from program");
+							if(mysqli_error($con)!='0'){
+								echo "<option value='".mysqli_error($con)."' >
 								";
 
 							}
-							while($row = mysql_fetch_array($result)){
+							while($row = mysqli_fetch_array($con, $result)){
 								echo "<option value=\"" . $row['programname'] . "\">
 								";
 							}

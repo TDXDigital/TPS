@@ -383,6 +383,7 @@
 </datalist>
 <div class="row">
     <div class="col-lg-6">
+        <label for="submit-form" class="btn btn-info" tabindex="0">Submit</label>
     </div>
     <div class="col-lg-6">
         <div class="pull-right">
@@ -410,8 +411,11 @@
         </div>
     </div>
 </div>
+
             <br>
 </form>
+
+
 <datalist id="artists"></datalist>
 {% if permissions > 1 or "libraryReceivingAdvanced" in permissions %}
 <div id="printModal" class="modal fade">
@@ -451,6 +455,7 @@
                 </form>
                 <!--<p>Please choose your media</p>
                 <p class="text-warning"><small>... small text ... </small></p>-->
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -554,6 +559,7 @@
                             </div>
                         </div>
                     </div>
+
                 </form>
                 <!--<p>Please choose your media</p>
                 <p class="text-warning"><small>... small text ... </small></p>-->
@@ -571,6 +577,15 @@
         <div class='col-sm-9'><p>This will reset your print queue and refresh the page<br>Are you sure?</p></div></div>
 </div>
 {% endif %}
+
+
+<form name="songSearch" id="songSearch" action="/Reports/p2SongSearch.php" method="post">
+  <input type="hidden" name="Artist" value="{{album.artist}}"/>
+  <input type="hidden" name="Album" value="{{album.album}}"/>
+  <input type="submit" id="submit-form" class="hidden" />
+</form>
+
+
 <style>
   .ui-autocomplete-loading {
     background: white url("../images/GIF/ajax-loader3.gif") right center no-repeat;
@@ -582,6 +597,8 @@
 <script type="text/javascript" src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
 <script type="text/javascript" src="{{siteUrl}}/js/bootstrap/checkbox/js/bootstrap-checkbox.js "></script>
 <script type="text/javascript">
+
+
     function updateCanconFromRegionSelect() {
 	region = $("#locale").val();
 	canconButtonOn = $("#canconCheckbox").next().attr('class').split(" ").includes('active');

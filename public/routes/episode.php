@@ -195,6 +195,8 @@ $app->group('/episode', $authenticate($app,[1,2]),
     });
 
      $app->post('/finalize', function() use ($app, $authenticate){
+        $playlist = new \TPS\playlist();
+
         $epNum = $app->request->post('epNum');
         $row = $app->request->post('row');
         $playlisdId = $app->request->post('playlistNum');
@@ -217,11 +219,19 @@ $app->group('/episode', $authenticate($app,[1,2]),
         \TPS\episode::updateSpokenTime($epNum, $spokenTime);
         
         $params = array();
-        $params["songs"] = \TPS\episode::getSongByEpNum($epNum);
+        $songs = \TPS\episode::getSongByEpNum($epNum);
+        foreach ($songs as $key => $song) {
+            $record = $playlist->getAllByShortCode($song["playlistnumber"]);
+            $refcode = reset($record)['RefCode'];
+            $songs[$key]["RefCode"] = $refcode; 
+        }
+        $params["songs"] = $songs;
+
         $params["title"] = 'View Program Log';
         $params["episode"] = \TPS\episode::getEpisodeByEpNum($epNum);
 
-        $app->render("episodeLog.twig",$params);
+        // $app->render("episodeLog.twig",$params);
+        $app->redirect('/episode/search');
     });
 
      // Create new program
@@ -276,6 +286,9 @@ $app->group('/episode', $authenticate($app,[1,2]),
 
 
   $app->post('/update', function() use ($app, $authenticate){
+        $playlist = new \TPS\playlist();
+
+
         $epNum = $app->request->post('epNum');
         $row = $app->request->post('row');
         $playlisdId = $app->request->post('playlistNum');
@@ -299,11 +312,20 @@ $app->group('/episode', $authenticate($app,[1,2]),
         \TPS\episode::updateSongs($row, $epNum, $title, $album, $composer, $time, $artist, $cancon, $playlisdId, $type, $category, $hit, $inst, $lang, $note);
 
         $params = array();
-        $params["songs"] = \TPS\episode::getSongByEpNum($epNum);
+        
+        $songs = \TPS\episode::getSongByEpNum($epNum);
+        foreach ($songs as $key => $song) {
+            $record = $playlist->getAllByShortCode($song["playlistnumber"]);
+            $refcode = reset($record)['RefCode'];
+            $songs[$key]["RefCode"] = $refcode; 
+        }
+        $params["songs"] = $songs;
+
         $params["title"] = 'View Program Log';
         $params["episode"] = \TPS\episode::getEpisodeByEpNum($epNum);
 
-        $app->render("episodeLog.twig",$params);
+        // $app->render("episodeLog.twig",$params);
+        $app->redirect('/episode/search');
     });
 
     $app->get('/log/:epNum', $authenticate, function ($epNum) use ($app){
