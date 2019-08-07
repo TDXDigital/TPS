@@ -22,6 +22,8 @@
 /nbproject/private/
 /TPSBIN/XML/DBSETTINGS*.xml
 /TPSBIN/XML/sessionSecret.txt
+/TPSBIN/XML/encryptKey.txt
+/TPSBIN/XML/encryptIV.txt
 composer.lock
 Thumbs.db
 error_log
