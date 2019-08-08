@@ -948,8 +948,8 @@
 	    // If the artist & album match one in the library, recommend pass.
 	    var rows = $('#table_display').find('tr');
 	    for (var i = 1; i < rows.length; i++) {
-		if (rows[i].children[2].innerHTML.toLowerCase() == $('#art_field').val().toLowerCase() &&
-		    rows[i].children[3].innerHTML.toLowerCase() == $('#alb_field').val().toLowerCase()) {
+		if (rows[i].children[2].innerHTML.toLowerCase().trim() == $('#art_field').val().toLowerCase().trim() &&
+		    rows[i].children[3].innerHTML.toLowerCase().trim() == $('#alb_field').val().toLowerCase().trim()) {
 		    $('#notes').val('Duplicate copy');
 		    $("#keepSelect").val(0); // Set to No
 		    printing = $('#printCheckbox').next().attr('class').split(" ").includes('active');
