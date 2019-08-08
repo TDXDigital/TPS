@@ -213,6 +213,7 @@ $(document).ready(function() {
             { "data": "year" },
             { "data": "rating" },
         ],
+        "order": [[ 0, "desc" ]],
         "columnDefs": [
             {
               "render": function (data, type, row) {

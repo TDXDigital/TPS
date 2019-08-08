@@ -25,6 +25,7 @@ $(document).ready(function() {
             { "data": "Active" },
             { "data": "Playcount" },
         ],
+        "order": [[ 3, "desc" ]],
         "columnDefs": [
             {
                 "render": function ( data, type, row ) {

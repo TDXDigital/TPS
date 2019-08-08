@@ -159,33 +159,33 @@
     }
 
     function easy_crypt($ekey,$value){
-        // return encrypt_decrypt('encrypt', $value);
+        return encrypt_decrypt('encrypt', $value);
 
-        $encrypted=base64_encode(
-                mcrypt_encrypt(
-                        MCRYPT_RIJNDAEL_256,
-                        md5($ekey),
-                        $value,
-                        MCRYPT_MODE_CBC,
-                        md5(md5($ekey))
-                        )
-                );
-        return $encrypted;
+        // $encrypted=base64_encode(
+        //         mcrypt_encrypt(
+        //                 MCRYPT_RIJNDAEL_256,
+        //                 md5($ekey),
+        //                 $value,
+        //                 MCRYPT_MODE_CBC,
+        //                 md5(md5($ekey))
+        //                 )
+        //         );
+        // return $encrypted;
 
     }
 
     function easy_decrypt($ekey,$encr_string){
-        // return encrypt_decrypt('decrypt', $encr_string);
+        return encrypt_decrypt('decrypt', $encr_string);
 
-        $decrypted=rtrim(
-                mcrypt_decrypt(
-                        MCRYPT_RIJNDAEL_256,
-                        md5($ekey),
-                        base64_decode($encr_string),
-                        MCRYPT_MODE_CBC,
-                        md5(md5($ekey))),
-                "\0");
-        return $decrypted;
+        // $decrypted=rtrim(
+        //         mcrypt_decrypt(
+        //                 MCRYPT_RIJNDAEL_256,
+        //                 md5($ekey),
+        //                 base64_decode($encr_string),
+        //                 MCRYPT_MODE_CBC,
+        //                 md5(md5($ekey))),
+        //         "\0");
+        // return $decrypted;
 
     }
 
