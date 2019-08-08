@@ -13,6 +13,11 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
     });
     $app->get('/new', $authenticate($app,array(1,2)), function () use ($app){
         $library = new \TPS\library();
+        $station = new \TPS\station();
+        $serverTime = (new \DateTime)->format('Y-m-d H:i:s');
+        $localTime = $station->getTimeFromServerTime($serverTime);
+        $today = (new \DateTime($localTime))->format('Y-m-d');
+
         $params = array(
             "govCats"=>$library->getGovernmentCodes(),
             "genres"=>$library->getLibraryGenres(),
@@ -24,6 +29,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             "scheduleBlock"=>$library->getScheduleBlocks(),
 	    "area"=>"Library",
             "title"=>"Receiving",
+	    "today"=>$today,
         );
         if(isset($_SESSION['PRINTID'])){
             $params["printQ"]=count($_SESSION['PRINTID']) > 0;
@@ -581,6 +587,11 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $album['variousArtists'] = $library->getVariousArtistsByRefCode($RefCode);
 	$album['tracklist'] = $library->getTracklistByRefCode($RefCode);
 
+        $station = new \TPS\station();
+        $serverTime = (new \DateTime)->format('Y-m-d H:i:s');
+        $localTime = $station->getTimeFromServerTime($serverTime);
+        $today = (new \DateTime($localTime))->format('Y-m-d');
+
         $params = array(
             "album"=>$album,
             "govCats"=>$library->getGovernmentCodes(),
@@ -592,6 +603,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             "format"=>$library->getMediaFormats(),
             "scheduleBlock"=>$library->getScheduleBlocks(),
             "title"=>"Receiving",
+	    "today"=>$today,
         );
         if(isset($_SESSION['PRINTID'])){
             $params["printQ"]=count($_SESSION['PRINTID']) > 0;
