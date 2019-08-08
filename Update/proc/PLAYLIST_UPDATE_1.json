@@ -1,0 +1,19 @@
+{
+    "TPS_Errno" : "PLUP-001",
+    "type" : "database",
+    "execute" : "SQL",
+    "description" : "Adds `active` column to `playlist` table",
+    "SQL_QRY" : {
+        "TEST" : "SHOW COLUMNS FROM `playlist` WHERE Field='active';",
+        "RESULT" : {
+            "Field" : [
+                "active"
+            ]
+        },
+        "Negate": 0,
+        "createMode" : 1,
+        "UPDATE_TYPE" : "FILE",
+        "UPDATE" : "PLAYLIST_UPDATE_1.sql"
+    }
+}
+
