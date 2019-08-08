@@ -126,11 +126,8 @@ $(document).on('click', '.insertBtn', function(){
 
  	//Set End time
  	$("input[name='endTime']").val(endTime);
-
- 	// alert(inputVal.find("input[name='time']").val());
- 	$('#songTable tbody tr:last').after(
-
- 		'<tr id="' + rowid +'">' +
+ 	
+ 	var newTr = '<tr id="' + rowid +'">' +
 			'<td>' +
 			'<input type="hidden" name="row[]" value="'+ rowid +'">' +
 				'<input type="text" readonly class="form-control input-sm playlistNum" name="playlistNum['+ rowid +']" id="playlistNum" placeholder="" value="'+ inputVal.find("input[name='playlistNum']").val()+'">' +
@@ -179,9 +176,15 @@ $(document).on('click', '.insertBtn', function(){
 				      '<span class="glyphicon glyphicon-trash"></span>' +
 		  		'</button>' +
 			'</td>' +
-		'</tr>'
+		'</tr>';
+		if(localStorage.getItem("promptLog") == null)
+			localStorage.setItem("promptLog", "");
 
- 		);
+		localStorage.setItem("promptLog", localStorage.getItem("promptLog") + newTr);
+		console.log(localStorage.getItem("promptLog"));
+ 	$('#songTable tbody tr:last').after(
+ 		newTr
+  		);
 
  	clearInputField();
 	// $('.songInputField').find("label[for='playlistNum']").text('Playlist ID');
@@ -273,6 +276,8 @@ $(document).on('keyup', '.songInputField input', function(e){
 
 // enable all checkbox to get values
 $(document).on('submit','#episodeForm',function(){
+	localStorage.setItem("promptLog", "");
+	
 	$(this).find("[type='checkbox']").attr("disabled", false);
 	$(this).find('select,option').attr("disabled", false);
 	var allVals = $('input[type="checkbox"]:checked').map(function () {
@@ -467,4 +472,18 @@ function drawHand(ctx, pos, length, width) {
         parent.history.back();
         return false;
     });
+});
+
+
+
+// use localstorage for prompt log - song insertion
+// incase of refresh page, keep the form data
+$(document).ready(function(){
+   	if(localStorage.getItem("promptLog") != null)
+   	{
+   		$('#songTable tbody tr:last').after(
+ 			localStorage.getItem("promptLog")
+  		);	
+   	}
+ 	
 });

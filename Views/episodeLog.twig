@@ -41,9 +41,9 @@
              {% for song in songs %}
                 <tr>
                     {% if song.category == 12 or  song.category == 45 or song.category == 51 or song.category == 52 or song.category == 53 %}
-                    <td><a href="/traffic/edit/{{song.playlistnumber}}">{{song.playlistnumber}}</a></td>
+                    <td><a href="/traffic/edit/{{song.playlistnumber}}">{{song.playlistnumber == 0 ? '':song.playlistnumber}}</a></td>
                     {% elseif song.playlistnumber!= 0 or song.playlistnumber!='' %}
-                    <td><a href="/library/{{song.RefCode}}">{{song.playlistnumber}}</a></td>
+                    <td><a href="/library/{{song.RefCode}}">{{'%04d'|format(song.playlistnumber)}}</a></td>
                     {% else %}
                     <td>{{song.playlistnumber}}</td>
                     {% endif %}

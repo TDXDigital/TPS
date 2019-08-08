@@ -34,7 +34,7 @@ class traffic extends station{
 
     public function getAllAdRotation()
     {
-        $stmt = $this->mysqli->query("SELECT * FROM addays LEFT JOIN adrotation ON adrotation.rotationNum = addays.AdIdRef LEFT JOIN adverts ON adrotation.AdId = adverts.AdId;");
+        $stmt = $this->mysqli->query("SELECT * FROM addays LEFT JOIN adrotation ON adrotation.rotationNum = addays.AdIdRef LEFT JOIN adverts ON adrotation.AdId = adverts.AdId WHERE active = 1 and now() between StartDate and EndDate;");
         $adRotation = [];
         while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
             array_push($adRotation, $row);
@@ -148,7 +148,7 @@ class traffic extends station{
 
 
     public function getAds() {
-    $stmt = $this->mysqli->query("SELECT Adid, AdName FROM adverts WHERE active = 1");
+    $stmt = $this->mysqli->query("SELECT Adid, AdName FROM adverts WHERE active = 1 and now() between StartDate and EndDate");
     $ads = [];
     while ($row = $stmt->fetch_array(MYSQLI_ASSOC))
         $ads[$row['Adid']] = $row['AdName'];
