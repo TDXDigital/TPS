@@ -89,21 +89,31 @@ $(document).on('click', '.insertBtn', function(){
  	var instChecked = inputVal.find("input[name='instrumental']").is(':checked')?'checked':'';
  	var time = inputVal.find("input[name='time']").val();
  	var endTime = time;
+ 	var selectedTraffic = '';
+
  	// if it's AD, increase the Ad count
  	if(catValue == 51)
  	{
  		$('#adCount').text(parseInt($('#adCount').text()) + 1);
 		setAdVal();
+		selectedTraffic = inputVal.find("div[name='commercial'] option:selected");
  	}
  	else if(catValue == 52)
+ 	{
  		inputVal.find("input[name='title']").val(inputVal.find("select[name='sponsorId'] option:selected").text());
+ 		selectedTraffic = inputVal.find("select[name='sponsorId'] option:selected");
+ 	}
  	else if(catValue == 53)
+ 	{
  		inputVal.find("input[name='title']").val(inputVal.find("select[name='sponsorPromo'] option:selected").text());
+ 		selectedTraffic = inputVal.find("select[name='sponsorPromo'] option:selected");
+ 	}
  	// if it's Promo increase PSA count
  	else if(catValue == 45)
  	{
  		$('#psaCount').text(parseInt($('#psaCount').text()) + 1);
  		setPromoVal();
+ 		selectedTraffic = inputVal.find("select[name='showPromo'] option:selected");
  	}
 
  	// if it's PSA, increase PSA count
@@ -113,6 +123,7 @@ $(document).on('click', '.insertBtn', function(){
  		if(inputVal.find("input[name='artist']").val().toUpperCase().indexOf("STATION PSA")>=0||
  			inputVal.find("input[name='title']").val().toUpperCase().indexOf("PSA")>=0)
  			$('#psaCount').text(parseInt($('#psaCount').text()) + 1);
+ 		selectedTraffic = inputVal.find("select[name='psaList'] option:selected");
  	}
 
  	if($('#epType').text() == 'Live')
@@ -181,14 +192,29 @@ $(document).on('click', '.insertBtn', function(){
 			localStorage.setItem("promptLog", "");
 
 		localStorage.setItem("promptLog", localStorage.getItem("promptLog") + newTr);
-		console.log(localStorage.getItem("promptLog"));
  	$('#songTable tbody tr:last').after(
  		newTr
   		);
-
+ 	checkTrafficBackingMusic(selectedTraffic, rowid);
  	clearInputField();
 	// $('.songInputField').find("label[for='playlistNum']").text('Playlist ID');
 });
+
+function checkTrafficBackingMusic(selectedTraffic, rowId)
+{
+	if(selectedTraffic == '' || selectedTraffic == null || selectedTraffic == undefined)
+		return;
+
+	var title = selectedTraffic.data('song');
+	var artist = selectedTraffic.data('artist');
+	var album = selectedTraffic.data('album');
+
+	if(title != '' && artist!= '' && album!= '' && title != undefined && artist!= undefined && album!= undefined)
+	{
+		$('#songTable').find("input[name='note["+ rowId +"]']").val('Backing Music Title: ' + title + ', Artist: ' + artist + ', Album: ' + album);
+        $('#songTable').find("input[name='NButton["+ rowId +"]']").addClass('btn-info');
+	}
+}
 
 function getRowId()
 {

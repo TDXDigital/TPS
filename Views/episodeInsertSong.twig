@@ -181,7 +181,8 @@
                    
 		           		<option value="" disabled selected> Select Sponsor ID </option>
 						{% for key, ids in sponsorIds %}
-		           		<option value="{{ids.AdId}}"> {{ ids.AdName }} </option>
+		           		<option value="{{ids.AdId}}" data-song="{{ids.backing_song}}" 
+		           		data-artist="{{ids.backing_artist}}" data-album="{{ids.backing_album}}> {{ ids.AdName }} </option>
 		           		{% endfor %}
                   	 </select>		
 				</div>
@@ -195,7 +196,8 @@
                    
 		           		<option value="" disabled selected> Select Promotion </option>
 						{% for key, promo in sponsorPromos %}
-		           		<option value="{{promo.AdId}}"> {{ promo.AdName }} </option>
+		           		<option value="{{promo.AdId}}" data-song="{{promo.backing_song}}" 
+		           		data-artist="{{promo.backing_artist}}" data-album="{{promo.backing_album}}> {{ promo.AdName }} </option>
 		           		{% endfor %}
                   	 </select>		
 				</div>
@@ -225,7 +227,8 @@
                    
 		           		<option value="" disabled selected> Select PSA </option>
 						{% for key, PSA in PSAs %}
-		           		<option value="{{PSA.AdId}}"> {{ PSA.AdName }} </option>
+		           		<option value="{{PSA.AdId}}" data-song="{{PSA.backing_song}}" 
+		           		data-artist="{{PSA.backing_artist}}" data-album="{{PSA.backing_album}}"> {{ PSA.AdName }} </option>
 		           		{% endfor %}
                   	 </select>		
 				</div>

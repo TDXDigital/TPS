@@ -136,6 +136,8 @@ $app->group('/episode', $authenticate($app,[1,2]),
             $episode = new \TPS\episode($program, NULL, $airDate, $airTime,
                     $description, $type, $recordDate);
         }
+        // print_r($traffic->getPSAs());  
+        // exit;
 
         $params = array(
             'area'=>'Episode',
