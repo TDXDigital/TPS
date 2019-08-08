@@ -900,14 +900,25 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 		// If the album is on the playlist
 		$stmt = $mysqli->query("SELECT playlist_flag FROM library WHERE RefCode={$RefCode}");
 		if ($stmt->fetch_array(MYSQLI_ASSOC)['playlist_flag'] == 'COMPLETE') {
-		    // Get the playlist id number
-	            $stmt = $mysqli->query("SELECT PlaylistId FROM playlist WHERE RefCode={$RefCode} ORDER BY Expire LIMIT 1;");
-		    $playlistId = $stmt->fetch_array(MYSQLI_ASSOC)['PlaylistId'];
+                    // Get the playlist id number and small code
+                    $stmt = $mysqli->query("SELECT PlaylistId, SmallCode FROM playlist WHERE RefCode={$RefCode} ORDER BY Expire LIMIT 1;");
+                    $row = $stmt->fetch_array(MYSQLI_ASSOC);
+                    $playlistId = $row['PlaylistId'];
+                    $smallCode = $row['SmallCode'];
 
-		    // Update the playlist smallCode
-		    $playlist = new \TPS\playlist();
-	            $smallCode = $playlist->getNextAvailableSmallCode($RefCode);
-		    $mysqli->query("UPDATE playlist SET SmallCode={$smallCode} WHERE PlaylistId={$playlistId}");
+                    if (strlen($smallCode) < 4)
+                        $currPlaylistGenre = 0;
+                    else
+                        $currPlaylistGenre = (int)substr($smallCode, 0, 1);
+
+                    // If the genre has been changed during this submission
+                    if ($currPlaylistGenre != $genre_num) {
+
+                        // Update the playlist smallCode to the new genre
+                        $playlist = new \TPS\playlist();
+                        $smallCode = $playlist->getNextAvailableSmallCode($RefCode);
+                        $mysqli->query("UPDATE playlist SET SmallCode={$smallCode} WHERE PlaylistId={$playlistId}");
+                    }
 		}
 
                 if(strtolower(substr($artist,-1))!='s'){

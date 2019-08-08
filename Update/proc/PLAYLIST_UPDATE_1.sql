@@ -1,2 +1,0 @@
-ALTER TABLE `playlist` ADD COLUMN `active` BOOLEAN NOT NULL DEFAULT 1;
-

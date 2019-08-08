@@ -702,7 +702,10 @@ class playlist extends TPS{
     * @return int/NULL The next available smallcode, or NULL if none available.
     */
     public function getNextAvailableSmallCode($refCode) {
-	$today = date('Y-m-d');
+        $station = new \TPS\station();
+        $serverTime = (new \DateTime)->format('Y-m-d H:i:s');
+        $localTime = $station->getTimeFromServerTime($serverTime);
+        $today = (new \DateTime($localTime))->format('Y-m-d');
 	$getCode = function ($genre, $codes){
             foreach ($codes as $key => $value) {
                 if($value['Genre'] == $genre){
@@ -920,12 +923,7 @@ public function getPlaylist($startDate, $endDate){
 }
 
 public function getUsedShortCodes($startDate, $endDate){
-    $stmt = $this->db->prepare(
-        "SELECT SmallCode FROM playlist"
-        . " WHERE (:startDate >= Activate AND :startDate <= Expire) OR "
-        . "(:endDate <= Expire AND :endDate >= Activate) OR "
-        . "(:startDate <= Activate AND :endDate >= Expire)");
-    $stmt->bindParam(":startDate", $startDate);
+    $stmt = $this->db->prepare("SELECT SmallCode FROM playlist WHERE RefCode IN (SELECT RefCode FROM library WHERE playlist_flag = 'COMPLETE')");
     $stmt->bindParam(":endDate", $endDate);
     $result = array();
     if ($stmt->execute()) {
