@@ -169,7 +169,7 @@ class notification extends station{
 		if ($numExpired == 1)
 		    $msg = "1 expired album is on the playlist";
 		else
-		    $msg = "$numExpired albums are on the playlist";
+		    $msg = "$numExpired expired albums are on the playlist";
 	        $this->db->query("DELETE FROM notification WHERE tag='expired albums';");
 	        $this->db->query("INSERT INTO notification (message, time, tag, path) VALUES ('" .
 				 $msg . "', NOW(), 'expired albums', '/playlist/?expired=true');");
