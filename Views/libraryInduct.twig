@@ -580,7 +580,7 @@
 
 
 <form name="songSearch" id="songSearch" action="/Reports/p2SongSearch.php" method="post">
-  <input type="hidden" name="Artist" value="{{album.artist}}"/>
+  <input type="hidden" name="Artist" value="{{album.artist | replace({', The': '', ', the': ''}) }}"/>
   <input type="hidden" name="Album" value="{{album.album}}"/>
   <input type="submit" id="submit-form" class="hidden" />
 </form>
