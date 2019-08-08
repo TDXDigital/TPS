@@ -48,13 +48,13 @@
                     <td>{{song.playlistnumber}}</td>
                     {% endif %}
                     <td>{{song.category}}</td>
-                    <td>{{song.time}}</td>
+                    <td>{{song.time|date('h:i')}}</td>
                     <td>{{song.title}}</td>
                     <td>{{song.artist}}</td>
                     <td>{{song.album}}</td>
-                    <td>{{song.cancon}}</td>
-                    <td>{{song.hit}}</td>
-                    <td>{{song.instrumental}}</td>
+                    <td>{{song.cancon == 1 ?'O':'-'}}</td>
+                    <td>{{song.hit == 1 ?'O':'-'}}</td>
+                    <td>{{song.instrumental == 1 ?'O':'-'}}</td>
                     <td>{{song.language}}</td>
                     <td>
                         <input type="hidden" class="form-control input-sm" name="note[{{loop.index}}]" placeholder="" value="{{song.note}}">

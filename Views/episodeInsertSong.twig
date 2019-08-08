@@ -58,7 +58,7 @@
 		<th>Air Date</th> <th>Air Time</th> <th>Program</th> <th>Station</th> <th>Description</th><th>Type</th>
 	</tr>
 	<tr>
-		<td class="col-md-2">{{episode.date}}</td> <td class="col-md-2">{{episode.time}}</td> <td class="col-md-2">{{episode.name}}</td> <td class="col-md-2">{{episode.callsign}}</td> <td class="col-md-2">{{episode.description}}</td> <td class="col-md-2">{{episode.type == 0 ? 'Live': episode.pre-type == 1 ? 'Pre-Record' : 'Timeless' }}</td>
+		<td class="col-md-2">{{episode.date}}</td> <td class="col-md-2">{{episode.time}}</td> <td class="col-md-2">{{episode.name}}</td> <td class="col-md-2">{{episode.callsign}}</td> <td class="col-md-2">{{episode.description}}</td> <td class="col-md-2" id="epType">{{episode.type == 0 ? 'Live': episode.pre-type == 1 ? 'Pre-Record' : 'Timeless' }}</td>
 	</tr>
 </table>
 
@@ -210,7 +210,7 @@
 
 				<div class="col-md-3" id="spokenInput">
 					<label for="psaTitle">Title</label>
-					<input list="spoken" name="spokenTitle" id="spokenTitle" size="25" required class="form-control input-sm"  maxlength="90" value="Spoken Word / Talk"/>
+					<input list="spoken" name="spokenTitle" id="spokenTitle" size="25" required class="form-control input-sm"  maxlength="90" />
                    <datalist id="spoken">
                    		<option value="Spoken Word / Talk">
                    		<option value="PSA / Promo">
@@ -373,7 +373,6 @@
 
 {% endblock %}
 {% block lastScripts %}
-<script>var commercialOption = ('{{commercial|raw}}')</script>
 <script src="{{siteUrl}}/TPSBIN/JS/episode.js"></script>
 
 {% endblock %}

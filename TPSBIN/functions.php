@@ -118,7 +118,7 @@
 
         $encrypt_method = "AES-256-CBC";
 
-        $secretKeyPath = __DIR__.DIRECTORY_SEPARATOR."XML".DIRECTORY_SEPARATOR."encryptKey.txt";
+        $secretKeyPath = "TPSBIN".DIRECTORY_SEPARATOR."XML".DIRECTORY_SEPARATOR."encryptKey.txt";
         if (!file_exists($secretKeyPath)) {
             $myfile = fopen($secretKeyPath, "w");
             $secret_key = md5(microtime().rand());
@@ -130,7 +130,7 @@
             fclose($myfile);
         }
 
-        $secretIVPath = __DIR__.DIRECTORY_SEPARATOR."XML".DIRECTORY_SEPARATOR."encryptIV.txt";
+        $secretIVPath = "TPSBIN".DIRECTORY_SEPARATOR."XML".DIRECTORY_SEPARATOR."encryptIV.txt";
         if (!file_exists($secretIVPath)) {
             $myfile = fopen($secretIVPath, "w");
             $secret_iv = md5(microtime().rand());
@@ -159,8 +159,8 @@
     }
 
     function easy_crypt($ekey,$value){
-        return encrypt_decrypt('encrypt', $value);
-/*
+        // return encrypt_decrypt('encrypt', $value);
+
         $encrypted=base64_encode(
                 mcrypt_encrypt(
                         MCRYPT_RIJNDAEL_256,
@@ -171,12 +171,12 @@
                         )
                 );
         return $encrypted;
-*/
+
     }
 
     function easy_decrypt($ekey,$encr_string){
-        return encrypt_decrypt('decrypt', $encr_string);
-/*
+        // return encrypt_decrypt('decrypt', $encr_string);
+
         $decrypted=rtrim(
                 mcrypt_decrypt(
                         MCRYPT_RIJNDAEL_256,
@@ -186,7 +186,7 @@
                         md5(md5($ekey))),
                 "\0");
         return $decrypted;
-*/
+
     }
 
     /**
