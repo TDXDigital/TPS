@@ -558,7 +558,10 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
         	$album['library']["subgenres"] = $library->getSubgenresByRefCode($album['RefCode']);
         	$album['library']['hometowns'] = $library->getHometownsByRefCode($album['RefCode']);
             }
-	    $today = (new \DateTime())->format('Y-m-d');
+            $station = new \TPS\station();
+            $serverTime = (new \DateTime)->format('Y-m-d H:i:s');
+            $localTime = $station->getTimeFromServerTime($serverTime);
+            $today = (new \DateTime($localTime))->format('Y-m-d');
 	    $mpdf = new \Mpdf\Mpdf();
 	    $stylesheet = file_get_contents('css/playlist_pdf.css');
 
