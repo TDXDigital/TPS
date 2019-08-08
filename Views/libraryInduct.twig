@@ -74,7 +74,7 @@
                 <div class="col-lg-6">
                     <div id="gen_group" class="form-group input-group">
                         <label for="genre" class="input-group-addon">Genre&nbsp;</label>
-                        <select id="genre" class="form-control" name="genre" data-placeholder="Album Genre" style="min-width: 150px;">
+                        <select id="genre" class="form-control" required name="genre" data-placeholder="Album Genre" style="min-width: 150px;">
                             <option value="null">None</option>
                             {% for key,value in genres %}
                                 <option value='{{key}}'
@@ -284,7 +284,7 @@
                     </div>
                     {% if album.status is null %}
                     <div class="col-lg-3">
-                        <input id='playlistCheckbox' type="checkbox" data-label-prepend="PL" class="style3" name="playlistBox" value="1"/>
+                        <input id='playlistCheckbox' onclick="updateGenreSelect()" type="checkbox" data-label-prepend="PL" class="style3" name="playlistBox" value="1"/>
                     </div>
                     {% else %}
                     <div class="col-lg-3">
@@ -597,7 +597,12 @@
 <script type="text/javascript" src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
 <script type="text/javascript" src="{{siteUrl}}/js/bootstrap/checkbox/js/bootstrap-checkbox.js "></script>
 <script type="text/javascript">
+    function updateGenreSelect() {
+        on_PL = !$('#playlistCheckbox').next().attr('class').split(" ").includes('active');
+        value = on_PL ? "" : "null";
+        $($('#genre').children()[0]).val(value);
 
+    }
 
     function updateCanconFromRegionSelect() {
 	region = $("#locale").val();
