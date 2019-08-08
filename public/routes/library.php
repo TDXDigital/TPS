@@ -18,13 +18,18 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $localTime = $station->getTimeFromServerTime($serverTime);
         $today = (new \DateTime($localTime))->format('Y-m-d');
 
+        $labels = $library->getLabels();
+        $labelNames = [];
+        foreach ($labels as $label)
+            array_push($labelNames, $label['Name']);
+
         $params = array(
             "govCats"=>$library->getGovernmentCodes(),
             "genres"=>$library->getLibraryGenres(),
     	    "subgenres"=>$library->getSubgenres(),
     	    "tags"=>$library->getTags(),
     	    "hometowns"=>$library->getHometowns(),
-            "labels"=>\TPS\label::nameSearch("%",False),
+            "labels"=>$labelNames,
             "format"=>$library->getMediaFormats(),
             "scheduleBlock"=>$library->getScheduleBlocks(),
 	    "area"=>"Library",
@@ -592,6 +597,11 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
         $localTime = $station->getTimeFromServerTime($serverTime);
         $today = (new \DateTime($localTime))->format('Y-m-d');
 
+        $labels = $library->getLabels();
+        $labelNames = [];
+        foreach ($labels as $label)
+            array_push($labelNames, $label['Name']);
+
         $params = array(
             "album"=>$album,
             "govCats"=>$library->getGovernmentCodes(),
@@ -599,7 +609,7 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
             "subgenres"=>$library->getSubgenres(),
             "tags"=>$library->getTags(),
             "hometowns"=>$library->getHometowns(),
-            "labels"=>\TPS\label::nameSearch("%",False),
+            "labels"=>$labelNames,
             "format"=>$library->getMediaFormats(),
             "scheduleBlock"=>$library->getScheduleBlocks(),
             "title"=>"Receiving",
