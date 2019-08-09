@@ -290,6 +290,8 @@ $app->group('/episode', $authenticate($app,[1,2]),
             );
         $params["episode"] = $episodeVal;
         $params["songs"] = \TPS\episode::getSongByEpNum($epNum);
+        $params["psaCount"] = $episode->getPSACount($episodeVal);
+        $params["adCount"] = $episode->getCommercialCount($episodeVal);
 
         $app->render('episodeInsertSong.twig', $params);
     });
@@ -346,6 +348,7 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $program = new \TPS\program($station, $programID);
         $episode = new \TPS\episode($program);  //episode object
         $episode->setAttributes($epNum);
+        $req = $program->getRequirement($programID);
 
         $params = array();
         $playlist = new \TPS\playlist();
@@ -359,9 +362,12 @@ $app->group('/episode', $authenticate($app,[1,2]),
 
         $params["songCount"] = $episode->getSongCount($episodeVal);        
         $params["playlistCount"] = $episode->getPlaylistCount($episodeVal);
-        $params["canConCount"] = $episode->getCanConCount($episodeVal);
+        $params["canConCount"] = ($episode->getCanConCount($episodeVal) / $episode->getSongCount($episodeVal)) * 100;
         $params["songs"] = $songs;
+        $params["psa"] = $episode->getPSACount($episodeVal);
+        $params["ad"] = $episode->getCommercialCount($episodeVal);
         $params["title"] = 'View Program Log';
+        $params["req"] = $req;
         $params["episode"] = \TPS\episode::getEpisodeByEpNum($epNum);
 
 

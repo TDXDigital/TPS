@@ -21,6 +21,15 @@
 {% endblock %}
 {% block content %}
     <table class="table">
+        <tr>
+        <td class="col-md-2">Show Classification: {{req.cla}}</td>
+        <td class="col-md-2">Sponsors:{% for sponsor in req.sponsors %} <br />-{{ sponsor }} {% endfor %}</td> 
+        <td class="col-md-2 bg-warning">Ads: <span id='adCount'>{{ad}}</span>/{{req.ads}}</td> 
+        <td class="col-md-2 bg-warning">PSA/Promo: <span id='psaCount'>{{psa}}</span>/{{req.psa}}</td> 
+        <td class="col-md-2 bg-success">Canadian Content Required: <span id='canconCount'>{{canConCount}}</span> / {{req.cancon}}</td> 
+        <td class="col-md-2 bg-success">Playlist Required: <span id='playlistCount'>{{playlistCount}}</span> / {{req.playlist}}</td>
+    </tr>
+
         <tr style="border-bottom-style:hidden;">
             <th>Air Date</th> <th>Air Time</th> <th>Program</th> <th>Station</th> <th>Description</th><th>Type</th>
         </tr>

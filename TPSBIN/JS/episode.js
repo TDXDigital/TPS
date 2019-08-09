@@ -59,8 +59,9 @@ function setPsaVal()
 	{
 		inputfield.find("input[name='title']").val(inputfield.find("select[name='psaList'] option:selected").text());
 	}
-	else
-		inputfield.find("input[name='title']").val(inputfield.find("input[name='psaTitle']").val());
+	else{
+		inputfield.find("input[name='title']").val(inputfield.find("input[name='spokenTitle']").val());
+	}
 
 	//calculate minutes and return it
 	var startPsaTime = inputfield.find("input[name='time']").val();
@@ -146,7 +147,7 @@ $(document).on('click', '.insertBtn', function(){
  		localStorage.setItem("promptLog_playlistCount" + epNum, playlistCount);
  		localStorage.setItem("promptLog_canconCount" + epNum, canConCount);
  	}
-
+ 	// if it's live, set time to current time
  	if($('#epType').text() == 'Live')
  	{
  		var now = new Date();
@@ -223,9 +224,11 @@ $(document).on('click', '.insertBtn', function(){
 
 function checkTrafficBackingMusic(selectedTraffic, rowId)
 {
+	var inputfield =  $('.songInputField');
 	if(selectedTraffic == '' || selectedTraffic == null || selectedTraffic == undefined)
 		return;
-
+	if(inputfield.find("input[name='playlistNum']").val() == '')
+		return
 	var title = selectedTraffic.data('song');
 	var artist = selectedTraffic.data('artist');
 	var album = selectedTraffic.data('album');

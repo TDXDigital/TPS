@@ -48,8 +48,8 @@
 	<tr>
 		<td class="col-md-2">Show Classification: {{req.cla}}</td>
 		<td class="col-md-2">Sponsors:{% for sponsor in req.sponsors %} <br />-{{ sponsor }} {% endfor %}</td> 
-		<td class="col-md-2 bg-warning">Ads: <span id='adCount'>0</span>/{{req.ads}}</td> 
-		<td class="col-md-2 bg-warning">PSA/Promo: <span id='psaCount'>0</span>/{{req.psa}}</td> 
+		<td class="col-md-2 bg-warning">Ads: <span id='adCount'>{{adCount?? 0}}</span>/{{req.ads}}</td> 
+		<td class="col-md-2 bg-warning">PSA/Promo: <span id='psaCount'>{{psaCount?? 0}}</span>/{{req.psa}}</td> 
 		<td class="col-md-2 bg-success">Canadian Content Required: <span id='canconCount'>0</span> / {{req.cancon}}</td> 
 		<td class="col-md-2 bg-success">Playlist Required: <span id='playlistCount'>0</span> / {{req.playlist}}</td>
 	</tr>
@@ -213,7 +213,7 @@
 				</div>
 
 				<div class="col-md-3" id="spokenInput">
-					<label for="psaTitle">Title</label>
+					<label for="spokenTitle">Title</label>
 					<input list="spoken" name="spokenTitle" id="spokenTitle" size="25" required class="form-control input-sm"  maxlength="90" />
                    <datalist id="spoken">
                    		<option value="Spoken Word / Talk">

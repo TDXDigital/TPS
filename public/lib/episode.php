@@ -764,6 +764,31 @@ class episode extends program{
         return $output;
     }
 
+    public function getCommercialCount($episode)
+    {
+        $count = 0;
+        $stmt = $this->mysqli->prepare("SELECT count(*) FROM song where callsign = ? and programname = ? and date = ? and starttime = ? and category = 51");
+        $param = array($episode['callsign'], $episode['name'], $episode['date'], $episode['time']);
+        $stmt->bind_param("ssss", ...$param);
+        $stmt->bind_result($count);
+        if($stmt->execute()){
+            $stmt->fetch();
+        }
+        return $count;
+    }
+    public function getPSACount($episode)
+    {
+        $count = 0;
+        $stmt = $this->mysqli->prepare("SELECT count(*) FROM song where callsign = ? and programname = ? and date = ? and starttime = ? and (category in (12, 11) and title like '%psa%' OR category = 45)");
+        $param = array($episode['callsign'], $episode['name'], $episode['date'], $episode['time']);
+        $stmt->bind_param("ssss", ...$param);
+        $stmt->bind_result($count);
+        if($stmt->execute()){
+            $stmt->fetch();
+        }
+        return $count;
+    }
+
     public function getSongCount($episode)
     {
         $count = 0;
