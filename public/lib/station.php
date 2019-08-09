@@ -235,7 +235,7 @@ class station extends TPS{
                 . "ST_DefaultSort,ST_PLLG,ST_ForceComposer,ST_ForceArtist,"
                 . "ST_ForceAlbum,ST_ColorFail,ST_ColorPass,ST_PLRG,"
                 . "ST_DispCount,ST_ColorNote,managerphone,ST_ADSH,ST_PSAH,"
-                . "timezone, hostProbationPeriodDays, hostProbationWeightMultiplier "
+                . "timezone "
 		. "FROM station where callsign=? order by callsign "
                 . "limit ?,?;")){
             $con->bind_param('sii',$callsign,$page,$maxResult);
@@ -244,8 +244,7 @@ class station extends TPS{
                       $website, $address, $boothphone, $directorphone,
                       $DefaultSort, $PLLG, $ForceComposer, $ForceArtist,
                       $ForceAlbum, $ColorFail, $ColorPass, $PLRG, $DispCount,
-                      $ColorNote, $ManagerPhone, $ADSH, $PSAH, $timezone,
-		      $hostProbationDays, $hostProbationWeight
+                      $ColorNote, $ManagerPhone, $ADSH, $PSAH, $timezone
                     );
                 if($con->num_rows>1){
                     trigger_error(
@@ -277,9 +276,7 @@ class station extends TPS{
                         "colorNote"=>$ColorNote,
                         "perHourTraffic"=>$ADSH,
                         "perHourPSAs"=>$PSAH,
-                        "timezone"=>$timezone,
-			"hostProbationDays"=>$hostProbationDays,
-			"hostProbationWeight"=>$hostProbationWeight
+                        "timezone"=>$timezone
                     );
                 }
                 return $result;
@@ -483,11 +480,15 @@ class station extends TPS{
     }
 
     /*
-    * @abstract Changest station's host probation period days
+    * @abstract Changes station's host probation period days
     * @param int $days The number of days
     * @return boolean
     */
     public function setHostProbationDays($days) {
+        $stmt = $this->mysqli->query("SHOW COLUMNS FROM `station` WHERE Field = 'hostProbationPeriodDays';");
+        if ($stmt->num_rows == 0)
+            return false;
+
         $con = $this->mysqli->prepare(
                 "Update station SET hostProbationPeriodDays=? where callsign=?");
         $con->bind_param('is',$days,$this->callsign);
@@ -498,12 +499,33 @@ class station extends TPS{
         else{return false;}
     }
 
+    /**
+    * @abstract Retrieve the station's host probation day period
+    * @return int/bool The number of days a how for the station is on probation during registration.
+    */
+    public function getHostProbationDays() {
+        $stmt = $this->mysqli->query("SHOW COLUMNS FROM `station` WHERE Field = 'hostProbationPeriodDays';");
+        if ($stmt->num_rows == 0)
+            return false;
+
+        $con = $this->mysqli->prepare("SELECT hostProbationPeriodDays FROM station WHERE callsign=?");
+        $con->bind_param('s',$this->callsign);
+        $con->bind_result($probationPeriodDays);
+        if($con->execute() && $con->fetch())
+            return $probationPeriodDays;
+        return false;
+    }
+
     /*
-    * @abstract Changest station's host probation weight multiplier
-    * @param int $days The new weight
+    * @abstract Changes station's host probation weight multiplier
+    * @param float $weight The weight of the station
     * @return boolean
     */
     public function setHostProbationWeight($weight) {
+        $stmt = $this->mysqli->query("SHOW COLUMNS FROM `station` WHERE Field = 'hostProbationWeightMultiplier';");
+        if ($stmt->num_rows == 0)
+            return false;
+
         $con = $this->mysqli->prepare(
                 "Update station SET hostProbationWeightMultiplier=? where callsign=?");
         $con->bind_param('ds',$weight,$this->callsign);
@@ -512,6 +534,23 @@ class station extends TPS{
             return true;
         }
         else{return false;}
+    }
+
+    /**
+    * @abstract Retrieve the station's host probation day period
+    * @return int/bool The number of days a how for the station is on probation during registration.
+    */
+    public function getHostProbationWeight() {
+        $stmt = $this->mysqli->query("SHOW COLUMNS FROM `station` WHERE Field = 'hostProbationWeightMultiplier';");
+        if ($stmt->num_rows == 0)
+            return false;
+
+        $con = $this->mysqli->prepare("SELECT hostProbationWeightMultiplier FROM station WHERE callsign=?");
+        $con->bind_param('s',$this->callsign);
+        $con->bind_result($probationWeightMultiplier);
+        if($con->execute() && $con->fetch())
+            return $probationWeightMultiplier;
+        return false;
     }
 
     private function setPlaylistLiveGrouping($gp){
