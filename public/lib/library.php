@@ -338,10 +338,24 @@ class library extends station{
         return False;
     }
 
+    /**
+    * @author Derek Melchin
+    * @abstract Determine the genre-leading library number
+    * @param int $RefCode The album's unique reference number
+    * @return str The library code (Genre number <dash> RefCode)
+    */
     public function getLibraryCodeByRefCode($RefCode) {
-	$sql = $this->mysqli->query("SELECT library_code FROM library WHERE RefCode={$RefCode}");
-	$library_code = $sql->fetch_array(MYSQLI_ASSOC)['library_code'];
-	return $library_code;
+        $genre = $this->getGenreByRefCode($RefCode);
+        $genre_num = NULL;
+        if($genre != "null"){
+            $genres = $this->getLibraryGenres();
+            if (in_array($genre, array_keys($genres))) {
+                $genre_text = $genres[$genre];
+                preg_match("/[0-9]+/", $genre_text, $matches);
+                $genre_num = $matches[0];
+            }
+        }
+        return "{$genre_num}-{$RefCode}";
     }
 
     public function createBarcode($refcode){
