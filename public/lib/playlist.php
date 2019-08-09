@@ -377,7 +377,9 @@ class playlist extends TPS{
     * @param int $playlistNumber The album's unique playlist number
     */
     public function getLastProgram($playlistNumber) {
-        $sql = $this->db->query("SELECT programname, date FROM song WHERE playlistnumber=" . $playlistNumber .  " ORDER BY date DESC LIMIT 1;");
+	$sql = $this->db->query("SELECT programname, date FROM song WHERE playlistnumber=" . $playlistNumber 
+				.  " AND date >= (SELECT Activate FROM playlist WHERE SmallCode=$playlistNumber ORDER BY Activate DESC LIMIT 1)"
+				.  " ORDER BY date DESC LIMIT 1;");
         $lastProgram = [];
         while ($row = $sql->fetch(\PDO::FETCH_ASSOC))
             array_push($lastProgram, $row);
