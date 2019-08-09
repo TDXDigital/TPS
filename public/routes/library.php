@@ -294,8 +294,12 @@ $app->group('/library', $authenticate, function () use ($app,$authenticate){
 	    $library = new \TPS\library();
 	    $albums = [];
 	    if (isset($_SESSION['PRINTID']))
-	        foreach ($_SESSION['PRINTID'] as $RefCode)
-		    array_push($albums, $library->getAlbumByRefCode($RefCode["RefCode"])[0]);
+	        foreach ($_SESSION['PRINTID'] as $RefCode) {
+                    $album = $library->getAlbumByRefCode($RefCode["RefCode"])[0];
+                    $album['libraryCode'] = $library->getLibraryCodeByRefCode($RefCode['RefCode']);
+                    array_push($albums, $album);
+		}
+
 
 	    $params = array(
 		"area" => "Library",
