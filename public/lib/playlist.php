@@ -490,8 +490,8 @@ class playlist extends TPS{
 		$time = $plays['dateTime'];
 
 		// If this is the album the DJ played...
-		if ($plays['SmallCode'] == $album['SmallCode'] &&
-		   ($time >= $album['Activate'] && $time <= $album['Expire'] || $album['playlist_flag'] == 'COMPLETE')) {
+		if ($plays['SmallCode'] == $album['SmallCode'] && $time >= $album['Activate'] && 
+			($time <= $album['Expire'] || $album['playlist_flag'] == 'COMPLETE')) {
 
 		    $playedOnThisShowAlready = in_array($show, array_keys($playedOnShows));
 		    if (!$playedOnThisShowAlready || ($playedOnThisShowAlready && count($playedOnShows[$show]) <= 1)) {
