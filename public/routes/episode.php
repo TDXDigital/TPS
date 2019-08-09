@@ -265,9 +265,13 @@ $app->group('/episode', $authenticate($app,[1,2]),
         $episode->setAttributes($epNum);
 
         $req = $program->getRequirement($programID);
-	$localTime = strtotime($station->getTimeFromServerTime(date('Y-m-d H:i:s')));
+	    $localTime = strtotime($station->getTimeFromServerTime(date('Y-m-d H:i:s')));
         $ads = $episode->getAdOptions($localTime, $programID);
         $commercials =  $episode->getAllCommercials($ads);
+        $songCount = $episode->getSongCount($episodeVal);        
+        $playlistCount = $episode->getPlaylistCount($episodeVal);
+        $canConCount = $episode->getCanConCount($episodeVal);
+
         $params = array(
             'area'=>'Episode',
             'title'=>'Log Addition',
@@ -277,9 +281,13 @@ $app->group('/episode', $authenticate($app,[1,2]),
             'commercial' => $commercials,
             'sponsorIds' => $traffic->getSponsorID(),
             'sponsorPromos'=>$traffic-> getSponsorPromo(),
-	    'radioShowPromos' => $traffic->getPromos(),
-	    'PSAs' => $traffic->getPSAs()  
-        );
+    	    'radioShowPromos' => $traffic->getPromos(),
+    	    'PSAs' => $traffic->getPSAs(),
+            'episode' => $episodeVal,
+            'songCount' => $songCount,
+            'playlistCount' => $playlistCount,
+            'canConCount' => $canConCount
+            );
         $params["episode"] = $episodeVal;
         $params["songs"] = \TPS\episode::getSongByEpNum($epNum);
 
@@ -332,6 +340,13 @@ $app->group('/episode', $authenticate($app,[1,2]),
 
     $app->get('/log/:epNum', $authenticate, function ($epNum) use ($app){
 
+        $station = new \TPS\station($_SESSION['CALLSIGN']);
+        $episodeVal = \TPS\episode::getEpisodeByEpNum($epNum);
+        $programID = \TPS\program::getId($_SESSION['CALLSIGN'], $episodeVal['name']);
+        $program = new \TPS\program($station, $programID);
+        $episode = new \TPS\episode($program);  //episode object
+        $episode->setAttributes($epNum);
+
         $params = array();
         $playlist = new \TPS\playlist();
 
@@ -341,9 +356,14 @@ $app->group('/episode', $authenticate($app,[1,2]),
             $refcode = reset($record)['RefCode'];
             $songs[$key]["RefCode"] = $refcode; 
         }
+
+        $params["songCount"] = $episode->getSongCount($episodeVal);        
+        $params["playlistCount"] = $episode->getPlaylistCount($episodeVal);
+        $params["canConCount"] = $episode->getCanConCount($episodeVal);
         $params["songs"] = $songs;
         $params["title"] = 'View Program Log';
         $params["episode"] = \TPS\episode::getEpisodeByEpNum($epNum);
+
 
         $app->render("episodeLog.twig",$params);
     });

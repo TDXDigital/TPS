@@ -764,6 +764,43 @@ class episode extends program{
         return $output;
     }
 
+    public function getSongCount($episode)
+    {
+        $count = 0;
+        $stmt = $this->mysqli->prepare("SELECT count(*) FROM song where callsign = ? and programname = ? and date = ? and starttime = ? and category not in (12, 11, 43, 44, 45, 51, 52, 53)");
+        $param = array($episode['callsign'], $episode['name'], $episode['date'], $episode['time']);
+        $stmt->bind_param("ssss", ...$param);
+        $stmt->bind_result($count);
+        if($stmt->execute()){
+            $stmt->fetch();
+        }
+        return $count;
+    }
+    public function getPlaylistCount($episode)
+    {
+        $count = 0;
+        $stmt = $this->mysqli->prepare("SELECT count(*) FROM song where callsign = ? and programname = ? and date = ? and starttime = ? and category not in (12, 11, 43, 44, 45, 51, 52, 53) and playlistnumber not in ('', 0)");
+        $param = array($episode['callsign'], $episode['name'], $episode['date'], $episode['time']);
+        $stmt->bind_param("ssss", ...$param);
+        $stmt->bind_result($count);
+        if($stmt->execute()){
+            $stmt->fetch();
+        }
+        return $count;
+    }
+    public function getCanConCount($episode)
+    {
+
+       $count = 0;
+        $stmt = $this->mysqli->prepare("SELECT count(*) FROM song where callsign = ? and programname = ? and date = ? and starttime = ? and cancon  = 1");
+        $param = array($episode['callsign'], $episode['name'], $episode['date'], $episode['time']);
+        $stmt->bind_param("ssss", ...$param);
+        $stmt->bind_result($count);
+        if($stmt->execute()){
+            $stmt->fetch();
+        }
+        return $count;
+    }
 }
 
 class episodeType{
