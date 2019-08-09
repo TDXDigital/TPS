@@ -278,7 +278,7 @@ $app->group('/episode', $authenticate($app,[1,2]),
             'sponsorIds' => $traffic->getSponsorID(),
             'sponsorPromos'=>$traffic-> getSponsorPromo(),
 	    'radioShowPromos' => $traffic->getPromos(),
-	    'PSAs' => $traffic->getPSAs()
+	    'PSAs' => $traffic->getPSAs()  
         );
         $params["episode"] = $episodeVal;
         $params["songs"] = \TPS\episode::getSongByEpNum($epNum);

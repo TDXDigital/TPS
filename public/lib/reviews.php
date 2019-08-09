@@ -900,6 +900,38 @@ class reviews extends station{
         $stmt3->close();
         fclose($file);  
         return true;
-}
+    }
+
+
+     public function displayTable($filter)
+    {
+        
+        $where = '  approved <= 1';
+        $table = 'review left join library on review.refcode = library.refcode';
+         
+        // Table's primary key
+        $primaryKey = 'id';         
+        // Array of database columns which should be read and sent back to DataTables.
+        // The `db` parameter represents the column name in the database, while the `dt`
+        // parameter represents the DataTables column identifier. In this case simple
+        // indexes
+        
+        $columns = array(
+            array( 'db' => 'id',   'dt' => 'id' ),
+            // array( 'db' => 'review.RefCode', 'dt' => 'RefCode' ),
+            array( 'db' => 'reviewer', 'dt' => 'reviewer' ),
+            array( 'db' => 'album', 'dt' => 'album' ),
+            array( 'db' => 'artist', 'dt' => 'artist' ),
+            array( 'db' => 'ts', 'dt' => 'ts' ),
+        );
+
+        $prog_data = \SSP::complex($_GET, $this->db, $table, $primaryKey, $columns, null, $where);
+
+        // foreach($prog_data['data'] as &$program) {
+        //     $program['host'] = $this->getDjByProgramName($program['programname']);
+        // }
+        return json_encode($prog_data);
+    }
+
 
 }

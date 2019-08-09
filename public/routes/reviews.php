@@ -142,6 +142,7 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
     
     $app->group('/print' ,$authenticate , function () use ($app,$authenticate){
         $app->get('/',$authenticate, function () use ($app){
+             // $_SESSION['ReviewLabels'] = [];
             $p = $app->request()->get('p') ?: 1;
             $max = $app->request()->get('l') ?: 100;
             $review = new \TPS\reviews();
@@ -197,6 +198,13 @@ $app->group('/review', $authenticate, function () use ($app,$authenticate){
             $result = $reviews->clearPrintLabel($RefCode);
             $app->response->setStatus($result[1]);
             print $result[1]." ($RefCode)";
+        });
+
+
+        $app->get('/display', $authenticate, function () use ($app){
+        $reviews = new \TPS\reviews();
+        $filter = $app->request->get("filter");
+        echo $reviews -> displayTable($filter);
         });
     });
 
