@@ -465,7 +465,7 @@ class playlist extends TPS{
 	$sql = $this->db->query("SELECT song.programname, song.playlistnumber AS SmallCode, song.date, song.time, program.weight " . 
 				"FROM song LEFT JOIN program ON song.programname=program.programname " .
 				"WHERE playlistnumber IS NOT NULL AND date >= '" . $startDate->format('Y-m-d') . "' " .
-				"AND date <= '" . $endDate->format('Y-m-d') . "';");
+				"AND date <= '" . $endDate->format('Y-m-d') . "' ORDER BY song.date DESC;");
         $albumPlays = [];
         while ($row = $sql->fetch(\PDO::FETCH_ASSOC)) {
 	    $row['dateTime'] = new\DateTime($row['date'] . " " . $row['time']);
@@ -582,7 +582,7 @@ class playlist extends TPS{
 	$albumsToReturn = 40;
 	if (count($albumInfo) > $albumsToReturn) {
 	    $totalScoreOfLast = $albumInfo[$albumsToReturn - 1]['totalScore'];
-	    for ($i = $albumsToReturn - 1; $i < count($albumInfo); $i++) {
+	    for ($i = $albumsToReturn; $i < count($albumInfo); $i++) {
 		if ($albumInfo[$i]['totalScore'] == $totalScoreOfLast)
 		    $albumsToReturn++;
 		else

@@ -108,12 +108,20 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
     $app->get('/chart', function () use ($app, $authenticate, $playlist) {
 	$startDate = date("Y-m-d", strtotime("-1 week"));
 	$endDate = date("Y-m-d");
+
+        $sDate = new \DateTime($startDate);
+        $eDate = new \DateTime($endDate);
+        $fourWeekStart = clone $eDate;
+        $fourWeekStart->modify('-28 days');
+        $sDate = $sDate < $fourWeekStart ? $sDate : $fourWeekStart;
+
 	$charts =  $playlist->getTop40($startDate, $endDate);
 
         $param = array(
 		"area"=>"Playlist",
                 "title"=>"Chart",
                 "startDate"=>$startDate,
+		"sDate"=>$sDate,
                 "endDate"=>$endDate,
                 "charts"=>$charts,
         );
@@ -123,6 +131,13 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
     $app->post('/chart', function () use ($app, $authenticate, $playlist) {
         $startDate = $app->request->post("startDate");
         $endDate = $app->request->post("endDate");
+
+        $sDate = new \DateTime($startDate);
+        $eDate = new \DateTime($endDate);
+        $fourWeekStart = clone $eDate;
+        $fourWeekStart->modify('-28 days');
+        $sDate = $sDate < $fourWeekStart ? $sDate : $fourWeekStart;
+
         $charts =  $playlist->getTop40($startDate, $endDate);
 
         $param = array(
@@ -130,6 +145,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
             "title"=>"Chart",
             "charts"=>$charts,
             "startDate"=>$startDate,
+	    "sDate"=>$sDate,
             "endDate"=>$endDate
         );
         $app->render('chart.twig', $param);
