@@ -1,3 +1,7 @@
+var epNum = $('#epNum').val();
+var songCount = $('#songCountHidden').val();
+var playlistCount = $('#playlistCountHidden').val();
+var canConCount = $('#canconCountHidden').val();
 
 $(document).on('change paste input', ".playlistNum", function(){
 
@@ -125,6 +129,23 @@ $(document).on('click', '.insertBtn', function(){
  			$('#psaCount').text(parseInt($('#psaCount').text()) + 1);
  		selectedTraffic = inputVal.find("select[name='psaList'] option:selected");
  	}
+ 	else	// when insert song
+ 	{
+ 		songCount ++ ;
+ 		if(inputVal.find("input[name='cancon']").prop('checked'))
+ 		{
+ 			canConCount ++;
+ 		}
+ 		if(inputVal.find("input[name='playlistNum']").val()!='')
+ 		{
+ 			playlistCount ++ ;
+ 			$('#playlistCount').text(playlistCount);
+ 		}
+ 		$('#canconCount').text(parseInt(parseFloat(canConCount)/parseFloat(songCount) * 100));
+ 		localStorage.setItem("promptLog_songCount" + epNum, songCount);
+ 		localStorage.setItem("promptLog_playlistCount" + epNum, playlistCount);
+ 		localStorage.setItem("promptLog_canconCount" + epNum, canConCount);
+ 	}
 
  	if($('#epType').text() == 'Live')
  	{
@@ -188,10 +209,10 @@ $(document).on('click', '.insertBtn', function(){
 		  		'</button>' +
 			'</td>' +
 		'</tr>';
-		if(localStorage.getItem("promptLog") == null)
-			localStorage.setItem("promptLog", "");
+		if(localStorage.getItem("promptLog" + epNum) == null)
+			localStorage.setItem("promptLog" + epNum, "");
 
-		localStorage.setItem("promptLog", localStorage.getItem("promptLog") + newTr);
+		localStorage.setItem("promptLog" + epNum, localStorage.getItem("promptLog" + epNum) + newTr);
  	$('#songTable tbody tr:last').after(
  		newTr
   		);
@@ -302,7 +323,10 @@ $(document).on('keyup', '.songInputField input', function(e){
 
 // enable all checkbox to get values
 $(document).on('submit','#episodeForm',function(){
-	localStorage.setItem("promptLog", "");
+	localStorage.setItem("promptLog" + epNum, "");
+	localStorage.setItem("promptLog_songCount" + epNum, 0);
+	localStorage.setItem("promptLog_playlistCount" + epNum, 0);
+	localStorage.setItem("promptLog_canconCount" + epNum, 0);
 	
 	$(this).find("[type='checkbox']").attr("disabled", false);
 	$(this).find('select,option').attr("disabled", false);
@@ -505,11 +529,23 @@ function drawHand(ctx, pos, length, width) {
 // use localstorage for prompt log - song insertion
 // incase of refresh page, keep the form data
 $(document).ready(function(){
-   	if(localStorage.getItem("promptLog") != null)
+   	if(localStorage.getItem("promptLog" + epNum) != null)
    	{
    		$('#songTable tbody tr:last').after(
- 			localStorage.getItem("promptLog")
+ 			localStorage.getItem("promptLog" + epNum)
   		);	
    	}
- 	
+   	if(localStorage.getItem("promptLog_songCount" + epNum) != null && localStorage.getItem("promptLog_songCount" + epNum) != '0')
+   		songCount = localStorage.getItem("promptLog_songCount" + epNum);
+   	if(localStorage.getItem("promptLog_playlistCount" + epNum) != null && localStorage.getItem("promptLog_playlistCount" + epNum) != '0')
+   	{
+   		playlistCount = localStorage.getItem("promptLog_playlistCount" + epNum);
+   	}
+   	if(localStorage.getItem("promptLog_canconCount" + epNum) != null && localStorage.getItem("promptLog_canconCount" + epNum) != '0')
+   	{
+   		canConCount = localStorage.getItem("promptLog_canconCount" + epNum);
+   	}
+   	$('#playlistCount').text(playlistCount);
+   	if(songCount != 0)
+		$('#canconCount').text(parseInt(parseFloat(canConCount)/parseFloat(songCount) * 100));
 });

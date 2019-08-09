@@ -40,7 +40,9 @@
 </ol>
 {% endblock %}
 {% block content %}
-
+<input type="hidden" value="{{songCount ?? 0}}" id="songCountHidden">
+<input type="hidden" value="{{playlistCount ?? 0}}" id="playlistCountHidden">
+<input type="hidden" value="{{canConCount ?? 0}}" id="canconCountHidden">
 <!-- Episode Info -->
 <table class="table">
 	<tr>
@@ -48,8 +50,8 @@
 		<td class="col-md-2">Sponsors:{% for sponsor in req.sponsors %} <br />-{{ sponsor }} {% endfor %}</td> 
 		<td class="col-md-2 bg-warning">Ads: <span id='adCount'>0</span>/{{req.ads}}</td> 
 		<td class="col-md-2 bg-warning">PSA/Promo: <span id='psaCount'>0</span>/{{req.psa}}</td> 
-		<td class="col-md-2 bg-success">Canadian Content Required: /{{req.cancon}}</td> 
-		<td class="col-md-2 bg-success">Playlist Required: /{{req.playlist}}</td>
+		<td class="col-md-2 bg-success">Canadian Content Required: <span id='canconCount'>0</span> / {{req.cancon}}</td> 
+		<td class="col-md-2 bg-success">Playlist Required: <span id='playlistCount'>0</span> / {{req.playlist}}</td>
 	</tr>
 
 	<tr></tr>
@@ -273,7 +275,7 @@
 <hr>
 <div style="background-color: #F5F5F5;">
 <form action="{{ action }}" id="episodeForm" method="POST">
-	<input type="hidden" name="epNum" value="{{episode.id}}">
+	<input type="hidden" name="epNum" id ="epNum" value="{{episode.id}}">
 	<table class="table" id="songTable" >
 		<thead class="thead-dark">
 		<tr>
