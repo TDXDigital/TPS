@@ -27,13 +27,14 @@
 
 // Load and render the data table
 $(document).ready(function() {
-
+    var labels = $('#labels').val();
+    
     var table = $('#data_table').DataTable({
         "processing": true,
         "serverSide": true,
         "select": true,
         "ajax": {
-            "url": "/programs/display", 
+            "url": "/review/print/display", 
             "data": function(d) {
                     
                     d.filter = {
@@ -48,37 +49,44 @@ $(document).ready(function() {
                  }
         },
         "columns": [
-            { "data": "programname" },
-            { "data": "programID" },
-            { "data": "genre" },
-            { "data": "length" },
-            { "data": "syndicatesource" },
-            { "data": "host" },
-            { "data": "active" },
+            { "data": "reviewer" },
+            { "data": "album" },
+            { "data": "artist" },
+            { "data": "ts" },
+            { "data": "id" },
         ],
         "columnDefs": [
             {
+
                 "render": function ( data, type, row ) {
-                    return '<a href="/programs/history/' + data + '">'+ data +'</a>';
-                },
-                "targets": 0
-            },
-            {
-                "render": function ( data, type, row ) {
-                    return '<button type="button" onclick="location.href=\'/programs/edit/'+data+'\';" class="btn btn-default btn-xs">' +
-                        'Edit ' + '<i class="fa fa-edit" aria-hidden="true"></i></button>';
-                },
-                "targets": 1
-            },
-            {
-                "render": function ( data, type, row ) {
-                    if(data == 1 )
-                        return '<i class="fa fa-check-circle-o" style="color: #008000"></i>';
-                    else if(data == 0)
-                        return '<i class="fa fa-times-circle-o" style="color: #800000"></i>';
+
+                    var disabledAdd = '';
+                    var disabledrmv = '';
+                    try
+                    {
+                        if(JSON.parse(labels).filter(item => item == data) == data)
+                            disabledAdd = 'disabled';
+                        else
+                            disabledrmv = 'disabled'; 
+                    }
+                    catch {
+
+                    }
+
                     
+
+                    // alert('test');
+                    return "<button id='enb"+ data + "' "+ disabledAdd +" type='button' "+
+                		"class='btn btn-success addBtn' " + 
+                		"onclick='javascript: addLabel(parseInt(" + data +"));'> "+
+                		"<i class='fa fa-plus-square'></i> Add</button> "+
+                		"<button id='dsb"+ data +"' "+ disabledrmv + " type='button' "+ 
+                		"class='btn btn-danger rmvBtn' " +  
+                		"onclick='javascript: removeLabel(parseInt("+ data +"));'> "+
+                		"<i class='fa fa-minus-square'></i> Remove</button> ";	
                     },
-                "targets": 6
+                "orderable": false,
+                "targets": 4
             },
         ]
     });

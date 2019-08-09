@@ -65,7 +65,7 @@
         </fieldset>
     </form>
 
-    <table class='table table-bordered table-hover' >
+    <table class='table table-bordered table-hover' id='data_table' >
         <thead>
             <th>Reviewer</th>
             <th>Album</th>
@@ -78,7 +78,7 @@
         </th>
     </thead>
     <tbody>
-        {% for id,entry in reviews %}
+       <!--  {% for id,entry in reviews %}
         <tr>
             <td>{{entry.review.reviewer}}</td>
             <td>{{entry.artist}}</td>
@@ -96,9 +96,10 @@
                 <i class="fa fa-minus-square"></i> Remove</button>
             </td>
         </tr>
-        {% endfor %}
+        {% endfor %} -->
     </tbody>
 </table>
+<input type="hidden" value='{{labels|json_encode}}' id="labels">
 <div class="row">
     <div class="col-lg-6">
     </div>
@@ -170,6 +171,8 @@
     {% endblock %}
     {% endblock %}
     {% block lastScripts %}
+    <script src="{{siteUrl}}/TPSBIN/JS/reviewPrint.js"></script>
+
     <script type="text/javascript">
         function PrintModal(printer){
             $("#printModal").modal({
@@ -226,6 +229,7 @@ $(document).ready(function()
     $("#printAll").click(function() {
             if($(this).is(':checked'))
             {
+                // $('.addBtn').trigger('click');
                  $.ajax({
                     url: "./addAll",
                     type: 'PUT',
@@ -238,6 +242,7 @@ $(document).ready(function()
             }
             else
             {
+                // $('.rmvBtn').trigger('click');
                 $.ajax({
                     url: "./rmvAll",
                     type: 'DELETE',
@@ -247,7 +252,6 @@ $(document).ready(function()
                     });
                 $('.addBtn').prop('disabled', false);//function(i, v) { return !v; });
                 $('.rmvBtn').prop('disabled', true);
-                
             }
     });                 
 });
