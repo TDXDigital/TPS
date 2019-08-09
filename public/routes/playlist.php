@@ -114,6 +114,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
         $fourWeekStart = clone $eDate;
         $fourWeekStart->modify('-28 days');
         $sDate = $sDate < $fourWeekStart ? $sDate : $fourWeekStart;
+	$sDate = $sDate->format('Y-m-d');
 
 	$charts =  $playlist->getTop40($startDate, $endDate);
 
@@ -137,6 +138,7 @@ $app->group('/playlist', function() use ($app, $authenticate, $playlist){
         $fourWeekStart = clone $eDate;
         $fourWeekStart->modify('-28 days');
         $sDate = $sDate < $fourWeekStart ? $sDate : $fourWeekStart;
+	$sDate = $sDate->format('Y-m-d');
 
         $charts =  $playlist->getTop40($startDate, $endDate);
 
