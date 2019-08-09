@@ -110,7 +110,7 @@
 	    probEndDateArray[2]
 	);
 
-	onProbation = currDate < probEndDate
+	onProbation = currDate < probEndDate;
 	multiplier = onProbation ? {{ station.probationMultiplier }} : 1;
 	$('#adj-weight').val(weight * multiplier);
     }

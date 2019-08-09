@@ -53,6 +53,9 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
         if($stn = $station->getStation($callsign)){
             $stn = $stn[$callsign];
             $stn['callsign']=$callsign;
+            $s = new \TPS\station($callsign);
+            $stn['hostProbationDays'] = $s->getHostProbationDays();
+            $stn['hostProbationWeight'] = $s->getHostProbationWeight();
         }
         $params=array(
             'station'=>$stn,
@@ -69,7 +72,9 @@ $app->group('/station', $authenticate, function () use ($app,$authenticate){
         $stn = $station->getStation($callsign);
         if(sizeof($stn>0)){
             $stn = $stn[$callsign];
-            
+            $stn['hostProbationDays'] = $station->getHostProbationDays();
+            $stn['hostProbationWeight'] = $station->getHostProbationWeight();
+
             $brand = $app->request->put('brand');
             $address = $app->request->put('address');
             $designation = $app->request->put('designation');

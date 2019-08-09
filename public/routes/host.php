@@ -35,11 +35,11 @@ $app->group('/host', $authenticate, function () use ($app,$authenticate){
 
   $app->get('/new', function() use ($app, $authenticate){
 	$callsign = $_SESSION['CALLSIGN'];
-	$station = new \TPS\station();
-	$station = $station->getStation($callsign);
-	$probationDays = $station[$callsign]['hostProbationDays'];
-	$probationEnds = date('Y-m-d', strtotime("+{$probationDays} days"));
-	$probationMultiplier = $station[$callsign]['hostProbationWeight'];
+        $station = new \TPS\station($callsign);
+
+        $probationDays = $station->getHostProbationDays();
+        $probationEnds = date('Y-m-d', strtotime("+{$probationDays} days"));
+        $probationMultiplier = $station->getHostProbationWeight();
 
         $params = array(
 	    "area"=>"Host",
@@ -101,10 +101,9 @@ $app->group('/host', $authenticate, function () use ($app,$authenticate){
         $host = new \TPS\host($_SESSION['CALLSIGN']);
         $hostToEdit = $host->get($alias);
 
-    	$callsign = $_SESSION['CALLSIGN'];
-    	$station = new \TPS\station();
-    	$station = $station->getStation($callsign);
-    	$probationMultiplier = $station[$callsign]['hostProbationWeight'];
+        $callsign = $_SESSION['CALLSIGN'];
+        $station = new \TPS\station($callsign);
+        $probationMultiplier = $station->getHostProbationWeight();
 
         $params = array(
 	    "area"=>"Host",
