@@ -588,11 +588,15 @@ class reviews extends station{
      * @param type $maxResult
      * @return boolean|array
      */
-    public function getApprovedReviews($pagination=1,$maxResult=100){
+    public function getApprovedReviews($pagination=1,$maxResult=100, $ts = null){
         $this->sanitizePagination($pagination, $maxResult);
+        $dateFilter = "";
+        if($ts != null)
+            $dateFilter = ' AND ts >="'. $ts . '" ';
+
         $reviews = array();
         $selectReviews = "SELECT review.id, review.refcode, library.artist, library.album, review.reviewer, review.ts, review.notes "
-                . "FROM review LEFT JOIN library on review.refcode=library.RefCode where review.approved = 1 order by ts limit ?,?";
+                . "FROM review LEFT JOIN library on review.refcode=library.RefCode where review.approved = 1 ".$dateFilter."order by ts limit ?,?";
         if($stmt = $this->mysqli->prepare($selectReviews)){
             $stmt->bind_param('ii',$pagination,$maxResult);
             $stmt->bind_result($id,$refcode,$artist,$album,$reviewer,$timestamp,$notes);
@@ -905,8 +909,7 @@ class reviews extends station{
 
      public function displayTable($filter)
     {
-        
-        $where = '  approved <= 1';
+        $where = ' approved >= 1 and review.ts >="'. $filter['date']. '" ';
         $table = 'review left join library on review.refcode = library.refcode';
          
         // Table's primary key

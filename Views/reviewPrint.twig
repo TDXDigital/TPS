@@ -1,5 +1,18 @@
 {% extends 'baseAdmin.twig' %}
 
+
+{% block headScripts %}
+
+
+    <link rel="stylesheet" href="{{siteUrl}}/js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>
+
+    <style type="text/css">
+        td label {
+           display: block;
+           text-align: center;
+        }
+    </style>
+{% endblock %}
 {% block title %}{{title|default('Administration Dashboard')}}{% endblock %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
@@ -64,7 +77,19 @@
             </div>
         </fieldset>
     </form>
-
+    <div class="row">
+        <div class="col-md-3">       
+            <fieldset>
+                <div id="sort_group" class="form-group input-group">
+                    <label for="startDate" class="input-group-addon">Date After</label>
+                    <input type="text" class="form-control datepicker table_filter" required
+                           name="startDate" id="startDate" placeholder="2000-01-01"
+                           pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"
+                           value="{{ startDate?? startDate | date_modify('-1 day')|date('Y-m-d') }}">
+                </div>
+            </fieldset>
+        </div>
+    </div>
     <table class='table table-bordered table-hover' id='data_table' >
         <thead>
             <th>Reviewer</th>
@@ -172,6 +197,8 @@
     {% endblock %}
     {% block lastScripts %}
     <script src="{{siteUrl}}/TPSBIN/JS/reviewPrint.js"></script>
+    <script src="{{siteUrl}}/js/chosen.jquery.min.js"></script>
+<script type="text/javascript" src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
 
     <script type="text/javascript">
         function PrintModal(printer){
@@ -231,7 +258,7 @@ $(document).ready(function()
             {
                 // $('.addBtn').trigger('click');
                  $.ajax({
-                    url: "./addAll",
+                    url: "./addAll?filter="+ $('#startDate').val(),
                     type: 'PUT',
                     }).done(function(data) {
                     }).fail(function(data){
@@ -244,7 +271,7 @@ $(document).ready(function()
             {
                 // $('.rmvBtn').trigger('click');
                 $.ajax({
-                    url: "./rmvAll",
+                    url: "./rmvAll?filter="+ $('#startDate').val(),
                     type: 'DELETE',
                     }).done(function(data) {
                     }).fail(function(data){
@@ -255,5 +282,12 @@ $(document).ready(function()
             }
     });                 
 });
+    // Activate chosen elements
+        $(".chosen-select").chosen();
+        $( ".datepicker" ).datepicker({
+            numberOfMonths: 3,
+            showButtonPanel: true,
+            dateFormat: "yy-mm-dd"
+        });
 </script>
 {% endblock %}

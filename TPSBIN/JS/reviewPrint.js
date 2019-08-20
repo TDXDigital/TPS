@@ -38,13 +38,7 @@ $(document).ready(function() {
             "data": function(d) {
                     
                     d.filter = {
-                        status: $('#filter_status').val(), 
-                        date: $('#filter_date').val(),
-                        genre: $('#filter_genre').val(),
-                        locale: $('#filter_location').val(),
-                        format: $('#filter_format').val(),
-                        missing_info: $('#missing_info').val(),
-                        tag: $('#filter_tag').val()
+                        date: $('#startDate').val(),
                         }
                  }
         },
@@ -90,5 +84,7 @@ $(document).ready(function() {
             },
         ]
     });
-    
+    $('.table_filter').on('change', function() {
+        table.draw();
+    });
 } );
