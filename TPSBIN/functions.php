@@ -235,10 +235,8 @@
 
     function login($email, $password, $mysqli=NULL, $callsign=NULL, $server=NULL) {
 
-
-        //for dev purpose
-        // return true;
-
+        // for dev purpose
+        // return true; 
 
         // Using prepared statements means that SQL injection is not possible.
         if($callsign){

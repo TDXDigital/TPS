@@ -53,6 +53,7 @@ require_once 'label.php';
 require_once 'playlist.php';
 require_once 'host.php';
 require_once 'traffic.php';
+require_once 'user.php';
 #load api last;
 require_once 'api.php';
 

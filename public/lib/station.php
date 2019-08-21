@@ -889,6 +889,9 @@ class station extends TPS{
 
             // hash the password with the unique salt.
             $password = hash('sha512', $password . $salt);
+            echo 'Pass: '. $password . '<br>';
+            echo 'Dbpa: '. $db_password;
+
             if ($stmt->num_rows == 1) {
                 // If the user exists we check if the account is locked
                 // from too many login attempts

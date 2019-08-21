@@ -1,0 +1,95 @@
+{% extends 'baseAdmin.twig' %}
+{% block headScripts %}
+	<link href="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.css"
+		  rel="stylesheet" type="text/css"/>
+	<link href="{{siteUrl}}/js/chosen.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" href="{{siteUrl}}/js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>
+{% endblock %}
+{% set firstStation = station|first %}
+{% block title %}{{title|default('Host')}}{% endblock %}
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li>
+        <i class="fa fa-arrow-left"></i>  <a class="back" href="#">Back</a>
+    </li>
+</ol>
+
+<ol class="breadcrumb">
+	<li>
+		<i class="fa fa-dashboard"></i>  <a href="/">Dashboard</a>
+	</li>
+	<li class="active">
+		<i class="fa fa-fw fa-group"></i> <a href="/">User</a>
+	</li>
+	<li class="active">
+		<a href="/houserst/new"><i class="fa fa-plus-square-o"></i> New User</a>
+	</li>
+</ol>
+{% endblock %}
+{% block content %}
+<div class="container">
+	<form role="form" method="POST" action="/user/new">
+		<div class="row">
+			<div class="col-sm-4">
+				<div class="form-group">
+					<label for="programName">User Name</label>
+					<input type='text' class="form-control" id='username' name="username" value="{{host.djname}}"/>
+			   </div>
+			</div>
+			<div class="col-sm-4">
+				<div class="form-group">
+					<label for="programName">Email</label>
+					<input type='email' class="form-control" id='email' name="email" value="{{host.alias}}"
+					{% if host.alias is not null %} readonly {% endif %}/>
+			   </div>
+			</div>
+			
+			<div class="col-sm-4">
+				<div class="form-group">
+					<label for="length">Password</label>
+					<input type='password' class="form-control" id='password' name="password" value="{{host.years}}"/>
+			   </div>
+			</div>
+		</div>
+		 <div class="row">
+			<div class="col-sm-9">
+			</div>
+			<div class="col-sm-1">
+				<div class="form-group pull-right">
+					
+					<button id="submit" type="submit" class="btn btn-success pull-down ">Submit</button>
+				<!--<button type="reset" class="btn btn-warning">Reset</button>-->
+				</div>
+			</div>
+
+		</div>
+	</form>
+</div>
+{% endblock %}
+{% block lastScripts %}
+	<script src="{{siteUrl}}/js/jquery/js/jquery-ui-1.11.0/jquery-ui.min.js"></script>
+	<script src="{{siteUrl}}/js/chosen.jquery.min.js"></script>
+	<script>
+	$(document).ready(function(){
+		updateAdjWeight();
+		$('.pull-down').each(function() {
+			$(this).css('margin-top', $(this).parent().height()-$(this).height())
+		});
+
+	        $.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
+                $( "#probEndDate" ).datepicker({
+                    changeMonth: true,
+                    changeYear: true
+                });
+	});
+
+	//back link
+	$(document).ready(function(){
+		$('a.back').click(function(){
+			parent.history.back();
+			return false;
+		});
+	});
+
+	</script>
+{% endblock %}
