@@ -10,6 +10,11 @@ $app->group('/user', $authenticate, function () use ($app, $authenticate) {
         $app->render('userNew.twig',array('title'=>'New User'));
     });
     $app->post('/new',$authenticate($app, [2]), function () use ($app) {
+
+
+        print_r($_POST);
+        exit;
+        
         $error_msg = "";
         $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
         $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);

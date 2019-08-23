@@ -4,6 +4,37 @@
 		  rel="stylesheet" type="text/css"/>
 	<link href="{{siteUrl}}/js/chosen.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="{{siteUrl}}/js/jquery/css/smoothness/jquery-ui-1.10.0.custom.min.css"/>
+	<style>
+		/* Hiding the checkbox, but allowing it to be focused */
+		.badgebox
+		{
+		    opacity: 0;
+		}
+
+		.badgebox + .badge
+		{
+		    /* Move the check mark away when unchecked */
+		    text-indent: -999999px;
+		    /* Makes the badge's width stay the same checked and unchecked */
+			width: 27px;
+		}
+
+		.badgebox:focus + .badge
+		{
+		    /* Set something to make the badge looks focused */
+		    /* This really depends on the application, in my case it was: */
+		    
+		    /* Adding a light border */
+		    box-shadow: inset 0px 0px 5px;
+		    /* Taking the difference out of the padding */
+		}
+
+		.badgebox:checked + .badge
+		{
+		    /* Move the check mark back when checked */
+			text-indent: 0;
+		}
+	</style>
 {% endblock %}
 {% set firstStation = station|first %}
 {% block title %}{{title|default('Host')}}{% endblock %}
@@ -51,6 +82,171 @@
 			   </div>
 			</div>
 		</div>
+		<h3>Permission</h3>
+		<hr>
+
+
+		<div class="row">
+			<div class="col-sm-2">
+				<div class="input-group">
+					<label for="plCreate" class="btn btn-default">Playsheet Create 
+						<input type="checkbox" name="plCreate" {{plCreate in permission? 'checked' : ''}} id="plCreate" class="badgebox">
+						<span class="badge">&check;</span>
+					</label>
+			   </div>
+			</div>
+			<div class="col-sm-2">
+				<div class="form-group">
+					<label for="plView" class="btn btn-default">Playsheet View 
+						<input type="checkbox" name="plView" {{plCreate in permission? 'checked' : ''}} id="plView" class="badgebox">
+						<span class="badge">&check;</span>
+					</label>
+			   </div>
+			</div>
+			<div class="col-sm-2">
+				<label for="plEdit" class="btn btn-default">Playsheet Edit 
+						<input type="checkbox" name="plEdit" {{plCreate in permission? 'checked' : ''}} id="plEdit" class="badgebox">
+						<span class="badge">&check;</span>
+				</label>
+			</div>
+		</div>
+
+			<div class="row">
+			<div class="col-sm-2">
+				<div class="form-group">
+					<label for="trCreate" class="btn btn-default">Traffic Create 
+						<input type="checkbox" name="trCreate" {{plCreate in permission? 'checked' : ''}} id="trCreate" class="badgebox">
+						<span class="badge">&check;</span>
+				</label>
+			   </div>
+			</div>
+			<div class="col-sm-2">
+				<div class="form-group">
+					<label for="trView" class="btn btn-default">Traffic View 
+						<input type="checkbox" name="trView" {{plCreate in permission? 'checked' : ''}} id="trView" class="badgebox">
+						<span class="badge">&check;</span>
+				</label>
+			   </div>
+			</div>
+			<div class="col-sm-2">
+				<div class="form-group">
+					<label for="trEdit" class="btn btn-default">Traffic Edit 
+						<input type="checkbox" name="trEdit" {{plCreate in permission? 'checked' : ''}} id="trEdit" class="badgebox">
+						<span class="badge">&check;</span>
+					</label>
+			   </div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-2">
+				<div class="form-group">
+					<label for="memCreate" class="btn btn-default">Member Create 
+						<input type="checkbox" name="memCreate" {{plCreate in permission? 'checked' : ''}} id="memCreate" class="badgebox">
+						<span class="badge">&check;</span>
+					</label>
+			   </div>
+			</div>
+			<div class="col-sm-2">
+				<div class="form-group">
+					<label for="memView" class="btn btn-default">Member View 
+						<input type="checkbox" name="memView" {{plCreate in permission? 'checked' : ''}} id="memView" class="badgebox">
+						<span class="badge">&check;</span>
+					</label>
+			   </div>
+			</div>
+			<div class="col-sm-2">
+				<div class="form-group">
+					<label for="memEdit" class="btn btn-default">Member Edit 
+						<input type="checkbox" name="memEdit" {{plCreate in permission? 'checked' : ''}} id="memEdit" class="badgebox">
+						<span class="badge">&check;</span>
+					</label>
+			   </div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-2">
+				<div class="form-group">
+					<label for="progCreate" class="btn btn-default">Program Create 
+						<input type="checkbox" name="progCreate" {{plCreate in permission? 'checked' : ''}} id="progCreate" class="badgebox">
+						<span class="badge">&check;</span>
+					</label>
+			   </div>
+			</div>
+			<div class="col-sm-2">
+				<div class="form-group">
+
+					<label for="progView" class="btn btn-default">Program View 
+						<input type="checkbox" name="progView" {{plCreate in permission? 'checked' : ''}} id="progView" class="badgebox">
+						<span class="badge">&check;</span>
+					</label>
+			   </div>
+			</div>
+			<div class="col-sm-2">
+				<div class="form-group">
+					<label for="progEdit" class="btn btn-default">Program Edit 
+						<input type="checkbox" name="progEdit" {{plCreate in permission? 'checked' : ''}} id="progEdit" class="badgebox">
+						<span class="badge">&check;</span>
+					</label>
+			   </div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-2">
+				<div class="form-group">
+
+					<label for="genCreate" class="btn btn-default">Genre Create 
+						<input type="checkbox" name="genCreate" {{plCreate in permission? 'checked' : ''}} id="genCreate" class="badgebox">
+						<span class="badge">&check;</span>
+					</label>
+			   </div>
+			</div>
+			<div class="col-sm-2">
+				<div class="form-group">
+					<label for="genView" class="btn btn-default">Genre View 
+						<input type="checkbox" name="genView" {{plCreate in permission? 'checked' : ''}} id="genView" class="badgebox">
+						<span class="badge">&check;</span>
+					</label>
+			   </div>
+			</div>
+			<div class="col-sm-2">
+				<div class="form-group">
+					<label for="genEdit" class="btn btn-default">Genre Edit 
+						<input type="checkbox" name="genEdit" {{plCreate in permission? 'checked' : ''}} id="genEdit" class="badgebox">
+						<span class="badge">&check;</span>
+					</label>
+			   </div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-2">
+				<div class="form-group">
+					<label for="libCreate" class="btn btn-default">Library Create 
+						<input type="checkbox" name="libCreate" {{plCreate in permission? 'checked' : ''}} id="libCreate" class="badgebox">
+						<span class="badge">&check;</span>
+					</label>
+			   </div>
+			</div>
+			<div class="col-sm-2">
+				<div class="form-group">
+					<label for="libView" class="btn btn-default">Library View 
+						<input type="checkbox" name="libView" {{plCreate in permission? 'checked' : ''}} id="libView" class="badgebox">
+						<span class="badge">&check;</span>
+					</label>
+			   </div>
+			</div>
+			<div class="col-sm-2">
+				<div class="form-group">
+					<label for="libEdit" class="btn btn-default">Library Edit 
+						<input type="checkbox" name="libEdit" {{plCreate in permission? 'checked' : ''}} id="libEdit" class="badgebox">
+						<span class="badge">&check;</span>
+					</label>
+			   </div>
+			</div>
+		</div>
+
+
 		 <div class="row">
 			<div class="col-sm-9">
 			</div>
