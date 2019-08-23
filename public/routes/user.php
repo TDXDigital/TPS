@@ -10,10 +10,6 @@ $app->group('/user', $authenticate, function () use ($app, $authenticate) {
         $app->render('userNew.twig',array('title'=>'New User'));
     });
     $app->post('/new',$authenticate($app, [2]), function () use ($app) {
-
-
-        print_r($_POST);
-        exit;
         
         $error_msg = "";
         $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
@@ -79,14 +75,23 @@ $app->group('/user', $authenticate, function () use ($app, $authenticate) {
 
             // Create salted password
             $password = hash('sha512', $password . $random_salt);
+            $id =-1;
 
             // Insert the new user into the database
-            if ($insert_stmt = $mysqli->prepare("INSERT INTO members (username, email, password, salt) VALUES (?, ?, ?, ?)")) {
+            if ($insert_stmt = $mysqli->prepare("INSERT INTO members (username, email, password, salt) VALUES (?, ?, ?, ?)"))
+            {
                 $insert_stmt->bind_param('ssss', $username, $email, $password, $random_salt);
                 // Execute the prepared query.
                 if (! $insert_stmt->execute()) {
                     $app->flash("error", "Registration Error: INSERT");
                 }
+                else
+                {
+                    $id = $insert_stmt->insert_id;
+                    $user = new \TPS\user($_SESSION['CALLSIGN']);
+                    $user->assignPermission($id, $_POST);
+                }
+
             }
         }
         else{
@@ -97,12 +102,22 @@ $app->group('/user', $authenticate, function () use ($app, $authenticate) {
             standardResult::created($app, "created", null);
         }
         else{
-            $app->redirect("./".$username);
+            $app->redirect("./".$id);
         }
     });
     // User page
     $app->get('/:id', function ($id) use ($app) {
-        $app->render('notSupported.twig',array('title'=>'User Profile'));
+        $user = new \TPS\user($_SESSION['CALLSIGN']);
+
+        $userInfo = $user->getUserInfo($id);
+        $permission = $user->getPermissions($id);
+
+        $params = array(
+            "title"=>"User Profile",
+            "user"=> $userInfo,
+            "permissions"=> $permission
+        );
+        $app->render('userNew.twig',$params);
     });
     $app->get('/:id/inbox', function ($id) use ($app) {
         $app->render('notSupported.twig', array('title'=>'User Inbox'));

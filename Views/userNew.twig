@@ -64,13 +64,13 @@
 			<div class="col-sm-4">
 				<div class="form-group">
 					<label for="programName">User Name</label>
-					<input type='text' class="form-control" id='username' name="username" value="{{host.djname}}"/>
+					<input type='text' class="form-control" id='username' name="username" value="{{user.username}}"/>
 			   </div>
 			</div>
 			<div class="col-sm-4">
 				<div class="form-group">
 					<label for="programName">Email</label>
-					<input type='email' class="form-control" id='email' name="email" value="{{host.alias}}"
+					<input type='email' class="form-control" id='email' name="email" value="{{user.email}}"
 					{% if host.alias is not null %} readonly {% endif %}/>
 			   </div>
 			</div>
@@ -78,7 +78,7 @@
 			<div class="col-sm-4">
 				<div class="form-group">
 					<label for="length">Password</label>
-					<input type='password' class="form-control" id='password' name="password" value="{{host.years}}"/>
+					<input type='password' class="form-control" id='password' name="password" value=""/>
 			   </div>
 			</div>
 		</div>
@@ -90,7 +90,7 @@
 			<div class="col-sm-2">
 				<div class="input-group">
 					<label for="plCreate" class="btn btn-default">Playsheet Create 
-						<input type="checkbox" name="plCreate" {{plCreate in permission? 'checked' : ''}} id="plCreate" class="badgebox">
+						<input type="checkbox" name="plCreate" {{permissions.Playsheet_Create==1? 'checked' : ''}} id="plCreate" class="badgebox">
 						<span class="badge">&check;</span>
 					</label>
 			   </div>
@@ -98,14 +98,14 @@
 			<div class="col-sm-2">
 				<div class="form-group">
 					<label for="plView" class="btn btn-default">Playsheet View 
-						<input type="checkbox" name="plView" {{plCreate in permission? 'checked' : ''}} id="plView" class="badgebox">
+						<input type="checkbox" name="plView" {{permissions.Playsheet_View==1? 'checked' : ''}} id="plView" class="badgebox">
 						<span class="badge">&check;</span>
 					</label>
 			   </div>
 			</div>
 			<div class="col-sm-2">
 				<label for="plEdit" class="btn btn-default">Playsheet Edit 
-						<input type="checkbox" name="plEdit" {{plCreate in permission? 'checked' : ''}} id="plEdit" class="badgebox">
+						<input type="checkbox" name="plEdit" {{permissions.Playsheet_Edit==1? 'checked' : ''}} id="plEdit" class="badgebox">
 						<span class="badge">&check;</span>
 				</label>
 			</div>
@@ -115,7 +115,7 @@
 			<div class="col-sm-2">
 				<div class="form-group">
 					<label for="trCreate" class="btn btn-default">Traffic Create 
-						<input type="checkbox" name="trCreate" {{plCreate in permission? 'checked' : ''}} id="trCreate" class="badgebox">
+						<input type="checkbox" name="trCreate" {{permissions.Advert_Create==1? 'checked' : ''}} id="trCreate" class="badgebox">
 						<span class="badge">&check;</span>
 				</label>
 			   </div>
@@ -123,7 +123,7 @@
 			<div class="col-sm-2">
 				<div class="form-group">
 					<label for="trView" class="btn btn-default">Traffic View 
-						<input type="checkbox" name="trView" {{plCreate in permission? 'checked' : ''}} id="trView" class="badgebox">
+						<input type="checkbox" name="trView" {{permissions.Advert_View==1? 'checked' : ''}} id="trView" class="badgebox">
 						<span class="badge">&check;</span>
 				</label>
 			   </div>
@@ -131,7 +131,7 @@
 			<div class="col-sm-2">
 				<div class="form-group">
 					<label for="trEdit" class="btn btn-default">Traffic Edit 
-						<input type="checkbox" name="trEdit" {{plCreate in permission? 'checked' : ''}} id="trEdit" class="badgebox">
+						<input type="checkbox" name="trEdit" {{permissions.Advert_Edit==1? 'checked' : ''}} id="trEdit" class="badgebox">
 						<span class="badge">&check;</span>
 					</label>
 			   </div>
@@ -142,7 +142,7 @@
 			<div class="col-sm-2">
 				<div class="form-group">
 					<label for="memCreate" class="btn btn-default">Member Create 
-						<input type="checkbox" name="memCreate" {{plCreate in permission? 'checked' : ''}} id="memCreate" class="badgebox">
+						<input type="checkbox" name="memCreate" {{permissions.Member_Create==1? 'checked' : ''}} id="memCreate" class="badgebox">
 						<span class="badge">&check;</span>
 					</label>
 			   </div>
@@ -150,7 +150,7 @@
 			<div class="col-sm-2">
 				<div class="form-group">
 					<label for="memView" class="btn btn-default">Member View 
-						<input type="checkbox" name="memView" {{plCreate in permission? 'checked' : ''}} id="memView" class="badgebox">
+						<input type="checkbox" name="memView" {{permissions.Member_View==1? 'checked' : ''}} id="memView" class="badgebox">
 						<span class="badge">&check;</span>
 					</label>
 			   </div>
@@ -158,7 +158,7 @@
 			<div class="col-sm-2">
 				<div class="form-group">
 					<label for="memEdit" class="btn btn-default">Member Edit 
-						<input type="checkbox" name="memEdit" {{plCreate in permission? 'checked' : ''}} id="memEdit" class="badgebox">
+						<input type="checkbox" name="memEdit" {{permissions.Member_Edit==1? 'checked' : ''}} id="memEdit" class="badgebox">
 						<span class="badge">&check;</span>
 					</label>
 			   </div>
@@ -169,7 +169,7 @@
 			<div class="col-sm-2">
 				<div class="form-group">
 					<label for="progCreate" class="btn btn-default">Program Create 
-						<input type="checkbox" name="progCreate" {{plCreate in permission? 'checked' : ''}} id="progCreate" class="badgebox">
+						<input type="checkbox" name="progCreate" {{permissions.Program_Create==1? 'checked' : ''}} id="progCreate" class="badgebox">
 						<span class="badge">&check;</span>
 					</label>
 			   </div>
@@ -178,7 +178,7 @@
 				<div class="form-group">
 
 					<label for="progView" class="btn btn-default">Program View 
-						<input type="checkbox" name="progView" {{plCreate in permission? 'checked' : ''}} id="progView" class="badgebox">
+						<input type="checkbox" name="progView" {{permissions.Program_View==1? 'checked' : ''}} id="progView" class="badgebox">
 						<span class="badge">&check;</span>
 					</label>
 			   </div>
@@ -186,7 +186,7 @@
 			<div class="col-sm-2">
 				<div class="form-group">
 					<label for="progEdit" class="btn btn-default">Program Edit 
-						<input type="checkbox" name="progEdit" {{plCreate in permission? 'checked' : ''}} id="progEdit" class="badgebox">
+						<input type="checkbox" name="progEdit" {{permissions.Program_Edit==1? 'checked' : ''}} id="progEdit" class="badgebox">
 						<span class="badge">&check;</span>
 					</label>
 			   </div>
@@ -197,7 +197,7 @@
 				<div class="form-group">
 
 					<label for="genCreate" class="btn btn-default">Genre Create 
-						<input type="checkbox" name="genCreate" {{plCreate in permission? 'checked' : ''}} id="genCreate" class="badgebox">
+						<input type="checkbox" name="genCreate" {{permissions.Genre_Create==1? 'checked' : ''}} id="genCreate" class="badgebox">
 						<span class="badge">&check;</span>
 					</label>
 			   </div>
@@ -205,7 +205,7 @@
 			<div class="col-sm-2">
 				<div class="form-group">
 					<label for="genView" class="btn btn-default">Genre View 
-						<input type="checkbox" name="genView" {{plCreate in permission? 'checked' : ''}} id="genView" class="badgebox">
+						<input type="checkbox" name="genView" {{permissions.Genre_View==1? 'checked' : ''}} id="genView" class="badgebox">
 						<span class="badge">&check;</span>
 					</label>
 			   </div>
@@ -213,7 +213,7 @@
 			<div class="col-sm-2">
 				<div class="form-group">
 					<label for="genEdit" class="btn btn-default">Genre Edit 
-						<input type="checkbox" name="genEdit" {{plCreate in permission? 'checked' : ''}} id="genEdit" class="badgebox">
+						<input type="checkbox" name="genEdit" {{permissions.Genre_Edit==1? 'checked' : ''}} id="genEdit" class="badgebox">
 						<span class="badge">&check;</span>
 					</label>
 			   </div>
@@ -223,7 +223,7 @@
 			<div class="col-sm-2">
 				<div class="form-group">
 					<label for="libCreate" class="btn btn-default">Library Create 
-						<input type="checkbox" name="libCreate" {{plCreate in permission? 'checked' : ''}} id="libCreate" class="badgebox">
+						<input type="checkbox" name="libCreate" {{permissions.Library_Create==1? 'checked' : ''}} id="libCreate" class="badgebox">
 						<span class="badge">&check;</span>
 					</label>
 			   </div>
@@ -231,7 +231,7 @@
 			<div class="col-sm-2">
 				<div class="form-group">
 					<label for="libView" class="btn btn-default">Library View 
-						<input type="checkbox" name="libView" {{plCreate in permission? 'checked' : ''}} id="libView" class="badgebox">
+						<input type="checkbox" name="libView" {{permissions.Library_View==1? 'checked' : ''}} id="libView" class="badgebox">
 						<span class="badge">&check;</span>
 					</label>
 			   </div>
@@ -239,7 +239,7 @@
 			<div class="col-sm-2">
 				<div class="form-group">
 					<label for="libEdit" class="btn btn-default">Library Edit 
-						<input type="checkbox" name="libEdit" {{plCreate in permission? 'checked' : ''}} id="libEdit" class="badgebox">
+						<input type="checkbox" name="libEdit" {{permissions.Library_Edit==1? 'checked' : ''}} id="libEdit" class="badgebox">
 						<span class="badge">&check;</span>
 					</label>
 			   </div>
@@ -248,7 +248,7 @@
 
 
 		 <div class="row">
-			<div class="col-sm-9">
+			<div class="col-sm-11">
 			</div>
 			<div class="col-sm-1">
 				<div class="form-group pull-right">
